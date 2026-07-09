@@ -1,5 +1,6 @@
 import Link from "next/link";
 import { Container } from "./Container";
+import { Logo } from "./Logo";
 import { NavBar } from "./NavBar";
 import { CartButton } from "./cart/CartButton";
 import { SearchIcon, UserIcon } from "./icons";
@@ -33,12 +34,7 @@ export function Header() {
       {/* Thanh chính */}
       <div className="bg-green text-white">
         <Container className="flex h-[70px] items-center gap-[22px]">
-          <Link
-            href="/"
-            className="whitespace-nowrap text-[23px] font-bold tracking-[-0.02em] text-white"
-          >
-            Chính <span className="text-[#BEE9CB]">Nguyễn</span>
-          </Link>
+          <Logo />
 
           <form
             action="/tim-kiem"
