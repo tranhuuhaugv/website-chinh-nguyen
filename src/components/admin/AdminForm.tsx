@@ -19,13 +19,22 @@ export interface AdminField {
     | "select"
     | "image"
     | "images"
-    | "blocks";
+    | "blocks"
+    | "checkboxes"
+    | "heading";
   options?: { value: string; label: string }[];
   placeholder?: string;
   full?: boolean; // chiếm cả 2 cột
 }
 
-const WIDE_TYPES = new Set(["textarea", "image", "images", "blocks"]);
+const WIDE_TYPES = new Set([
+  "textarea",
+  "image",
+  "images",
+  "blocks",
+  "checkboxes",
+  "heading",
+]);
 
 export function AdminForm({
   title,
@@ -78,7 +87,29 @@ export function AdminForm({
         )}
 
         <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
-          {fields.map((f) => (
+          {fields.map((f) => {
+            // Tiêu đề mục (ngăn cách các nhóm field)
+            if (f.type === "heading") {
+              return (
+                <div
+                  key={f.name}
+                  className="mt-2 border-b border-line pb-2 sm:col-span-2"
+                >
+                  <h3 className="text-[14px] font-bold text-ink">{f.label}</h3>
+                  {f.placeholder && (
+                    <p className="mt-0.5 text-[12px] text-muted">
+                      {f.placeholder}
+                    </p>
+                  )}
+                </div>
+              );
+            }
+
+            const selected = values[f.name]
+              ? values[f.name].split(",").filter(Boolean)
+              : [];
+
+            return (
             <div
               key={f.name}
               className={
@@ -97,6 +128,34 @@ export function AdminForm({
                 <MultiImageUpload />
               ) : f.type === "blocks" ? (
                 <BlogContentEditor />
+              ) : f.type === "checkboxes" ? (
+                <div className="flex flex-wrap gap-x-6 gap-y-2.5 rounded-xl border border-line bg-bg p-3">
+                  {f.options?.map((o) => {
+                    const checked = selected.includes(o.value);
+                    return (
+                      <label
+                        key={o.value}
+                        className="flex cursor-pointer items-center gap-2 text-[13.5px] text-ink"
+                      >
+                        <input
+                          type="checkbox"
+                          checked={checked}
+                          onChange={() =>
+                            set(
+                              f.name,
+                              (checked
+                                ? selected.filter((x) => x !== o.value)
+                                : [...selected, o.value]
+                              ).join(","),
+                            )
+                          }
+                          className="h-4 w-4 accent-green"
+                        />
+                        {o.label}
+                      </label>
+                    );
+                  })}
+                </div>
               ) : f.type === "textarea" ? (
                 <textarea
                   rows={4}
@@ -128,7 +187,8 @@ export function AdminForm({
                 />
               )}
             </div>
-          ))}
+            );
+          })}
         </div>
 
         <div className="mt-6 flex gap-3">
