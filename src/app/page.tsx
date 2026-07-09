@@ -1,101 +1,82 @@
-import Image from "next/image";
+import { BlogSection } from "@/components/BlogSection";
+import { CategoryGrid } from "@/components/CategoryGrid";
+import { CustomerGallery } from "@/components/CustomerGallery";
+import { FeaturedProducts } from "@/components/FeaturedProducts";
+import { FlashSale } from "@/components/FlashSale";
+import { FloatButtons } from "@/components/FloatButtons";
+import { Footer } from "@/components/Footer";
+import { Header } from "@/components/Header";
+import { HeroSlider } from "@/components/HeroSlider";
+import { SideBanners } from "@/components/SideBanners";
+import { TrustBar } from "@/components/TrustBar";
+import { CompareBar } from "@/components/compare/CompareBar";
+import { CompareProvider } from "@/components/compare/CompareContext";
+import {
+  BLOG_POSTS,
+  CATEGORIES,
+  FEATURED_BRAND_TABS,
+  CUSTOMER_PHOTOS,
+  FEATURED_PRODUCTS,
+  FLASH_SALE_PRODUCTS,
+  HERO_SLIDES,
+  SIDE_BANNERS,
+} from "@/lib/mock-data";
 
-export default function Home() {
+// Trang chủ ít thay đổi -> ISR: build tĩnh, tự làm mới mỗi giờ (quy tắc CLAUDE.md).
+// Khi nối DB, các mảng mock ở trên sẽ thay bằng query Prisma (có select/pagination).
+export const revalidate = 3600;
+
+const SITE_URL =
+  process.env.NEXT_PUBLIC_SITE_URL ?? "https://laptopchinhnguyen.vn";
+
+// Structured data cho trang chủ (Organization + WebSite có ô tìm kiếm).
+const jsonLd = {
+  "@context": "https://schema.org",
+  "@graph": [
+    {
+      "@type": "Organization",
+      name: "Laptop Chính Nguyễn",
+      url: SITE_URL,
+      areaServed: "Đà Nẵng",
+      telephone: "1900 6789",
+    },
+    {
+      "@type": "WebSite",
+      name: "Laptop Chính Nguyễn",
+      url: SITE_URL,
+      potentialAction: {
+        "@type": "SearchAction",
+        target: `${SITE_URL}/tim-kiem?q={search_term_string}`,
+        "query-input": "required name=search_term_string",
+      },
+    },
+  ],
+};
+
+export default function HomePage() {
   return (
-    <div className="grid grid-rows-[20px_1fr_20px] items-center justify-items-center min-h-screen p-8 pb-20 gap-16 sm:p-20 font-[family-name:var(--font-geist-sans)]">
-      <main className="flex flex-col gap-8 row-start-2 items-center sm:items-start">
-        <Image
-          className="dark:invert"
-          src="https://nextjs.org/icons/next.svg"
-          alt="Next.js logo"
-          width={180}
-          height={38}
-          priority
+    <CompareProvider>
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
+      />
+      <Header />
+      <SideBanners left={SIDE_BANNERS[0]} right={SIDE_BANNERS[1]} />
+      <main>
+        <HeroSlider slides={HERO_SLIDES} />
+        <FlashSale products={FLASH_SALE_PRODUCTS} />
+        <CategoryGrid categories={CATEGORIES} />
+        <FeaturedProducts
+          products={FEATURED_PRODUCTS}
+          tabs={FEATURED_BRAND_TABS}
         />
-        <ol className="list-inside list-decimal text-sm text-center sm:text-left font-[family-name:var(--font-geist-mono)]">
-          <li className="mb-2">
-            Get started by editing{" "}
-            <code className="bg-black/[.05] dark:bg-white/[.06] px-1 py-0.5 rounded font-semibold">
-              src/app/page.tsx
-            </code>
-            .
-          </li>
-          <li>Save and see your changes instantly.</li>
-        </ol>
-
-        <div className="flex gap-4 items-center flex-col sm:flex-row">
-          <a
-            className="rounded-full border border-solid border-transparent transition-colors flex items-center justify-center bg-foreground text-background gap-2 hover:bg-[#383838] dark:hover:bg-[#ccc] text-sm sm:text-base h-10 sm:h-12 px-4 sm:px-5"
-            href="https://vercel.com/new?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            <Image
-              className="dark:invert"
-              src="https://nextjs.org/icons/vercel.svg"
-              alt="Vercel logomark"
-              width={20}
-              height={20}
-            />
-            Deploy now
-          </a>
-          <a
-            className="rounded-full border border-solid border-black/[.08] dark:border-white/[.145] transition-colors flex items-center justify-center hover:bg-[#f2f2f2] dark:hover:bg-[#1a1a1a] hover:border-transparent text-sm sm:text-base h-10 sm:h-12 px-4 sm:px-5 sm:min-w-44"
-            href="https://nextjs.org/docs?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            Read our docs
-          </a>
-        </div>
+        <CustomerGallery photos={CUSTOMER_PHOTOS} />
+        <BlogSection posts={BLOG_POSTS} />
+        <TrustBar />
       </main>
-      <footer className="row-start-3 flex gap-6 flex-wrap items-center justify-center">
-        <a
-          className="flex items-center gap-2 hover:underline hover:underline-offset-4"
-          href="https://nextjs.org/learn?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <Image
-            aria-hidden
-            src="https://nextjs.org/icons/file.svg"
-            alt="File icon"
-            width={16}
-            height={16}
-          />
-          Learn
-        </a>
-        <a
-          className="flex items-center gap-2 hover:underline hover:underline-offset-4"
-          href="https://vercel.com/templates?framework=next.js&utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <Image
-            aria-hidden
-            src="https://nextjs.org/icons/window.svg"
-            alt="Window icon"
-            width={16}
-            height={16}
-          />
-          Examples
-        </a>
-        <a
-          className="flex items-center gap-2 hover:underline hover:underline-offset-4"
-          href="https://nextjs.org?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <Image
-            aria-hidden
-            src="https://nextjs.org/icons/globe.svg"
-            alt="Globe icon"
-            width={16}
-            height={16}
-          />
-          Go to nextjs.org →
-        </a>
-      </footer>
-    </div>
+      <Footer />
+      <FloatButtons />
+      <CompareBar />
+    </CompareProvider>
   );
 }

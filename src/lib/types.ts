@@ -1,0 +1,119 @@
+// Kiểu dữ liệu dùng chung cho toàn trang. Khi nối Prisma sau này,
+// các model DB sẽ ánh xạ về đúng những shape này để component không phải sửa.
+
+export type Brand =
+  | "Dell"
+  | "Asus"
+  | "Acer"
+  | "Lenovo"
+  | "HP"
+  | "MacBook"
+  | "MSI";
+
+/** Màu gradient của ảnh placeholder (khớp các card trong design). */
+export type ProductAccent = "blue" | "red" | "silver" | "crimson" | "dark";
+
+export interface Product {
+  id: string;
+  slug: string;
+  name: string;
+  brand: Brand;
+  /** Giá bán hiện tại (VND). */
+  price: number;
+  /** Giá gốc gạch ngang (VND), có thể không có. */
+  oldPrice?: number;
+  cpu: string;
+  ram: string;
+  storage: string;
+  rating: number;
+  reviewCount: number;
+  /** Trả góp mỗi tháng (VND). */
+  installmentPerMonth?: number;
+  gift?: string;
+  /** Nhãn "-18%", "Mới"... hiển thị góc trái ảnh. */
+  badge?: string;
+  isNew?: boolean;
+  accent: ProductAccent;
+}
+
+export interface Category {
+  slug: string;
+  name: string;
+  icon: CategoryIconName;
+  tag?: string;
+  /** URL ảnh thật (Cloudinary / public). Bỏ trống -> hiện ô icon gradient. */
+  image?: string;
+}
+
+export type CategoryIconName =
+  | "office"
+  | "gaming"
+  | "graphic"
+  | "slim"
+  | "student"
+  | "macbook"
+  | "ai"
+  | "used"
+  | "dell"
+  | "asus"
+  | "acer"
+  | "lenovo"
+  | "hp"
+  | "msi"
+  | "monitor"
+  | "accessory";
+
+/** 1 dòng trong giỏ hàng. */
+export interface CartItem {
+  id: string;
+  slug: string;
+  name: string;
+  price: number;
+  accent: ProductAccent;
+  qty: number;
+}
+
+export type BannerAccent = "green" | "blue" | "purple";
+
+/** 1 slide của banner chính (dạng carousel). */
+export interface HeroSlide {
+  id: string;
+  href: string;
+  badge?: string;
+  title1: string;
+  title2?: string;
+  subtitle?: string;
+  cta?: string;
+  accent: BannerAccent;
+}
+
+/** Banner treo dọc 2 bên trang (chỉ hiện trên màn hình đủ rộng). */
+export interface SideBanner {
+  id: string;
+  href: string;
+  title: string;
+  subtitle?: string;
+  accent: BannerAccent;
+}
+
+/** Ảnh khách hàng thực tế tại cửa hàng (dải ảnh dưới "Sản phẩm nổi bật"). */
+export interface CustomerPhoto {
+  id: string;
+  alt: string;
+  /** URL ảnh thật (Cloudinary). Bỏ trống -> hiện ô placeholder. */
+  image?: string;
+}
+
+export type BlogAccent = "green" | "blue" | "purple";
+
+export interface BlogPost {
+  slug: string;
+  tag: string;
+  title: string;
+  readMinutes: number;
+  date: string;
+  accent: BlogAccent;
+  excerpt: string;
+  /** Nội dung bài viết (mỗi phần tử là 1 đoạn). */
+  content: string[];
+}
