@@ -62,7 +62,7 @@ export function ProductBrowser({
             </p>
           </div>
         ) : (
-          <div className="grid grid-cols-3 gap-4 max-[900px]:grid-cols-2 max-[460px]:gap-2.5 max-[520px]:grid-cols-2">
+          <div className="grid grid-cols-4 gap-3 max-[1024px]:grid-cols-3 max-[720px]:grid-cols-2 max-[460px]:gap-2.5">
             {items.map((p) => (
               <ProductCard key={p.id} product={p} />
             ))}
