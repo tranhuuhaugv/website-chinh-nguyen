@@ -24,7 +24,7 @@ export const CUSTOMER_PHOTOS: CustomerPhoto[] = [
 export const HERO_SLIDES: HeroSlide[] = [
   {
     id: "uu-dai-thang-7",
-    href: "/khuyen-mai",
+    href: "/san-pham",
     badge: "ƯU ĐÃI THÁNG 7",
     title1: "Laptop chính hãng",
     title2: "giá tốt mỗi ngày",
@@ -470,12 +470,13 @@ export const CATEGORY_GROUPS: { title: string; slugs: string[] }[] = [
 // Link nhanh nổi bật trên thanh điều hướng.
 export const QUICK_NAV_LINKS: { label: string; href: string; hot?: boolean }[] =
   [
-    { label: "Khuyến mãi", href: "/khuyen-mai", hot: true },
+    { label: "Tất cả sản phẩm", href: "/san-pham" },
     { label: "Laptop Gaming", href: "/danh-muc/laptop-gaming" },
     { label: "Văn phòng", href: "/danh-muc/laptop-van-phong" },
     { label: "MacBook", href: "/danh-muc/macbook" },
     { label: "Dell", href: "/danh-muc/dell" },
     { label: "Asus", href: "/danh-muc/asus" },
+    { label: "Thu cũ đổi mới", href: "/thu-cu-doi-moi" },
     { label: "Trả góp 0%", href: "/chinh-sach/tra-gop" },
   ];
 

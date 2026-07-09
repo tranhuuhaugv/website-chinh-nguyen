@@ -18,11 +18,11 @@ export function Header() {
             Hệ thống Laptop Chính Nguyễn tại Đà Nẵng · Chính hãng · Trả góp 0%
           </span>
           <nav className="flex gap-[18px]">
-            <Link href="/tra-cuu-don-hang" className="hover:text-white">
-              Tra cứu đơn hàng
-            </Link>
             <Link href="/he-thong-cua-hang" className="hover:text-white">
               Hệ thống cửa hàng
+            </Link>
+            <Link href="/chinh-sach/bao-hanh" className="hover:text-white">
+              Bảo hành
             </Link>
             <Link href="/tuyen-dung" className="hover:text-white">
               Tuyển dụng

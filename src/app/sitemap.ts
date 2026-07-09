@@ -43,11 +43,13 @@ export default function sitemap(): MetadataRoute.Sitemap {
       priority: 1,
     },
     ...[
+      "/san-pham",
       "/blog",
       "/gioi-thieu",
       "/lien-he",
       "/he-thong-cua-hang",
       "/tuyen-dung",
+      "/thu-cu-doi-moi",
       "/chinh-sach/bao-hanh",
       "/chinh-sach/doi-tra",
       "/chinh-sach/giao-hang",

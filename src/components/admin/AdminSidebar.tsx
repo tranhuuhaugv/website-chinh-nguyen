@@ -8,6 +8,7 @@ import {
   FileTextIcon,
   GridIcon,
   LayoutIcon,
+  SettingsIcon,
   TagIcon,
 } from "@/components/icons";
 
@@ -18,6 +19,7 @@ const NAV = [
   { href: "/admin/thuong-hieu", label: "Thương hiệu", icon: TagIcon },
   { href: "/admin/blog", label: "Blog", icon: FileTextIcon },
   { href: "/admin/don-hang", label: "Đơn hàng", icon: CartIcon },
+  { href: "/admin/cai-dat", label: "Cài đặt", icon: SettingsIcon },
 ];
 
 export function AdminSidebar() {

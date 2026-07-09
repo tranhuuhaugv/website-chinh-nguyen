@@ -3,6 +3,7 @@ import { CategoryGrid } from "@/components/CategoryGrid";
 import { CustomerGallery } from "@/components/CustomerGallery";
 import { FeaturedProducts } from "@/components/FeaturedProducts";
 import { FlashSale } from "@/components/FlashSale";
+import { FlashSaleGate } from "@/components/FlashSaleGate";
 import { FloatButtons } from "@/components/FloatButtons";
 import { Footer } from "@/components/Footer";
 import { Header } from "@/components/Header";
@@ -64,7 +65,9 @@ export default function HomePage() {
       <SideBanners left={SIDE_BANNERS[0]} right={SIDE_BANNERS[1]} />
       <main>
         <HeroSlider slides={HERO_SLIDES} />
-        <FlashSale products={FLASH_SALE_PRODUCTS} />
+        <FlashSaleGate>
+          <FlashSale products={FLASH_SALE_PRODUCTS} />
+        </FlashSaleGate>
         <CategoryGrid categories={CATEGORIES} />
         <FeaturedProducts
           products={FEATURED_PRODUCTS}

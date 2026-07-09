@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import { Inter } from "next/font/google";
 import "./globals.css";
 import { CartProvider } from "@/components/cart/CartContext";
+import { SiteSettingsProvider } from "@/components/SiteSettingsContext";
 
 const inter = Inter({
   subsets: ["latin", "vietnamese"],
@@ -54,7 +55,9 @@ export default function RootLayout({
   return (
     <html lang="vi" className={inter.variable}>
       <body className="font-sans antialiased">
-        <CartProvider>{children}</CartProvider>
+        <SiteSettingsProvider>
+          <CartProvider>{children}</CartProvider>
+        </SiteSettingsProvider>
       </body>
     </html>
   );

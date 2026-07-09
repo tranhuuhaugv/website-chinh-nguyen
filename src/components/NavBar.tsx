@@ -99,7 +99,7 @@ export function NavBar() {
 
         {/* Mobile: link tới tất cả danh mục */}
         <Link
-          href="/danh-muc/tat-ca"
+          href="/san-pham"
           className="ml-auto flex items-center gap-1 self-center text-[13px] font-medium text-green-d min-[901px]:hidden"
         >
           Tất cả
