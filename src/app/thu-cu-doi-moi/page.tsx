@@ -1,6 +1,6 @@
 import type { Metadata } from "next";
 import { StaticPage } from "@/components/StaticPage";
-import { ContactForm } from "@/components/ContactForm";
+import { TradeInForm } from "@/components/TradeInForm";
 import {
   CheckIcon,
   InstallmentIcon,
@@ -130,7 +130,7 @@ export default function TradeInPage() {
             <h2 className="mb-4 text-[18px] font-bold text-ink">
               Để lại thông tin định giá
             </h2>
-            <ContactForm />
+            <TradeInForm />
           </section>
         </div>
       </div>

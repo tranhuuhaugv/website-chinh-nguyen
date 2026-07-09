@@ -31,7 +31,7 @@ export function CartCheckout() {
     setValues((v) => ({ ...v, [key]: val }));
   }
 
-  function placeOrder() {
+  async function placeOrder() {
     const result = checkoutSchema.safeParse(values);
     if (!result.success) {
       const fe = result.error.flatten().fieldErrors;
@@ -43,6 +43,27 @@ export function CartCheckout() {
       return;
     }
     setErrors({});
+
+    // Gửi đơn về server (email thông báo). Không chặn trải nghiệm nếu email lỗi.
+    const payload = {
+      type: "purchase" as const,
+      name: values.name,
+      phone: values.phone,
+      address: values.address,
+      note: values.note,
+      items: items.map((i) => ({ name: i.name, price: i.price, qty: i.qty })),
+      total: subtotal,
+    };
+    try {
+      await fetch("/api/order", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(payload),
+      });
+    } catch {
+      // bỏ qua lỗi mạng — vẫn xác nhận đơn cho khách
+    }
+
     clear();
     setDone(true);
   }

@@ -12,8 +12,9 @@ export default function AdminOrdersPage() {
         </span>
         <p className="text-[15px] font-semibold text-ink">Chưa có đơn hàng</p>
         <p className="mx-auto mt-1 max-w-md text-[13.5px] text-muted">
-          Danh sách đơn hàng sẽ hiển thị tại đây khi kết nối database và luồng
-          đặt hàng thật (COD/VNPay).
+          Hiện các đơn (mua hàng &amp; thu cũ đổi mới) được gửi qua email về
+          Gmail của cửa hàng. Danh sách đơn lưu lại tại đây sẽ hiển thị khi kết
+          nối database.
         </p>
       </div>
     </div>
