@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import Link from "next/link";
 import { StaticPage } from "@/components/StaticPage";
+import { SITE } from "@/lib/site";
 import { ArrowRightIcon, CheckIcon, MapPinIcon } from "@/components/icons";
 
 export const metadata: Metadata = {
@@ -206,7 +207,7 @@ export default function CareersPage() {
         <div className="rounded-2xl border border-line bg-green-tint p-6 text-center text-[14px] text-ink-2">
           Gửi CV về email{" "}
           <b className="text-green-d">tuyendung@laptopchinhnguyen.vn</b> hoặc gọi{" "}
-          <b className="text-green-d">1900 6789</b> để được hỗ trợ.
+          <b className="text-green-d">{SITE.hotline}</b> để được hỗ trợ.
         </div>
       </div>
     </StaticPage>

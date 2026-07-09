@@ -20,7 +20,7 @@ export interface SiteSettings {
 }
 
 const DEFAULTS: SiteSettings = {
-  flashSaleEnabled: true,
+  flashSaleEnabled: false,
 };
 
 interface SiteSettingsValue {

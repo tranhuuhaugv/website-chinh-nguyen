@@ -1,6 +1,7 @@
 import Link from "next/link";
 import { Container } from "./Container";
 import { FooterBadges } from "./FooterBadges";
+import { SITE } from "@/lib/site";
 
 // Footer dùng chung toàn site. Server Component.
 
@@ -63,14 +64,16 @@ export function Footer() {
             <h4 className="mb-3.5 text-[14.5px] font-semibold text-white">
               Kết nối
             </h4>
-            <p className="mb-2 text-[13.5px]">
-              Địa chỉ: <b className="text-white">Đà Nẵng</b>
+            {SITE.stores.map((s) => (
+              <p key={s.address} className="mb-2 text-[13.5px] leading-[1.6]">
+                {s.address}
+              </p>
+            ))}
+            <p className="mb-1 mt-2 text-[13.5px]">
+              Hotline: <b className="text-white">{SITE.hotline}</b>
             </p>
-            <p className="mb-2.5 text-[13.5px]">
-              Hotline: <b className="text-white">1900 6789</b>
-            </p>
-            <p className="text-[13.5px] leading-[1.7]">
-              Nhận tin khuyến mãi mới nhất qua email của bạn.
+            <p className="text-[13.5px]">
+              Kỹ thuật: <b className="text-white">{SITE.techPhone}</b>
             </p>
           </div>
         </div>

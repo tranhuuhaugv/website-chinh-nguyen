@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import { StaticPage } from "@/components/StaticPage";
+import { SITE } from "@/lib/site";
 import {
   CheckIcon,
   ClockIcon,
@@ -13,26 +14,11 @@ export const metadata: Metadata = {
     "Hệ thống cửa hàng Laptop Chính Nguyễn tại Đà Nẵng. Địa chỉ, giờ mở cửa, dịch vụ và hotline hỗ trợ.",
 };
 
-const STORES = [
-  {
-    name: "Chính Nguyễn - Hải Châu",
-    address: "123 Nguyễn Văn Linh, Q. Hải Châu, Đà Nẵng",
-    phone: "1900 6789",
-    hours: "8:00 - 21:00 (T2 - CN)",
-  },
-  {
-    name: "Chính Nguyễn - Thanh Khê",
-    address: "456 Điện Biên Phủ, Q. Thanh Khê, Đà Nẵng",
-    phone: "1900 6789",
-    hours: "8:00 - 21:00 (T2 - CN)",
-  },
-  {
-    name: "Chính Nguyễn - Ngũ Hành Sơn",
-    address: "789 Ngũ Hành Sơn, Q. Ngũ Hành Sơn, Đà Nẵng",
-    phone: "1900 6789",
-    hours: "8:00 - 21:00 (T2 - CN)",
-  },
-];
+const STORES = SITE.stores.map((s) => ({
+  ...s,
+  phone: SITE.hotline,
+  hours: SITE.hours,
+}));
 
 const SERVICES = [
   "Tư vấn chọn máy theo nhu cầu và ngân sách, tận tình 1-1.",
@@ -100,7 +86,7 @@ export default function StoresPage() {
           <h2 className="mb-4 text-[18px] font-bold text-ink">
             Địa chỉ các cửa hàng
           </h2>
-          <div className="grid grid-cols-1 gap-5 md:grid-cols-2 lg:grid-cols-3">
+          <div className="grid grid-cols-1 gap-5 md:grid-cols-2">
             {STORES.map((store) => (
               <div
                 key={store.name}
@@ -137,7 +123,8 @@ export default function StoresPage() {
 
         <div className="rounded-2xl border border-line bg-green-tint p-6 text-center text-[14px] text-ink-2">
           Muốn biết cửa hàng gần bạn nhất? Gọi{" "}
-          <b className="text-green-d">1900 6789</b> để được hướng dẫn đường đi
+          <b className="text-green-d">{SITE.hotline}</b> để được hướng dẫn đường
+          đi
           chi tiết.
         </div>
       </div>

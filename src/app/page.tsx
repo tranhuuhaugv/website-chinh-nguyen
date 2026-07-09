@@ -1,5 +1,6 @@
 import { BlogSection } from "@/components/BlogSection";
 import { CategoryGrid } from "@/components/CategoryGrid";
+import { CategoryNav } from "@/components/CategoryNav";
 import { CustomerGallery } from "@/components/CustomerGallery";
 import { FeaturedProducts } from "@/components/FeaturedProducts";
 import { FlashSale } from "@/components/FlashSale";
@@ -22,6 +23,7 @@ import {
   HERO_SLIDES,
   SIDE_BANNERS,
 } from "@/lib/mock-data";
+import { SITE } from "@/lib/site";
 
 // Trang chủ ít thay đổi -> ISR: build tĩnh, tự làm mới mỗi giờ (quy tắc CLAUDE.md).
 // Khi nối DB, các mảng mock ở trên sẽ thay bằng query Prisma (có select/pagination).
@@ -39,7 +41,13 @@ const jsonLd = {
       name: "Laptop Chính Nguyễn",
       url: SITE_URL,
       areaServed: "Đà Nẵng",
-      telephone: "1900 6789",
+      telephone: SITE.hotline,
+      address: SITE.stores.map((s) => ({
+        "@type": "PostalAddress",
+        streetAddress: s.address,
+        addressLocality: "Đà Nẵng",
+        addressCountry: "VN",
+      })),
     },
     {
       "@type": "WebSite",
@@ -64,6 +72,7 @@ export default function HomePage() {
       <Header />
       <SideBanners left={SIDE_BANNERS[0]} right={SIDE_BANNERS[1]} />
       <main>
+        <CategoryNav />
         <HeroSlider slides={HERO_SLIDES} />
         <FlashSaleGate>
           <FlashSale products={FLASH_SALE_PRODUCTS} />

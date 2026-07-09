@@ -8,15 +8,15 @@ export function Logo() {
     <Link
       href="/"
       aria-label="Laptop Chính Nguyễn - Trang chủ"
-      className="flex shrink-0 items-center rounded-lg bg-white px-2.5 py-1"
+      className="flex shrink-0 items-center rounded-lg bg-white px-3 py-2"
     >
       <Image
         src="/logo_V1.png"
         alt="Laptop Chính Nguyễn"
-        width={230}
-        height={219}
+        width={228}
+        height={40}
         priority
-        className="h-12 w-auto object-contain"
+        className="h-8 w-auto object-contain"
       />
     </Link>
   );

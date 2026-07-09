@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import { StaticPage } from "@/components/StaticPage";
 import { TradeInForm } from "@/components/TradeInForm";
+import { SITE } from "@/lib/site";
 import {
   CheckIcon,
   InstallmentIcon,
@@ -122,7 +123,8 @@ export default function TradeInPage() {
               ))}
             </ul>
             <div className="mt-5 rounded-xl bg-green-tint px-4 py-3 text-[13.5px] text-green-d">
-              Gọi ngay <b>1900 6789</b> để được định giá nhanh máy cũ của bạn.
+              Gọi ngay <b>{SITE.hotline}</b> để được định giá nhanh máy cũ của
+              bạn.
             </div>
           </section>
 

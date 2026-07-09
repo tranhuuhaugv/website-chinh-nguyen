@@ -13,6 +13,14 @@ const BRAND_OPTIONS = [
   "MSI",
 ].map((b) => ({ value: b, label: b }));
 
+// Cam kết dịch vụ mặc định (hiển thị dưới ảnh ở trang chi tiết) — mỗi dòng 1 mục.
+const DEFAULT_COMMITMENTS = [
+  "Máy chính hãng, nguyên seal, đầy đủ hóa đơn VAT",
+  "Bảo hành 24 tháng · 1 đổi 1 trong 30 ngày",
+  "Giao nhanh 2h nội thành, toàn quốc 1-3 ngày",
+  "Hỗ trợ trả góp 0% qua thẻ / công ty tài chính",
+].join("\n");
+
 const FIELDS: AdminField[] = [
   { name: "images", label: "Ảnh sản phẩm (thêm nhiều ảnh)", type: "images" },
   { name: "name", label: "Tên sản phẩm", full: true, placeholder: "VD: Dell XPS 13 Plus 9320 i7" },
@@ -24,6 +32,12 @@ const FIELDS: AdminField[] = [
   { name: "storage", label: "Ổ cứng / Card", placeholder: "512GB" },
   { name: "badge", label: "Nhãn giảm giá", placeholder: "-18%" },
   { name: "gift", label: "Quà tặng kèm", full: true, placeholder: "Tặng balo + chuột" },
+  {
+    name: "commitments",
+    label: "Cam kết dịch vụ (mỗi dòng 1 mục)",
+    type: "textarea",
+    full: true,
+  },
 ];
 
 export default function AdminProductFormPage({
@@ -49,8 +63,9 @@ export default function AdminProductFormPage({
         storage: product.storage,
         badge: product.badge ?? "",
         gift: product.gift ?? "",
+        commitments: DEFAULT_COMMITMENTS,
       }
-    : {};
+    : { commitments: DEFAULT_COMMITMENTS };
 
   return (
     <AdminForm

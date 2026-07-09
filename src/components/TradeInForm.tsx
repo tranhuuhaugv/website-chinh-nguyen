@@ -2,6 +2,7 @@
 
 import { useState } from "react";
 import { tradeInSchema } from "@/lib/validations/order";
+import { SITE } from "@/lib/site";
 
 // Form thu cũ đổi mới -> gửi về /api/order (email thông báo).
 
@@ -113,7 +114,7 @@ export function TradeInForm() {
 
       {status === "error" && (
         <p className="text-[12.5px] text-sale">
-          Gửi thất bại, vui lòng thử lại hoặc gọi hotline 1900 6789.
+          Gửi thất bại, vui lòng thử lại hoặc gọi hotline {SITE.hotline}.
         </p>
       )}
 

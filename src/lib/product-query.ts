@@ -93,6 +93,32 @@ export function parseQuery(sp: RawParams): ProductQuery {
 }
 
 /**
+ * Bật/tắt 1 giá trị trong param dạng nhiều lựa chọn (VD hãng, giá) rồi trả về
+ * query string mới (đồng thời reset về trang 1). Dùng cho nút lọc kiểu toggle.
+ */
+export function toggleParam(
+  current: RawParams,
+  key: string,
+  value: string,
+): string {
+  const existing = toArray(current[key]);
+  const next = existing.includes(value)
+    ? existing.filter((v) => v !== value)
+    : [...existing, value];
+
+  const sp = new URLSearchParams();
+  for (const [k, v] of Object.entries(current)) {
+    if (k === key || k === "trang") continue; // xử lý riêng + reset trang
+    if (v == null) continue;
+    for (const val of Array.isArray(v) ? v : [v]) sp.append(k, val);
+  }
+  for (const val of next) sp.append(key, val);
+
+  const s = sp.toString();
+  return s ? `?${s}` : "";
+}
+
+/**
  * Ghép query string từ params hiện tại + ghi đè. Value undefined/"" -> bỏ.
  * Dùng để tạo link sắp xếp / phân trang mà vẫn giữ các bộ lọc khác.
  */

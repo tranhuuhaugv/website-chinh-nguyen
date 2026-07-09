@@ -6,6 +6,7 @@ import { useRouter } from "next/navigation";
 import type { CartItem } from "@/lib/types";
 import { useCart } from "@/components/cart/CartContext";
 import { CartIcon, MessengerIcon, MinusIcon, PlusIcon } from "@/components/icons";
+import { SITE } from "@/lib/site";
 
 // Panel mua hàng: số lượng + Mua ngay / Thêm giỏ + kênh chat. Client Component.
 
@@ -80,7 +81,7 @@ export function ProductPurchase({ item }: { item: Omit<CartItem, "qty"> }) {
 
       <div className="grid grid-cols-2 gap-3">
         <a
-          href="https://zalo.me/19006789"
+          href={`https://zalo.me/${SITE.hotlineTel}`}
           target="_blank"
           rel="noopener noreferrer"
           className="flex h-11 items-center justify-center gap-2 rounded-xl border border-line bg-white text-[13.5px] font-semibold text-ink-2 transition hover:border-[#0068FF] hover:text-[#0068FF]"

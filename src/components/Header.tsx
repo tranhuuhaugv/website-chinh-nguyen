@@ -1,9 +1,9 @@
 import Link from "next/link";
 import { Container } from "./Container";
 import { Logo } from "./Logo";
-import { NavBar } from "./NavBar";
 import { CartButton } from "./cart/CartButton";
 import { SearchIcon, UserIcon } from "./icons";
+import { SITE } from "@/lib/site";
 
 // Header dùng chung toàn site: strip thông báo + thanh tìm kiếm + tài khoản/giỏ.
 // Server Component: form tìm kiếm submit GET sang /tim-kiem (không cần JS).
@@ -15,7 +15,10 @@ export function Header() {
       <div className="bg-green-dd text-[12.5px] text-[#CDEBD6]">
         <Container className="flex h-[34px] items-center justify-between max-[720px]:justify-center">
           <span className="max-[720px]:hidden">
-            Hệ thống Laptop Chính Nguyễn tại Đà Nẵng · Chính hãng · Trả góp 0%
+            Hệ thống Laptop Chính Nguyễn tại Đà Nẵng · Hotline:{" "}
+            <a href={`tel:${SITE.hotlineTel}`} className="font-semibold text-white">
+              {SITE.hotline}
+            </a>
           </span>
           <nav className="flex gap-[18px]">
             <Link href="/he-thong-cua-hang" className="hover:text-white">
@@ -38,8 +41,15 @@ export function Header() {
 
           <form
             action="/tim-kiem"
-            className="flex h-[42px] max-w-[560px] flex-1 items-center gap-2.5 rounded-lg bg-white pl-3.5 pr-1.5 max-[900px]:hidden"
+            className="flex h-11 max-w-[640px] flex-1 items-center rounded-full bg-white pl-2 pr-4 max-[900px]:hidden"
           >
+            <button
+              type="submit"
+              aria-label="Tìm kiếm"
+              className="flex h-8 w-8 shrink-0 items-center justify-center rounded-full text-muted transition hover:text-green-d"
+            >
+              <SearchIcon className="h-[18px] w-[18px]" />
+            </button>
             <input
               type="search"
               name="q"
@@ -47,13 +57,6 @@ export function Header() {
               className="flex-1 border-none bg-transparent text-[14.5px] text-ink outline-none"
               aria-label="Tìm kiếm sản phẩm"
             />
-            <button
-              type="submit"
-              aria-label="Tìm kiếm"
-              className="flex h-[30px] w-[34px] items-center justify-center rounded-md bg-green text-white"
-            >
-              <SearchIcon className="h-[17px] w-[17px]" />
-            </button>
           </form>
 
           <div className="ml-auto flex items-center gap-1.5">
@@ -68,8 +71,6 @@ export function Header() {
           </div>
         </Container>
       </div>
-
-      <NavBar />
     </header>
   );
 }

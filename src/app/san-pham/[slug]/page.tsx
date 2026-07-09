@@ -23,6 +23,7 @@ import {
   getProductBySlug,
   getRelatedProducts,
 } from "@/lib/mock-data";
+import { buildDescription, buildSpecGroups } from "@/lib/product-content";
 import { formatPrice } from "@/lib/format";
 
 export const revalidate = 3600;
@@ -79,32 +80,49 @@ export default function ProductPage({ params }: { params: { slug: string } }) {
     : 0;
   const related = getRelatedProducts(product);
 
-  const specs: [string, string][] = [
-    ["Thương hiệu", product.brand],
-    ["CPU", product.cpu],
-    ["RAM", product.ram],
-    ["Ổ cứng / Card", product.storage],
-    ["Đánh giá", `${product.rating.toFixed(1)}/5 (${product.reviewCount} lượt)`],
-  ];
+  const url = `${SITE_URL}/san-pham/${product.slug}`;
+  const specGroups = buildSpecGroups(product);
+  const description = buildDescription(product);
 
   const jsonLd = {
     "@context": "https://schema.org",
-    "@type": "Product",
-    name: product.name,
-    brand: { "@type": "Brand", name: product.brand },
-    description: `${product.name} - ${product.cpu}, RAM ${product.ram}, ${product.storage}.`,
-    aggregateRating: {
-      "@type": "AggregateRating",
-      ratingValue: product.rating,
-      reviewCount: product.reviewCount,
-    },
-    offers: {
-      "@type": "Offer",
-      price: product.price,
-      priceCurrency: "VND",
-      availability: "https://schema.org/InStock",
-      url: `${SITE_URL}/san-pham/${product.slug}`,
-    },
+    "@graph": [
+      {
+        "@type": "Product",
+        name: product.name,
+        brand: { "@type": "Brand", name: product.brand },
+        category: `Laptop ${product.brand}`,
+        sku: product.id,
+        description: description[0].paragraphs[0],
+        aggregateRating: {
+          "@type": "AggregateRating",
+          ratingValue: product.rating,
+          reviewCount: product.reviewCount,
+        },
+        offers: {
+          "@type": "Offer",
+          price: product.price,
+          priceCurrency: "VND",
+          availability: "https://schema.org/InStock",
+          itemCondition: "https://schema.org/NewCondition",
+          url,
+          seller: { "@type": "Organization", name: "Laptop Chính Nguyễn" },
+        },
+      },
+      {
+        "@type": "BreadcrumbList",
+        itemListElement: [
+          { "@type": "ListItem", position: 1, name: "Trang chủ", item: SITE_URL },
+          {
+            "@type": "ListItem",
+            position: 2,
+            name: product.brand,
+            item: `${SITE_URL}/danh-muc/${product.brand.toLowerCase()}`,
+          },
+          { "@type": "ListItem", position: 3, name: product.name, item: url },
+        ],
+      },
+    ],
   };
 
   const item = {
@@ -136,14 +154,35 @@ export default function ProductPage({ params }: { params: { slug: string } }) {
           />
 
           <div className="mt-5 grid grid-cols-1 gap-8 lg:grid-cols-2">
-            <ProductGallery
-              accent={product.accent}
-              slug={product.slug}
-              name={product.name}
-              badge={
-                product.isNew ? "Mới" : discount > 0 ? `-${discount}%` : undefined
-              }
-            />
+            <div>
+              <ProductGallery
+                accent={product.accent}
+                slug={product.slug}
+                name={product.name}
+                badge={
+                  product.isNew
+                    ? "Mới"
+                    : discount > 0
+                      ? `-${discount}%`
+                      : undefined
+                }
+              />
+
+              {/* Cam kết — đặt dưới ảnh cho cân đối 2 cột */}
+              <ul className="mt-5 grid grid-cols-1 gap-2.5 rounded-2xl border border-line bg-white p-4 sm:grid-cols-2">
+                {COMMITMENTS.map(({ icon: Icon, text }) => (
+                  <li
+                    key={text}
+                    className="flex items-center gap-2.5 text-[13px] text-ink-2"
+                  >
+                    <span className="flex h-7 w-7 shrink-0 items-center justify-center rounded-lg bg-green-soft text-green">
+                      <Icon className="h-4 w-4" />
+                    </span>
+                    {text}
+                  </li>
+                ))}
+              </ul>
+            </div>
 
             <div>
               <h1 className="text-[28px] font-bold leading-tight text-ink">
@@ -245,63 +284,89 @@ export default function ProductPage({ params }: { params: { slug: string } }) {
               <div className="mt-5">
                 <ProductPurchase item={item} />
               </div>
-
-              {/* Cam kết */}
-              <ul className="mt-5 flex flex-col gap-3 border-t border-line pt-5">
-                {COMMITMENTS.map(({ icon: Icon, text }) => (
-                  <li
-                    key={text}
-                    className="flex items-center gap-2.5 text-[13px] text-ink-2"
-                  >
-                    <span className="flex h-7 w-7 shrink-0 items-center justify-center rounded-lg bg-green-soft text-green">
-                      <Icon className="h-4 w-4" />
-                    </span>
-                    {text}
-                  </li>
-                ))}
-              </ul>
             </div>
           </div>
 
-          {/* Thông số + mô tả */}
-          <div className="mt-10 grid grid-cols-1 gap-8 lg:grid-cols-2">
-            <section>
-              <SectionHead title="Thông số kỹ thuật" />
-              <table className="w-full overflow-hidden rounded-xl border border-line text-[13.5px]">
-                <tbody>
-                  {specs.map(([k, v], i) => (
-                    <tr key={k} className={i % 2 ? "bg-white" : "bg-bg"}>
-                      <td className="w-2/5 px-4 py-2.5 font-medium text-ink-2">
-                        {k}
-                      </td>
-                      <td className="px-4 py-2.5 text-ink">{v}</td>
-                    </tr>
-                  ))}
-                </tbody>
-              </table>
-            </section>
+          {/* Thanh điều hướng nhanh trong trang */}
+          <nav className="sticky top-0 z-20 mt-10 flex gap-1 overflow-x-auto border-b border-line bg-bg/90 backdrop-blur">
+            {[
+              { href: "#mo-ta", label: "Mô tả sản phẩm" },
+              { href: "#thong-so", label: "Thông số kỹ thuật" },
+              { href: "#tuong-tu", label: "Sản phẩm tương tự" },
+            ].map((t) => (
+              <a
+                key={t.href}
+                href={t.href}
+                className="whitespace-nowrap border-b-2 border-transparent px-4 py-3 text-[13.5px] font-medium text-ink-2 transition hover:border-green hover:text-green-d"
+              >
+                {t.label}
+              </a>
+            ))}
+          </nav>
 
-            <section>
-              <SectionHead title="Mô tả sản phẩm" />
-              <div className="space-y-3 text-[14px] leading-relaxed text-ink-2">
-                <p>
-                  <b className="text-ink">{product.name}</b> là lựa chọn đáng cân
-                  nhắc trong tầm giá với cấu hình {product.cpu}, RAM{" "}
-                  {product.ram} và {product.storage}, đáp ứng tốt nhu cầu học
-                  tập, làm việc và giải trí hằng ngày.
-                </p>
-                <p>
-                  Máy chính hãng, nguyên seal, đầy đủ hóa đơn VAT, bảo hành 24
-                  tháng tại Laptop Chính Nguyễn. Hỗ trợ trả góp 0% và giao hàng
-                  nhanh toàn quốc.
-                </p>
-              </div>
-            </section>
-          </div>
+          {/* Mô tả sản phẩm (bài viết dài) */}
+          <section
+            id="mo-ta"
+            className="mt-6 scroll-mt-20 rounded-2xl border border-line bg-white p-6 lg:p-8"
+          >
+            <h2 className="text-[20px] font-bold text-ink">Mô tả sản phẩm</h2>
+            <article className="mt-4 flex max-w-[780px] flex-col gap-6">
+              {description.map((sec) => (
+                <div key={sec.heading}>
+                  <h3 className="text-[16px] font-bold text-ink">
+                    {sec.heading}
+                  </h3>
+                  {sec.paragraphs.map((para, i) => (
+                    <p
+                      key={i}
+                      className="mt-2 text-[14.5px] leading-relaxed text-ink-2"
+                    >
+                      {para}
+                    </p>
+                  ))}
+                </div>
+              ))}
+            </article>
+          </section>
+
+          {/* Thông số kỹ thuật theo nhóm */}
+          <section
+            id="thong-so"
+            className="mt-6 scroll-mt-20 rounded-2xl border border-line bg-white p-6 lg:p-8"
+          >
+            <h2 className="text-[20px] font-bold text-ink">
+              Thông số kỹ thuật
+            </h2>
+            <div className="mt-4 grid grid-cols-1 gap-x-10 gap-y-6 md:grid-cols-2">
+              {specGroups.map((group) => (
+                <div key={group.group}>
+                  <h3 className="mb-2 flex items-center gap-2 text-[14px] font-bold text-green-d">
+                    <span className="h-4 w-1 rounded bg-green" />
+                    {group.group}
+                  </h3>
+                  <table className="w-full text-[13.5px]">
+                    <tbody>
+                      {group.rows.map(([k, v]) => (
+                        <tr
+                          key={k}
+                          className="border-b border-line last:border-0"
+                        >
+                          <td className="w-[42%] py-2.5 pr-3 align-top text-ink-2">
+                            {k}
+                          </td>
+                          <td className="py-2.5 font-medium text-ink">{v}</td>
+                        </tr>
+                      ))}
+                    </tbody>
+                  </table>
+                </div>
+              ))}
+            </div>
+          </section>
 
           {/* Sản phẩm tương tự */}
           {related.length > 0 && (
-            <section className="mt-10">
+            <section id="tuong-tu" className="mt-10 scroll-mt-20">
               <SectionHead title="Sản phẩm tương tự" moreHref="/san-pham" />
               <div className="grid grid-cols-4 gap-4 max-[900px]:grid-cols-2 max-[460px]:gap-2.5">
                 {related.map((p) => (

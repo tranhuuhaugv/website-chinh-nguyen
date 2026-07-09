@@ -1,26 +1,26 @@
 import type { Metadata } from "next";
 import { StaticPage } from "@/components/StaticPage";
 import { ContactForm } from "@/components/ContactForm";
+import { SITE } from "@/lib/site";
 import { ClockIcon, MailIcon, MapPinIcon, PhoneIcon } from "@/components/icons";
 
 export const metadata: Metadata = {
   title: "Liên hệ",
-  description:
-    "Liên hệ Laptop Chính Nguyễn — hotline 1900 6789, cửa hàng tại Đà Nẵng. Hỗ trợ tư vấn, bảo hành và hợp tác.",
+  description: `Liên hệ Laptop Chính Nguyễn — hotline ${SITE.hotline}, 2 cơ sở tại Đà Nẵng. Hỗ trợ tư vấn, bảo hành và hợp tác.`,
 };
 
 const INFO = [
-  { icon: MapPinIcon, label: "Địa chỉ", value: "123 Nguyễn Văn Linh, Q. Hải Châu, Đà Nẵng" },
-  { icon: PhoneIcon, label: "Hotline", value: "1900 6789" },
-  { icon: MailIcon, label: "Email", value: "hotro@laptopchinhnguyen.vn" },
-  { icon: ClockIcon, label: "Giờ làm việc", value: "8:00 - 21:00 (T2 - CN)" },
+  { icon: PhoneIcon, label: "Hotline", value: SITE.hotline },
+  { icon: PhoneIcon, label: "Kỹ thuật", value: SITE.techPhone },
+  { icon: MailIcon, label: "Email", value: SITE.email },
+  { icon: ClockIcon, label: "Giờ làm việc", value: SITE.hours },
 ];
 
 const DEPARTMENTS = [
-  { name: "Tư vấn bán hàng", contact: "1900 6789 (nhánh 1)", email: "sales@laptopchinhnguyen.vn" },
-  { name: "Bảo hành - Kỹ thuật", contact: "1900 6789 (nhánh 2)", email: "baohanh@laptopchinhnguyen.vn" },
-  { name: "Khiếu nại - Góp ý", contact: "1900 6789 (nhánh 3)", email: "cskh@laptopchinhnguyen.vn" },
-  { name: "Hợp tác - Đại lý", contact: "1900 6789 (nhánh 4)", email: "hoptac@laptopchinhnguyen.vn" },
+  { name: "Tư vấn bán hàng", contact: SITE.hotline, email: "sales@laptopchinhnguyen.vn" },
+  { name: "Bảo hành - Kỹ thuật", contact: SITE.techPhone, email: "baohanh@laptopchinhnguyen.vn" },
+  { name: "Khiếu nại - Góp ý", contact: SITE.hotline, email: "cskh@laptopchinhnguyen.vn" },
+  { name: "Hợp tác - Đại lý", contact: SITE.hotline, email: "hoptac@laptopchinhnguyen.vn" },
 ];
 
 export default function ContactPage() {
@@ -61,6 +61,26 @@ export default function ContactPage() {
 
           <ContactForm />
         </div>
+
+        {/* Địa chỉ cửa hàng */}
+        <section className="rounded-2xl border border-line bg-white p-6">
+          <h2 className="mb-4 text-[18px] font-bold text-ink">
+            Địa chỉ cửa hàng
+          </h2>
+          <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
+            {SITE.stores.map((s) => (
+              <div key={s.address} className="flex items-start gap-3 rounded-xl bg-bg p-4">
+                <span className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-green-soft text-green">
+                  <MapPinIcon className="h-5 w-5" />
+                </span>
+                <div>
+                  <p className="text-[14px] font-semibold text-ink">{s.name}</p>
+                  <p className="mt-0.5 text-[13px] text-ink-2">{s.address}</p>
+                </div>
+              </div>
+            ))}
+          </div>
+        </section>
 
         {/* Phòng ban */}
         <section className="rounded-2xl border border-line bg-white p-6">

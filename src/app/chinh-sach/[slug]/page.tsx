@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import { notFound } from "next/navigation";
 import { StaticPage } from "@/components/StaticPage";
 import { SideNav } from "@/components/SideNav";
+import { SITE } from "@/lib/site";
 import { CheckIcon } from "@/components/icons";
 
 interface Section {
@@ -86,7 +87,7 @@ const POLICIES: Record<string, Policy> = {
       {
         heading: "6. Quy trình tiếp nhận bảo hành",
         items: [
-          "Bước 1: Liên hệ hotline 1900 6789 hoặc mang sản phẩm kèm hóa đơn đến cửa hàng gần nhất.",
+          `Bước 1: Liên hệ hotline ${SITE.hotline} hoặc mang sản phẩm kèm hóa đơn đến cửa hàng gần nhất.`,
           "Bước 2: Kỹ thuật viên tiếp nhận, kiểm tra và xác định nguyên nhân lỗi trong vòng 24 giờ.",
           "Bước 3: Thông báo tình trạng, phương án và thời gian xử lý cho khách hàng.",
           "Bước 4: Tiến hành sửa chữa/thay thế và bàn giao lại máy kèm phiếu bảo hành.",
@@ -420,7 +421,7 @@ export default function PolicyPage({ params }: { params: { slug: string } }) {
         <div className="rounded-2xl border border-line bg-green-tint p-6 text-center">
           <p className="text-[14px] text-ink-2">
             Cần hỗ trợ thêm? Gọi hotline{" "}
-            <b className="text-green-d">1900 6789</b> hoặc{" "}
+            <b className="text-green-d">{SITE.hotline}</b> hoặc{" "}
             <a
               href="/lien-he"
               className="font-semibold text-green-d hover:underline"
