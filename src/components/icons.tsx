@@ -300,6 +300,12 @@ export const GoogleIcon = (p: IconProps) => (
   </svg>
 );
 
+export const UploadIcon = (p: IconProps) => (
+  <Stroke {...p}>
+    <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4M17 8l-5-5-5 5M12 3v12" />
+  </Stroke>
+);
+
 export const ImageIcon = (p: IconProps) => (
   <Stroke strokeWidth={1.6} {...p}>
     <rect x="3" y="3" width="18" height="18" rx="2" />

@@ -42,7 +42,7 @@ export function AdminTable<T>({
       : rows;
 
   return (
-    <div className="rounded-2xl border border-line bg-white">
+    <div className="rounded-2xl border border-line bg-white shadow-sm">
       <div className="flex flex-wrap items-center justify-between gap-3 border-b border-line p-4">
         <h1 className="text-[17px] font-bold text-ink">{title}</h1>
         <div className="flex items-center gap-2">

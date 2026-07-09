@@ -2,6 +2,7 @@
 
 import { useState } from "react";
 import Link from "next/link";
+import { ImageUpload } from "./ImageUpload";
 
 // Form generic dùng chung cho các CRUD admin. Sinh input từ cấu hình `fields`.
 // UI-first: submit chỉ hiện thông báo (TODO: gọi API lưu vào DB khi có backend).
@@ -9,7 +10,7 @@ import Link from "next/link";
 export interface AdminField {
   name: string;
   label: string;
-  type?: "text" | "number" | "textarea" | "select";
+  type?: "text" | "number" | "textarea" | "select" | "image";
   options?: { value: string; label: string }[];
   placeholder?: string;
   full?: boolean; // chiếm cả 2 cột
@@ -67,11 +68,23 @@ export function AdminForm({
 
         <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
           {fields.map((f) => (
-            <div key={f.name} className={f.full || f.type === "textarea" ? "sm:col-span-2" : ""}>
+            <div
+              key={f.name}
+              className={
+                f.full || f.type === "textarea" || f.type === "image"
+                  ? "sm:col-span-2"
+                  : ""
+              }
+            >
               <label className="mb-1.5 block text-[13px] font-medium text-ink">
                 {f.label}
               </label>
-              {f.type === "textarea" ? (
+              {f.type === "image" ? (
+                <ImageUpload
+                  value={values[f.name]}
+                  onChange={(url) => set(f.name, url)}
+                />
+              ) : f.type === "textarea" ? (
                 <textarea
                   rows={4}
                   value={values[f.name]}

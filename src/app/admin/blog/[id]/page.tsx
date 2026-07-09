@@ -9,6 +9,7 @@ const TAG_OPTIONS = ["Tư vấn", "Thủ thuật", "So sánh", "Đánh giá"].ma
 }));
 
 const FIELDS: AdminField[] = [
+  { name: "image", label: "Ảnh bìa bài viết", type: "image" },
   { name: "title", label: "Tiêu đề", full: true, placeholder: "Tiêu đề bài viết" },
   { name: "slug", label: "Slug (URL)", placeholder: "tieu-de-bai-viet" },
   { name: "tag", label: "Chuyên mục", type: "select", options: TAG_OPTIONS },

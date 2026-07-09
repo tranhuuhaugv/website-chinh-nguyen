@@ -14,6 +14,7 @@ const BRAND_OPTIONS = [
 ].map((b) => ({ value: b, label: b }));
 
 const FIELDS: AdminField[] = [
+  { name: "image", label: "Ảnh sản phẩm", type: "image" },
   { name: "name", label: "Tên sản phẩm", full: true, placeholder: "VD: Dell XPS 13 Plus 9320 i7" },
   { name: "brand", label: "Thương hiệu", type: "select", options: BRAND_OPTIONS },
   { name: "price", label: "Giá bán (VND)", type: "number", placeholder: "28990000" },
