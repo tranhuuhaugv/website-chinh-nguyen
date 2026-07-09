@@ -3,6 +3,8 @@
 import { useState } from "react";
 import Link from "next/link";
 import { ImageUpload } from "./ImageUpload";
+import { MultiImageUpload } from "./MultiImageUpload";
+import { BlogContentEditor } from "./BlogContentEditor";
 
 // Form generic dùng chung cho các CRUD admin. Sinh input từ cấu hình `fields`.
 // UI-first: submit chỉ hiện thông báo (TODO: gọi API lưu vào DB khi có backend).
@@ -10,11 +12,20 @@ import { ImageUpload } from "./ImageUpload";
 export interface AdminField {
   name: string;
   label: string;
-  type?: "text" | "number" | "textarea" | "select" | "image";
+  type?:
+    | "text"
+    | "number"
+    | "textarea"
+    | "select"
+    | "image"
+    | "images"
+    | "blocks";
   options?: { value: string; label: string }[];
   placeholder?: string;
   full?: boolean; // chiếm cả 2 cột
 }
+
+const WIDE_TYPES = new Set(["textarea", "image", "images", "blocks"]);
 
 export function AdminForm({
   title,
@@ -71,9 +82,7 @@ export function AdminForm({
             <div
               key={f.name}
               className={
-                f.full || f.type === "textarea" || f.type === "image"
-                  ? "sm:col-span-2"
-                  : ""
+                f.full || WIDE_TYPES.has(f.type ?? "text") ? "sm:col-span-2" : ""
               }
             >
               <label className="mb-1.5 block text-[13px] font-medium text-ink">
@@ -84,6 +93,10 @@ export function AdminForm({
                   value={values[f.name]}
                   onChange={(url) => set(f.name, url)}
                 />
+              ) : f.type === "images" ? (
+                <MultiImageUpload />
+              ) : f.type === "blocks" ? (
+                <BlogContentEditor />
               ) : f.type === "textarea" ? (
                 <textarea
                   rows={4}

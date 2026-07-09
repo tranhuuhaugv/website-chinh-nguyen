@@ -414,6 +414,31 @@ export const BLOG_POSTS: BlogPost[] = [
   },
 ];
 
+// Các trang nội dung tĩnh cho phép chỉnh trong admin.
+export interface StaticPageInfo {
+  id: string;
+  title: string;
+  path: string;
+}
+
+export const STATIC_PAGES: StaticPageInfo[] = [
+  { id: "gioi-thieu", title: "Giới thiệu", path: "/gioi-thieu" },
+  { id: "lien-he", title: "Liên hệ", path: "/lien-he" },
+  { id: "he-thong-cua-hang", title: "Hệ thống cửa hàng", path: "/he-thong-cua-hang" },
+  { id: "tuyen-dung", title: "Tuyển dụng", path: "/tuyen-dung" },
+  { id: "thu-cu-doi-moi", title: "Thu cũ đổi mới", path: "/thu-cu-doi-moi" },
+  { id: "bao-hanh", title: "Chính sách bảo hành", path: "/chinh-sach/bao-hanh" },
+  { id: "doi-tra", title: "Chính sách đổi trả", path: "/chinh-sach/doi-tra" },
+  { id: "giao-hang", title: "Chính sách giao hàng", path: "/chinh-sach/giao-hang" },
+  { id: "tra-gop", title: "Chính sách trả góp", path: "/chinh-sach/tra-gop" },
+  { id: "dieu-khoan", title: "Điều khoản sử dụng", path: "/chinh-sach/dieu-khoan" },
+  { id: "bao-mat", title: "Chính sách bảo mật", path: "/chinh-sach/bao-mat" },
+];
+
+export function getStaticPage(id: string): StaticPageInfo | undefined {
+  return STATIC_PAGES.find((p) => p.id === id);
+}
+
 export function getPostBySlug(slug: string): BlogPost | undefined {
   return BLOG_POSTS.find((p) => p.slug === slug);
 }

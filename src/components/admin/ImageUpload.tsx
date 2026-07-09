@@ -2,17 +2,9 @@
 
 import { useRef, useState } from "react";
 import { TrashIcon, UploadIcon } from "@/components/icons";
+import { cloudinaryReady, uploadImage } from "@/lib/cloudinary";
 
-// Tải ảnh từ máy lên. Nếu có cấu hình Cloudinary (env) -> upload thật, trả link cloud.
-// Chưa cấu hình -> chế độ demo: chỉ xem trước tại chỗ (không lưu).
-//
-// Bật upload thật: đặt 2 biến môi trường (Vercel → Settings → Environment Variables):
-//   NEXT_PUBLIC_CLOUDINARY_CLOUD_NAME
-//   NEXT_PUBLIC_CLOUDINARY_UPLOAD_PRESET   (tạo Upload preset dạng "Unsigned" trong Cloudinary)
-
-const CLOUD_NAME = process.env.NEXT_PUBLIC_CLOUDINARY_CLOUD_NAME;
-const UPLOAD_PRESET = process.env.NEXT_PUBLIC_CLOUDINARY_UPLOAD_PRESET;
-const cloudinaryReady = Boolean(CLOUD_NAME && UPLOAD_PRESET);
+// Tải 1 ảnh từ máy lên. Có cấu hình Cloudinary -> upload thật; chưa có -> demo.
 
 type Status = "idle" | "uploading" | "done" | "demo" | "error";
 
@@ -32,26 +24,17 @@ export function ImageUpload({
   async function handleFile(file: File | undefined) {
     if (!file || !file.type.startsWith("image/")) return;
 
-    setPreview(URL.createObjectURL(file));
-
     if (!cloudinaryReady) {
+      setPreview(URL.createObjectURL(file));
       setStatus("demo");
       return;
     }
 
     setStatus("uploading");
     try {
-      const form = new FormData();
-      form.append("file", file);
-      form.append("upload_preset", UPLOAD_PRESET as string);
-      const res = await fetch(
-        `https://api.cloudinary.com/v1_1/${CLOUD_NAME}/image/upload`,
-        { method: "POST", body: form },
-      );
-      if (!res.ok) throw new Error("upload failed");
-      const data = (await res.json()) as { secure_url: string };
-      setPreview(data.secure_url);
-      onChange?.(data.secure_url);
+      const { url } = await uploadImage(file);
+      setPreview(url);
+      onChange?.(url);
       setStatus("done");
     } catch {
       setStatus("error");

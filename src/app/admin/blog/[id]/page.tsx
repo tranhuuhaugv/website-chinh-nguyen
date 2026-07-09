@@ -14,7 +14,7 @@ const FIELDS: AdminField[] = [
   { name: "slug", label: "Slug (URL)", placeholder: "tieu-de-bai-viet" },
   { name: "tag", label: "Chuyên mục", type: "select", options: TAG_OPTIONS },
   { name: "excerpt", label: "Mô tả ngắn", type: "textarea", placeholder: "Tóm tắt bài viết..." },
-  { name: "content", label: "Nội dung", type: "textarea", placeholder: "Nội dung chi tiết..." },
+  { name: "content", label: "Nội dung (đoạn văn + chèn ảnh)", type: "blocks" },
 ];
 
 export default function AdminBlogFormPage({
