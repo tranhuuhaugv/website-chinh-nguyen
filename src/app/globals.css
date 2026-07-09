@@ -13,3 +13,24 @@ body {
   line-height: 1.55;
   -webkit-font-smoothing: antialiased;
 }
+
+/* Dải ảnh chạy ngang liên tục (marquee) — dùng cho ảnh khách hàng */
+@keyframes cn-marquee {
+  from {
+    transform: translateX(0);
+  }
+  to {
+    transform: translateX(-50%);
+  }
+}
+.cn-marquee {
+  animation: cn-marquee 35s linear infinite;
+}
+.cn-marquee-wrap:hover .cn-marquee {
+  animation-play-state: paused;
+}
+@media (prefers-reduced-motion: reduce) {
+  .cn-marquee {
+    animation: none;
+  }
+}
