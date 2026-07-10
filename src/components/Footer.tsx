@@ -1,6 +1,13 @@
 import Link from "next/link";
 import { Container } from "./Container";
 import { FooterBadges } from "./FooterBadges";
+import {
+  ClockIcon,
+  MailIcon,
+  MapPinIcon,
+  MessengerIcon,
+  PhoneIcon,
+} from "./icons";
 import { SITE } from "@/lib/site";
 
 // Footer dùng chung toàn site. Server Component.
@@ -32,7 +39,10 @@ function FooterList({
       <ul className="space-y-[9px]">
         {links.map((link) => (
           <li key={link.href} className="text-[13.5px]">
-            <Link href={link.href} className="hover:text-white">
+            <Link
+              href={link.href}
+              className="inline-block transition hover:translate-x-0.5 hover:text-white"
+            >
               {link.label}
             </Link>
           </li>
@@ -44,9 +54,57 @@ function FooterList({
 
 export function Footer() {
   return (
-    <footer className="mt-9 bg-ink pb-6 pt-11 text-[#AEB7B1]">
+    <footer className="mt-12 bg-ink pb-6 text-[#AEB7B1]">
+      {/* Dải CTA hotline (gradient) — gối lên đầu footer cho hiện đại */}
       <Container>
-        <div className="grid grid-cols-[1.4fr_1fr_1fr_1.2fr] gap-[30px] border-b border-[#2A332D] pb-[30px] max-[900px]:grid-cols-2 max-[520px]:grid-cols-1">
+        <div className="flex flex-wrap items-center justify-between gap-5 rounded-2xl bg-gradient-to-r from-green-d via-green to-green-d px-7 py-6 shadow-[0_16px_40px_rgba(11,94,44,0.28)] max-[720px]:px-5">
+          <div className="flex items-center gap-4">
+            <span className="flex h-12 w-12 shrink-0 items-center justify-center rounded-full bg-white/15 text-white ring-1 ring-white/25">
+              <PhoneIcon className="h-6 w-6" />
+            </span>
+            <div>
+              <p className="text-[15px] font-bold text-white">
+                Cần tư vấn chọn laptop phù hợp?
+              </p>
+              <p className="text-[13px] text-white/85">
+                Gọi ngay hotline hoặc chat để được hỗ trợ nhanh nhất.
+              </p>
+            </div>
+          </div>
+          <div className="flex flex-wrap items-center gap-2.5">
+            <a
+              href={`tel:${SITE.hotlineTel}`}
+              className="flex items-center gap-2 rounded-full bg-white px-5 py-2.5 text-[15px] font-extrabold text-green-d shadow-sm transition hover:-translate-y-0.5"
+            >
+              <PhoneIcon className="h-[18px] w-[18px]" />
+              {SITE.hotline}
+            </a>
+            <a
+              href={`https://zalo.me/${SITE.hotlineTel}`}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="flex h-11 items-center gap-2 rounded-full bg-white/15 px-4 text-[13.5px] font-semibold text-white ring-1 ring-white/25 transition hover:bg-white/25"
+            >
+              <span className="flex h-5 w-5 items-center justify-center rounded bg-white text-[9px] font-black text-[#0068FF]">
+                Za
+              </span>
+              Zalo
+            </a>
+            <a
+              href="https://m.me/laptopchinhnguyen"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="flex h-11 items-center gap-2 rounded-full bg-white/15 px-4 text-[13.5px] font-semibold text-white ring-1 ring-white/25 transition hover:bg-white/25"
+            >
+              <MessengerIcon className="h-[18px] w-[18px]" />
+              Messenger
+            </a>
+          </div>
+        </div>
+      </Container>
+
+      <Container>
+        <div className="grid grid-cols-[1.4fr_1fr_1fr_1.3fr] gap-[30px] border-b border-[#2A332D] pb-[30px] pt-11 max-[900px]:grid-cols-2 max-[520px]:grid-cols-1">
           <div>
             <div className="mb-3 text-[22px] font-bold text-white">
               Chính <span className="text-[#7EE0A0]">Nguyễn</span>
@@ -62,26 +120,37 @@ export function Footer() {
 
           <div>
             <h4 className="mb-3.5 text-[14.5px] font-semibold text-white">
-              Kết nối
+              Liên hệ
             </h4>
-            {SITE.stores.map((s) => (
-              <p key={s.address} className="mb-2 text-[13.5px] leading-[1.6]">
-                {s.address}
-              </p>
-            ))}
-            <p className="mb-1 mt-2 text-[13.5px]">
-              Hotline: <b className="text-white">{SITE.hotline}</b>
-            </p>
-            <p className="text-[13.5px]">
-              Kỹ thuật: <b className="text-white">{SITE.techPhone}</b>
-            </p>
+            <ul className="space-y-2.5 text-[13.5px]">
+              {SITE.stores.map((s) => (
+                <li key={s.address} className="flex items-start gap-2.5">
+                  <MapPinIcon className="mt-0.5 h-4 w-4 shrink-0 text-[#7EE0A0]" />
+                  <span className="leading-[1.5]">{s.address}</span>
+                </li>
+              ))}
+              <li className="flex items-center gap-2.5">
+                <PhoneIcon className="h-4 w-4 shrink-0 text-[#7EE0A0]" />
+                <span>
+                  Hotline: <b className="text-white">{SITE.hotline}</b>
+                </span>
+              </li>
+              <li className="flex items-center gap-2.5">
+                <MailIcon className="h-4 w-4 shrink-0 text-[#7EE0A0]" />
+                <span className="text-white">{SITE.email}</span>
+              </li>
+              <li className="flex items-center gap-2.5">
+                <ClockIcon className="h-4 w-4 shrink-0 text-[#7EE0A0]" />
+                <span>{SITE.hours}</span>
+              </li>
+            </ul>
           </div>
         </div>
 
         <FooterBadges />
 
         <div className="flex flex-wrap justify-between gap-2 pt-5 text-[12.5px] text-[#78827C]">
-          <span>© 2026 Laptop Chính Nguyễn — Đà Nẵng. Bản thiết kế demo.</span>
+          <span>© 2026 Laptop Chính Nguyễn — Đà Nẵng.</span>
           <span>Điều khoản · Bảo mật</span>
         </div>
       </Container>
