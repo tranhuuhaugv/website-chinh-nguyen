@@ -22,5 +22,6 @@ jobs:
             git fetch origin master
             git reset --hard origin/master
             npm install
+            npx prisma db push
             npm run build
             pm2 reload chinhnguyen

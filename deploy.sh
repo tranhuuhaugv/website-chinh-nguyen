@@ -10,6 +10,9 @@ git reset --hard origin/master
 echo "→ Cài package..."
 npm install
 
+echo "→ Đồng bộ schema DB..."
+npx prisma db push
+
 echo "→ Build..."
 npm run build
 
