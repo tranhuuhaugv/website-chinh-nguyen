@@ -29,6 +29,8 @@ export const purchaseSchema = z.object({
         name: z.string(),
         price: z.number(),
         qty: z.number(),
+        slug: z.string().optional(),
+        image: z.string().optional(),
       }),
     )
     .min(1),

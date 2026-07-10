@@ -51,7 +51,12 @@ export function CartCheckout() {
       phone: values.phone,
       address: values.address,
       note: values.note,
-      items: items.map((i) => ({ name: i.name, price: i.price, qty: i.qty })),
+      items: items.map((i) => ({
+        name: i.name,
+        price: i.price,
+        qty: i.qty,
+        slug: i.slug,
+      })),
       total: subtotal,
     };
     try {

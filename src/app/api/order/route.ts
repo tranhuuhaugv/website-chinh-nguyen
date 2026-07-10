@@ -22,6 +22,29 @@ export async function POST(req: Request) {
 
   const d = parsed.data;
 
+  // Đơn mua: bổ sung ảnh thật của sản phẩm (lấy từ DB theo slug) để đính vào
+  // email cho đẹp. Client chỉ gửi slug — ảnh lấy từ DB là nguồn tin cậy.
+  if (d.type === "purchase") {
+    const slugs = Array.from(
+      new Set(d.items.map((i) => i.slug).filter((s): s is string => Boolean(s))),
+    );
+    if (slugs.length) {
+      try {
+        const products = await prisma.product.findMany({
+          where: { slug: { in: slugs } },
+          select: { slug: true, images: true },
+        });
+        const imageBySlug = new Map(products.map((p) => [p.slug, p.images[0]]));
+        d.items = d.items.map((i) => ({
+          ...i,
+          image: i.slug ? imageBySlug.get(i.slug) : undefined,
+        }));
+      } catch (err) {
+        console.error("Lấy ảnh sản phẩm cho email lỗi:", err);
+      }
+    }
+  }
+
   // Lưu đơn vào database (để hiện trong admin).
   try {
     await prisma.order.create({
