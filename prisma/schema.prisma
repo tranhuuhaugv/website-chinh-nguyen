@@ -1,0 +1,140 @@
+// Prisma schema — Laptop Chính Nguyễn
+// Chạy migrate/seed trên VPS với DATABASE_URL trỏ tới PostgreSQL trên VPS.
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model Brand {
+  id       String    @id @default(cuid())
+  name     String    @unique
+  slug     String    @unique
+  products Product[]
+}
+
+model Category {
+  id    String  @id @default(cuid())
+  name  String
+  slug  String  @unique
+  icon  String
+  tag   String?
+  image String?
+  group String? // nhóm cho mega-menu: nhu-cau | thuong-hieu | khac
+}
+
+model Product {
+  id          String  @id @default(cuid())
+  slug        String  @unique
+  name        String
+  brand       Brand   @relation(fields: [brandId], references: [id])
+  brandId     String
+  price       Int
+  oldPrice    Int?
+  // Cấu hình chi tiết
+  cpu         String
+  ram         String
+  storage     String
+  gpu         String?
+  screen      String?
+  resolution  String?
+  refresh     String?
+  os          String?
+  battery     String?
+  weight      String?
+  ports       String?
+  warranty    String?
+  // Bán hàng
+  rating              Float   @default(5)
+  reviewCount         Int     @default(0)
+  installmentPerMonth Int?
+  gift                String?
+  badge               String?
+  isNew               Boolean @default(false)
+  accent              String  @default("dark")
+  images              String[]
+  needs               String[] // slug nhu cầu: van-phong, gaming, sinh-vien...
+  commitments         String[]
+  description         Json? // các khối nội dung (đoạn văn / ảnh)
+  // SEO
+  metaTitle       String?
+  metaDescription String?
+  metaKeywords    String?
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@index([price])
+  @@index([brandId])
+  @@index([createdAt])
+}
+
+model BlogPost {
+  id          String   @id @default(cuid())
+  slug        String   @unique
+  title       String
+  tag         String
+  excerpt     String
+  content     Json // các khối nội dung
+  readMinutes Int      @default(5)
+  accent      String   @default("green")
+  image       String?
+  createdAt   DateTime @default(now())
+
+  @@index([createdAt])
+}
+
+model Order {
+  id        String   @id @default(cuid())
+  type      String // "purchase" | "tradein"
+  name      String
+  phone     String
+  email     String?
+  address   String
+  note      String?
+  items     Json? // đơn mua: danh sách sản phẩm
+  total     Int?
+  model     String? // đơn thu cũ: mẫu máy cần thu
+  upgradeTo String?
+  status    String   @default("new") // new | processing | done | canceled
+  createdAt DateTime @default(now())
+
+  @@index([createdAt])
+}
+
+model User {
+  id           String   @id @default(cuid())
+  email        String   @unique
+  name         String?
+  phone        String?
+  passwordHash String
+  role         String   @default("user") // user | admin
+  createdAt    DateTime @default(now())
+}
+
+model Setting {
+  key   String @id
+  value String
+}
+
+model Page {
+  id      String  @id // slug: gioi-thieu, lien-he, bao-hanh...
+  title   String
+  lead    String?
+  content Json?
+}
+
+model Banner {
+  id       String  @id @default(cuid())
+  type     String // "hero" | "side"
+  position Int     @default(0)
+  image    String
+  href     String?
+  title    String?
+  subtitle String?
+  active   Boolean @default(true)
+}
