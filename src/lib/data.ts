@@ -164,6 +164,25 @@ export async function getAllProductSlugs(): Promise<string[]> {
   return rows.map((r) => r.slug);
 }
 
+// Gợi ý sản phẩm theo từ khoá (dùng cho autocomplete ô tìm kiếm).
+export async function searchProducts(q: string, limit = 6): Promise<Product[]> {
+  const term = q.trim();
+  if (!term) return [];
+  if (NO_DB) {
+    const low = term.toLowerCase();
+    return MOCK_PRODUCTS.filter((p) =>
+      p.name.toLowerCase().includes(low),
+    ).slice(0, limit);
+  }
+  const rows = await prisma.product.findMany({
+    where: { name: { contains: term, mode: "insensitive" } },
+    ...withBrand,
+    orderBy: { sort: "asc" },
+    take: limit,
+  });
+  return rows.map((r) => toProduct(r as PrismaProductWithBrand));
+}
+
 // --- Danh mục ---
 export async function getCategories(): Promise<Category[]> {
   if (NO_DB) return CATEGORIES;

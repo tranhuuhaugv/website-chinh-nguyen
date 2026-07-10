@@ -2,11 +2,11 @@ import Link from "next/link";
 import { Container } from "./Container";
 import { Logo } from "./Logo";
 import { CartButton } from "./cart/CartButton";
-import { ClockIcon, MapPinIcon, PhoneIcon, SearchIcon, UserIcon } from "./icons";
+import { SearchBox } from "./SearchBox";
+import { ClockIcon, MapPinIcon, PhoneIcon, UserIcon } from "./icons";
 import { SITE } from "@/lib/site";
 
-// Header dùng chung toàn site: strip thông báo + thanh tìm kiếm + hotline + tài khoản/giỏ.
-// Server Component: form tìm kiếm submit GET sang /tim-kiem (không cần JS).
+// Header dùng chung toàn site: strip thông báo + ô tìm kiếm (autocomplete) + hotline + tài khoản/giỏ.
 
 export function Header() {
   return (
@@ -44,25 +44,7 @@ export function Header() {
         <Container className="flex h-[70px] items-center gap-[22px]">
           <Logo />
 
-          <form
-            action="/tim-kiem"
-            className="flex h-11 max-w-[560px] flex-1 items-center rounded-full bg-white pl-2 pr-4 shadow-[0_4px_14px_rgba(0,0,0,0.12)] max-[900px]:hidden"
-          >
-            <button
-              type="submit"
-              aria-label="Tìm kiếm"
-              className="flex h-8 w-8 shrink-0 items-center justify-center rounded-full text-muted transition hover:text-green-d"
-            >
-              <SearchIcon className="h-[18px] w-[18px]" />
-            </button>
-            <input
-              type="search"
-              name="q"
-              placeholder="Bạn cần tìm laptop gì hôm nay?"
-              className="flex-1 border-none bg-transparent text-[14.5px] text-ink outline-none"
-              aria-label="Tìm kiếm sản phẩm"
-            />
-          </form>
+          <SearchBox className="h-11 max-w-[560px] flex-1 max-[900px]:hidden" />
 
           {/* Hotline CSKH */}
           <a
@@ -95,25 +77,7 @@ export function Header() {
         {/* Thanh tìm kiếm riêng cho mobile (thanh chính ẩn ô tìm kiếm ở ≤900px) */}
         <div className="hidden pb-2.5 max-[900px]:block">
           <Container>
-            <form
-              action="/tim-kiem"
-              className="flex h-10 items-center rounded-full bg-white pl-2 pr-3 shadow-[0_4px_14px_rgba(0,0,0,0.12)]"
-            >
-              <button
-                type="submit"
-                aria-label="Tìm kiếm"
-                className="flex h-8 w-8 shrink-0 items-center justify-center rounded-full text-muted transition hover:text-green-d"
-              >
-                <SearchIcon className="h-[18px] w-[18px]" />
-              </button>
-              <input
-                type="search"
-                name="q"
-                placeholder="Bạn cần tìm laptop gì?"
-                className="min-w-0 flex-1 border-none bg-transparent text-[14px] text-ink outline-none"
-                aria-label="Tìm kiếm sản phẩm"
-              />
-            </form>
+            <SearchBox className="h-10" placeholder="Bạn cần tìm laptop gì?" />
           </Container>
         </div>
       </div>
