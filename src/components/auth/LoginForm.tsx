@@ -2,6 +2,7 @@
 
 import { useState } from "react";
 import Link from "next/link";
+import { useRouter } from "next/navigation";
 import { loginSchema } from "@/lib/validations/auth";
 import {
   EyeIcon,
@@ -13,6 +14,7 @@ import {
 import { AuthField } from "./AuthField";
 
 export function LoginForm() {
+  const router = useRouter();
   const [values, setValues] = useState({
     identifier: "",
     password: "",
@@ -21,12 +23,13 @@ export function LoginForm() {
   const [errors, setErrors] = useState<Record<string, string>>({});
   const [showPass, setShowPass] = useState(false);
   const [notice, setNotice] = useState("");
+  const [submitting, setSubmitting] = useState(false);
 
   function set<K extends keyof typeof values>(key: K, val: (typeof values)[K]) {
     setValues((v) => ({ ...v, [key]: val }));
   }
 
-  function onSubmit(e: React.FormEvent) {
+  async function onSubmit(e: React.FormEvent) {
     e.preventDefault();
     setNotice("");
     const result = loginSchema.safeParse(values);
@@ -39,8 +42,27 @@ export function LoginForm() {
       return;
     }
     setErrors({});
-    // TODO: gọi NextAuth signIn("credentials", ...) khi đã có DB + NextAuth.
-    setNotice("Chức năng đăng nhập sẽ hoạt động khi kết nối NextAuth + database.");
+    setSubmitting(true);
+    try {
+      const res = await fetch("/api/login", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          identifier: values.identifier,
+          password: values.password,
+        }),
+      });
+      if (res.ok) {
+        router.push("/tai-khoan");
+        router.refresh();
+      } else {
+        setNotice("Email/SĐT hoặc mật khẩu không đúng.");
+      }
+    } catch {
+      setNotice("Lỗi kết nối, vui lòng thử lại.");
+    } finally {
+      setSubmitting(false);
+    }
   }
 
   return (
@@ -109,9 +131,10 @@ export function LoginForm() {
 
       <button
         type="submit"
-        className="mt-1 h-11 rounded-xl bg-green text-sm font-semibold text-white transition hover:bg-green-d"
+        disabled={submitting}
+        className="mt-1 h-11 rounded-xl bg-green text-sm font-semibold text-white transition hover:bg-green-d disabled:opacity-60"
       >
-        Đăng nhập
+        {submitting ? "Đang đăng nhập..." : "Đăng nhập"}
       </button>
 
       <div className="flex items-center gap-3 text-[12px] text-muted">

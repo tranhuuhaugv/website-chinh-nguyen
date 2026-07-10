@@ -1,19 +1,25 @@
 import type { Metadata } from "next";
 import Link from "next/link";
+import { redirect } from "next/navigation";
 import { AccountShell } from "@/components/account/AccountShell";
 import { CartIcon } from "@/components/icons";
+import { getCurrentUser } from "@/lib/session";
 
 export const metadata: Metadata = {
   title: "Đơn hàng của tôi",
   robots: { index: false, follow: false },
 };
 
-export default function MyOrdersPage() {
+export default async function MyOrdersPage() {
+  const user = await getCurrentUser();
+  if (!user) redirect("/dang-nhap");
+
   return (
     <AccountShell
       activeHref="/tai-khoan/don-hang"
       crumbLabel="Đơn hàng của tôi"
       title="Đơn hàng của tôi"
+      userName={user.name ?? undefined}
     >
       <section className="rounded-2xl border border-line bg-white p-5">
         <h2 className="mb-4 text-[15px] font-bold text-ink">Lịch sử đơn hàng</h2>

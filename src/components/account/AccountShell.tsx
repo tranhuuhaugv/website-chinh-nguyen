@@ -17,11 +17,13 @@ export function AccountShell({
   activeHref,
   crumbLabel,
   title,
+  userName,
   children,
 }: {
   activeHref: string;
   crumbLabel: string;
   title: string;
+  userName?: string;
   children: ReactNode;
 }) {
   return (
@@ -45,8 +47,12 @@ export function AccountShell({
                   <UserIcon className="h-5 w-5" />
                 </span>
                 <div>
-                  <p className="text-[14px] font-semibold text-ink">Khách</p>
-                  <p className="text-[12px] text-muted">Chưa đăng nhập</p>
+                  <p className="text-[14px] font-semibold text-ink">
+                    {userName ?? "Khách"}
+                  </p>
+                  <p className="text-[12px] text-muted">
+                    {userName ? "Đã đăng nhập" : "Chưa đăng nhập"}
+                  </p>
                 </div>
               </div>
               <nav className="mt-2 flex flex-col">
@@ -63,12 +69,14 @@ export function AccountShell({
                     {n.label}
                   </Link>
                 ))}
-                <Link
-                  href="/dang-nhap"
-                  className="rounded-lg px-3 py-2.5 text-[13.5px] text-sale transition hover:bg-bg"
-                >
-                  Đăng xuất
-                </Link>
+                <form action="/api/logout" method="post">
+                  <button
+                    type="submit"
+                    className="w-full rounded-lg px-3 py-2.5 text-left text-[13.5px] text-sale transition hover:bg-bg"
+                  >
+                    Đăng xuất
+                  </button>
+                </form>
               </nav>
             </aside>
 
