@@ -163,6 +163,11 @@ export async function getAllPostSlugs(): Promise<string[]> {
   return rows.map((r) => r.slug);
 }
 
+// --- Đơn hàng (admin) ---
+export async function getOrders() {
+  return prisma.order.findMany({ orderBy: { createdAt: "desc" } });
+}
+
 // --- Cài đặt ---
 export async function getSetting(key: string): Promise<string | null> {
   const s = await prisma.setting.findUnique({ where: { key } });

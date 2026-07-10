@@ -27,12 +27,14 @@ export function RegisterForm() {
   const [errors, setErrors] = useState<Record<string, string>>({});
   const [showPass, setShowPass] = useState(false);
   const [notice, setNotice] = useState("");
+  const [submitting, setSubmitting] = useState(false);
+  const [done, setDone] = useState(false);
 
   function set<K extends keyof typeof values>(key: K, val: (typeof values)[K]) {
     setValues((v) => ({ ...v, [key]: val }));
   }
 
-  function onSubmit(e: React.FormEvent) {
+  async function onSubmit(e: React.FormEvent) {
     e.preventDefault();
     setNotice("");
     const result = registerSchema.safeParse(values);
@@ -46,8 +48,47 @@ export function RegisterForm() {
       return;
     }
     setErrors({});
-    // TODO: gọi API tạo tài khoản (Prisma) rồi tự đăng nhập khi đã có backend.
-    setNotice("Chức năng đăng ký sẽ hoạt động khi kết nối database + NextAuth.");
+    setSubmitting(true);
+    try {
+      const res = await fetch("/api/register", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          name: values.name,
+          email: values.email,
+          phone: values.phone,
+          password: values.password,
+        }),
+      });
+      if (res.ok) {
+        setDone(true);
+      } else if (res.status === 409) {
+        setErrors({ email: "Email này đã được đăng ký" });
+      } else {
+        setNotice("Đăng ký thất bại, vui lòng thử lại.");
+      }
+    } catch {
+      setNotice("Lỗi kết nối, vui lòng thử lại.");
+    } finally {
+      setSubmitting(false);
+    }
+  }
+
+  if (done) {
+    return (
+      <div className="rounded-xl bg-green-tint px-4 py-5 text-center">
+        <p className="text-[15px] font-semibold text-green-d">
+          Đăng ký thành công!
+        </p>
+        <p className="mt-1 text-[13.5px] text-ink-2">
+          Tài khoản của bạn đã được tạo. Bạn có thể{" "}
+          <Link href="/dang-nhap" className="font-semibold text-green-d underline">
+            đăng nhập
+          </Link>{" "}
+          ngay.
+        </p>
+      </div>
+    );
   }
 
   return (
@@ -160,9 +201,10 @@ export function RegisterForm() {
 
       <button
         type="submit"
-        className="mt-1 h-11 rounded-xl bg-green text-sm font-semibold text-white transition hover:bg-green-d"
+        disabled={submitting}
+        className="mt-1 h-11 rounded-xl bg-green text-sm font-semibold text-white transition hover:bg-green-d disabled:opacity-60"
       >
-        Tạo tài khoản
+        {submitting ? "Đang tạo..." : "Tạo tài khoản"}
       </button>
     </form>
   );

@@ -58,15 +58,12 @@ function buildEmail(order: OrderInput): { subject: string; html: string } {
   return { subject, html };
 }
 
-export async function sendOrderEmail(order: OrderInput): Promise<boolean> {
+async function sendMail(subject: string, html: string): Promise<boolean> {
   if (!mailReady) return false;
-
   const transporter = nodemailer.createTransport({
     service: "gmail",
     auth: { user: GMAIL_USER, pass: GMAIL_APP_PASSWORD },
   });
-
-  const { subject, html } = buildEmail(order);
   await transporter.sendMail({
     from: `"Laptop Chính Nguyễn" <${GMAIL_USER}>`,
     to: MAIL_TO || GMAIL_USER,
@@ -74,4 +71,25 @@ export async function sendOrderEmail(order: OrderInput): Promise<boolean> {
     html,
   });
   return true;
+}
+
+export async function sendOrderEmail(order: OrderInput): Promise<boolean> {
+  const { subject, html } = buildEmail(order);
+  return sendMail(subject, html);
+}
+
+export async function sendRegisterEmail(user: {
+  name: string;
+  email: string;
+  phone: string;
+}): Promise<boolean> {
+  const subject = `[Tài khoản mới] ${user.name}`;
+  const html = `
+    <h2 style="color:#0F7C39">Khách hàng vừa đăng ký tài khoản</h2>
+    <table style="border-collapse:collapse;font-family:Arial,sans-serif;font-size:14px">
+      ${row("Họ và tên", user.name)}
+      ${row("Email", user.email)}
+      ${row("Số điện thoại", user.phone)}
+    </table>`;
+  return sendMail(subject, html);
 }
