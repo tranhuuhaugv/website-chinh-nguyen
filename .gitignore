@@ -38,3 +38,7 @@ yarn-error.log*
 # typescript
 *.tsbuildinfo
 next-env.d.ts
+
+# File Excel nhap san pham (du lieu lam viec cuc bo, khong commit)
+*.xlsx
+~$*

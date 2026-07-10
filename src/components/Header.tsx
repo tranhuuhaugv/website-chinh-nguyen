@@ -91,6 +91,31 @@ export function Header() {
             <CartButton />
           </div>
         </Container>
+
+        {/* Thanh tìm kiếm riêng cho mobile (thanh chính ẩn ô tìm kiếm ở ≤900px) */}
+        <div className="hidden pb-2.5 max-[900px]:block">
+          <Container>
+            <form
+              action="/tim-kiem"
+              className="flex h-10 items-center rounded-full bg-white pl-2 pr-3 shadow-[0_4px_14px_rgba(0,0,0,0.12)]"
+            >
+              <button
+                type="submit"
+                aria-label="Tìm kiếm"
+                className="flex h-8 w-8 shrink-0 items-center justify-center rounded-full text-muted transition hover:text-green-d"
+              >
+                <SearchIcon className="h-[18px] w-[18px]" />
+              </button>
+              <input
+                type="search"
+                name="q"
+                placeholder="Bạn cần tìm laptop gì?"
+                className="min-w-0 flex-1 border-none bg-transparent text-[14px] text-ink outline-none"
+                aria-label="Tìm kiếm sản phẩm"
+              />
+            </form>
+          </Container>
+        </div>
       </div>
     </header>
   );
