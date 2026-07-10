@@ -1,5 +1,6 @@
 import Link from "next/link";
 import type { BlogAccent, BlogPost } from "@/lib/types";
+import { ClockIcon } from "@/components/icons";
 
 // Ảnh + card bài viết dùng chung (khối blog ở trang chủ và trang /blog).
 
@@ -44,19 +45,22 @@ export function BlogCard({ post }: { post: BlogPost }) {
   return (
     <Link
       href={`/blog/${post.slug}`}
-      className="flex flex-col overflow-hidden rounded-xl border border-line bg-white transition duration-150 hover:-translate-y-[3px] hover:shadow-[0_10px_24px_rgba(21,154,72,0.1)]"
+      className="group flex flex-col overflow-hidden rounded-2xl border border-line bg-white shadow-card transition duration-200 hover:-translate-y-1 hover:shadow-card-hover"
     >
-      <div className="aspect-video">
-        <BlogImage accent={post.accent} uid={post.slug} />
-      </div>
-      <div className="flex flex-1 flex-col p-4">
-        <span className="text-[11.5px] font-semibold uppercase tracking-[0.05em] text-green-d">
+      <div className="relative aspect-video overflow-hidden">
+        <div className="h-full w-full transition duration-300 group-hover:scale-[1.04]">
+          <BlogImage accent={post.accent} uid={post.slug} />
+        </div>
+        <span className="absolute left-3 top-3 rounded-full bg-white/90 px-2.5 py-1 text-[11px] font-bold uppercase tracking-[0.04em] text-green-d shadow-sm backdrop-blur">
           {post.tag}
         </span>
-        <h3 className="my-[7px] text-[15px] font-semibold leading-[1.4] text-ink">
+      </div>
+      <div className="flex flex-1 flex-col p-4">
+        <h3 className="line-clamp-2 text-[15.5px] font-bold leading-[1.4] text-ink transition group-hover:text-green-d">
           {post.title}
         </h3>
-        <small className="mt-auto text-[12.5px] text-muted">
+        <small className="mt-3 flex items-center gap-1.5 text-[12.5px] text-muted">
+          <ClockIcon className="h-3.5 w-3.5" />
           {post.readMinutes} phút đọc · {post.date}
         </small>
       </div>

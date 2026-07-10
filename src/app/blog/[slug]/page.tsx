@@ -5,8 +5,9 @@ import { Container } from "@/components/Container";
 import { Footer } from "@/components/Footer";
 import { Header } from "@/components/Header";
 import { FloatButtons } from "@/components/FloatButtons";
-import { SectionHead } from "@/components/SectionHead";
+import { Band, SectionIntro } from "@/components/static/Band";
 import { BlogCard, BlogImage } from "@/components/blog/BlogCard";
+import { ClockIcon } from "@/components/icons";
 import {
   getAllPostSlugs,
   getPostBySlug,
@@ -71,50 +72,65 @@ export default async function BlogPostPage({
         dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
       />
       <Header />
-      <main className="py-6">
-        <Container>
-          <Breadcrumb
-            items={[
-              { label: "Trang chủ", href: "/" },
-              { label: "Blog", href: "/blog" },
-              { label: post.title },
-            ]}
-          />
-
-          <article className="mx-auto mt-4 max-w-[760px]">
-            <span className="text-[12px] font-semibold uppercase tracking-[0.05em] text-green-d">
-              {post.tag}
-            </span>
-            <h1 className="mt-2 text-[30px] font-bold leading-tight text-ink">
-              {post.title}
-            </h1>
-            <p className="mt-2 text-[13px] text-muted">
-              {post.readMinutes} phút đọc · {post.date}
-            </p>
-
-            <div className="mt-5 aspect-video overflow-hidden rounded-2xl">
-              <BlogImage accent={post.accent} uid={`hero-${post.slug}`} />
+      <main>
+        {/* Hero bài viết */}
+        <section className="relative overflow-hidden border-b border-line bg-gradient-to-br from-green-tint via-white to-white">
+          <div className="pointer-events-none absolute -right-24 -top-28 h-80 w-80 rounded-full bg-green-soft/50 blur-3xl" />
+          <Container className="relative py-10 max-[600px]:py-8">
+            <div className="mx-auto max-w-[760px]">
+              <Breadcrumb
+                items={[
+                  { label: "Trang chủ", href: "/" },
+                  { label: "Blog", href: "/blog" },
+                  { label: post.title },
+                ]}
+              />
+              <span className="mt-4 inline-block rounded-full bg-green-soft px-3 py-1 text-[11.5px] font-bold uppercase tracking-[0.05em] text-green-d">
+                {post.tag}
+              </span>
+              <h1 className="mt-3 text-[34px] font-extrabold leading-[1.15] tracking-[-0.02em] text-ink max-[600px]:text-[26px]">
+                {post.title}
+              </h1>
+              <p className="mt-3 flex items-center gap-1.5 text-[13px] text-muted">
+                <ClockIcon className="h-4 w-4" />
+                {post.readMinutes} phút đọc · {post.date}
+              </p>
             </div>
+          </Container>
+        </section>
 
-            <div className="mt-6 flex flex-col gap-4 text-[15.5px] leading-relaxed text-ink-2">
-              <p className="text-[16px] font-medium text-ink">{post.excerpt}</p>
+        {/* Ảnh bìa */}
+        <Container className="pt-8">
+          <div className="mx-auto aspect-[16/7] max-w-[880px] overflow-hidden rounded-2xl shadow-card max-[600px]:aspect-video">
+            <BlogImage accent={post.accent} uid={`hero-${post.slug}`} />
+          </div>
+        </Container>
+
+        {/* Nội dung */}
+        <Band tone="white">
+          <article className="mx-auto max-w-[720px]">
+            <p className="border-l-[3px] border-green pl-5 text-[17px] font-medium leading-[1.7] text-ink">
+              {post.excerpt}
+            </p>
+            <div className="mt-6 flex flex-col gap-5 text-[16.5px] leading-[1.85] text-ink-2">
               {post.content.map((para, i) => (
                 <p key={i}>{para}</p>
               ))}
             </div>
           </article>
+        </Band>
 
-          {related.length > 0 && (
-            <section className="mt-12">
-              <SectionHead title="Bài viết liên quan" moreHref="/blog" />
-              <div className="grid grid-cols-3 gap-4 max-[900px]:grid-cols-2 max-[520px]:grid-cols-1">
-                {related.map((p) => (
-                  <BlogCard key={p.slug} post={p} />
-                ))}
-              </div>
-            </section>
-          )}
-        </Container>
+        {/* Bài viết liên quan */}
+        {related.length > 0 && (
+          <Band tone="tint">
+            <SectionIntro eyebrow="Đọc thêm" title="Bài viết liên quan" />
+            <div className="mt-8 grid grid-cols-3 gap-5 max-[900px]:grid-cols-2 max-[520px]:grid-cols-1">
+              {related.map((p) => (
+                <BlogCard key={p.slug} post={p} />
+              ))}
+            </div>
+          </Band>
+        )}
       </main>
       <Footer />
       <FloatButtons />
