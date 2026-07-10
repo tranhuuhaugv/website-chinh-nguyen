@@ -57,8 +57,8 @@ export function TradeInForm() {
 
   if (status === "done") {
     return (
-      <div className="rounded-2xl border border-line bg-white p-8 text-center">
-        <div className="mx-auto mb-3 flex h-12 w-12 items-center justify-center rounded-full bg-green-soft text-2xl text-green">
+      <div className="rounded-2xl border border-line bg-white p-8 text-center shadow-card">
+        <div className="mx-auto mb-3 flex h-12 w-12 items-center justify-center rounded-full bg-gradient-to-br from-green to-green-dd text-2xl text-white">
           ✓
         </div>
         <p className="text-[15px] font-semibold text-ink">
@@ -95,7 +95,11 @@ export function TradeInForm() {
   );
 
   return (
-    <form onSubmit={onSubmit} noValidate className="flex flex-col gap-3">
+    <form
+      onSubmit={onSubmit}
+      noValidate
+      className="flex flex-col gap-3 rounded-2xl border border-line bg-white p-5 shadow-card"
+    >
       {field("name", "Họ và tên", true)}
       {field("phone", "Số điện thoại", true, "tel")}
       {field("email", "Email", true, "email")}
@@ -121,7 +125,7 @@ export function TradeInForm() {
       <button
         type="submit"
         disabled={status === "sending"}
-        className="h-12 rounded-xl bg-green text-sm font-semibold text-white transition hover:bg-green-d disabled:opacity-60"
+        className="h-12 rounded-xl bg-gradient-to-r from-green-d to-green text-sm font-semibold text-white shadow-[0_4px_12px_rgba(21,154,72,.25)] transition hover:shadow-[0_6px_16px_rgba(21,154,72,.38)] disabled:opacity-60"
       >
         {status === "sending" ? "Đang gửi..." : "Gửi yêu cầu định giá"}
       </button>
