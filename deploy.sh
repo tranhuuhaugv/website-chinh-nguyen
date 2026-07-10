@@ -13,10 +13,11 @@ npm install
 echo "→ Đồng bộ schema DB..."
 npx prisma db push
 
-echo "→ Build..."
+echo "→ Build sạch..."
+rm -rf .next
 npm run build
 
-echo "→ Nạp lại app..."
-pm2 reload chinhnguyen
+echo "→ Khởi động lại app..."
+pm2 restart chinhnguyen
 
 echo "✅ Deploy xong!"

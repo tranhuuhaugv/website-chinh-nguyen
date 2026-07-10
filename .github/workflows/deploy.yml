@@ -23,5 +23,6 @@ jobs:
             git reset --hard origin/master
             npm install
             npx prisma db push
+            rm -rf .next
             npm run build
-            pm2 reload chinhnguyen
+            pm2 restart chinhnguyen
