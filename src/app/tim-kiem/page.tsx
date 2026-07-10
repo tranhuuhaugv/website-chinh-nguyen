@@ -7,7 +7,7 @@ import { FloatButtons } from "@/components/FloatButtons";
 import { ProductBrowser } from "@/components/product/ProductBrowser";
 import { CompareBar } from "@/components/compare/CompareBar";
 import { CompareProvider } from "@/components/compare/CompareContext";
-import { ALL_PRODUCTS } from "@/lib/mock-data";
+import { getAllProducts } from "@/lib/data";
 import type { RawParams } from "@/lib/product-query";
 
 function getKeyword(sp: RawParams): string {
@@ -27,7 +27,7 @@ export function generateMetadata({
   };
 }
 
-export default function SearchPage({
+export default async function SearchPage({
   searchParams,
 }: {
   searchParams: RawParams;
@@ -35,9 +35,10 @@ export default function SearchPage({
   const q = getKeyword(searchParams);
   const keyword = q.toLowerCase();
 
+  const all = await getAllProducts();
   const results = keyword
-    ? ALL_PRODUCTS.filter((p) => p.name.toLowerCase().includes(keyword))
-    : ALL_PRODUCTS;
+    ? all.filter((p) => p.name.toLowerCase().includes(keyword))
+    : all;
 
   const brands = Array.from(new Set(results.map((p) => p.brand)));
 

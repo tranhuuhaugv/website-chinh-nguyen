@@ -7,23 +7,28 @@ import { Header } from "@/components/Header";
 import { FloatButtons } from "@/components/FloatButtons";
 import { SectionHead } from "@/components/SectionHead";
 import { BlogCard, BlogImage } from "@/components/blog/BlogCard";
-import { BLOG_POSTS, getPostBySlug, getRelatedPosts } from "@/lib/mock-data";
+import {
+  getAllPostSlugs,
+  getPostBySlug,
+  getRelatedPosts,
+} from "@/lib/data";
 
 export const revalidate = 3600;
 
 const SITE_URL =
   process.env.NEXT_PUBLIC_SITE_URL ?? "https://laptopchinhnguyen.vn";
 
-export function generateStaticParams() {
-  return BLOG_POSTS.map((p) => ({ slug: p.slug }));
+export async function generateStaticParams() {
+  const slugs = await getAllPostSlugs();
+  return slugs.map((slug) => ({ slug }));
 }
 
-export function generateMetadata({
+export async function generateMetadata({
   params,
 }: {
   params: { slug: string };
-}): Metadata {
-  const post = getPostBySlug(params.slug);
+}): Promise<Metadata> {
+  const post = await getPostBySlug(params.slug);
   if (!post) return { title: "Không tìm thấy bài viết" };
   const url = `${SITE_URL}/blog/${post.slug}`;
   return {
@@ -39,15 +44,15 @@ export function generateMetadata({
   };
 }
 
-export default function BlogPostPage({
+export default async function BlogPostPage({
   params,
 }: {
   params: { slug: string };
 }) {
-  const post = getPostBySlug(params.slug);
+  const post = await getPostBySlug(params.slug);
   if (!post) notFound();
 
-  const related = getRelatedPosts(post);
+  const related = await getRelatedPosts(post);
 
   const jsonLd = {
     "@context": "https://schema.org",

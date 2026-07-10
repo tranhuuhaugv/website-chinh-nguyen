@@ -7,7 +7,7 @@ import { FloatButtons } from "@/components/FloatButtons";
 import { ProductBrowser } from "@/components/product/ProductBrowser";
 import { CompareBar } from "@/components/compare/CompareBar";
 import { CompareProvider } from "@/components/compare/CompareContext";
-import { ALL_PRODUCTS } from "@/lib/mock-data";
+import { getAllProducts } from "@/lib/data";
 import type { RawParams } from "@/lib/product-query";
 
 const SITE_URL =
@@ -20,12 +20,13 @@ export const metadata: Metadata = {
   alternates: { canonical: `${SITE_URL}/san-pham` },
 };
 
-export default function AllProductsPage({
+export default async function AllProductsPage({
   searchParams,
 }: {
   searchParams: RawParams;
 }) {
-  const brands = Array.from(new Set(ALL_PRODUCTS.map((p) => p.brand)));
+  const products = await getAllProducts();
+  const brands = Array.from(new Set(products.map((p) => p.brand)));
 
   return (
     <CompareProvider>
@@ -48,7 +49,7 @@ export default function AllProductsPage({
           <ProductBrowser
             basePath="/san-pham"
             searchParams={searchParams}
-            products={ALL_PRODUCTS}
+            products={products}
             brands={brands}
           />
         </Container>

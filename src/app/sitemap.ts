@@ -1,35 +1,34 @@
 import type { MetadataRoute } from "next";
-import {
-  BLOG_POSTS,
-  CATEGORIES,
-  FEATURED_PRODUCTS,
-  FLASH_SALE_PRODUCTS,
-} from "@/lib/mock-data";
+import { getAllProductSlugs, getAllPostSlugs, getCategories } from "@/lib/data";
 
 const SITE_URL =
   process.env.NEXT_PUBLIC_SITE_URL ?? "https://laptopchinhnguyen.vn";
 
-// Tự sinh sitemap từ dữ liệu. Khi có DB, thay các mảng mock bằng query Prisma
-// (chỉ select slug + updatedAt, có phân trang nếu dữ liệu lớn).
-export default function sitemap(): MetadataRoute.Sitemap {
+// Tự sinh sitemap từ dữ liệu database (chỉ lấy slug).
+export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   const now = new Date();
+  const [productSlugs, categories, postSlugs] = await Promise.all([
+    getAllProductSlugs(),
+    getCategories(),
+    getAllPostSlugs(),
+  ]);
 
-  const products = [...FLASH_SALE_PRODUCTS, ...FEATURED_PRODUCTS].map((p) => ({
-    url: `${SITE_URL}/san-pham/${p.slug}`,
+  const products = productSlugs.map((slug) => ({
+    url: `${SITE_URL}/san-pham/${slug}`,
     lastModified: now,
     changeFrequency: "daily" as const,
     priority: 0.8,
   }));
 
-  const categories = CATEGORIES.map((c) => ({
+  const categoryUrls = categories.map((c) => ({
     url: `${SITE_URL}/danh-muc/${c.slug}`,
     lastModified: now,
     changeFrequency: "weekly" as const,
     priority: 0.7,
   }));
 
-  const posts = BLOG_POSTS.map((b) => ({
-    url: `${SITE_URL}/blog/${b.slug}`,
+  const posts = postSlugs.map((slug) => ({
+    url: `${SITE_URL}/blog/${slug}`,
     lastModified: now,
     changeFrequency: "monthly" as const,
     priority: 0.5,
@@ -60,7 +59,7 @@ export default function sitemap(): MetadataRoute.Sitemap {
       changeFrequency: "monthly" as const,
       priority: 0.5,
     })),
-    ...categories,
+    ...categoryUrls,
     ...products,
     ...posts,
   ];

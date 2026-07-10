@@ -4,7 +4,6 @@ import { CategoryNav } from "@/components/CategoryNav";
 import { CustomerGallery } from "@/components/CustomerGallery";
 import { FeaturedProducts } from "@/components/FeaturedProducts";
 import { FlashSale } from "@/components/FlashSale";
-import { FlashSaleGate } from "@/components/FlashSaleGate";
 import { FloatButtons } from "@/components/FloatButtons";
 import { Footer } from "@/components/Footer";
 import { Header } from "@/components/Header";
@@ -14,15 +13,18 @@ import { TrustBar } from "@/components/TrustBar";
 import { CompareBar } from "@/components/compare/CompareBar";
 import { CompareProvider } from "@/components/compare/CompareContext";
 import {
-  BLOG_POSTS,
-  CATEGORIES,
   FEATURED_BRAND_TABS,
   CUSTOMER_PHOTOS,
-  FEATURED_PRODUCTS,
-  FLASH_SALE_PRODUCTS,
   HERO_SLIDES,
   SIDE_BANNERS,
 } from "@/lib/mock-data";
+import {
+  getBlogPosts,
+  getCategories,
+  getFeaturedProducts,
+  getFlashSaleProducts,
+  getSetting,
+} from "@/lib/data";
 import { SITE } from "@/lib/site";
 
 // Trang chủ ít thay đổi -> ISR: build tĩnh, tự làm mới mỗi giờ (quy tắc CLAUDE.md).
@@ -62,7 +64,17 @@ const jsonLd = {
   ],
 };
 
-export default function HomePage() {
+export default async function HomePage() {
+  const [flashProducts, featured, categories, posts, flashSetting] =
+    await Promise.all([
+      getFlashSaleProducts(),
+      getFeaturedProducts(),
+      getCategories(),
+      getBlogPosts(),
+      getSetting("flashSaleEnabled"),
+    ]);
+  const flashOn = flashSetting === "true" && flashProducts.length > 0;
+
   return (
     <CompareProvider>
       <script
@@ -74,16 +86,11 @@ export default function HomePage() {
       <main>
         <CategoryNav />
         <HeroSlider slides={HERO_SLIDES} />
-        <FlashSaleGate>
-          <FlashSale products={FLASH_SALE_PRODUCTS} />
-        </FlashSaleGate>
-        <CategoryGrid categories={CATEGORIES} />
-        <FeaturedProducts
-          products={FEATURED_PRODUCTS}
-          tabs={FEATURED_BRAND_TABS}
-        />
+        {flashOn && <FlashSale products={flashProducts} />}
+        <CategoryGrid categories={categories} />
+        <FeaturedProducts products={featured} tabs={FEATURED_BRAND_TABS} />
         <CustomerGallery photos={CUSTOMER_PHOTOS} />
-        <BlogSection posts={BLOG_POSTS} />
+        <BlogSection posts={posts} />
         <TrustBar />
       </main>
       <Footer />

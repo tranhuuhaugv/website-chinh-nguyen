@@ -5,7 +5,7 @@ import { Footer } from "@/components/Footer";
 import { Header } from "@/components/Header";
 import { FloatButtons } from "@/components/FloatButtons";
 import { BlogCard } from "@/components/blog/BlogCard";
-import { BLOG_POSTS } from "@/lib/mock-data";
+import { getBlogPosts } from "@/lib/data";
 
 export const revalidate = 3600;
 
@@ -15,7 +15,8 @@ export const metadata: Metadata = {
     "Tư vấn chọn laptop, thủ thuật và tin công nghệ mới nhất từ Laptop Chính Nguyễn.",
 };
 
-export default function BlogListPage() {
+export default async function BlogListPage() {
+  const posts = await getBlogPosts();
   return (
     <>
       <Header />
@@ -32,7 +33,7 @@ export default function BlogListPage() {
           </p>
 
           <div className="grid grid-cols-3 gap-4 max-[900px]:grid-cols-2 max-[520px]:grid-cols-1">
-            {BLOG_POSTS.map((post) => (
+            {posts.map((post) => (
               <BlogCard key={post.slug} post={post} />
             ))}
           </div>

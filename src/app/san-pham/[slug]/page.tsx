@@ -19,10 +19,10 @@ import {
   WarrantyIcon,
 } from "@/components/icons";
 import {
-  ALL_PRODUCTS,
+  getAllProductSlugs,
   getProductBySlug,
   getRelatedProducts,
-} from "@/lib/mock-data";
+} from "@/lib/data";
 import { buildDescription, buildSpecGroups } from "@/lib/product-content";
 import { formatPrice } from "@/lib/format";
 
@@ -31,16 +31,17 @@ export const revalidate = 3600;
 const SITE_URL =
   process.env.NEXT_PUBLIC_SITE_URL ?? "https://laptopchinhnguyen.vn";
 
-export function generateStaticParams() {
-  return ALL_PRODUCTS.map((p) => ({ slug: p.slug }));
+export async function generateStaticParams() {
+  const slugs = await getAllProductSlugs();
+  return slugs.map((slug) => ({ slug }));
 }
 
-export function generateMetadata({
+export async function generateMetadata({
   params,
 }: {
   params: { slug: string };
-}): Metadata {
-  const product = getProductBySlug(params.slug);
+}): Promise<Metadata> {
+  const product = await getProductBySlug(params.slug);
   if (!product) return { title: "Không tìm thấy sản phẩm" };
 
   const description = `${product.name} - ${product.cpu}, RAM ${product.ram}, ${product.storage}. Giá ${formatPrice(
@@ -71,14 +72,18 @@ function Bullet({ children }: { children: React.ReactNode }) {
   );
 }
 
-export default function ProductPage({ params }: { params: { slug: string } }) {
-  const product = getProductBySlug(params.slug);
+export default async function ProductPage({
+  params,
+}: {
+  params: { slug: string };
+}) {
+  const product = await getProductBySlug(params.slug);
   if (!product) notFound();
 
   const discount = product.oldPrice
     ? Math.round((1 - product.price / product.oldPrice) * 100)
     : 0;
-  const related = getRelatedProducts(product);
+  const related = await getRelatedProducts(product);
 
   const url = `${SITE_URL}/san-pham/${product.slug}`;
   const specGroups = buildSpecGroups(product);
