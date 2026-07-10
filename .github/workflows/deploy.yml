@@ -16,4 +16,10 @@ jobs:
           username: ${{ secrets.VPS_USER }}
           key: ${{ secrets.VPS_SSH_KEY }}
           port: 22
-          script: bash /var/www/website-chinh-nguyen/deploy.sh
+          script: |
+            set -e
+            cd /var/www/website-chinh-nguyen
+            git pull
+            npm install
+            npm run build
+            pm2 reload chinhnguyen
