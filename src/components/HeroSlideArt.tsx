@@ -1,132 +1,143 @@
 import type { BannerAccent, HeroSlide } from "@/lib/types";
 
-// Ảnh banner placeholder cho 1 slide (SVG). Khi có ảnh thật, thay component này
-// bằng next/image (priority ở slide đầu để tối ưu LCP).
+// Nội dung 1 slide hero (HTML — chữ nét, dùng font site). Nền gradient nhiều lớp
+// + quầng sáng + laptop mockup (SVG). Khi có ảnh banner thật -> thay bằng next/image
+// (priority ở slide đầu để tối ưu LCP).
 
 const ACCENT: Record<
   BannerAccent,
   {
-    bg: [string, string];
+    from: string;
+    to: string;
+    glow: string;
     scr: [string, string];
-    badge: string;
-    sub: string;
+    badgeText: string;
+    subText: string;
     ctaText: string;
   }
 > = {
   green: {
-    bg: ["#0F7C39", "#0B5E2C"],
-    scr: ["#1FB05B", "#0C6E34"],
-    badge: "#8FE9AF",
-    sub: "#CFEFD9",
+    from: "#16A34E",
+    to: "#0A5629",
+    glow: "#1FB05B",
+    scr: ["#2ED06E", "#0C6E34"],
+    badgeText: "#B7F0CC",
+    subText: "#D6F2E0",
     ctaText: "#0F7C39",
   },
   blue: {
-    bg: ["#1E5FA8", "#123E70"],
-    scr: ["#3D86D6", "#134A86"],
-    badge: "#AECBEE",
-    sub: "#D3E4F7",
+    from: "#1E5FA8",
+    to: "#123E70",
+    glow: "#3D86D6",
+    scr: ["#57A0EA", "#134A86"],
+    badgeText: "#C4DBF6",
+    subText: "#DCEAFA",
     ctaText: "#123E70",
   },
   purple: {
-    bg: ["#6D3FB0", "#3F2470"],
-    scr: ["#9A6BD6", "#4A2A85"],
-    badge: "#D3BEEF",
-    sub: "#E7DAF7",
+    from: "#6D3FB0",
+    to: "#3F2470",
+    glow: "#9A6BD6",
+    scr: ["#B387EC", "#4A2A85"],
+    badgeText: "#E0CEF7",
+    subText: "#ECE1FA",
     ctaText: "#3F2470",
   },
 };
 
-export function HeroSlideArt({ slide }: { slide: HeroSlide }) {
-  const c = ACCENT[slide.accent];
-  const bgId = `hero-bg-${slide.id}`;
-  const scrId = `hero-scr-${slide.id}`;
-
+// Laptop mockup gọn (SVG) — nét, scale mượt theo container.
+function DeviceArt({ scr }: { scr: [string, string] }) {
+  const id = `scr-${scr[0].replace("#", "")}`;
   return (
-    <svg
-      viewBox="0 0 1200 380"
-      preserveAspectRatio="xMidYMid slice"
-      xmlns="http://www.w3.org/2000/svg"
-      className="block h-full w-full"
-      aria-hidden="true"
-    >
+    <svg viewBox="0 0 460 300" className="h-full w-full" aria-hidden="true">
       <defs>
-        <linearGradient id={bgId} x1="0" y1="0" x2="1" y2="1">
-          <stop offset="0" stopColor={c.bg[0]} />
-          <stop offset="1" stopColor={c.bg[1]} />
-        </linearGradient>
-        <linearGradient id={scrId} x1="0" y1="0" x2="1" y2="1">
-          <stop offset="0" stopColor={c.scr[0]} />
-          <stop offset="1" stopColor={c.scr[1]} />
+        <linearGradient id={id} x1="0" y1="0" x2="1" y2="1">
+          <stop offset="0" stopColor={scr[0]} />
+          <stop offset="1" stopColor={scr[1]} />
         </linearGradient>
       </defs>
-      <rect width="1200" height="380" fill={`url(#${bgId})`} />
-      <circle cx="1050" cy="70" r="230" fill="#ffffff" opacity="0.05" />
-      <circle cx="140" cy="360" r="180" fill="#ffffff" opacity="0.04" />
-      {slide.badge && (
-        <text
-          x="80"
-          y="120"
-          fill={c.badge}
-          fontFamily="Arial"
-          fontSize="20"
-          fontWeight="700"
-          letterSpacing="3"
-        >
-          {slide.badge}
-        </text>
-      )}
-      <text
-        x="78"
-        y="188"
-        fill="#ffffff"
-        fontFamily="Arial"
-        fontSize="58"
-        fontWeight="700"
-      >
-        {slide.title1}
-      </text>
-      {slide.title2 && (
-        <text
-          x="78"
-          y="250"
-          fill="#ffffff"
-          fontFamily="Arial"
-          fontSize="58"
-          fontWeight="700"
-        >
-          {slide.title2}
-        </text>
-      )}
-      {slide.subtitle && (
-        <text x="80" y="298" fill={c.sub} fontFamily="Arial" fontSize="21">
-          {slide.subtitle}
-        </text>
-      )}
-      {slide.cta && (
-        <>
-          <rect x="80" y="318" width="200" height="46" rx="23" fill="#ffffff" />
-          <text
-            x="180"
-            y="347"
-            fill={c.ctaText}
-            fontFamily="Arial"
-            fontSize="18"
-            fontWeight="700"
-            textAnchor="middle"
-          >
-            {slide.cta} →
-          </text>
-        </>
-      )}
-      <g transform="translate(760,70)">
-        <ellipse cx="210" cy="250" rx="200" ry="20" fill="#000" opacity="0.12" />
-        <rect x="70" y="30" width="280" height="180" rx="14" fill="#141A20" />
-        <rect x="84" y="44" width="252" height="152" rx="6" fill={`url(#${scrId})`} />
-        <circle cx="150" cy="95" r="40" fill="#ffffff" opacity="0.14" />
-        <circle cx="270" cy="150" r="30" fill="#ffffff" opacity="0.12" />
-        <path d="M40 210 H380 L420 254 H0 Z" fill="#D7DBE0" />
-        <rect x="175" y="213" width="70" height="7" rx="3" fill="#AEB4BB" />
-      </g>
+      <ellipse cx="230" cy="270" rx="200" ry="20" fill="#000" opacity="0.16" />
+      <rect x="90" y="40" width="280" height="184" rx="16" fill="#10151B" />
+      <rect x="104" y="54" width="252" height="156" rx="7" fill={`url(#${id})`} />
+      <circle cx="170" cy="108" r="42" fill="#ffffff" opacity="0.16" />
+      <circle cx="292" cy="160" r="32" fill="#ffffff" opacity="0.13" />
+      <rect x="150" y="86" width="160" height="10" rx="5" fill="#ffffff" opacity="0.22" />
+      <rect x="150" y="112" width="110" height="8" rx="4" fill="#ffffff" opacity="0.16" />
+      <path d="M56 224 H404 L444 270 H16 Z" fill="#DCE0E6" />
+      <path d="M56 224 H404 L406 231 H54 Z" fill="#00000018" />
+      <rect x="196" y="227" width="68" height="7" rx="3.5" fill="#AEB4BB" />
     </svg>
+  );
+}
+
+export function HeroSlideArt({ slide }: { slide: HeroSlide }) {
+  const c = ACCENT[slide.accent];
+
+  return (
+    <div
+      className="relative h-full w-full overflow-hidden"
+      style={{
+        background: `linear-gradient(120deg, ${c.from} 0%, ${c.to} 100%)`,
+      }}
+    >
+      {/* Lớp quầng sáng + hoạ tiết cho có chiều sâu */}
+      <div
+        className="pointer-events-none absolute -right-24 -top-32 h-[420px] w-[420px] rounded-full opacity-60"
+        style={{
+          background: `radial-gradient(circle, ${c.glow}66 0%, transparent 70%)`,
+        }}
+      />
+      <div
+        className="pointer-events-none absolute -bottom-40 -left-24 h-[380px] w-[380px] rounded-full opacity-40"
+        style={{
+          background: `radial-gradient(circle, ${c.glow}55 0%, transparent 70%)`,
+        }}
+      />
+      <div className="pointer-events-none absolute inset-0 bg-[linear-gradient(115deg,rgba(255,255,255,0.10)_0%,transparent_35%)]" />
+
+      {/* Nội dung */}
+      <div className="relative flex h-full items-center justify-between gap-6 px-[6%] max-[720px]:px-6">
+        <div className="max-w-[560px]">
+          {slide.badge && (
+            <span
+              className="inline-block rounded-full border border-white/25 bg-white/10 px-3.5 py-1.5 text-[12px] font-bold uppercase tracking-[0.16em] backdrop-blur-sm"
+              style={{ color: c.badgeText }}
+            >
+              {slide.badge}
+            </span>
+          )}
+          <h2 className="mt-4 text-[46px] font-extrabold leading-[1.05] tracking-[-0.02em] text-white max-[1024px]:text-[38px] max-[720px]:text-[28px]">
+            {slide.title1}
+            {slide.title2 && (
+              <>
+                <br />
+                {slide.title2}
+              </>
+            )}
+          </h2>
+          {slide.subtitle && (
+            <p
+              className="mt-4 text-[17px] font-medium max-[720px]:text-[13.5px]"
+              style={{ color: c.subText }}
+            >
+              {slide.subtitle}
+            </p>
+          )}
+          {slide.cta && (
+            <span
+              className="mt-6 inline-flex items-center gap-2 rounded-full bg-white px-7 py-3 text-[15px] font-bold shadow-[0_10px_26px_rgba(0,0,0,0.22)] transition group-hover:-translate-y-0.5 max-[720px]:mt-4 max-[720px]:px-5 max-[720px]:py-2.5 max-[720px]:text-[13.5px]"
+              style={{ color: c.ctaText }}
+            >
+              {slide.cta}
+              <span aria-hidden="true">→</span>
+            </span>
+          )}
+        </div>
+
+        <div className="w-[42%] max-w-[440px] shrink-0 max-[720px]:hidden">
+          <DeviceArt scr={c.scr} />
+        </div>
+      </div>
+    </div>
   );
 }

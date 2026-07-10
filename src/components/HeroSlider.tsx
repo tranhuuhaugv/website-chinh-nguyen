@@ -31,7 +31,7 @@ export function HeroSlider({ slides }: { slides: HeroSlide[] }) {
           Laptop Chính Nguyễn — Laptop chính hãng giá tốt tại Đà Nẵng
         </h1>
 
-        <div className="group relative aspect-[1200/380] w-full overflow-hidden rounded-xl max-[900px]:aspect-video">
+        <div className="group relative aspect-[1200/380] w-full overflow-hidden rounded-2xl shadow-[0_16px_40px_rgba(11,94,44,0.18)] ring-1 ring-black/5 max-[900px]:aspect-video">
           {/* Track trượt ngang */}
           <div
             className="flex h-full w-full transition-transform duration-500 ease-out"
@@ -55,7 +55,7 @@ export function HeroSlider({ slides }: { slides: HeroSlide[] }) {
                 type="button"
                 onClick={() => goTo(index - 1)}
                 aria-label="Banner trước"
-                className="absolute left-3 top-1/2 z-10 flex h-10 w-10 -translate-y-1/2 items-center justify-center rounded-full bg-white/85 text-ink opacity-0 shadow transition hover:bg-white group-hover:opacity-100 max-[900px]:opacity-100"
+                className="absolute left-4 top-1/2 z-10 flex h-11 w-11 -translate-y-1/2 items-center justify-center rounded-full bg-white/20 text-white opacity-0 backdrop-blur-md ring-1 ring-white/30 transition hover:bg-white hover:text-ink group-hover:opacity-100 max-[900px]:opacity-100"
               >
                 <ChevronLeftIcon className="h-5 w-5" />
               </button>
@@ -63,12 +63,12 @@ export function HeroSlider({ slides }: { slides: HeroSlide[] }) {
                 type="button"
                 onClick={() => goTo(index + 1)}
                 aria-label="Banner sau"
-                className="absolute right-3 top-1/2 z-10 flex h-10 w-10 -translate-y-1/2 items-center justify-center rounded-full bg-white/85 text-ink opacity-0 shadow transition hover:bg-white group-hover:opacity-100 max-[900px]:opacity-100"
+                className="absolute right-4 top-1/2 z-10 flex h-11 w-11 -translate-y-1/2 items-center justify-center rounded-full bg-white/20 text-white opacity-0 backdrop-blur-md ring-1 ring-white/30 transition hover:bg-white hover:text-ink group-hover:opacity-100 max-[900px]:opacity-100"
               >
                 <ChevronRightIcon className="h-5 w-5" />
               </button>
 
-              <div className="absolute bottom-3 left-1/2 z-10 flex -translate-x-1/2 gap-2">
+              <div className="absolute bottom-4 left-1/2 z-10 flex -translate-x-1/2 gap-2">
                 {slides.map((slide, i) => (
                   <button
                     key={slide.id}
@@ -77,7 +77,7 @@ export function HeroSlider({ slides }: { slides: HeroSlide[] }) {
                     aria-label={`Tới banner ${i + 1}`}
                     aria-current={i === index}
                     className={`h-2 rounded-full transition-all ${
-                      i === index ? "w-6 bg-white" : "w-2 bg-white/60"
+                      i === index ? "w-7 bg-white" : "w-2 bg-white/55 hover:bg-white/80"
                     }`}
                   />
                 ))}

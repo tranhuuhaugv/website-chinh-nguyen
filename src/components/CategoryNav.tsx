@@ -22,14 +22,17 @@ export function CategoryNav() {
   return (
     <div className="pt-4">
       <Container>
-        <div className="flex gap-1 overflow-x-auto rounded-xl border border-line bg-white p-1.5 [scrollbar-width:none] [&::-webkit-scrollbar]:hidden">
+        <div className="flex gap-1 overflow-x-auto rounded-2xl border border-line bg-white p-1.5 shadow-card [scrollbar-width:none] [&::-webkit-scrollbar]:hidden">
           {ITEMS.map((item) => (
             <Link
               key={item.href}
               href={item.href}
-              className="flex shrink-0 items-center gap-2 whitespace-nowrap rounded-lg px-3.5 py-2 text-[13.5px] font-medium text-ink-2 transition hover:bg-green-tint hover:text-green-d"
+              className="group flex shrink-0 items-center gap-2 whitespace-nowrap rounded-xl px-3.5 py-2 text-[13.5px] font-medium text-ink-2 transition hover:bg-green-tint hover:text-green-d"
             >
-              <CategoryIcon name={item.icon} className="h-[18px] w-[18px] text-green" />
+              <CategoryIcon
+                name={item.icon}
+                className="h-[18px] w-[18px] text-green transition group-hover:scale-110"
+              />
               {item.label}
             </Link>
           ))}
