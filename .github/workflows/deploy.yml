@@ -19,7 +19,8 @@ jobs:
           script: |
             set -e
             cd /var/www/website-chinh-nguyen
-            git pull
+            git fetch origin master
+            git reset --hard origin/master
             npm install
             npm run build
             pm2 reload chinhnguyen

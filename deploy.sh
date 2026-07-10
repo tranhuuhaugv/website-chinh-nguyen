@@ -4,7 +4,8 @@ set -e
 cd /var/www/website-chinh-nguyen
 
 echo "→ Lấy code mới..."
-git pull
+git fetch origin master
+git reset --hard origin/master
 
 echo "→ Cài package..."
 npm install
