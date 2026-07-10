@@ -177,6 +177,30 @@ export async function getAdminUsers() {
   });
 }
 
+// --- Tài khoản khách hàng (user) ---
+const CUSTOMERS_PER_PAGE = 20;
+
+export async function getCustomerUsers(page = 1) {
+  const skip = (page - 1) * CUSTOMERS_PER_PAGE;
+  const [users, total] = await Promise.all([
+    prisma.user.findMany({
+      where: { role: "user" },
+      select: {
+        id: true,
+        name: true,
+        email: true,
+        phone: true,
+        createdAt: true,
+      },
+      orderBy: { createdAt: "desc" },
+      skip,
+      take: CUSTOMERS_PER_PAGE,
+    }),
+    prisma.user.count({ where: { role: "user" } }),
+  ]);
+  return { users, total, totalPages: Math.ceil(total / CUSTOMERS_PER_PAGE) };
+}
+
 // --- Cài đặt ---
 export async function getSetting(key: string): Promise<string | null> {
   const s = await prisma.setting.findUnique({ where: { key } });

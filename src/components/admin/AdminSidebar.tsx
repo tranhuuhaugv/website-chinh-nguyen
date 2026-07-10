@@ -12,6 +12,7 @@ import {
   SettingsIcon,
   TagIcon,
   UserIcon,
+  UsersIcon,
 } from "@/components/icons";
 
 const NAV = [
@@ -23,6 +24,7 @@ const NAV = [
   { href: "/admin/banner", label: "Banner", icon: ImageIcon },
   { href: "/admin/trang-tinh", label: "Trang nội dung", icon: LayoutIcon },
   { href: "/admin/don-hang", label: "Đơn hàng", icon: CartIcon },
+  { href: "/admin/khach-hang", label: "Khách hàng", icon: UsersIcon },
   { href: "/admin/quan-tri-vien", label: "Quản trị viên", icon: UserIcon },
   { href: "/admin/cai-dat", label: "Cài đặt", icon: SettingsIcon },
 ];
