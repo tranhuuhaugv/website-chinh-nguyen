@@ -8,6 +8,9 @@ on:
 jobs:
   deploy:
     runs-on: ubuntu-latest
+    env:
+      # Seed lại DB khi commit có [seed] hoặc bấm Run workflow tay.
+      DO_SEED: ${{ contains(github.event.head_commit.message, '[seed]') || github.event_name == 'workflow_dispatch' }}
     steps:
       - name: Deploy qua SSH
         uses: appleboy/ssh-action@v1.2.0
@@ -16,6 +19,7 @@ jobs:
           username: ${{ secrets.VPS_USER }}
           key: ${{ secrets.VPS_SSH_KEY }}
           port: 22
+          envs: DO_SEED
           script: |
             set -e
             cd /var/www/website-chinh-nguyen
@@ -23,21 +27,12 @@ jobs:
             git reset --hard origin/master
             npm install
             npx prisma db push
+            # Seed TRƯỚC khi build vì các trang (blog/chủ) render tĩnh lúc build.
+            # Seed reset catalog + blog + settings (KHÔNG đụng tài khoản khách & đơn hàng).
+            if [ "$DO_SEED" = "true" ]; then
+              echo "== Seeding database =="
+              npm run db:seed
+            fi
             rm -rf .next
             npm run build
             pm2 restart chinhnguyen
-
-      # Seed lại DB CHỈ khi commit có chữ [seed] (hoặc bấm Run workflow tay).
-      # Seed reset catalog + blog + settings (KHÔNG đụng tài khoản khách & đơn hàng).
-      - name: Seed database (tuỳ chọn)
-        if: contains(github.event.head_commit.message, '[seed]') || github.event_name == 'workflow_dispatch'
-        uses: appleboy/ssh-action@v1.2.0
-        with:
-          host: ${{ secrets.VPS_HOST }}
-          username: ${{ secrets.VPS_USER }}
-          key: ${{ secrets.VPS_SSH_KEY }}
-          port: 22
-          script: |
-            set -e
-            cd /var/www/website-chinh-nguyen
-            npm run db:seed
