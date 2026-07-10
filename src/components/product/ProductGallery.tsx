@@ -17,7 +17,7 @@ export function ProductGallery({
 }) {
   return (
     <div>
-      <div className="relative overflow-hidden rounded-2xl border border-line bg-white p-6">
+      <div className="relative overflow-hidden rounded-2xl border border-line bg-gradient-to-b from-white to-[#F4F7F4] p-6 shadow-card">
         {badge && (
           <span className="absolute left-4 top-4 z-[2] rounded-full bg-sale px-3 py-1 text-[12px] font-bold text-white">
             {badge}

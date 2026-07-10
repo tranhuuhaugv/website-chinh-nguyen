@@ -28,10 +28,10 @@ function Pill({
   return (
     <Link
       href={href}
-      className={`rounded-full border px-3.5 py-1.5 text-[13px] font-medium transition ${
+      className={`rounded-full px-3.5 py-1.5 text-[13px] transition ${
         active
-          ? "border-green bg-green text-white"
-          : "border-line bg-white text-ink-2 hover:border-green hover:text-green-d"
+          ? "bg-gradient-to-r from-green-d to-green font-semibold text-white shadow-[0_4px_12px_rgba(21,154,72,.30)]"
+          : "border border-line bg-white font-medium text-ink-2 hover:border-green hover:text-green-d"
       }`}
     >
       {children}
@@ -69,7 +69,7 @@ export function ProductBrowser({
   return (
     <div>
       {/* Thanh bộ lọc trên cùng */}
-      <div className="mb-6 flex flex-col gap-3 rounded-2xl border border-line bg-white p-4">
+      <div className="mb-6 flex flex-col gap-3 rounded-2xl border border-line bg-white p-4 shadow-card">
         {brands.length > 1 && (
           <FilterRow label="Hãng">
             <Pill

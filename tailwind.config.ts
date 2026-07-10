@@ -30,6 +30,13 @@ const config: Config = {
       maxWidth: {
         wrap: "1200px",
       },
+      boxShadow: {
+        // Độ sâu "cao cấp" dùng chung: nghỉ nhẹ, hover nhấc + ánh xanh.
+        card: "0 1px 2px rgba(16,24,20,.04), 0 6px 18px rgba(16,24,20,.06)",
+        "card-hover":
+          "0 10px 30px rgba(21,154,72,.16), 0 3px 8px rgba(16,24,20,.06)",
+        pop: "0 12px 32px rgba(16,24,20,.14)",
+      },
       fontFamily: {
         sans: ["var(--font-inter)", "Inter", "Helvetica", "Arial", "sans-serif"],
       },

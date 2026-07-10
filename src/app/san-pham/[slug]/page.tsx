@@ -83,6 +83,7 @@ export default async function ProductPage({
   const discount = product.oldPrice
     ? Math.round((1 - product.price / product.oldPrice) * 100)
     : 0;
+  const savings = product.oldPrice ? product.oldPrice - product.price : 0;
   const related = await getRelatedProducts(product);
 
   const url = `${SITE_URL}/san-pham/${product.slug}`;
@@ -206,32 +207,40 @@ export default async function ProductPage({
               </div>
 
               {/* Box giá + tình trạng */}
-              <div className="mt-4 flex items-center justify-between gap-4 rounded-2xl border border-line bg-white p-4">
-                <div>
-                  <div className="flex flex-wrap items-baseline gap-2">
-                    <span className="text-[28px] font-extrabold text-sale">
-                      {formatPrice(product.price)}
-                    </span>
-                    {product.oldPrice && (
-                      <span className="text-[15px] text-muted line-through">
-                        {formatPrice(product.oldPrice)}
+              <div className="mt-4 overflow-hidden rounded-2xl border border-line bg-white shadow-card">
+                <div
+                  className={`flex items-center justify-between gap-4 p-4 ${
+                    discount > 0
+                      ? "bg-gradient-to-r from-[#FFF6F5] to-white"
+                      : "bg-white"
+                  }`}
+                >
+                  <div>
+                    <div className="flex flex-wrap items-baseline gap-2">
+                      <span className="text-[28px] font-extrabold text-sale">
+                        {formatPrice(product.price)}
+                      </span>
+                      {product.oldPrice && (
+                        <span className="text-[15px] text-muted line-through">
+                          {formatPrice(product.oldPrice)}
+                        </span>
+                      )}
+                    </div>
+                    {discount > 0 && (
+                      <span className="mt-1.5 inline-block rounded-full bg-sale px-2.5 py-0.5 text-[12px] font-bold text-white">
+                        Giảm {discount}% · tiết kiệm {formatPrice(savings)}
                       </span>
                     )}
                   </div>
-                  {discount > 0 && (
-                    <span className="mt-1 inline-block rounded-full bg-sale/10 px-2 py-0.5 text-[12px] font-bold text-sale">
-                      Tiết kiệm {discount}%
-                    </span>
-                  )}
-                </div>
-                <div className="shrink-0 text-right">
-                  <p className="text-[11px] font-semibold uppercase tracking-wide text-muted">
-                    Tình trạng
-                  </p>
-                  <p className="mt-1 inline-flex items-center gap-1.5 rounded-full bg-green-soft px-2.5 py-1 text-[12px] font-semibold text-green-d">
-                    <span className="h-1.5 w-1.5 rounded-full bg-green" />
-                    Còn hàng
-                  </p>
+                  <div className="shrink-0 text-right">
+                    <p className="text-[11px] font-semibold uppercase tracking-wide text-muted">
+                      Tình trạng
+                    </p>
+                    <p className="mt-1 inline-flex items-center gap-1.5 rounded-full bg-green-soft px-2.5 py-1 text-[12px] font-semibold text-green-d">
+                      <span className="h-1.5 w-1.5 rounded-full bg-green" />
+                      Còn hàng
+                    </p>
+                  </div>
                 </div>
               </div>
 

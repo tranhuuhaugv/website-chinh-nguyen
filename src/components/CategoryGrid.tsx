@@ -32,8 +32,11 @@ export function CategoryGrid({ categories }: { categories: Category[] }) {
   return (
     <section className="py-[18px]">
       <Container>
-        <SectionHead title="Danh mục nổi bật" />
-        <div className="rounded-2xl border border-line bg-white p-6 max-[520px]:p-4">
+        <SectionHead
+          title="Danh mục nổi bật"
+          subtitle="Chọn nhanh theo nhu cầu và thương hiệu bạn cần"
+        />
+        <div className="rounded-2xl border border-line bg-white p-6 shadow-card max-[520px]:p-4">
           <div className="grid grid-cols-8 gap-x-1.5 gap-y-2.5 max-[900px]:grid-cols-4 max-[520px]:grid-cols-3">
             {categories.map((cat) => (
               <Link

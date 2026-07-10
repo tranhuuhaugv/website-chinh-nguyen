@@ -41,7 +41,11 @@ export function FeaturedProducts({
   return (
     <section className="py-[18px]">
       <Container>
-        <SectionHead title="Sản phẩm nổi bật" moreHref="/san-pham" />
+        <SectionHead
+          title="Sản phẩm nổi bật"
+          subtitle="Laptop chính hãng, giá tốt được chọn lọc mỗi ngày"
+          moreHref="/san-pham"
+        />
 
         <div className="mb-4 flex flex-wrap gap-2">
           {tabs.map((tab) => {
@@ -51,10 +55,10 @@ export function FeaturedProducts({
                 key={tab}
                 type="button"
                 onClick={() => selectTab(tab)}
-                className={`rounded-full border px-4 py-[7px] text-[13.5px] font-medium transition ${
+                className={`rounded-full px-4 py-[7px] text-[13.5px] transition ${
                   active
-                    ? "border-green bg-green text-white"
-                    : "border-line bg-white text-ink-2 hover:border-green hover:text-green-d"
+                    ? "bg-gradient-to-r from-green-d to-green font-semibold text-white shadow-[0_4px_12px_rgba(21,154,72,.30)]"
+                    : "border border-line bg-white font-medium text-ink-2 hover:border-green hover:text-green-d"
                 }`}
               >
                 {tab}
