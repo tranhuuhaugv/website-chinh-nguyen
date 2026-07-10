@@ -1,3 +1,4 @@
+import Image from "next/image";
 import Link from "next/link";
 import type { BlogAccent, BlogPost } from "@/lib/types";
 import { ClockIcon } from "@/components/icons";
@@ -41,6 +42,27 @@ export function BlogImage({
   );
 }
 
+// Ảnh bìa bài viết: dùng ảnh thật (Cloudinary) nếu có, ngược lại hiện gradient.
+// Đặt trong 1 phần tử có `position: relative` (để `fill` hoạt động).
+export function BlogCover({
+  image,
+  accent,
+  uid,
+  alt = "",
+  sizes = "(max-width: 900px) 100vw, 380px",
+}: {
+  image?: string;
+  accent: BlogAccent;
+  uid: string;
+  alt?: string;
+  sizes?: string;
+}) {
+  if (image) {
+    return <Image src={image} alt={alt} fill sizes={sizes} className="object-cover" />;
+  }
+  return <BlogImage accent={accent} uid={uid} />;
+}
+
 export function BlogCard({ post }: { post: BlogPost }) {
   return (
     <Link
@@ -48,10 +70,15 @@ export function BlogCard({ post }: { post: BlogPost }) {
       className="group flex flex-col overflow-hidden rounded-2xl border border-line bg-white shadow-card transition duration-200 hover:-translate-y-1 hover:shadow-card-hover"
     >
       <div className="relative aspect-video overflow-hidden">
-        <div className="h-full w-full transition duration-300 group-hover:scale-[1.04]">
-          <BlogImage accent={post.accent} uid={post.slug} />
+        <div className="relative h-full w-full transition duration-300 group-hover:scale-[1.04]">
+          <BlogCover
+            image={post.image}
+            accent={post.accent}
+            uid={post.slug}
+            alt={post.title}
+          />
         </div>
-        <span className="absolute left-3 top-3 rounded-full bg-white/90 px-2.5 py-1 text-[11px] font-bold uppercase tracking-[0.04em] text-green-d shadow-sm backdrop-blur">
+        <span className="absolute left-3 top-3 z-[1] rounded-full bg-white/90 px-2.5 py-1 text-[11px] font-bold uppercase tracking-[0.04em] text-green-d shadow-sm backdrop-blur">
           {post.tag}
         </span>
       </div>

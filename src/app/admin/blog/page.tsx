@@ -1,30 +1,10 @@
-"use client";
+import { BlogAdminTable } from "@/components/admin/BlogAdminTable";
+import { getBlogPosts } from "@/lib/data";
 
-import { AdminTable, type Column } from "@/components/admin/AdminTable";
-import { BLOG_POSTS } from "@/lib/mock-data";
-import type { BlogPost } from "@/lib/types";
+export const metadata = { title: "Blog" };
+export const dynamic = "force-dynamic";
 
-const columns: Column<BlogPost>[] = [
-  {
-    key: "title",
-    label: "Tiêu đề",
-    render: (b) => <span className="font-medium">{b.title}</span>,
-  },
-  { key: "tag", label: "Chuyên mục" },
-  { key: "date", label: "Ngày đăng" },
-];
-
-export default function AdminBlogPage() {
-  return (
-    <AdminTable
-      title="Quản lý bài viết"
-      columns={columns}
-      rows={BLOG_POSTS}
-      rowId={(b) => b.slug}
-      searchKeys={(b) => b.title}
-      editHref={(b) => `/admin/blog/${b.slug}`}
-      addHref="/admin/blog/them"
-      addLabel="Thêm bài viết"
-    />
-  );
+export default async function AdminBlogPage() {
+  const posts = await getBlogPosts();
+  return <BlogAdminTable posts={posts} />;
 }

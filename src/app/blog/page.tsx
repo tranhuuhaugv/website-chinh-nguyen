@@ -2,7 +2,7 @@ import type { Metadata } from "next";
 import Link from "next/link";
 import { StaticPage } from "@/components/StaticPage";
 import { Band, SectionIntro } from "@/components/static/Band";
-import { BlogCard, BlogImage } from "@/components/blog/BlogCard";
+import { BlogCard, BlogCover } from "@/components/blog/BlogCard";
 import { ClockIcon } from "@/components/icons";
 import { getBlogPosts } from "@/lib/data";
 
@@ -40,11 +40,17 @@ export default async function BlogListPage() {
               href={`/blog/${featured.slug}`}
               className="group mt-8 grid overflow-hidden rounded-2xl border border-line bg-white shadow-card transition duration-200 hover:shadow-card-hover md:grid-cols-2"
             >
-              <div className="relative aspect-video overflow-hidden md:aspect-auto">
-                <div className="h-full w-full transition duration-300 group-hover:scale-[1.03]">
-                  <BlogImage accent={featured.accent} uid={`feat-${featured.slug}`} />
+              <div className="relative aspect-video overflow-hidden md:aspect-auto md:min-h-[280px]">
+                <div className="relative h-full w-full transition duration-300 group-hover:scale-[1.03]">
+                  <BlogCover
+                    image={featured.image}
+                    accent={featured.accent}
+                    uid={`feat-${featured.slug}`}
+                    alt={featured.title}
+                    sizes="(max-width: 768px) 100vw, 600px"
+                  />
                 </div>
-                <span className="absolute left-4 top-4 rounded-full bg-white/90 px-3 py-1 text-[11.5px] font-bold uppercase tracking-[0.04em] text-green-d shadow-sm backdrop-blur">
+                <span className="absolute left-4 top-4 z-[1] rounded-full bg-white/90 px-3 py-1 text-[11.5px] font-bold uppercase tracking-[0.04em] text-green-d shadow-sm backdrop-blur">
                   {featured.tag}
                 </span>
               </div>

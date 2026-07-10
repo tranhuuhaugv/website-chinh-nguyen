@@ -2,12 +2,13 @@
 
 import { useState } from "react";
 import Link from "next/link";
+import { useRouter } from "next/navigation";
 import { ImageUpload } from "./ImageUpload";
 import { MultiImageUpload } from "./MultiImageUpload";
 import { BlogContentEditor } from "./BlogContentEditor";
 
 // Form generic dùng chung cho các CRUD admin. Sinh input từ cấu hình `fields`.
-// UI-first: submit chỉ hiện thông báo (TODO: gọi API lưu vào DB khi có backend).
+// Có `endpoint` -> lưu thật vào DB qua API; không có -> chế độ demo (chỉ báo).
 
 export interface AdminField {
   name: string;
@@ -42,20 +43,60 @@ export function AdminForm({
   initialValues = {},
   submitLabel = "Lưu",
   backHref,
+  endpoint,
+  method = "POST",
+  extra,
+  redirectTo,
 }: {
   title: string;
   fields: AdminField[];
   initialValues?: Record<string, string>;
   submitLabel?: string;
   backHref: string;
+  /** URL API để lưu thật. Bỏ trống -> chế độ demo (chỉ báo, không lưu). */
+  endpoint?: string;
+  method?: "POST" | "PUT";
+  /** Trường ẩn gửi kèm (vd: originalSlug khi sửa). */
+  extra?: Record<string, string>;
+  /** Điều hướng sau khi lưu thành công (mặc định = backHref). */
+  redirectTo?: string;
 }) {
+  const router = useRouter();
   const [values, setValues] = useState<Record<string, string>>(() =>
     Object.fromEntries(fields.map((f) => [f.name, initialValues[f.name] ?? ""])),
   );
   const [done, setDone] = useState(false);
+  const [busy, setBusy] = useState(false);
+  const [error, setError] = useState("");
 
   const set = (name: string, val: string) =>
     setValues((v) => ({ ...v, [name]: val }));
+
+  async function submit() {
+    if (!endpoint) {
+      setDone(true);
+      return;
+    }
+    setBusy(true);
+    setError("");
+    try {
+      const res = await fetch(endpoint, {
+        method,
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ ...values, ...extra }),
+      });
+      if (res.ok) {
+        router.push(redirectTo ?? backHref);
+        router.refresh();
+      } else {
+        setError("Lưu thất bại. Kiểm tra lại thông tin và thử lại.");
+      }
+    } catch {
+      setError("Lỗi kết nối máy chủ.");
+    } finally {
+      setBusy(false);
+    }
+  }
 
   const inputCls =
     "h-11 w-full rounded-xl border border-line bg-white px-3 text-sm text-ink outline-none transition focus:border-green";
@@ -74,15 +115,20 @@ export function AdminForm({
       <form
         onSubmit={(e) => {
           e.preventDefault();
-          setDone(true);
+          submit();
         }}
         className="rounded-2xl border border-line bg-white p-6"
       >
         <h1 className="mb-5 text-[17px] font-bold text-ink">{title}</h1>
 
-        {done && (
+        {done && !endpoint && (
           <p className="mb-5 rounded-lg bg-green-tint px-3 py-2 text-[12.5px] text-green-d">
             Đã lưu (demo). Dữ liệu sẽ được ghi vào database khi kết nối backend.
+          </p>
+        )}
+        {error && (
+          <p className="mb-5 rounded-lg bg-sale/10 px-3 py-2 text-[12.5px] text-sale">
+            {error}
           </p>
         )}
 
@@ -127,7 +173,10 @@ export function AdminForm({
               ) : f.type === "images" ? (
                 <MultiImageUpload />
               ) : f.type === "blocks" ? (
-                <BlogContentEditor />
+                <BlogContentEditor
+                  value={values[f.name]}
+                  onChange={(v) => set(f.name, v)}
+                />
               ) : f.type === "checkboxes" ? (
                 <div className="flex flex-wrap gap-x-6 gap-y-2.5 rounded-xl border border-line bg-bg p-3">
                   {f.options?.map((o) => {
@@ -194,9 +243,10 @@ export function AdminForm({
         <div className="mt-6 flex gap-3">
           <button
             type="submit"
-            className="h-11 rounded-xl bg-green px-6 text-sm font-semibold text-white transition hover:bg-green-d"
+            disabled={busy}
+            className="h-11 rounded-xl bg-green px-6 text-sm font-semibold text-white transition hover:bg-green-d disabled:opacity-60"
           >
-            {submitLabel}
+            {busy ? "Đang lưu…" : submitLabel}
           </button>
           <Link
             href={backHref}

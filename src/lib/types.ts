@@ -106,6 +106,14 @@ export interface CustomerPhoto {
 
 export type BlogAccent = "green" | "blue" | "purple";
 
+/** 1 khối nội dung bài viết: đoạn văn, tiêu đề phụ hoặc ảnh chèn trong bài. */
+export type BlogBlockType = "text" | "heading" | "image";
+export interface BlogBlock {
+  type: BlogBlockType;
+  /** text/heading: nội dung chữ · image: URL ảnh (Cloudinary). */
+  value: string;
+}
+
 export interface BlogPost {
   slug: string;
   tag: string;
@@ -114,6 +122,8 @@ export interface BlogPost {
   date: string;
   accent: BlogAccent;
   excerpt: string;
-  /** Nội dung bài viết (mỗi phần tử là 1 đoạn). */
-  content: string[];
+  /** Ảnh bìa (banner) bài viết — URL Cloudinary. Bỏ trống -> ảnh gradient. */
+  image?: string;
+  /** Nội dung bài viết theo khối (đoạn văn / tiêu đề / ảnh). */
+  content: BlogBlock[];
 }

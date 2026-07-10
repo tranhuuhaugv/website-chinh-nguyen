@@ -1,6 +1,7 @@
 import { prisma } from "./prisma";
 import type {
   BlogAccent,
+  BlogBlock,
   BlogPost,
   Brand,
   Category,
@@ -59,6 +60,24 @@ function toProduct(p: PrismaProductWithBrand): Product {
   };
 }
 
+// Chuẩn hoá content (Json trong DB) về mảng khối. Hỗ trợ cả dữ liệu cũ
+// (mảng chuỗi = các đoạn văn) lẫn dữ liệu mới (mảng khối {type, value}).
+function toBlocks(raw: unknown): BlogBlock[] {
+  if (!Array.isArray(raw)) return [];
+  return raw
+    .map((b): BlogBlock => {
+      if (typeof b === "string") return { type: "text", value: b };
+      if (b && typeof b === "object") {
+        const o = b as { type?: unknown; value?: unknown };
+        const type =
+          o.type === "heading" || o.type === "image" ? o.type : "text";
+        return { type, value: String(o.value ?? "") };
+      }
+      return { type: "text", value: "" };
+    })
+    .filter((b) => b.value);
+}
+
 function toPost(b: {
   slug: string;
   title: string;
@@ -68,13 +87,15 @@ function toPost(b: {
   readMinutes: number;
   accent: string;
   date: string;
+  image?: string | null;
 }): BlogPost {
   return {
     slug: b.slug,
     title: b.title,
     tag: b.tag,
     excerpt: b.excerpt,
-    content: Array.isArray(b.content) ? (b.content as string[]) : [],
+    image: b.image ?? undefined,
+    content: toBlocks(b.content),
     readMinutes: b.readMinutes,
     accent: b.accent as BlogAccent,
     date: b.date,

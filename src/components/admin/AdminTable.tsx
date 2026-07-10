@@ -2,10 +2,11 @@
 
 import { useState, type ReactNode } from "react";
 import Link from "next/link";
+import { useRouter } from "next/navigation";
 import { EditIcon, PlusIcon, TrashIcon } from "@/components/icons";
 
 // Bảng dữ liệu generic dùng chung cho mọi CRUD (sản phẩm, danh mục, blog...).
-// UI-first: xóa chỉ ẩn dòng ở phía client (demo) cho tới khi nối DB.
+// Có `deleteEndpoint` -> xóa thật qua API; không có -> chỉ ẩn dòng (demo).
 
 export interface Column<T> {
   key: string;
@@ -23,6 +24,7 @@ export function AdminTable<T>({
   editHref,
   addHref,
   addLabel = "Thêm mới",
+  deleteEndpoint,
 }: {
   title: string;
   columns: Column<T>[];
@@ -32,9 +34,29 @@ export function AdminTable<T>({
   editHref?: (row: T) => string;
   addHref?: string;
   addLabel?: string;
+  /** URL API xóa (nhận row). Có -> gọi DELETE thật; không -> chỉ ẩn dòng (demo). */
+  deleteEndpoint?: (row: T) => string;
 }) {
+  const router = useRouter();
   const [rows, setRows] = useState(initialRows);
   const [q, setQ] = useState("");
+  const [busyId, setBusyId] = useState<string | null>(null);
+
+  async function handleDelete(row: T) {
+    if (deleteEndpoint) {
+      if (!confirm("Xóa mục này? Thao tác không thể hoàn tác.")) return;
+      setBusyId(rowId(row));
+      try {
+        await fetch(deleteEndpoint(row), { method: "DELETE" });
+        setRows((prev) => prev.filter((r) => rowId(r) !== rowId(row)));
+        router.refresh();
+      } finally {
+        setBusyId(null);
+      }
+    } else {
+      setRows((prev) => prev.filter((r) => rowId(r) !== rowId(row)));
+    }
+  }
 
   const filtered =
     q && searchKeys
@@ -113,12 +135,9 @@ export function AdminTable<T>({
                       <button
                         type="button"
                         aria-label="Xóa"
-                        onClick={() =>
-                          setRows((prev) =>
-                            prev.filter((r) => rowId(r) !== rowId(row)),
-                          )
-                        }
-                        className="flex h-8 w-8 items-center justify-center rounded-lg border border-line text-ink-2 transition hover:border-sale hover:text-sale"
+                        disabled={busyId === rowId(row)}
+                        onClick={() => handleDelete(row)}
+                        className="flex h-8 w-8 items-center justify-center rounded-lg border border-line text-ink-2 transition hover:border-sale hover:text-sale disabled:opacity-40"
                       >
                         <TrashIcon className="h-4 w-4" />
                       </button>

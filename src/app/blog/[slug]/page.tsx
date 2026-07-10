@@ -5,8 +5,9 @@ import { Container } from "@/components/Container";
 import { Footer } from "@/components/Footer";
 import { Header } from "@/components/Header";
 import { FloatButtons } from "@/components/FloatButtons";
+import Image from "next/image";
 import { Band, SectionIntro } from "@/components/static/Band";
-import { BlogCard, BlogImage } from "@/components/blog/BlogCard";
+import { BlogCard, BlogCover } from "@/components/blog/BlogCard";
 import { ClockIcon } from "@/components/icons";
 import {
   getAllPostSlugs,
@@ -101,8 +102,14 @@ export default async function BlogPostPage({
 
         {/* Ảnh bìa */}
         <Container className="pt-8">
-          <div className="mx-auto aspect-[16/7] max-w-[880px] overflow-hidden rounded-2xl shadow-card max-[600px]:aspect-video">
-            <BlogImage accent={post.accent} uid={`hero-${post.slug}`} />
+          <div className="relative mx-auto aspect-[16/7] max-w-[880px] overflow-hidden rounded-2xl shadow-card max-[600px]:aspect-video">
+            <BlogCover
+              image={post.image}
+              accent={post.accent}
+              uid={`hero-${post.slug}`}
+              alt={post.title}
+              sizes="(max-width: 900px) 100vw, 880px"
+            />
           </div>
         </Container>
 
@@ -112,10 +119,34 @@ export default async function BlogPostPage({
             <p className="border-l-[3px] border-green pl-5 text-[17px] font-medium leading-[1.7] text-ink">
               {post.excerpt}
             </p>
-            <div className="mt-6 flex flex-col gap-5 text-[16.5px] leading-[1.85] text-ink-2">
-              {post.content.map((para, i) => (
-                <p key={i}>{para}</p>
-              ))}
+            <div className="mt-7 flex flex-col gap-5 text-[16.5px] leading-[1.85] text-ink-2">
+              {post.content.map((block, i) => {
+                if (block.type === "heading") {
+                  return (
+                    <h2
+                      key={i}
+                      className="mt-3 text-[21px] font-bold leading-snug tracking-[-0.01em] text-ink"
+                    >
+                      {block.value}
+                    </h2>
+                  );
+                }
+                if (block.type === "image") {
+                  return (
+                    <figure key={i} className="my-2 overflow-hidden rounded-2xl">
+                      <Image
+                        src={block.value}
+                        alt=""
+                        width={1280}
+                        height={720}
+                        sizes="(max-width: 720px) 100vw, 720px"
+                        className="h-auto w-full"
+                      />
+                    </figure>
+                  );
+                }
+                return <p key={i}>{block.value}</p>;
+              })}
             </div>
           </article>
         </Band>
