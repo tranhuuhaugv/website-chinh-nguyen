@@ -26,9 +26,14 @@ export default function AdminLayout({
             <Link href="/" className="text-green-d hover:underline">
               ← Xem cửa hàng
             </Link>
-            <span className="flex h-8 w-8 items-center justify-center rounded-full bg-green-soft text-[13px] font-bold text-green">
-              A
-            </span>
+            <form action="/api/admin/logout" method="post">
+              <button
+                type="submit"
+                className="rounded-lg border border-line px-3 py-1.5 font-medium text-ink-2 transition hover:border-sale hover:text-sale"
+              >
+                Đăng xuất
+              </button>
+            </form>
           </div>
         </header>
         <main className="flex-1 p-6">{children}</main>
