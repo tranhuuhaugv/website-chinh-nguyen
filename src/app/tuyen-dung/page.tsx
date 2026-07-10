@@ -88,7 +88,7 @@ export default function CareersPage() {
     >
       <div className="flex flex-col gap-6">
         {/* Môi trường làm việc */}
-        <section className="rounded-2xl border border-line bg-white p-6">
+        <section className="rounded-2xl border border-line bg-white p-6 shadow-card">
           <h2 className="mb-3 text-[18px] font-bold text-ink">
             Môi trường làm việc
           </h2>
@@ -108,7 +108,7 @@ export default function CareersPage() {
         </section>
 
         {/* Quyền lợi */}
-        <section className="rounded-2xl border border-line bg-white p-6">
+        <section className="rounded-2xl border border-line bg-white p-6 shadow-card">
           <h2 className="mb-4 text-[18px] font-bold text-ink">
             Quyền lợi khi gia nhập
           </h2>
@@ -136,7 +136,7 @@ export default function CareersPage() {
             {JOBS.map((job) => (
               <div
                 key={job.title}
-                className="rounded-2xl border border-line bg-white p-5"
+                className="rounded-2xl border border-line bg-white p-5 shadow-card transition duration-200 hover:border-[#C9E4D2] hover:shadow-card-hover"
               >
                 <div className="flex flex-wrap items-start gap-4">
                   <div className="min-w-0 flex-1">
@@ -156,7 +156,7 @@ export default function CareersPage() {
                   </div>
                   <Link
                     href="/lien-he"
-                    className="flex h-10 items-center gap-1.5 rounded-xl bg-green px-5 text-[13.5px] font-semibold text-white transition hover:bg-green-d"
+                    className="flex h-10 items-center gap-1.5 rounded-xl bg-gradient-to-r from-green-d to-green px-5 text-[13.5px] font-semibold text-white shadow-[0_4px_12px_rgba(21,154,72,.25)] transition hover:shadow-[0_6px_16px_rgba(21,154,72,.38)]"
                   >
                     Ứng tuyển
                     <ArrowRightIcon className="h-4 w-4" />
@@ -188,7 +188,7 @@ export default function CareersPage() {
         </section>
 
         {/* Quy trình ứng tuyển */}
-        <section className="rounded-2xl border border-line bg-white p-6">
+        <section className="rounded-2xl border border-line bg-white p-6 shadow-card">
           <h2 className="mb-4 text-[18px] font-bold text-ink">
             Quy trình ứng tuyển
           </h2>

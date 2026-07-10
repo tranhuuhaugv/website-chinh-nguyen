@@ -41,7 +41,7 @@ export default function StoresPage() {
     >
       <div className="flex flex-col gap-6">
         {/* Giới thiệu hệ thống */}
-        <section className="rounded-2xl border border-line bg-white p-6">
+        <section className="rounded-2xl border border-line bg-white shadow-card p-6">
           <h2 className="mb-3 text-[18px] font-bold text-ink">
             Về hệ thống của chúng tôi
           </h2>
@@ -62,7 +62,7 @@ export default function StoresPage() {
         </section>
 
         {/* Dịch vụ tại cửa hàng */}
-        <section className="rounded-2xl border border-line bg-white p-6">
+        <section className="rounded-2xl border border-line bg-white shadow-card p-6">
           <h2 className="mb-4 text-[18px] font-bold text-ink">
             Dịch vụ tại cửa hàng
           </h2>
@@ -90,7 +90,7 @@ export default function StoresPage() {
             {STORES.map((store) => (
               <div
                 key={store.name}
-                className="overflow-hidden rounded-2xl border border-line bg-white"
+                className="overflow-hidden rounded-2xl border border-line bg-white shadow-card"
               >
                 <div className="relative flex h-32 items-center justify-center bg-gradient-to-br from-green-tint to-green-soft">
                   <span className="flex h-11 w-11 items-center justify-center rounded-full bg-green text-white shadow-md">

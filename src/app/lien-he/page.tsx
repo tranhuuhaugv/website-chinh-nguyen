@@ -43,9 +43,9 @@ export default function ContactPage() {
               {INFO.map(({ icon: Icon, label, value }) => (
                 <li
                   key={label}
-                  className="flex items-start gap-3 rounded-2xl border border-line bg-white p-4"
+                  className="flex items-start gap-3 rounded-2xl border border-line bg-white shadow-card p-4"
                 >
-                  <span className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-green-soft text-green">
+                  <span className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-gradient-to-br from-green to-green-dd text-white shadow-[0_6px_14px_rgba(21,154,72,0.24)]">
                     <Icon className="h-5 w-5" />
                   </span>
                   <div>
@@ -63,14 +63,14 @@ export default function ContactPage() {
         </div>
 
         {/* Địa chỉ cửa hàng */}
-        <section className="rounded-2xl border border-line bg-white p-6">
+        <section className="rounded-2xl border border-line bg-white shadow-card p-6">
           <h2 className="mb-4 text-[18px] font-bold text-ink">
             Địa chỉ cửa hàng
           </h2>
           <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
             {SITE.stores.map((s) => (
               <div key={s.address} className="flex items-start gap-3 rounded-xl bg-bg p-4">
-                <span className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-green-soft text-green">
+                <span className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-gradient-to-br from-green to-green-dd text-white shadow-[0_6px_14px_rgba(21,154,72,0.24)]">
                   <MapPinIcon className="h-5 w-5" />
                 </span>
                 <div>
@@ -83,7 +83,7 @@ export default function ContactPage() {
         </section>
 
         {/* Phòng ban */}
-        <section className="rounded-2xl border border-line bg-white p-6">
+        <section className="rounded-2xl border border-line bg-white shadow-card p-6">
           <h2 className="mb-4 text-[18px] font-bold text-ink">
             Liên hệ theo bộ phận
           </h2>
@@ -105,7 +105,7 @@ export default function ContactPage() {
         </section>
 
         {/* Kênh kết nối */}
-        <section className="rounded-2xl border border-line bg-white p-6">
+        <section className="rounded-2xl border border-line bg-white shadow-card p-6">
           <h2 className="mb-4 text-[18px] font-bold text-ink">Kết nối với chúng tôi</h2>
           <div className="flex flex-wrap gap-3">
             {[

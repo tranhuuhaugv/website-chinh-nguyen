@@ -379,7 +379,7 @@ export default function PolicyPage({ params }: { params: { slug: string } }) {
     >
       <div className="flex flex-col gap-6">
         {/* Mở đầu */}
-        <section className="rounded-2xl border border-line bg-white p-6">
+        <section className="rounded-2xl border border-line bg-white p-6 shadow-card">
           <div className="flex flex-col gap-3 text-[14.5px] leading-relaxed text-ink-2">
             {policy.intro.map((para, i) => (
               <p key={i}>{para}</p>
@@ -390,9 +390,10 @@ export default function PolicyPage({ params }: { params: { slug: string } }) {
         {policy.sections.map((section) => (
           <section
             key={section.heading}
-            className="rounded-2xl border border-line bg-white p-6"
+            className="rounded-2xl border border-line bg-white p-6 shadow-card"
           >
-            <h2 className="mb-4 text-[16px] font-bold text-ink">
+            <h2 className="mb-4 flex items-center gap-2.5 text-[16px] font-bold text-ink">
+              <span className="h-5 w-[4px] shrink-0 rounded-full bg-gradient-to-b from-green to-green-dd" />
               {section.heading}
             </h2>
             {section.paragraphs?.map((para, i) => (

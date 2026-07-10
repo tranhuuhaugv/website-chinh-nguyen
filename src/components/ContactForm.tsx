@@ -44,7 +44,7 @@ export function ContactForm() {
     <form
       onSubmit={onSubmit}
       noValidate
-      className="rounded-2xl border border-line bg-white p-5"
+      className="rounded-2xl border border-line bg-white p-5 shadow-card"
     >
       <h2 className="mb-4 text-[15px] font-bold text-ink">Gửi liên hệ</h2>
       <div className="flex flex-col gap-3">
@@ -70,7 +70,7 @@ export function ContactForm() {
         {error && <p className="text-[12.5px] text-sale">{error}</p>}
         <button
           type="submit"
-          className="h-11 rounded-xl bg-green text-sm font-semibold text-white transition hover:bg-green-d"
+          className="h-11 rounded-xl bg-gradient-to-r from-green-d to-green text-sm font-semibold text-white shadow-[0_4px_12px_rgba(21,154,72,.25)] transition hover:shadow-[0_6px_16px_rgba(21,154,72,.38)]"
         >
           Gửi liên hệ
         </button>

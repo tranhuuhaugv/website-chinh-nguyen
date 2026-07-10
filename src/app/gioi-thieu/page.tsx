@@ -68,7 +68,7 @@ export default function AboutPage() {
     >
       <div className="flex flex-col gap-6">
         {/* Câu chuyện */}
-        <section className="rounded-2xl border border-line bg-white p-6">
+        <section className="rounded-2xl border border-line bg-white p-6 shadow-card">
           <h2 className="mb-3 text-[18px] font-bold text-ink">
             Câu chuyện của chúng tôi
           </h2>
@@ -99,14 +99,14 @@ export default function AboutPage() {
 
         {/* Tầm nhìn & Sứ mệnh */}
         <section className="grid grid-cols-1 gap-4 md:grid-cols-2">
-          <div className="rounded-2xl border border-line bg-white p-6">
+          <div className="rounded-2xl border border-line bg-white p-6 shadow-card">
             <h3 className="mb-2 text-[16px] font-bold text-green-d">Tầm nhìn</h3>
             <p className="text-[14px] leading-relaxed text-ink-2">
               Trở thành hệ thống bán lẻ laptop uy tín hàng đầu khu vực miền Trung,
               nơi khách hàng luôn an tâm về chất lượng sản phẩm và dịch vụ.
             </p>
           </div>
-          <div className="rounded-2xl border border-line bg-white p-6">
+          <div className="rounded-2xl border border-line bg-white p-6 shadow-card">
             <h3 className="mb-2 text-[16px] font-bold text-green-d">Sứ mệnh</h3>
             <p className="text-[14px] leading-relaxed text-ink-2">
               Mang công nghệ chính hãng đến gần hơn với mọi người thông qua sản
@@ -120,10 +120,10 @@ export default function AboutPage() {
           {STATS.map(([num, label]) => (
             <div
               key={label}
-              className="rounded-2xl border border-line bg-white p-5 text-center"
+              className="rounded-2xl bg-gradient-to-br from-green-d to-green-dd p-5 text-center text-white shadow-[0_10px_26px_rgba(11,94,44,0.22)]"
             >
-              <p className="text-[24px] font-extrabold text-green">{num}</p>
-              <p className="mt-1 text-[12.5px] text-muted">{label}</p>
+              <p className="text-[26px] font-extrabold">{num}</p>
+              <p className="mt-1 text-[12.5px] text-white/85">{label}</p>
             </div>
           ))}
         </section>
@@ -135,9 +135,9 @@ export default function AboutPage() {
             {VALUES.map(({ icon: Icon, title, desc }) => (
               <div
                 key={title}
-                className="flex gap-4 rounded-2xl border border-line bg-white p-5"
+                className="flex gap-4 rounded-2xl border border-line bg-white p-5 shadow-card transition duration-200 hover:-translate-y-0.5 hover:border-[#C9E4D2] hover:shadow-card-hover"
               >
-                <span className="flex h-11 w-11 shrink-0 items-center justify-center rounded-xl bg-green-soft text-green">
+                <span className="flex h-11 w-11 shrink-0 items-center justify-center rounded-xl bg-gradient-to-br from-green to-green-dd text-white shadow-[0_6px_14px_rgba(21,154,72,0.28)]">
                   <Icon className="h-5 w-5" />
                 </span>
                 <div>
@@ -152,7 +152,7 @@ export default function AboutPage() {
         </section>
 
         {/* Cam kết */}
-        <section className="rounded-2xl border border-line bg-white p-6">
+        <section className="rounded-2xl border border-line bg-white p-6 shadow-card">
           <h2 className="mb-4 text-[18px] font-bold text-ink">
             Cam kết với khách hàng
           </h2>
@@ -172,14 +172,14 @@ export default function AboutPage() {
         </section>
 
         {/* Cột mốc */}
-        <section className="rounded-2xl border border-line bg-white p-6">
+        <section className="rounded-2xl border border-line bg-white p-6 shadow-card">
           <h2 className="mb-4 text-[18px] font-bold text-ink">
             Cột mốc phát triển
           </h2>
-          <ol className="flex flex-col gap-4">
+          <ol className="relative flex flex-col gap-5 before:absolute before:bottom-4 before:left-[21px] before:top-4 before:w-px before:bg-line">
             {MILESTONES.map(([year, text]) => (
-              <li key={year} className="flex gap-4">
-                <span className="flex h-11 w-11 shrink-0 items-center justify-center rounded-xl bg-green text-[13px] font-bold text-white">
+              <li key={year} className="relative flex gap-4">
+                <span className="relative z-[1] flex h-[43px] w-[43px] shrink-0 items-center justify-center rounded-full bg-gradient-to-br from-green to-green-dd text-[12.5px] font-bold text-white shadow-[0_6px_14px_rgba(21,154,72,0.28)]">
                   {year}
                 </span>
                 <p className="self-center text-[14px] leading-relaxed text-ink-2">

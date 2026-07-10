@@ -24,12 +24,21 @@ export function StaticPage({
     <>
       <Header />
       <main className="bg-bg pb-12">
-        <div className="border-b border-line bg-white">
-          <Container className="py-6">
+        <div className="relative overflow-hidden border-b border-line bg-white">
+          <div className="pointer-events-none absolute inset-0 bg-gradient-to-br from-green-tint via-white to-white" />
+          <div className="pointer-events-none absolute -right-16 -top-24 h-64 w-64 rounded-full bg-green-soft/60 blur-3xl" />
+          <Container className="relative py-8 max-[520px]:py-6">
             <Breadcrumb items={breadcrumb} />
-            <h1 className="mt-2 text-[28px] font-bold text-ink">{title}</h1>
+            <div className="mt-3 flex items-center gap-3">
+              <span className="h-9 w-[5px] shrink-0 rounded-full bg-gradient-to-b from-green to-green-dd" />
+              <h1 className="text-[30px] font-extrabold tracking-[-0.02em] text-ink max-[520px]:text-[23px]">
+                {title}
+              </h1>
+            </div>
             {lead && (
-              <p className="mt-1.5 max-w-2xl text-[14.5px] text-ink-2">{lead}</p>
+              <p className="mt-2.5 max-w-2xl text-[14.5px] leading-relaxed text-ink-2">
+                {lead}
+              </p>
             )}
           </Container>
         </div>

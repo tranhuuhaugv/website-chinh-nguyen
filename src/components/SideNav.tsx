@@ -11,7 +11,7 @@ export function SideNav({
   activeHref: string;
 }) {
   return (
-    <nav className="rounded-2xl border border-line bg-white p-3">
+    <nav className="rounded-2xl border border-line bg-white p-3 shadow-card">
       <p className="px-3 py-2 text-[12px] font-bold uppercase tracking-wide text-muted">
         {title}
       </p>
@@ -22,9 +22,9 @@ export function SideNav({
             <li key={item.href}>
               <Link
                 href={item.href}
-                className={`block rounded-lg px-3 py-2.5 text-[13.5px] transition ${
+                className={`block rounded-xl px-3 py-2.5 text-[13.5px] transition ${
                   active
-                    ? "bg-green-tint font-semibold text-green-d"
+                    ? "bg-gradient-to-r from-green-d to-green font-semibold text-white shadow-[0_4px_12px_rgba(21,154,72,.28)]"
                     : "text-ink-2 hover:bg-bg hover:text-ink"
                 }`}
               >
