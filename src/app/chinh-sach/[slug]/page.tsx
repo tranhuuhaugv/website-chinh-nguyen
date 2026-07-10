@@ -1,7 +1,9 @@
 import type { Metadata } from "next";
+import Link from "next/link";
 import { notFound } from "next/navigation";
 import { StaticPage } from "@/components/StaticPage";
-import { SideNav } from "@/components/SideNav";
+import { Band } from "@/components/static/Band";
+import { Container } from "@/components/Container";
 import { SITE } from "@/lib/site";
 import { CheckIcon } from "@/components/icons";
 
@@ -360,6 +362,8 @@ export default function PolicyPage({ params }: { params: { slug: string } }) {
   const policy = POLICIES[params.slug];
   if (!policy) notFound();
 
+  const activeHref = `/chinh-sach/${params.slug}`;
+
   return (
     <StaticPage
       title={policy.title}
@@ -369,70 +373,88 @@ export default function PolicyPage({ params }: { params: { slug: string } }) {
         { label: "Chính sách", href: "/chinh-sach/bao-hanh" },
         { label: policy.title },
       ]}
-      aside={
-        <SideNav
-          title="Chính sách & Hỗ trợ"
-          items={POLICY_NAV}
-          activeHref={`/chinh-sach/${params.slug}`}
-        />
-      }
     >
-      <div className="flex flex-col gap-6">
-        {/* Mở đầu */}
-        <section className="rounded-2xl border border-line bg-white p-6 shadow-card">
-          <div className="flex flex-col gap-3 text-[14.5px] leading-relaxed text-ink-2">
+      {/* Thanh điều hướng chính sách (ngang, cuộn được) */}
+      <div className="border-b border-line bg-white">
+        <Container>
+          <nav className="flex gap-2 overflow-x-auto py-4 [scrollbar-width:none] [&::-webkit-scrollbar]:hidden">
+            {POLICY_NAV.map((item) => {
+              const active = item.href === activeHref;
+              return (
+                <Link
+                  key={item.href}
+                  href={item.href}
+                  className={`shrink-0 whitespace-nowrap rounded-full px-4 py-2 text-[13.5px] transition ${
+                    active
+                      ? "bg-gradient-to-r from-green-d to-green font-semibold text-white shadow-[0_4px_12px_rgba(21,154,72,.28)]"
+                      : "border border-line font-medium text-ink-2 hover:border-green hover:text-green-d"
+                  }`}
+                >
+                  {item.label}
+                </Link>
+              );
+            })}
+          </nav>
+        </Container>
+      </div>
+
+      {/* Nội dung chính sách — dạng bài viết sạch, ít khung */}
+      <Band tone="white">
+        <article className="max-w-3xl">
+          <div className="flex flex-col gap-4 border-l-[3px] border-green pl-6 text-[15.5px] leading-[1.8] text-ink-2">
             {policy.intro.map((para, i) => (
               <p key={i}>{para}</p>
             ))}
           </div>
-        </section>
 
-        {policy.sections.map((section) => (
-          <section
-            key={section.heading}
-            className="rounded-2xl border border-line bg-white p-6 shadow-card"
-          >
-            <h2 className="mb-4 flex items-center gap-2.5 text-[16px] font-bold text-ink">
-              <span className="h-5 w-[4px] shrink-0 rounded-full bg-gradient-to-b from-green to-green-dd" />
-              {section.heading}
-            </h2>
-            {section.paragraphs?.map((para, i) => (
-              <p key={i} className="mb-3 text-[14px] leading-relaxed text-ink-2">
-                {para}
-              </p>
-            ))}
-            {section.items && (
-              <ul className="flex flex-col gap-3">
-                {section.items.map((item) => (
-                  <li
-                    key={item}
-                    className="flex items-start gap-2.5 text-[14px] leading-relaxed text-ink-2"
-                  >
-                    <span className="mt-0.5 flex h-5 w-5 shrink-0 items-center justify-center rounded-full bg-green-soft text-green">
-                      <CheckIcon className="h-3 w-3" />
-                    </span>
-                    {item}
-                  </li>
-                ))}
-              </ul>
-            )}
-          </section>
-        ))}
+          {policy.sections.map((section) => (
+            <div
+              key={section.heading}
+              className="mt-10 border-t border-line pt-9"
+            >
+              <h2 className="flex items-center gap-3 text-[19px] font-bold text-ink">
+                <span className="h-6 w-[4px] shrink-0 rounded-full bg-gradient-to-b from-green to-green-dd" />
+                {section.heading}
+              </h2>
+              {section.paragraphs?.map((para, i) => (
+                <p
+                  key={i}
+                  className="mt-3.5 text-[15px] leading-[1.8] text-ink-2"
+                >
+                  {para}
+                </p>
+              ))}
+              {section.items && (
+                <ul className="mt-4 flex flex-col gap-3">
+                  {section.items.map((item) => (
+                    <li
+                      key={item}
+                      className="flex items-start gap-3 text-[15px] leading-[1.7] text-ink-2"
+                    >
+                      <span className="mt-1 flex h-5 w-5 shrink-0 items-center justify-center rounded-full bg-gradient-to-br from-green to-green-dd text-white">
+                        <CheckIcon className="h-3 w-3" />
+                      </span>
+                      {item}
+                    </li>
+                  ))}
+                </ul>
+              )}
+            </div>
+          ))}
 
-        <div className="rounded-2xl border border-line bg-green-tint p-6 text-center">
-          <p className="text-[14px] text-ink-2">
+          <div className="mt-11 rounded-2xl bg-green-tint px-6 py-5 text-[14.5px] text-ink-2">
             Cần hỗ trợ thêm? Gọi hotline{" "}
             <b className="text-green-d">{SITE.hotline}</b> hoặc{" "}
-            <a
+            <Link
               href="/lien-he"
               className="font-semibold text-green-d hover:underline"
             >
               liên hệ với chúng tôi
-            </a>
+            </Link>
             .
-          </p>
-        </div>
-      </div>
+          </div>
+        </article>
+      </Band>
     </StaticPage>
   );
 }

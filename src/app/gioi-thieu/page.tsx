@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import { StaticPage } from "@/components/StaticPage";
+import { Band, SectionIntro } from "@/components/static/Band";
 import {
   CheckIcon,
   InstallmentIcon,
@@ -25,171 +26,196 @@ const VALUES = [
   {
     icon: ShieldIcon,
     title: "Chính hãng 100%",
-    desc: "Sản phẩm nguyên seal, đầy đủ hóa đơn VAT, nguồn gốc rõ ràng, minh bạch.",
+    desc: "Nguyên seal, đầy đủ hóa đơn VAT, nguồn gốc minh bạch.",
   },
   {
     icon: WarrantyIcon,
     title: "Hậu mãi uy tín",
-    desc: "Bảo hành 24 tháng, 1 đổi 1 trong 30 ngày, hỗ trợ kỹ thuật trọn đời.",
+    desc: "Bảo hành 24 tháng, 1 đổi 1 trong 30 ngày, hỗ trợ trọn đời.",
   },
   {
     icon: InstallmentIcon,
     title: "Giá tốt, trả góp 0%",
-    desc: "Cam kết giá cạnh tranh nhất, hỗ trợ trả góp linh hoạt, duyệt nhanh.",
+    desc: "Cam kết giá cạnh tranh, trả góp linh hoạt, duyệt nhanh.",
   },
   {
     icon: TruckIcon,
     title: "Giao nhanh tận nơi",
-    desc: "Giao 2h nội thành Đà Nẵng, 1-3 ngày toàn quốc, kiểm tra khi nhận.",
+    desc: "Giao 2h nội thành, 1-3 ngày toàn quốc, kiểm tra khi nhận.",
   },
 ];
 
 const COMMITMENTS = [
-  "Tư vấn trung thực, đúng nhu cầu — không bán sản phẩm khách hàng không cần.",
+  "Tư vấn trung thực, đúng nhu cầu — không bán sản phẩm khách không cần.",
   "Niêm yết giá rõ ràng, không phát sinh chi phí ẩn.",
-  "Sản phẩm được kiểm tra kỹ trước khi giao đến tay khách hàng.",
-  "Hỗ trợ kỹ thuật, vệ sinh máy và cài đặt phần mềm miễn phí trọn đời.",
-  "Luôn lắng nghe và phản hồi mọi góp ý của khách hàng trong 24 giờ.",
+  "Kiểm tra kỹ sản phẩm trước khi giao đến tay khách hàng.",
+  "Hỗ trợ kỹ thuật, vệ sinh máy, cài phần mềm miễn phí trọn đời.",
+  "Lắng nghe và phản hồi mọi góp ý trong vòng 24 giờ.",
 ];
 
 const MILESTONES = [
   ["2019", "Thành lập cửa hàng đầu tiên tại quận Hải Châu, Đà Nẵng."],
-  ["2021", "Mở rộng hệ thống, trở thành đối tác của nhiều thương hiệu lớn."],
-  ["2023", "Ra mắt dịch vụ trả góp 0% và giao nhanh 2 giờ nội thành."],
-  ["2026", "Phục vụ hơn 5.000 khách hàng, phát triển kênh mua sắm trực tuyến."],
+  ["2021", "Mở rộng hệ thống, hợp tác nhiều thương hiệu lớn."],
+  ["2023", "Ra mắt trả góp 0% và giao nhanh 2 giờ nội thành."],
+  ["2026", "Phục vụ hơn 5.000 khách, phát triển kênh mua sắm online."],
 ];
 
 export default function AboutPage() {
   return (
     <StaticPage
-      title="Về Laptop Chính Nguyễn"
-      lead="Hệ thống chuyên laptop chính hãng tại Đà Nẵng — nơi bạn tìm thấy sản phẩm phù hợp với mức giá tốt và dịch vụ đáng tin cậy."
+      title="Chính hãng — Giá tốt — Tận tâm"
+      lead="Laptop Chính Nguyễn là hệ thống chuyên laptop chính hãng tại Đà Nẵng, đồng hành cùng bạn từ lúc chọn máy đến suốt quá trình sử dụng."
       breadcrumb={[{ label: "Trang chủ", href: "/" }, { label: "Giới thiệu" }]}
-    >
-      <div className="flex flex-col gap-6">
-        {/* Câu chuyện */}
-        <section className="rounded-2xl border border-line bg-white p-6 shadow-card">
-          <h2 className="mb-3 text-[18px] font-bold text-ink">
-            Câu chuyện của chúng tôi
-          </h2>
-          <div className="flex flex-col gap-3 text-[14.5px] leading-relaxed text-ink-2">
-            <p>
-              Laptop Chính Nguyễn ra đời từ năm 2019, xuất phát từ mong muốn mang
-              đến cho người dùng Đà Nẵng và cả nước những chiếc laptop chính hãng
-              với mức giá hợp lý nhất. Chúng tôi hiểu rằng một chiếc laptop không
-              chỉ là công cụ, mà còn là người bạn đồng hành trong học tập, công
-              việc và cả những đam mê sáng tạo.
-            </p>
-            <p>
-              Bắt đầu từ một cửa hàng nhỏ, bằng sự tận tâm và uy tín, Chính Nguyễn
-              dần trở thành địa chỉ tin cậy của hàng nghìn khách hàng. Chúng tôi
-              không chạy theo số lượng, mà đặt chất lượng sản phẩm và trải nghiệm
-              khách hàng lên hàng đầu — từ khâu tư vấn, kiểm tra máy, đến chế độ
-              hậu mãi lâu dài.
-            </p>
-            <p>
-              Với phương châm{" "}
-              <b className="text-ink">“Chính hãng — Giá tốt — Tận tâm”</b>, mỗi
-              sản phẩm bán ra đều được kiểm tra kỹ lưỡng, đầy đủ giấy tờ và chế độ
-              bảo hành minh bạch. Đội ngũ của chúng tôi luôn sẵn sàng giúp bạn
-              chọn đúng chiếc máy phù hợp với nhu cầu và ngân sách.
-            </p>
-          </div>
-        </section>
-
-        {/* Tầm nhìn & Sứ mệnh */}
-        <section className="grid grid-cols-1 gap-4 md:grid-cols-2">
-          <div className="rounded-2xl border border-line bg-white p-6 shadow-card">
-            <h3 className="mb-2 text-[16px] font-bold text-green-d">Tầm nhìn</h3>
-            <p className="text-[14px] leading-relaxed text-ink-2">
-              Trở thành hệ thống bán lẻ laptop uy tín hàng đầu khu vực miền Trung,
-              nơi khách hàng luôn an tâm về chất lượng sản phẩm và dịch vụ.
-            </p>
-          </div>
-          <div className="rounded-2xl border border-line bg-white p-6 shadow-card">
-            <h3 className="mb-2 text-[16px] font-bold text-green-d">Sứ mệnh</h3>
-            <p className="text-[14px] leading-relaxed text-ink-2">
-              Mang công nghệ chính hãng đến gần hơn với mọi người thông qua sản
-              phẩm chất lượng, giá hợp lý và sự phục vụ tận tâm nhất.
-            </p>
-          </div>
-        </section>
-
-        {/* Thống kê */}
-        <section className="grid grid-cols-2 gap-4 sm:grid-cols-4">
-          {STATS.map(([num, label]) => (
+      hero={
+        <div className="flex gap-4">
+          {STATS.slice(0, 2).map(([num, label]) => (
             <div
               key={label}
-              className="rounded-2xl bg-gradient-to-br from-green-d to-green-dd p-5 text-center text-white shadow-[0_10px_26px_rgba(11,94,44,0.22)]"
+              className="w-[140px] rounded-2xl border border-line bg-white p-5 text-center shadow-card"
             >
-              <p className="text-[26px] font-extrabold">{num}</p>
-              <p className="mt-1 text-[12.5px] text-white/85">{label}</p>
+              <p className="text-[26px] font-extrabold text-green">{num}</p>
+              <p className="mt-1 text-[12px] leading-tight text-muted">{label}</p>
             </div>
           ))}
-        </section>
-
-        {/* Giá trị cốt lõi */}
-        <section>
-          <h2 className="mb-4 text-[18px] font-bold text-ink">Giá trị cốt lõi</h2>
-          <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
-            {VALUES.map(({ icon: Icon, title, desc }) => (
-              <div
-                key={title}
-                className="flex gap-4 rounded-2xl border border-line bg-white p-5 shadow-card transition duration-200 hover:-translate-y-0.5 hover:border-[#C9E4D2] hover:shadow-card-hover"
-              >
-                <span className="flex h-11 w-11 shrink-0 items-center justify-center rounded-xl bg-gradient-to-br from-green to-green-dd text-white shadow-[0_6px_14px_rgba(21,154,72,0.28)]">
-                  <Icon className="h-5 w-5" />
-                </span>
-                <div>
-                  <b className="text-[14.5px] text-ink">{title}</b>
-                  <p className="mt-1 text-[13.5px] leading-relaxed text-ink-2">
-                    {desc}
-                  </p>
-                </div>
-              </div>
-            ))}
+        </div>
+      }
+    >
+      {/* Câu chuyện */}
+      <Band tone="white">
+        <div className="grid gap-10 lg:grid-cols-[0.85fr_1.15fr]">
+          <SectionIntro
+            eyebrow="Câu chuyện"
+            title="Hành trình của Chính Nguyễn"
+          />
+          <div className="flex flex-col gap-4 text-[15px] leading-[1.75] text-ink-2">
+            <p>
+              Ra đời năm 2019, Chính Nguyễn xuất phát từ mong muốn mang laptop
+              chính hãng đến người dùng Đà Nẵng với mức giá hợp lý nhất. Với chúng
+              tôi, một chiếc laptop không chỉ là công cụ — mà là người bạn đồng
+              hành trong học tập, công việc và sáng tạo.
+            </p>
+            <p>
+              Từ một cửa hàng nhỏ, bằng sự tận tâm và uy tín, chúng tôi dần trở
+              thành địa chỉ tin cậy của hàng nghìn khách hàng. Chúng tôi không
+              chạy theo số lượng, mà đặt chất lượng và trải nghiệm khách hàng lên
+              hàng đầu.
+            </p>
+            <p className="rounded-2xl border-l-[3px] border-green bg-green-tint px-5 py-4 text-[15px] font-medium text-ink">
+              “Mỗi sản phẩm bán ra đều được kiểm tra kỹ, đầy đủ giấy tờ và bảo
+              hành minh bạch — để bạn luôn an tâm.”
+            </p>
           </div>
-        </section>
+        </div>
+      </Band>
 
-        {/* Cam kết */}
-        <section className="rounded-2xl border border-line bg-white p-6 shadow-card">
-          <h2 className="mb-4 text-[18px] font-bold text-ink">
-            Cam kết với khách hàng
-          </h2>
-          <ul className="flex flex-col gap-3">
+      {/* Con số */}
+      <Band tone="green">
+        <SectionIntro
+          center
+          invert
+          eyebrow="Những con số biết nói"
+          title="Được khách hàng tin tưởng lựa chọn"
+        />
+        <div className="mt-10 grid grid-cols-2 gap-8 text-center sm:grid-cols-4">
+          {STATS.map(([num, label]) => (
+            <div key={label}>
+              <p className="text-[40px] font-extrabold leading-none max-[600px]:text-[30px]">
+                {num}
+              </p>
+              <p className="mt-2 text-[13.5px] text-white/80">{label}</p>
+            </div>
+          ))}
+        </div>
+      </Band>
+
+      {/* Giá trị cốt lõi */}
+      <Band tone="tint">
+        <SectionIntro
+          center
+          eyebrow="Giá trị cốt lõi"
+          title="Điều làm nên Chính Nguyễn"
+        />
+        <div className="mt-11 grid grid-cols-1 gap-x-6 gap-y-9 sm:grid-cols-2 lg:grid-cols-4">
+          {VALUES.map(({ icon: Icon, title, desc }) => (
+            <div key={title} className="text-center">
+              <span className="mx-auto mb-4 flex h-16 w-16 items-center justify-center rounded-2xl bg-gradient-to-br from-green to-green-dd text-white shadow-[0_12px_26px_rgba(21,154,72,0.30)]">
+                <Icon className="h-8 w-8" />
+              </span>
+              <h3 className="text-[15.5px] font-bold text-ink">{title}</h3>
+              <p className="mx-auto mt-2 max-w-[230px] text-[13.5px] leading-relaxed text-ink-2">
+                {desc}
+              </p>
+            </div>
+          ))}
+        </div>
+      </Band>
+
+      {/* Tầm nhìn & Sứ mệnh */}
+      <Band tone="white">
+        <div className="grid gap-8 md:grid-cols-2">
+          <div className="border-l-[3px] border-green pl-6">
+            <p className="mb-2 text-[12.5px] font-bold uppercase tracking-[0.16em] text-green-d">
+              Tầm nhìn
+            </p>
+            <p className="text-[17px] font-semibold leading-relaxed text-ink">
+              Trở thành hệ thống bán lẻ laptop uy tín hàng đầu miền Trung, nơi
+              khách hàng luôn an tâm về chất lượng và dịch vụ.
+            </p>
+          </div>
+          <div className="border-l-[3px] border-green pl-6">
+            <p className="mb-2 text-[12.5px] font-bold uppercase tracking-[0.16em] text-green-d">
+              Sứ mệnh
+            </p>
+            <p className="text-[17px] font-semibold leading-relaxed text-ink">
+              Mang công nghệ chính hãng đến gần hơn với mọi người bằng sản phẩm
+              chất lượng, giá hợp lý và sự phục vụ tận tâm.
+            </p>
+          </div>
+        </div>
+      </Band>
+
+      {/* Cam kết */}
+      <Band tone="tint">
+        <div className="grid gap-10 lg:grid-cols-[0.85fr_1.15fr]">
+          <SectionIntro
+            eyebrow="Cam kết"
+            title="Những gì chúng tôi hứa với bạn"
+          />
+          <ul className="grid grid-cols-1 gap-x-8 gap-y-4 sm:grid-cols-2">
             {COMMITMENTS.map((c) => (
               <li
                 key={c}
-                className="flex items-start gap-2.5 text-[14px] leading-relaxed text-ink-2"
+                className="flex items-start gap-3 text-[14.5px] leading-relaxed text-ink-2"
               >
-                <span className="mt-0.5 flex h-5 w-5 shrink-0 items-center justify-center rounded-full bg-green-soft text-green">
-                  <CheckIcon className="h-3 w-3" />
+                <span className="mt-0.5 flex h-6 w-6 shrink-0 items-center justify-center rounded-full bg-gradient-to-br from-green to-green-dd text-white">
+                  <CheckIcon className="h-3.5 w-3.5" />
                 </span>
                 {c}
               </li>
             ))}
           </ul>
-        </section>
+        </div>
+      </Band>
 
-        {/* Cột mốc */}
-        <section className="rounded-2xl border border-line bg-white p-6 shadow-card">
-          <h2 className="mb-4 text-[18px] font-bold text-ink">
-            Cột mốc phát triển
-          </h2>
-          <ol className="relative flex flex-col gap-5 before:absolute before:bottom-4 before:left-[21px] before:top-4 before:w-px before:bg-line">
-            {MILESTONES.map(([year, text]) => (
-              <li key={year} className="relative flex gap-4">
-                <span className="relative z-[1] flex h-[43px] w-[43px] shrink-0 items-center justify-center rounded-full bg-gradient-to-br from-green to-green-dd text-[12.5px] font-bold text-white shadow-[0_6px_14px_rgba(21,154,72,0.28)]">
-                  {year}
-                </span>
-                <p className="self-center text-[14px] leading-relaxed text-ink-2">
-                  {text}
-                </p>
-              </li>
-            ))}
-          </ol>
-        </section>
-      </div>
+      {/* Cột mốc */}
+      <Band tone="white">
+        <SectionIntro
+          center
+          eyebrow="Chặng đường"
+          title="Cột mốc phát triển"
+        />
+        <div className="mt-11 grid grid-cols-1 gap-x-6 gap-y-9 sm:grid-cols-2 lg:grid-cols-4">
+          {MILESTONES.map(([year, text]) => (
+            <div key={year} className="relative pt-6">
+              <span className="absolute left-0 top-0 h-[3px] w-10 rounded-full bg-gradient-to-r from-green to-green-dd" />
+              <p className="text-[28px] font-extrabold text-green">{year}</p>
+              <p className="mt-2.5 text-[13.5px] leading-relaxed text-ink-2">
+                {text}
+              </p>
+            </div>
+          ))}
+        </div>
+      </Band>
     </StaticPage>
   );
 }

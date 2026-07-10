@@ -5,54 +5,47 @@ import { Footer } from "./Footer";
 import { Header } from "./Header";
 import { FloatButtons } from "./FloatButtons";
 
-// Khung trang nội dung tĩnh: dải tiêu đề + (tuỳ chọn) sidebar. Server Component.
+// Khung trang nội dung tĩnh — bố cục "landing": hero mở đầu + các dải (Band)
+// full-width do từng trang tự dựng. Server Component.
 
 export function StaticPage({
   title,
   lead,
   breadcrumb,
-  aside,
+  hero,
   children,
 }: {
   title: string;
   lead?: string;
   breadcrumb: Crumb[];
-  aside?: ReactNode;
+  /** Nội dung phụ bên phải hero (số liệu, nút...). Tuỳ chọn. */
+  hero?: ReactNode;
   children: ReactNode;
 }) {
   return (
     <>
       <Header />
-      <main className="bg-bg pb-12">
-        <div className="relative overflow-hidden border-b border-line bg-white">
-          <div className="pointer-events-none absolute inset-0 bg-gradient-to-br from-green-tint via-white to-white" />
-          <div className="pointer-events-none absolute -right-16 -top-24 h-64 w-64 rounded-full bg-green-soft/60 blur-3xl" />
-          <Container className="relative py-8 max-[520px]:py-6">
-            <Breadcrumb items={breadcrumb} />
-            <div className="mt-3 flex items-center gap-3">
-              <span className="h-9 w-[5px] shrink-0 rounded-full bg-gradient-to-b from-green to-green-dd" />
-              <h1 className="text-[30px] font-extrabold tracking-[-0.02em] text-ink max-[520px]:text-[23px]">
+      <main>
+        {/* Hero mở đầu */}
+        <section className="relative overflow-hidden border-b border-line bg-gradient-to-br from-green-tint via-white to-white">
+          <div className="pointer-events-none absolute -right-24 -top-28 h-80 w-80 rounded-full bg-green-soft/50 blur-3xl" />
+          <Container className="relative grid grid-cols-1 items-center gap-8 py-14 max-[600px]:py-10 lg:grid-cols-[1.3fr_1fr]">
+            <div>
+              <Breadcrumb items={breadcrumb} />
+              <h1 className="mt-4 max-w-3xl text-[42px] font-extrabold leading-[1.08] tracking-[-0.025em] text-ink max-[900px]:text-[34px] max-[600px]:text-[27px]">
                 {title}
               </h1>
+              {lead && (
+                <p className="mt-4 max-w-2xl text-[16px] leading-relaxed text-ink-2 max-[600px]:text-[14.5px]">
+                  {lead}
+                </p>
+              )}
             </div>
-            {lead && (
-              <p className="mt-2.5 max-w-2xl text-[14.5px] leading-relaxed text-ink-2">
-                {lead}
-              </p>
-            )}
+            {hero && <div className="lg:justify-self-end">{hero}</div>}
           </Container>
-        </div>
+        </section>
 
-        <Container className="pt-6">
-          {aside ? (
-            <div className="grid grid-cols-1 gap-6 lg:grid-cols-[240px_1fr]">
-              <aside className="h-fit lg:sticky lg:top-6">{aside}</aside>
-              <div className="min-w-0">{children}</div>
-            </div>
-          ) : (
-            children
-          )}
-        </Container>
+        {children}
       </main>
       <Footer />
       <FloatButtons />
