@@ -168,6 +168,15 @@ export async function getOrders() {
   return prisma.order.findMany({ orderBy: { createdAt: "desc" } });
 }
 
+// --- Tài khoản quản trị (admin) ---
+export async function getAdminUsers() {
+  return prisma.user.findMany({
+    where: { role: "admin" },
+    select: { id: true, name: true, email: true, phone: true, createdAt: true },
+    orderBy: { createdAt: "desc" },
+  });
+}
+
 // --- Cài đặt ---
 export async function getSetting(key: string): Promise<string | null> {
   const s = await prisma.setting.findUnique({ where: { key } });

@@ -1,4 +1,6 @@
 import { NextResponse } from "next/server";
+import bcrypt from "bcryptjs";
+import { prisma } from "@/lib/prisma";
 import {
   ADMIN_COOKIE,
   checkAdminCredentials,
@@ -13,7 +15,21 @@ export async function POST(req: Request) {
     return NextResponse.json({ ok: false }, { status: 400 });
   }
 
-  if (!checkAdminCredentials(body.email ?? "", body.password ?? "")) {
+  const email = body.email ?? "";
+  const password = body.password ?? "";
+
+  // 1) Admin gốc trong .env
+  let ok = checkAdminCredentials(email, password);
+
+  // 2) Admin lưu trong database (role = admin)
+  if (!ok && email) {
+    const user = await prisma.user.findUnique({ where: { email } });
+    if (user && user.role === "admin") {
+      ok = await bcrypt.compare(password, user.passwordHash);
+    }
+  }
+
+  if (!ok) {
     return NextResponse.json({ ok: false }, { status: 401 });
   }
 

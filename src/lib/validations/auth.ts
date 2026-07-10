@@ -36,6 +36,14 @@ export const registerApiSchema = z.object({
   password: z.string().min(6, "Mật khẩu tối thiểu 6 ký tự"),
 });
 
+// Schema tạo tài khoản quản trị (trong admin).
+export const adminUserSchema = z.object({
+  name: z.string().min(2, "Vui lòng nhập tên"),
+  email: z.string().email("Email không hợp lệ"),
+  password: z.string().min(6, "Mật khẩu tối thiểu 6 ký tự"),
+});
+
 export type LoginInput = z.infer<typeof loginSchema>;
 export type RegisterInput = z.infer<typeof registerSchema>;
 export type RegisterApiInput = z.infer<typeof registerApiSchema>;
+export type AdminUserInput = z.infer<typeof adminUserSchema>;
