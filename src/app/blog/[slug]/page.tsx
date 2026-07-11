@@ -56,6 +56,11 @@ export default async function BlogPostPage({
 
   const related = await getRelatedPosts(post);
 
+  // Mục lục: các khối tiêu đề trong bài (kèm vị trí gốc để làm anchor).
+  const headings = post.content
+    .map((b, i) => ({ ...b, i }))
+    .filter((b) => b.type === "heading");
+
   const jsonLd = {
     "@context": "https://schema.org",
     "@type": "Article",
@@ -119,13 +124,42 @@ export default async function BlogPostPage({
             <p className="border-l-[3px] border-green pl-5 text-[17px] font-medium leading-[1.7] text-ink">
               {post.excerpt}
             </p>
+
+            {/* Mục lục — giúp khách xem tổng quan & nhảy tới từng mục */}
+            {headings.length >= 2 && (
+              <nav
+                aria-label="Nội dung bài viết"
+                className="mt-6 rounded-2xl border border-line bg-bg/60 p-5"
+              >
+                <p className="mb-3 text-[12.5px] font-bold uppercase tracking-[0.08em] text-green-d">
+                  Nội dung bài viết
+                </p>
+                <ol className="flex flex-col gap-2">
+                  {headings.map((h, n) => (
+                    <li key={h.i}>
+                      <a
+                        href={`#muc-${h.i}`}
+                        className="flex gap-2 text-[14.5px] leading-snug text-ink-2 transition hover:text-green-d"
+                      >
+                        <span className="font-semibold text-green-d">
+                          {n + 1}.
+                        </span>
+                        <span>{h.value}</span>
+                      </a>
+                    </li>
+                  ))}
+                </ol>
+              </nav>
+            )}
+
             <div className="mt-7 flex flex-col gap-5 text-[16.5px] leading-[1.85] text-ink-2">
               {post.content.map((block, i) => {
                 if (block.type === "heading") {
                   return (
                     <h2
                       key={i}
-                      className="mt-3 text-[21px] font-bold leading-snug tracking-[-0.01em] text-ink"
+                      id={`muc-${i}`}
+                      className="mt-3 scroll-mt-24 text-[21px] font-bold leading-snug tracking-[-0.01em] text-ink"
                     >
                       {block.value}
                     </h2>
