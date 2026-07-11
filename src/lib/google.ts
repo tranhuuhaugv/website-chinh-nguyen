@@ -16,34 +16,8 @@ export function googleConfigured(): boolean {
   return Boolean(process.env.GOOGLE_CLIENT_ID && process.env.GOOGLE_CLIENT_SECRET);
 }
 
-/**
- * URL gốc công khai của site — dùng để dựng redirect_uri gửi cho Google.
- * QUAN TRỌNG: trên VPS chạy sau nginx, `req.url` trả về địa chỉ nội bộ
- * (localhost:3000) nên KHÔNG dùng được. Ưu tiên header proxy chuyển tiếp,
- * rồi tới NEXT_PUBLIC_SITE_URL, cuối cùng mới tới origin của request (local dev).
- */
-export function getBaseUrl(req: Request): string {
-  const h = req.headers;
-  const fwdHost = h.get("x-forwarded-host") || h.get("host") || "";
-
-  // Local dev: luôn dùng đúng host của request (localhost:3000).
-  if (fwdHost.startsWith("localhost") || fwdHost.startsWith("127.0.0.1")) {
-    const proto = h.get("x-forwarded-proto") || "http";
-    return `${proto}://${fwdHost}`;
-  }
-
-  // Production: dùng domain cấu hình sẵn cho chắc (khớp redirect URI đã khai báo).
-  const envUrl = process.env.NEXT_PUBLIC_SITE_URL;
-  if (envUrl) return envUrl.replace(/\/+$/, "");
-
-  // Dự phòng: dựng từ header proxy.
-  if (fwdHost) {
-    const proto = h.get("x-forwarded-proto") || "https";
-    return `${proto}://${fwdHost}`;
-  }
-
-  return new URL(req.url).origin;
-}
+// getBaseUrl chuyển sang lib/base-url (dùng chung cho logout, OAuth...).
+export { getBaseUrl } from "./base-url";
 
 /** URL đưa khách sang trang đồng ý của Google. */
 export function getGoogleAuthUrl(redirectUri: string, state: string): string {
