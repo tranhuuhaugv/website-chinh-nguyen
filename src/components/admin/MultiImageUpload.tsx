@@ -2,7 +2,7 @@
 
 import { useRef, useState } from "react";
 import { TrashIcon, UploadIcon } from "@/components/icons";
-import { cloudinaryReady, uploadImage } from "@/lib/cloudinary";
+import { uploadImage } from "@/lib/upload";
 
 // Tải NHIỀU ảnh (thư viện ảnh sản phẩm). Chọn/kéo-thả nhiều file cùng lúc.
 export function MultiImageUpload({
@@ -90,12 +90,6 @@ export function MultiImageUpload({
       </div>
 
       {busy && <p className="mt-2 text-[12.5px] text-ink-2">Đang tải ảnh…</p>}
-      {!cloudinaryReady && (
-        <p className="mt-2 text-[12.5px] text-amber">
-          Chế độ demo: ảnh chỉ xem trước, chưa được lưu. Cấu hình Cloudinary để
-          tải lên thật.
-        </p>
-      )}
     </div>
   );
 }

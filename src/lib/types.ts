@@ -87,6 +87,12 @@ export interface HeroSlide {
   accent: BannerAccent;
 }
 
+/** Banner ảnh thật do admin tải lên (hero / treo bên). */
+export interface BannerItem {
+  image: string;
+  href: string;
+}
+
 /** Banner treo dọc 2 bên trang (chỉ hiện trên màn hình đủ rộng). */
 export interface SideBanner {
   id: string;

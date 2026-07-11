@@ -2,11 +2,11 @@
 
 import { useRef, useState } from "react";
 import { TrashIcon, UploadIcon } from "@/components/icons";
-import { cloudinaryReady, uploadImage } from "@/lib/cloudinary";
+import { uploadImage } from "@/lib/upload";
 
-// Tải 1 ảnh từ máy lên. Có cấu hình Cloudinary -> upload thật; chưa có -> demo.
+// Tải 1 ảnh từ máy lên VPS (lưu tại public/uploads, phục vụ ở /uploads/...).
 
-type Status = "idle" | "uploading" | "done" | "demo" | "error";
+type Status = "idle" | "uploading" | "done" | "error";
 
 export function ImageUpload({
   value,
@@ -23,12 +23,6 @@ export function ImageUpload({
 
   async function handleFile(file: File | undefined) {
     if (!file || !file.type.startsWith("image/")) return;
-
-    if (!cloudinaryReady) {
-      setPreview(URL.createObjectURL(file));
-      setStatus("demo");
-      return;
-    }
 
     setStatus("uploading");
     try {
@@ -106,22 +100,14 @@ export function ImageUpload({
       )}
 
       {status === "uploading" && (
-        <p className="mt-2 text-[12.5px] text-ink-2">Đang tải lên Cloudinary…</p>
+        <p className="mt-2 text-[12.5px] text-ink-2">Đang tải ảnh lên…</p>
       )}
-      {status === "done" && cloudinaryReady && (
-        <p className="mt-2 text-[12.5px] text-green-d">
-          Đã tải lên thành công.
-        </p>
+      {status === "done" && (
+        <p className="mt-2 text-[12.5px] text-green-d">Đã tải lên thành công.</p>
       )}
       {status === "error" && (
         <p className="mt-2 text-[12.5px] text-sale">
-          Tải lên thất bại. Kiểm tra lại cấu hình Cloudinary.
-        </p>
-      )}
-      {status === "demo" && (
-        <p className="mt-2 text-[12.5px] text-amber">
-          Chế độ demo: ảnh chỉ xem trước, chưa được lưu. Cấu hình Cloudinary để
-          tải lên thật.
+          Tải lên thất bại, vui lòng thử lại.
         </p>
       )}
     </div>

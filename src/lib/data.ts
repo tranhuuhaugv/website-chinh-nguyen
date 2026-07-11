@@ -1,5 +1,6 @@
 import { prisma } from "./prisma";
 import type {
+  BannerItem,
   BlogAccent,
   BlogBlock,
   BlogPost,
@@ -311,6 +312,34 @@ export async function getCustomerPhotos(): Promise<CustomerPhoto[]> {
     alt: `Khách hàng ${i + 1} tại Laptop Chính Nguyễn`,
     image,
   }));
+}
+
+// --- Banner (lưu danh sách {image, href} trong Setting) ---
+async function readBanners(key: string): Promise<BannerItem[]> {
+  if (NO_DB) return [];
+  const s = await prisma.setting.findUnique({ where: { key } });
+  try {
+    const parsed = s ? JSON.parse(s.value) : [];
+    if (!Array.isArray(parsed)) return [];
+    return parsed
+      .filter(
+        (x): x is { image: string; href?: unknown } =>
+          x && typeof x.image === "string" && x.image.trim() !== "",
+      )
+      .map((x) => ({
+        image: x.image,
+        href: typeof x.href === "string" && x.href ? x.href : "/san-pham",
+      }));
+  } catch {
+    return [];
+  }
+}
+
+export function getHeroBanners(): Promise<BannerItem[]> {
+  return readBanners("heroBanners");
+}
+export function getSideBanners(): Promise<BannerItem[]> {
+  return readBanners("sideBanners");
 }
 
 // --- Cài đặt ---

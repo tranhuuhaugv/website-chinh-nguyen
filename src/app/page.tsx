@@ -23,7 +23,9 @@ import {
   getCustomerPhotos,
   getFeaturedProducts,
   getFlashSaleProducts,
+  getHeroBanners,
   getSetting,
+  getSideBanners,
 } from "@/lib/data";
 import { SITE } from "@/lib/site";
 
@@ -65,15 +67,25 @@ const jsonLd = {
 };
 
 export default async function HomePage() {
-  const [flashProducts, featured, categories, posts, customerPhotos, flashSetting] =
-    await Promise.all([
-      getFlashSaleProducts(),
-      getFeaturedProducts(),
-      getCategories(),
-      getBlogPosts(),
-      getCustomerPhotos(),
-      getSetting("flashSaleEnabled"),
-    ]);
+  const [
+    flashProducts,
+    featured,
+    categories,
+    posts,
+    customerPhotos,
+    heroBanners,
+    sideBanners,
+    flashSetting,
+  ] = await Promise.all([
+    getFlashSaleProducts(),
+    getFeaturedProducts(),
+    getCategories(),
+    getBlogPosts(),
+    getCustomerPhotos(),
+    getHeroBanners(),
+    getSideBanners(),
+    getSetting("flashSaleEnabled"),
+  ]);
   const flashOn = flashSetting === "true" && flashProducts.length > 0;
 
   return (
@@ -83,10 +95,14 @@ export default async function HomePage() {
         dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
       />
       <Header />
-      <SideBanners left={SIDE_BANNERS[0]} right={SIDE_BANNERS[1]} />
+      <SideBanners
+        left={SIDE_BANNERS[0]}
+        right={SIDE_BANNERS[1]}
+        images={sideBanners}
+      />
       <main>
         <CategoryNav />
-        <HeroSlider slides={HERO_SLIDES} />
+        <HeroSlider slides={HERO_SLIDES} imageSlides={heroBanners} />
         {flashOn && <FlashSale products={flashProducts} />}
         <CategoryGrid categories={categories} />
         <FeaturedProducts products={featured} tabs={FEATURED_BRAND_TABS} />

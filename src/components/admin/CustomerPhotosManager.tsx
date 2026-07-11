@@ -69,8 +69,8 @@ export function CustomerPhotosManager({ initial }: { initial: string[] }) {
       </div>
 
       <p className="rounded-xl bg-green-tint px-4 py-3 text-[12.5px] text-green-d">
-        Cần bật Cloudinary (biến môi trường NEXT_PUBLIC_CLOUDINARY_*) để tải ảnh
-        thật. Chưa bật thì ảnh chỉ xem trước, chưa lưu được.
+        Ảnh được lưu trực tiếp trên máy chủ (VPS). Nên chọn ảnh đã nén gọn để tải
+        nhanh; hệ thống cũng tự thu nhỏ ảnh quá lớn.
       </p>
     </div>
   );

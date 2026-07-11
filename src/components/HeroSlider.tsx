@@ -1,8 +1,9 @@
 "use client";
 
 import { useEffect, useState } from "react";
+import Image from "next/image";
 import Link from "next/link";
-import type { HeroSlide } from "@/lib/types";
+import type { BannerItem, HeroSlide } from "@/lib/types";
 import { Container } from "./Container";
 import { HeroSlideArt } from "./HeroSlideArt";
 import { ChevronLeftIcon, ChevronRightIcon } from "./icons";
@@ -10,11 +11,18 @@ import { ChevronLeftIcon, ChevronRightIcon } from "./icons";
 const AUTOPLAY_MS = 5000;
 
 // Banner chính dạng slide (carousel). Client Component vì cần tự chạy + điều khiển.
-// Thêm banner: chỉ cần thêm object vào HERO_SLIDES (mock-data.ts).
+// Có ảnh banner admin tải lên (imageSlides) -> hiện ảnh thật; không thì dùng art mặc định.
 
-export function HeroSlider({ slides }: { slides: HeroSlide[] }) {
+export function HeroSlider({
+  slides,
+  imageSlides = [],
+}: {
+  slides: HeroSlide[];
+  imageSlides?: BannerItem[];
+}) {
   const [index, setIndex] = useState(0);
-  const count = slides.length;
+  const useImages = imageSlides.length > 0;
+  const count = useImages ? imageSlides.length : slides.length;
 
   const goTo = (i: number) => setIndex(((i % count) + count) % count);
 
@@ -37,16 +45,34 @@ export function HeroSlider({ slides }: { slides: HeroSlide[] }) {
             className="flex h-full w-full transition-transform duration-500 ease-out"
             style={{ transform: `translateX(-${index * 100}%)` }}
           >
-            {slides.map((slide) => (
-              <Link
-                key={slide.id}
-                href={slide.href}
-                aria-label={`${slide.title1} ${slide.title2 ?? ""}`.trim()}
-                className="block h-full w-full shrink-0"
-              >
-                <HeroSlideArt slide={slide} />
-              </Link>
-            ))}
+            {useImages
+              ? imageSlides.map((b, i) => (
+                  <Link
+                    key={i}
+                    href={b.href}
+                    aria-label={`Banner ${i + 1}`}
+                    className="relative block h-full w-full shrink-0"
+                  >
+                    <Image
+                      src={b.image}
+                      alt=""
+                      fill
+                      sizes="(max-width: 900px) 100vw, 1200px"
+                      className="object-cover"
+                      priority={i === 0}
+                    />
+                  </Link>
+                ))
+              : slides.map((slide) => (
+                  <Link
+                    key={slide.id}
+                    href={slide.href}
+                    aria-label={`${slide.title1} ${slide.title2 ?? ""}`.trim()}
+                    className="block h-full w-full shrink-0"
+                  >
+                    <HeroSlideArt slide={slide} />
+                  </Link>
+                ))}
           </div>
 
           {count > 1 && (

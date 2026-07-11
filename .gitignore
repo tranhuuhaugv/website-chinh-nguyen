@@ -42,3 +42,6 @@ next-env.d.ts
 # File Excel nhap san pham (du lieu lam viec cuc bo, khong commit)
 *.xlsx
 ~$*
+
+# Anh tu upload len VPS (luu cuc bo, khong commit)
+/public/uploads/

@@ -16,7 +16,7 @@ File này định nghĩa quy tắc và bối cảnh dự án. Đọc kỹ trư�
 - Prisma ORM + PostgreSQL (Neon hoặc Supabase).
 - TailwindCSS + shadcn/ui.
 - NextAuth.js cho xác thực.
-- Cloudinary cho lưu ảnh.
+- Ảnh **tự host trên VPS**: upload qua `/api/upload` (admin) → lưu vào `public/uploads/`, phục vụ tại `/uploads/...`, tối ưu bằng `next/image`. KHÔNG dùng Cloudinary hay dịch vụ ngoài. Client tự nén ảnh trước khi gửi (`lib/upload.ts`).
 - VNPay cho thanh toán.
 - Deploy sau cùng lên VPS (không phải Vercel). Code phải chạy được ở môi trường Node tự host (chú ý cấu hình phù hợp).
 
@@ -24,7 +24,7 @@ File này định nghĩa quy tắc và bối cảnh dự án. Đọc kỹ trư�
 
 ### Ảnh
 - Toàn bộ ảnh phải dùng `next/image`, TUYỆT ĐỐI không dùng thẻ `<img>` thường ở bất kỳ đâu, kể cả trong trang admin.
-- Cấu hình Cloudinary trả ảnh đúng kích thước hiển thị (dùng transformation, không tải ảnh gốc full-size cho ô nhỏ).
+- Ảnh tự host trên VPS (`public/uploads`), để `next/image` tự tối ưu (resize/webp qua sharp) — khai báo `sizes` đúng để trả ảnh vừa ô hiển thị. Khi upload, client đã thu nhỏ ảnh (cạnh ≤1600px) để đỡ nặng ổ đĩa.
 - Ảnh ngoài màn hình đầu tiên phải lazy load (mặc định của `next/image`, không tắt `loading="lazy"`).
 - Luôn khai báo `width`/`height` hoặc dùng `fill` + container có kích thước để tránh layout shift (CLS).
 
