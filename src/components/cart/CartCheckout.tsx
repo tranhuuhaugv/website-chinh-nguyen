@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import Link from "next/link";
 import { useCart } from "./CartContext";
 import { ProductImage } from "@/components/ProductImage";
@@ -16,37 +16,26 @@ import { formatPrice } from "@/lib/format";
 import { checkoutSchema } from "@/lib/validations/checkout";
 
 // Giỏ hàng + thanh toán COD trên cùng 1 trang. Client Component.
-// TODO: tạo đơn hàng (Prisma) khi có backend.
 
 const EMPTY = { name: "", phone: "", address: "", note: "" };
 
-export function CartCheckout() {
+// initialUser lấy từ server (trang giỏ hàng đọc cookie) -> trạng thái đăng nhập
+// + tên/SĐT hiện đúng NGAY từ lần render đầu, không phải chờ fetch (đỡ nhấp nháy).
+export function CartCheckout({
+  initialUser = null,
+}: {
+  initialUser?: { name: string | null; phone: string | null } | null;
+}) {
   const { items, subtotal, totalItems, updateQty, removeItem, clear, ready } =
     useCart();
-  const [values, setValues] = useState(EMPTY);
+  const [values, setValues] = useState({
+    ...EMPTY,
+    name: initialUser?.name ?? "",
+    phone: initialUser?.phone ?? "",
+  });
   const [errors, setErrors] = useState<Record<string, string>>({});
   const [done, setDone] = useState(false);
-  const [loggedIn, setLoggedIn] = useState(false);
-
-  // Đã đăng nhập: điền sẵn tên/SĐT cho khách và báo đơn sẽ lưu vào tài khoản.
-  useEffect(() => {
-    let alive = true;
-    fetch("/api/me")
-      .then((r) => r.json())
-      .then((d) => {
-        if (!alive || !d?.user) return;
-        setLoggedIn(true);
-        setValues((v) => ({
-          ...v,
-          name: v.name || (d.user.name ?? ""),
-          phone: v.phone || (d.user.phone ?? ""),
-        }));
-      })
-      .catch(() => {});
-    return () => {
-      alive = false;
-    };
-  }, []);
+  const loggedIn = Boolean(initialUser);
 
   function set<K extends keyof typeof values>(key: K, val: string) {
     setValues((v) => ({ ...v, [key]: val }));
