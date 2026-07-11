@@ -253,6 +253,15 @@ export async function getOrders() {
   return prisma.order.findMany({ orderBy: { createdAt: "desc" } });
 }
 
+// Đơn hàng của 1 khách (cho trang "Đơn hàng của tôi").
+export async function getUserOrders(userId: string) {
+  if (NO_DB) return [];
+  return prisma.order.findMany({
+    where: { userId },
+    orderBy: { createdAt: "desc" },
+  });
+}
+
 // --- Tài khoản quản trị (admin) ---
 export async function getAdminUsers() {
   if (NO_DB) return [];

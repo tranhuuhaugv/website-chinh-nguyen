@@ -106,9 +106,11 @@ model Order {
   model     String? // đơn thu cũ: mẫu máy cần thu
   upgradeTo String?
   status    String   @default("new") // new | processing | done | canceled
+  userId    String? // gắn với tài khoản khách nếu đặt lúc đã đăng nhập
   createdAt DateTime @default(now())
 
   @@index([createdAt])
+  @@index([userId])
 }
 
 model User {

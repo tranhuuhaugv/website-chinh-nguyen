@@ -2,6 +2,7 @@ import { NextResponse } from "next/server";
 import { orderSchema } from "@/lib/validations/order";
 import { sendOrderEmail } from "@/lib/mail";
 import { prisma } from "@/lib/prisma";
+import { getCurrentUser } from "@/lib/session";
 
 // Nhận đơn (thu cũ / mua hàng) -> lưu vào DB + gửi email thông báo về Gmail.
 export async function POST(req: Request) {
@@ -45,6 +46,9 @@ export async function POST(req: Request) {
     }
   }
 
+  // Gắn đơn với tài khoản nếu khách đang đăng nhập (để hiện ở "Đơn hàng của tôi").
+  const user = await getCurrentUser().catch(() => null);
+
   // Lưu đơn vào database (để hiện trong admin).
   try {
     await prisma.order.create({
@@ -59,6 +63,7 @@ export async function POST(req: Request) {
         total: d.type === "purchase" ? d.total : null,
         model: d.type === "tradein" ? d.model : null,
         upgradeTo: d.type === "tradein" ? (d.upgradeTo ?? null) : null,
+        userId: user?.id ?? null,
       },
     });
   } catch (err) {
