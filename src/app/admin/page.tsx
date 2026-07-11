@@ -1,5 +1,6 @@
 import type { ComponentType, SVGProps } from "react";
 import { TrafficChart } from "@/components/admin/TrafficChart";
+import { MonthPicker } from "@/components/admin/MonthPicker";
 import {
   BoxIcon,
   CartIcon,
@@ -9,8 +10,8 @@ import {
   UsersIcon,
 } from "@/components/icons";
 import {
+  getDailyViews,
   getDashboardCounts,
-  getMonthlyViews,
   getTrafficStats,
 } from "@/lib/data";
 
@@ -43,13 +44,25 @@ function StatCard({
   );
 }
 
-export default async function AdminDashboard() {
-  const year = String(new Date(Date.now() + 7 * 3600 * 1000).getUTCFullYear());
-  const [counts, traffic, months] = await Promise.all([
+export default async function AdminDashboard({
+  searchParams,
+}: {
+  searchParams: { thang?: string };
+}) {
+  const curYm = new Date(Date.now() + 7 * 3600 * 1000)
+    .toISOString()
+    .slice(0, 7);
+  const ym = /^\d{4}-\d{2}$/.test(searchParams.thang ?? "")
+    ? searchParams.thang!
+    : curYm;
+  const [yy, mm] = ym.split("-");
+
+  const [counts, traffic, daily] = await Promise.all([
     getDashboardCounts(),
     getTrafficStats(),
-    getMonthlyViews(year),
+    getDailyViews(ym),
   ]);
+  const monthTotal = daily.reduce((a, b) => a + b, 0);
 
   const row1 = [
     { label: "Tổng đơn hàng", value: counts.orders, icon: CartIcon, grad: "from-[#a855f7] to-[#ec4899]" },
@@ -81,7 +94,13 @@ export default async function AdminDashboard() {
         ))}
       </div>
 
-      <TrafficChart months={months} year={year} />
+      <TrafficChart
+        values={daily}
+        labels={daily.map((_, i) => String(i + 1))}
+        title="Thống kê truy cập theo ngày"
+        subtitle={`Tháng ${mm}/${yy}: ${monthTotal.toLocaleString("vi-VN")} lượt`}
+        control={<MonthPicker value={ym} />}
+      />
     </div>
   );
 }

@@ -420,6 +420,27 @@ export async function getTrafficStats(): Promise<TrafficStats> {
   return { online, today: todayC, month, year, total };
 }
 
+// Lượt xem theo TỪNG NGÀY của 1 tháng (cho biểu đồ khi lọc tháng). ym = "2026-07".
+export async function getDailyViews(ym: string): Promise<number[]> {
+  const [y, m] = ym.split("-").map(Number);
+  const days = new Date(y, m, 0).getDate(); // số ngày trong tháng
+  if (NO_DB) {
+    return Array.from({ length: days }, (_, i) => {
+      const base = 7000 + Math.round(2500 * Math.sin(i / 3));
+      return Math.max(0, i > days - 3 ? Math.round(base * 0.4) : base);
+    });
+  }
+  const rows = await prisma.dailyView.findMany({
+    where: { date: { startsWith: ym } },
+  });
+  const arr = Array<number>(days).fill(0);
+  for (const r of rows) {
+    const d = Number(r.date.slice(8, 10));
+    if (d >= 1 && d <= days) arr[d - 1] = r.count;
+  }
+  return arr;
+}
+
 // Tổng lượt xem theo 12 tháng của 1 năm (cho biểu đồ). year = "2026".
 export async function getMonthlyViews(year: string): Promise<number[]> {
   const months = Array<number>(12).fill(0);

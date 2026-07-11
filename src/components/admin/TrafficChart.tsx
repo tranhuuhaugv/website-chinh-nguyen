@@ -1,13 +1,20 @@
-// Biểu đồ đường thống kê lượt truy cập theo 12 tháng — vẽ bằng SVG, không thư viện.
+import type { ReactNode } from "react";
 
-const MONTHS = ["T1", "T2", "T3", "T4", "T5", "T6", "T7", "T8", "T9", "T10", "T11", "T12"];
+// Biểu đồ đường lượt truy cập — vẽ bằng SVG, không thư viện.
+// Tổng quát: nhận mảng giá trị + nhãn trục X + tiêu đề + control (bộ lọc) tuỳ chọn.
 
 export function TrafficChart({
-  months,
-  year,
+  values,
+  labels,
+  title,
+  subtitle,
+  control,
 }: {
-  months: number[];
-  year: string;
+  values: number[];
+  labels: string[];
+  title: string;
+  subtitle?: string;
+  control?: ReactNode;
 }) {
   const W = 920;
   const H = 320;
@@ -15,33 +22,31 @@ export function TrafficChart({
   const padR = 24;
   const padT = 24;
   const padB = 40;
-  const max = Math.max(...months, 1);
-  // Làm tròn trần lên bội số đẹp cho lưới.
+  const n = Math.max(values.length, 1);
+  const max = Math.max(...values, 1);
   const niceMax = Math.ceil(max / 5000) * 5000 || 5000;
 
-  const x = (i: number) => padL + (i * (W - padL - padR)) / 11;
+  const x = (i: number) =>
+    padL + (n <= 1 ? 0 : (i * (W - padL - padR)) / (n - 1));
   const y = (v: number) => H - padB - (v / niceMax) * (H - padT - padB);
 
-  const pts = months.map((v, i) => `${x(i)},${y(v)}`).join(" ");
-  const area = `M ${x(0)},${H - padB} L ${months
+  const pts = values.map((v, i) => `${x(i)},${y(v)}`).join(" ");
+  const area = `M ${x(0)},${H - padB} L ${values
     .map((v, i) => `${x(i)},${y(v)}`)
-    .join(" L ")} L ${x(11)},${H - padB} Z`;
+    .join(" L ")} L ${x(n - 1)},${H - padB} Z`;
 
   const gridVals = [0, 0.25, 0.5, 0.75, 1].map((f) => Math.round(niceMax * f));
+  const step = Math.max(1, Math.ceil(n / 14)); // thưa nhãn X nếu nhiều điểm
 
   return (
     <div className="rounded-2xl border border-line bg-white p-5 shadow-sm">
-      <div className="mb-1 flex flex-wrap items-center justify-between gap-2">
-        <h2 className="text-[15px] font-bold text-ink">
-          Thống kê truy cập theo tháng
-        </h2>
-        <span className="rounded-lg bg-bg px-3 py-1 text-[13px] font-semibold text-ink-2">
-          Năm {year}
-        </span>
+      <div className="mb-1 flex flex-wrap items-center justify-between gap-3">
+        <h2 className="text-[15px] font-bold text-ink">{title}</h2>
+        {control}
       </div>
       <p className="mb-3 flex items-center gap-1.5 text-[12.5px] text-muted">
         <span className="h-2.5 w-2.5 rounded-full bg-green" />
-        Lượt truy cập
+        Lượt truy cập{subtitle ? ` · ${subtitle}` : ""}
       </p>
 
       <div className="overflow-x-auto">
@@ -49,7 +54,7 @@ export function TrafficChart({
           viewBox={`0 0 ${W} ${H}`}
           className="h-[300px] w-full min-w-[640px]"
           role="img"
-          aria-label={`Biểu đồ lượt truy cập theo tháng năm ${year}`}
+          aria-label={title}
         >
           <defs>
             <linearGradient id="tcArea" x1="0" y1="0" x2="0" y2="1">
@@ -58,7 +63,6 @@ export function TrafficChart({
             </linearGradient>
           </defs>
 
-          {/* Lưới ngang + nhãn trục Y */}
           {gridVals.map((v) => (
             <g key={v}>
               <line
@@ -81,7 +85,6 @@ export function TrafficChart({
             </g>
           ))}
 
-          {/* Vùng nền + đường */}
           <path d={area} fill="url(#tcArea)" />
           <polyline
             points={pts}
@@ -91,23 +94,24 @@ export function TrafficChart({
             strokeLinejoin="round"
             strokeLinecap="round"
           />
-          {months.map((v, i) => (
-            <circle key={i} cx={x(i)} cy={y(v)} r="4" fill="#159A48" />
+          {values.map((v, i) => (
+            <circle key={i} cx={x(i)} cy={y(v)} r="3.5" fill="#159A48" />
           ))}
 
-          {/* Nhãn trục X */}
-          {MONTHS.map((m, i) => (
-            <text
-              key={m}
-              x={x(i)}
-              y={H - padB + 20}
-              textAnchor="middle"
-              fontSize="12"
-              fill="#8B948E"
-            >
-              {m}
-            </text>
-          ))}
+          {labels.map((lb, i) =>
+            i % step === 0 || i === n - 1 ? (
+              <text
+                key={i}
+                x={x(i)}
+                y={H - padB + 20}
+                textAnchor="middle"
+                fontSize="12"
+                fill="#8B948E"
+              >
+                {lb}
+              </text>
+            ) : null,
+          )}
         </svg>
       </div>
     </div>
