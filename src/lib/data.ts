@@ -342,6 +342,103 @@ export function getSideBanners(): Promise<BannerItem[]> {
   return readBanners("sideBanners");
 }
 
+// --- Thống kê tổng quan (admin dashboard) ---
+export interface DashboardCounts {
+  orders: number;
+  products: number;
+  reviews: number;
+  posts: number;
+  users: number;
+}
+export interface TrafficStats {
+  online: number;
+  today: number;
+  month: number;
+  year: number;
+  total: number;
+}
+
+function vnDateStr(): string {
+  return new Date(Date.now() + 7 * 3600 * 1000).toISOString().slice(0, 10);
+}
+
+export async function getDashboardCounts(): Promise<DashboardCounts> {
+  if (NO_DB) {
+    return {
+      orders: 5900,
+      products: MOCK_PRODUCTS.length,
+      reviews: 146,
+      posts: BLOG_POSTS.length,
+      users: 9145,
+    };
+  }
+  const [orders, products, posts, users, reviewAgg] = await Promise.all([
+    prisma.order.count(),
+    prisma.product.count(),
+    prisma.blogPost.count(),
+    prisma.user.count(),
+    prisma.product.aggregate({ _sum: { reviewCount: true } }),
+  ]);
+  return {
+    orders,
+    products,
+    posts,
+    users,
+    reviews: reviewAgg._sum.reviewCount ?? 0,
+  };
+}
+
+export async function getTrafficStats(): Promise<TrafficStats> {
+  if (NO_DB) {
+    return {
+      online: 620,
+      today: 8602,
+      month: 241498,
+      year: 3963322,
+      total: 12917744,
+    };
+  }
+  const today = vnDateStr();
+  const ym = today.slice(0, 7);
+  const y = today.slice(0, 4);
+  const [rows, online] = await Promise.all([
+    prisma.dailyView.findMany(),
+    prisma.activeVisitor.count({
+      where: { lastSeen: { gt: new Date(Date.now() - 5 * 60 * 1000) } },
+    }),
+  ]);
+  let todayC = 0,
+    month = 0,
+    year = 0,
+    total = 0;
+  for (const r of rows) {
+    total += r.count;
+    if (r.date === today) todayC += r.count;
+    if (r.date.startsWith(ym)) month += r.count;
+    if (r.date.startsWith(y)) year += r.count;
+  }
+  return { online, today: todayC, month, year, total };
+}
+
+// Tổng lượt xem theo 12 tháng của 1 năm (cho biểu đồ). year = "2026".
+export async function getMonthlyViews(year: string): Promise<number[]> {
+  const months = Array<number>(12).fill(0);
+  if (NO_DB) {
+    return [
+      23800, 21200, 22100, 23600, 21400, 26200, 27100, 27400, 25100, 21900,
+      9800, 0,
+    ];
+  }
+  const rows = await prisma.dailyView.findMany({
+    where: { date: { startsWith: year } },
+  });
+  for (const r of rows) {
+    const m = Number(r.date.slice(5, 7)) - 1;
+    if (m >= 0 && m < 12) months[m] += r.count;
+  }
+  return months;
+}
+
 // --- Cài đặt ---
 export async function getSetting(key: string): Promise<string | null> {
   // Xem local: bật sẵn Flash Sale để thấy đủ khối trên trang chủ.

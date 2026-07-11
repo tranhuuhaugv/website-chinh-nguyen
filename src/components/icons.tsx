@@ -56,6 +56,14 @@ export const UsersIcon = (p: IconProps) => (
   </Stroke>
 );
 
+export const TrendUpIcon = (p: IconProps) => (
+  <Stroke {...p}>
+    <path d="M3 3v18h18" />
+    <path d="m7 14 4-4 3 3 5-6" />
+    <path d="M15 7h5v5" />
+  </Stroke>
+);
+
 export const CartIcon = (p: IconProps) => (
   <Stroke {...p}>
     <circle cx="8" cy="21" r="1" />

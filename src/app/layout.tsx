@@ -3,6 +3,7 @@ import { Inter } from "next/font/google";
 import "./globals.css";
 import { CartProvider } from "@/components/cart/CartContext";
 import { SiteSettingsProvider } from "@/components/SiteSettingsContext";
+import { VisitorTracker } from "@/components/VisitorTracker";
 
 const inter = Inter({
   subsets: ["latin", "vietnamese"],
@@ -58,6 +59,7 @@ export default function RootLayout({
         <SiteSettingsProvider>
           <CartProvider>{children}</CartProvider>
         </SiteSettingsProvider>
+        <VisitorTracker />
       </body>
     </html>
   );

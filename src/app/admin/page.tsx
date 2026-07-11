@@ -1,88 +1,87 @@
-"use client";
-
-import Link from "next/link";
-import { AdminTable, type Column } from "@/components/admin/AdminTable";
+import type { ComponentType, SVGProps } from "react";
+import { TrafficChart } from "@/components/admin/TrafficChart";
 import {
   BoxIcon,
   CartIcon,
   FileTextIcon,
-  GridIcon,
+  StarIcon,
+  TrendUpIcon,
+  UsersIcon,
 } from "@/components/icons";
-import { ALL_PRODUCTS, BLOG_POSTS, CATEGORIES } from "@/lib/mock-data";
-import { formatPrice } from "@/lib/format";
-import type { Product } from "@/lib/types";
+import {
+  getDashboardCounts,
+  getMonthlyViews,
+  getTrafficStats,
+} from "@/lib/data";
 
-const STATS = [
-  {
-    label: "Sản phẩm",
-    value: ALL_PRODUCTS.length,
-    icon: BoxIcon,
-    href: "/admin/san-pham",
-    grad: "from-[#3B82F6] to-[#2563EB]",
-    ring: "hover:border-[#3B82F6]",
-  },
-  {
-    label: "Danh mục",
-    value: CATEGORIES.length,
-    icon: GridIcon,
-    href: "/admin/danh-muc",
-    grad: "from-[#8B5CF6] to-[#7C3AED]",
-    ring: "hover:border-[#8B5CF6]",
-  },
-  {
-    label: "Bài viết",
-    value: BLOG_POSTS.length,
-    icon: FileTextIcon,
-    href: "/admin/blog",
-    grad: "from-[#F59E0B] to-[#D97706]",
-    ring: "hover:border-[#F59E0B]",
-  },
-  {
-    label: "Đơn hàng",
-    value: 0,
-    icon: CartIcon,
-    href: "/admin/don-hang",
-    grad: "from-[#159A48] to-[#0B5E2C]",
-    ring: "hover:border-green",
-  },
-];
+export const metadata = { title: "Tổng quan" };
+export const dynamic = "force-dynamic";
 
-const recentColumns: Column<Product>[] = [
-  { key: "name", label: "Tên sản phẩm", render: (p) => <span className="font-medium">{p.name}</span> },
-  { key: "brand", label: "Hãng" },
-  { key: "price", label: "Giá", render: (p) => formatPrice(p.price) },
-];
+type Icon = ComponentType<SVGProps<SVGSVGElement>>;
 
-export default function AdminDashboard() {
+function StatCard({
+  label,
+  value,
+  icon: Icon,
+  grad,
+}: {
+  label: string;
+  value: number;
+  icon: Icon;
+  grad: string;
+}) {
   return (
-    <div className="flex flex-col gap-6">
+    <div
+      className={`relative overflow-hidden rounded-2xl bg-gradient-to-br ${grad} p-5 text-white shadow-[0_8px_20px_rgba(16,24,20,0.12)]`}
+    >
+      <p className="text-[13px] font-medium text-white/90">{label}</p>
+      <p className="mt-2 text-[26px] font-extrabold leading-none max-[520px]:text-[22px]">
+        {value.toLocaleString("vi-VN")}
+      </p>
+      <Icon className="absolute bottom-3.5 right-3.5 h-9 w-9 text-white/35" />
+    </div>
+  );
+}
+
+export default async function AdminDashboard() {
+  const year = String(new Date(Date.now() + 7 * 3600 * 1000).getUTCFullYear());
+  const [counts, traffic, months] = await Promise.all([
+    getDashboardCounts(),
+    getTrafficStats(),
+    getMonthlyViews(year),
+  ]);
+
+  const row1 = [
+    { label: "Tổng đơn hàng", value: counts.orders, icon: CartIcon, grad: "from-[#a855f7] to-[#ec4899]" },
+    { label: "Tổng sản phẩm", value: counts.products, icon: BoxIcon, grad: "from-[#f97316] to-[#ef4444]" },
+    { label: "Tổng bài đánh giá", value: counts.reviews, icon: StarIcon, grad: "from-[#ec4899] to-[#f472b6]" },
+    { label: "Tổng bài viết", value: counts.posts, icon: FileTextIcon, grad: "from-[#a78bfa] to-[#8b5cf6]" },
+    { label: "Số lượng user", value: counts.users, icon: UsersIcon, grad: "from-[#f59e0b] to-[#fbbf24]" },
+  ];
+  const row2 = [
+    { label: "Đang truy cập", value: traffic.online, icon: TrendUpIcon, grad: "from-[#3b82f6] to-[#60a5fa]" },
+    { label: "Truy cập trong ngày", value: traffic.today, icon: TrendUpIcon, grad: "from-[#6366f1] to-[#818cf8]" },
+    { label: "Truy cập trong tháng", value: traffic.month, icon: TrendUpIcon, grad: "from-[#22c55e] to-[#4ade80]" },
+    { label: "Truy cập trong năm", value: traffic.year, icon: TrendUpIcon, grad: "from-[#6366f1] to-[#a855f7]" },
+    { label: "Tổng lượt truy cập", value: traffic.total, icon: TrendUpIcon, grad: "from-[#06b6d4] to-[#22d3ee]" },
+  ];
+
+  return (
+    <div className="flex flex-col gap-5">
       <h1 className="text-[20px] font-bold text-ink">Tổng quan</h1>
 
-      <div className="grid grid-cols-2 gap-4 lg:grid-cols-4">
-        {STATS.map(({ label, value, icon: Icon, href, grad, ring }) => (
-          <Link
-            key={label}
-            href={href}
-            className={`group rounded-2xl border border-line bg-white p-5 shadow-sm transition hover:-translate-y-0.5 hover:shadow-md ${ring}`}
-          >
-            <span
-              className={`flex h-11 w-11 items-center justify-center rounded-xl bg-gradient-to-br text-white shadow-sm ${grad}`}
-            >
-              <Icon className="h-[22px] w-[22px]" />
-            </span>
-            <p className="mt-3 text-[28px] font-extrabold text-ink">{value}</p>
-            <p className="text-[13px] text-muted">{label}</p>
-          </Link>
+      <div className="grid grid-cols-2 gap-4 md:grid-cols-3 lg:grid-cols-5">
+        {row1.map((c) => (
+          <StatCard key={c.label} {...c} />
+        ))}
+      </div>
+      <div className="grid grid-cols-2 gap-4 md:grid-cols-3 lg:grid-cols-5">
+        {row2.map((c) => (
+          <StatCard key={c.label} {...c} />
         ))}
       </div>
 
-      <AdminTable
-        title="Sản phẩm mới nhất"
-        columns={recentColumns}
-        rows={ALL_PRODUCTS.slice(0, 5)}
-        rowId={(p) => p.id}
-        editHref={(p) => `/admin/san-pham/${p.id}`}
-      />
+      <TrafficChart months={months} year={year} />
     </div>
   );
 }

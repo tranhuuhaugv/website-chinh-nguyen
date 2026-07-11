@@ -143,3 +143,17 @@ model Banner {
   subtitle String?
   active   Boolean @default(true)
 }
+
+// Đếm lượt xem trang theo ngày (giờ VN). Dùng cho thống kê truy cập ở admin.
+model DailyView {
+  date  String @id // YYYY-MM-DD (giờ VN)
+  count Int    @default(0)
+}
+
+// Phiên khách đang hoạt động (để ước lượng "đang truy cập").
+model ActiveVisitor {
+  id       String   @id // id ngẫu nhiên lưu ở localStorage khách
+  lastSeen DateTime @default(now())
+
+  @@index([lastSeen])
+}
