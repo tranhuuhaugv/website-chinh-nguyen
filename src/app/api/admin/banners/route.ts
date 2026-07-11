@@ -40,24 +40,19 @@ export async function POST(req: Request) {
   const body = (await req.json().catch(() => null)) as {
     hero?: unknown;
     side?: unknown;
-    sub?: unknown;
   } | null;
 
-  const withDefault = (arr: { image: string; href: string }[]) =>
-    arr.map((b) => ({ image: b.image, href: b.href || "/san-pham" }));
-
-  const hero = withDefault(clean(body?.hero));
-  const side = withDefault(clean(body?.side));
-  const sub = withDefault(clean(body?.sub));
+  const hero = clean(body?.hero).map((b) => ({
+    image: b.image,
+    href: b.href || "/san-pham",
+  }));
+  const side = clean(body?.side).map((b) => ({
+    image: b.image,
+    href: b.href || "/san-pham",
+  }));
 
   await saveSetting("heroBanners", hero);
   await saveSetting("sideBanners", side);
-  await saveSetting("subBanners", sub);
 
-  return NextResponse.json({
-    ok: true,
-    hero: hero.length,
-    side: side.length,
-    sub: sub.length,
-  });
+  return NextResponse.json({ ok: true, hero: hero.length, side: side.length });
 }

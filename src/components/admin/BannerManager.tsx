@@ -47,16 +47,13 @@ function SlotEditor({
 export function BannerManager({
   initialHero,
   initialSide,
-  initialSub,
 }: {
   initialHero: BannerItem[];
   initialSide: BannerItem[];
-  initialSub: BannerItem[];
 }) {
   const router = useRouter();
   const [hero, setHero] = useState<Slot[]>(emptySlots(3, initialHero));
   const [side, setSide] = useState<Slot[]>(emptySlots(2, initialSide));
-  const [sub, setSub] = useState<Slot[]>(emptySlots(3, initialSub));
   const [status, setStatus] = useState<"idle" | "saving" | "done" | "error">(
     "idle",
   );
@@ -67,9 +64,6 @@ export function BannerManager({
   function setSideAt(i: number, s: Slot) {
     setSide((prev) => prev.map((x, idx) => (idx === i ? s : x)));
   }
-  function setSubAt(i: number, s: Slot) {
-    setSub((prev) => prev.map((x, idx) => (idx === i ? s : x)));
-  }
 
   async function save() {
     setStatus("saving");
@@ -77,7 +71,7 @@ export function BannerManager({
       const res = await fetch("/api/admin/banners", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ hero, side, sub }),
+        body: JSON.stringify({ hero, side }),
       });
       if (res.ok) {
         setStatus("done");
@@ -108,27 +102,6 @@ export function BannerManager({
               ratio="aspect-[1200/380]"
               slot={slot}
               onChange={(s) => setHeroAt(i, s)}
-            />
-          ))}
-        </div>
-      </section>
-
-      <section className="rounded-2xl border border-line bg-white p-6 shadow-sm">
-        <h2 className="mb-1 text-[15px] font-bold text-ink">
-          3 banner phụ (hàng dưới banner chính)
-        </h2>
-        <p className="mb-5 text-[13px] text-muted">
-          Tỉ lệ khuyến nghị: ngang ~600×200. Mỗi ô là 1 ảnh khách bấm vào sẽ tới
-          link tương ứng. Ô nào trống thì ẩn.
-        </p>
-        <div className="grid grid-cols-1 gap-6 sm:grid-cols-3">
-          {sub.map((slot, i) => (
-            <SlotEditor
-              key={i}
-              label={`Ô ${i + 1}`}
-              ratio="aspect-[600/200]"
-              slot={slot}
-              onChange={(s) => setSubAt(i, s)}
             />
           ))}
         </div>

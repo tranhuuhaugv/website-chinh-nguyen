@@ -341,9 +341,6 @@ export function getHeroBanners(): Promise<BannerItem[]> {
 export function getSideBanners(): Promise<BannerItem[]> {
   return readBanners("sideBanners");
 }
-export function getSubBanners(): Promise<BannerItem[]> {
-  return readBanners("subBanners");
-}
 
 // --- Cài đặt ---
 export async function getSetting(key: string): Promise<string | null> {

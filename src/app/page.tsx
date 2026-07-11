@@ -9,7 +9,6 @@ import { Footer } from "@/components/Footer";
 import { Header } from "@/components/Header";
 import { HeroSlider } from "@/components/HeroSlider";
 import { SideBanners } from "@/components/SideBanners";
-import { SubBanners } from "@/components/SubBanners";
 import { TrustBar } from "@/components/TrustBar";
 import { CompareBar } from "@/components/compare/CompareBar";
 import { CompareProvider } from "@/components/compare/CompareContext";
@@ -27,7 +26,6 @@ import {
   getHeroBanners,
   getSetting,
   getSideBanners,
-  getSubBanners,
 } from "@/lib/data";
 import { SITE } from "@/lib/site";
 
@@ -77,7 +75,6 @@ export default async function HomePage() {
     customerPhotos,
     heroBanners,
     sideBanners,
-    subBanners,
     flashSetting,
   ] = await Promise.all([
     getFlashSaleProducts(),
@@ -87,7 +84,6 @@ export default async function HomePage() {
     getCustomerPhotos(),
     getHeroBanners(),
     getSideBanners(),
-    getSubBanners(),
     getSetting("flashSaleEnabled"),
   ]);
   const flashOn = flashSetting === "true" && flashProducts.length > 0;
@@ -107,7 +103,6 @@ export default async function HomePage() {
       <main>
         <CategoryNav />
         <HeroSlider slides={HERO_SLIDES} imageSlides={heroBanners} />
-        <SubBanners items={subBanners} />
         {flashOn && <FlashSale products={flashProducts} />}
         <CategoryGrid categories={categories} />
         <FeaturedProducts products={featured} tabs={FEATURED_BRAND_TABS} />
