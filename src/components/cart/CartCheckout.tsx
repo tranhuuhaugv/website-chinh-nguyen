@@ -6,7 +6,9 @@ import { useCart } from "./CartContext";
 import { ProductImage } from "@/components/ProductImage";
 import {
   CheckIcon,
+  ClockIcon,
   MinusIcon,
+  PhoneIcon,
   PlusIcon,
   ShieldIcon,
   TrashIcon,
@@ -14,6 +16,7 @@ import {
 } from "@/components/icons";
 import { formatPrice } from "@/lib/format";
 import { checkoutSchema } from "@/lib/validations/checkout";
+import { SITE } from "@/lib/site";
 
 // Giỏ hàng + thanh toán COD trên cùng 1 trang. Client Component.
 
@@ -89,21 +92,92 @@ export function CartCheckout({
 
   if (done) {
     return (
-      <div className="mx-auto max-w-lg rounded-2xl border border-line bg-white p-12 text-center">
-        <div className="mx-auto mb-4 flex h-16 w-16 items-center justify-center rounded-full bg-green-soft text-green">
-          <CheckIcon className="h-8 w-8" />
+      <div className="mx-auto max-w-xl">
+        <div className="overflow-hidden rounded-2xl border border-line bg-white shadow-sm">
+          {/* Đầu thẻ: dấu tích + lời cảm ơn */}
+          <div className="flex flex-col items-center bg-gradient-to-b from-green-tint to-white px-6 pb-6 pt-10 text-center">
+            <div className="relative mb-4 flex h-20 w-20 items-center justify-center">
+              <span className="absolute inset-0 rounded-full bg-green-soft" />
+              <span className="absolute inset-0 rounded-full ring-4 ring-green/15" />
+              <span className="relative flex h-14 w-14 items-center justify-center rounded-full bg-green text-white shadow-sm">
+                <CheckIcon className="h-7 w-7" />
+              </span>
+            </div>
+            <h2 className="text-[22px] font-extrabold text-ink">
+              Đặt hàng thành công!
+            </h2>
+            <p className="mx-auto mt-2 max-w-md text-[14px] leading-relaxed text-ink-2">
+              Cảm ơn Quý khách đã tin tưởng và mua hàng tại{" "}
+              <b className="text-green-d">{SITE.name}</b>. Đơn hàng của Quý khách
+              đã được ghi nhận thành công.
+            </p>
+          </div>
+
+          {/* Các mốc liên hệ / cam kết */}
+          <div className="flex flex-col gap-2.5 px-6 pb-6">
+            <div className="flex items-start gap-3 rounded-xl border border-line bg-bg/50 p-3.5">
+              <span className="flex h-9 w-9 shrink-0 items-center justify-center rounded-lg bg-green-soft text-green">
+                <PhoneIcon className="h-[18px] w-[18px]" />
+              </span>
+              <p className="text-[13.5px] leading-relaxed text-ink-2">
+                Trong vòng <b className="text-ink">15 phút</b>, {SITE.name} sẽ
+                liên hệ lại để xác nhận đơn hàng với Quý khách.
+              </p>
+            </div>
+
+            <div className="flex items-start gap-3 rounded-xl border border-line bg-bg/50 p-3.5">
+              <span className="flex h-9 w-9 shrink-0 items-center justify-center rounded-lg bg-green-soft text-green">
+                <ClockIcon className="h-[18px] w-[18px]" />
+              </span>
+              <p className="text-[13.5px] leading-relaxed text-ink-2">
+                Đơn đặt trong khung{" "}
+                <b className="text-ink">21h30 tối đến 8h00 sáng</b> hôm sau sẽ
+                được chúng tôi liên hệ xác nhận{" "}
+                <b className="text-ink">trước 9h00 sáng</b> cùng ngày.
+              </p>
+            </div>
+
+            <div className="flex items-start gap-3 rounded-xl border border-line bg-bg/50 p-3.5">
+              <span className="flex h-9 w-9 shrink-0 items-center justify-center rounded-lg bg-green-soft text-green">
+                <TruckIcon className="h-[18px] w-[18px]" />
+              </span>
+              <p className="text-[13.5px] leading-relaxed text-ink-2">
+                Thanh toán khi nhận hàng (COD) — Quý khách được{" "}
+                <b className="text-ink">kiểm tra máy trước</b> khi thanh toán.
+              </p>
+            </div>
+          </div>
+
+          {/* Nút hành động */}
+          <div className="flex flex-col gap-2.5 border-t border-line p-6 sm:flex-row">
+            <Link
+              href="/"
+              className="flex h-11 flex-1 items-center justify-center rounded-xl border border-line bg-white text-sm font-semibold text-ink transition hover:bg-bg"
+            >
+              Tiếp tục mua sắm
+            </Link>
+            {loggedIn && (
+              <Link
+                href="/tai-khoan/don-hang"
+                className="flex h-11 flex-1 items-center justify-center rounded-xl bg-green text-sm font-semibold text-white transition hover:bg-green-d"
+              >
+                Xem đơn hàng của tôi
+              </Link>
+            )}
+          </div>
         </div>
-        <p className="text-[18px] font-bold text-ink">Đặt hàng thành công!</p>
-        <p className="mx-auto mt-2 max-w-sm text-[13.5px] text-muted">
-          Cảm ơn bạn đã đặt hàng. Chúng tôi sẽ gọi xác nhận sớm. Thanh toán khi
-          nhận hàng (COD).
+
+        {/* Hotline hỗ trợ */}
+        <p className="mt-4 flex items-center justify-center gap-1.5 text-center text-[13px] text-muted">
+          <ShieldIcon className="h-4 w-4 text-green" />
+          Cần hỗ trợ gấp? Gọi hotline{" "}
+          <a
+            href={`tel:${SITE.hotlineTel}`}
+            className="font-bold text-green-d hover:underline"
+          >
+            {SITE.hotline}
+          </a>
         </p>
-        <Link
-          href="/"
-          className="mt-6 inline-flex h-11 items-center rounded-xl bg-green px-6 text-sm font-semibold text-white transition hover:bg-green-d"
-        >
-          Tiếp tục mua sắm
-        </Link>
       </div>
     );
   }
