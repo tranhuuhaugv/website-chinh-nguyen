@@ -1,12 +1,12 @@
 import { randomUUID } from "crypto";
 import { NextResponse } from "next/server";
-import { googleConfigured, getGoogleAuthUrl } from "@/lib/google";
+import { googleConfigured, getGoogleAuthUrl, getBaseUrl } from "@/lib/google";
 
 export const dynamic = "force-dynamic";
 
 // Bước 1: chuyển hướng khách sang Google để đồng ý đăng nhập.
 export async function GET(req: Request) {
-  const origin = new URL(req.url).origin;
+  const origin = getBaseUrl(req);
 
   if (!googleConfigured()) {
     return NextResponse.redirect(

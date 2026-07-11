@@ -6,6 +6,7 @@ import {
   googleConfigured,
   exchangeCodeForToken,
   getGoogleUser,
+  getBaseUrl,
 } from "@/lib/google";
 
 export const dynamic = "force-dynamic";
@@ -13,7 +14,7 @@ export const dynamic = "force-dynamic";
 // Bước 2: Google gọi lại kèm code -> đổi lấy hồ sơ -> tạo/khớp user -> set phiên.
 export async function GET(req: Request) {
   const url = new URL(req.url);
-  const origin = url.origin;
+  const origin = getBaseUrl(req);
   const fail = (code: string) =>
     NextResponse.redirect(new URL(`/dang-nhap?error=${code}`, origin));
 
