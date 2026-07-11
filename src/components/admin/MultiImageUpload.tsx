@@ -24,16 +24,16 @@ export function MultiImageUpload({
   async function handleFiles(files: FileList | null) {
     if (!files || files.length === 0) return;
     setBusy(true);
-    const added: string[] = [];
-    for (const file of Array.from(files)) {
-      if (!file.type.startsWith("image/")) continue;
-      try {
-        const { url } = await uploadImage(file);
-        added.push(url);
-      } catch {
-        // bỏ qua file lỗi
-      }
-    }
+    // Upload song song (nén trước ở uploadImage) cho nhanh; giữ đúng thứ tự chọn.
+    const list = Array.from(files).filter((f) => f.type.startsWith("image/"));
+    const results = await Promise.all(
+      list.map((file) =>
+        uploadImage(file)
+          .then((r) => r.url)
+          .catch(() => null),
+      ),
+    );
+    const added = results.filter((u): u is string => Boolean(u));
     if (added.length) commit([...images, ...added]);
     setBusy(false);
     if (inputRef.current) inputRef.current.value = "";
