@@ -1,14 +1,18 @@
 import type { Metadata } from "next";
 import Link from "next/link";
+import { redirect } from "next/navigation";
 import { AuthShell } from "@/components/auth/AuthShell";
 import { RegisterForm } from "@/components/auth/RegisterForm";
+import { getCurrentUser } from "@/lib/session";
 
 export const metadata: Metadata = {
   title: "Đăng ký",
   robots: { index: false, follow: false },
 };
 
-export default function RegisterPage() {
+export default async function RegisterPage() {
+  if (await getCurrentUser()) redirect("/tai-khoan");
+
   return (
     <AuthShell
       title="Tạo tài khoản"

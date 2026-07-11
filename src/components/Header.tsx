@@ -3,10 +3,13 @@ import { Container } from "./Container";
 import { Logo } from "./Logo";
 import { CartButton } from "./cart/CartButton";
 import { SearchBox } from "./SearchBox";
-import { ClockIcon, MapPinIcon, PhoneIcon, UserIcon } from "./icons";
+import { AccountMenu } from "./account/AccountMenu";
+import { ClockIcon, MapPinIcon, PhoneIcon } from "./icons";
 import { SITE } from "@/lib/site";
 
 // Header dùng chung toàn site: strip thông báo + ô tìm kiếm (autocomplete) + hotline + tài khoản/giỏ.
+// Header giữ nguyên là Server Component tĩnh (KHÔNG đọc cookie ở đây) để trang chủ/
+// danh mục vẫn cache/ISR được. Trạng thái đăng nhập do AccountMenu tự lấy phía client.
 
 export function Header() {
   return (
@@ -63,13 +66,7 @@ export function Header() {
           </a>
 
           <div className="flex items-center gap-1.5 max-[1100px]:ml-auto">
-            <Link
-              href="/dang-nhap"
-              className="flex items-center gap-2 rounded-lg px-3 py-2 text-[13.5px] font-medium text-white transition hover:bg-white/[0.14]"
-            >
-              <UserIcon className="h-5 w-5" />
-              <span className="max-[900px]:hidden">Tài khoản</span>
-            </Link>
+            <AccountMenu />
             <CartButton />
           </div>
         </Container>

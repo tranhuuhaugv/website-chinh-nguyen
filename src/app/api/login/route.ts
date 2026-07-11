@@ -22,7 +22,15 @@ export async function POST(req: Request) {
   const user = await prisma.user.findFirst({
     where: { OR: [{ email: identifier }, { phone: identifier }] },
   });
-  if (!user || !(await bcrypt.compare(password, user.passwordHash))) {
+  // Tài khoản đăng nhập bằng Google chưa có mật khẩu -> báo dùng nút Google.
+  if (user && !user.passwordHash) {
+    return NextResponse.json(
+      { ok: false, error: "use_google" },
+      { status: 401 },
+    );
+  }
+  if (!user || !user.passwordHash ||
+      !(await bcrypt.compare(password, user.passwordHash))) {
     return NextResponse.json({ ok: false, error: "invalid_credentials" }, {
       status: 401,
     });

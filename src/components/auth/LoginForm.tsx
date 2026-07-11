@@ -1,8 +1,8 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import Link from "next/link";
-import { useRouter } from "next/navigation";
+import { useRouter, useSearchParams } from "next/navigation";
 import { loginSchema } from "@/lib/validations/auth";
 import {
   EyeIcon,
@@ -13,8 +13,16 @@ import {
 } from "@/components/icons";
 import { AuthField } from "./AuthField";
 
+// Thông báo lỗi khi quay về từ Google (query ?error=...).
+const GOOGLE_ERRORS: Record<string, string> = {
+  google_chua_cau_hinh: "Đăng nhập Google chưa được cấu hình.",
+  google_that_bai: "Đăng nhập Google thất bại, vui lòng thử lại.",
+  google_email_chua_xac_minh: "Email Google chưa được xác minh.",
+};
+
 export function LoginForm() {
   const router = useRouter();
+  const searchParams = useSearchParams();
   const [values, setValues] = useState({
     identifier: "",
     password: "",
@@ -24,6 +32,11 @@ export function LoginForm() {
   const [showPass, setShowPass] = useState(false);
   const [notice, setNotice] = useState("");
   const [submitting, setSubmitting] = useState(false);
+
+  useEffect(() => {
+    const err = searchParams.get("error");
+    if (err && GOOGLE_ERRORS[err]) setNotice(GOOGLE_ERRORS[err]);
+  }, [searchParams]);
 
   function set<K extends keyof typeof values>(key: K, val: (typeof values)[K]) {
     setValues((v) => ({ ...v, [key]: val }));
@@ -56,7 +69,12 @@ export function LoginForm() {
         router.push("/tai-khoan");
         router.refresh();
       } else {
-        setNotice("Email/SĐT hoặc mật khẩu không đúng.");
+        const data = await res.json().catch(() => null);
+        if (data?.error === "use_google") {
+          setNotice("Tài khoản này đăng nhập bằng Google. Vui lòng bấm “Tiếp tục với Google”.");
+        } else {
+          setNotice("Email/SĐT hoặc mật khẩu không đúng.");
+        }
       }
     } catch {
       setNotice("Lỗi kết nối, vui lòng thử lại.");
@@ -143,13 +161,13 @@ export function LoginForm() {
         <span className="h-px flex-1 bg-line" />
       </div>
 
-      <button
-        type="button"
+      <a
+        href="/api/auth/google"
         className="flex h-11 items-center justify-center gap-2.5 rounded-xl border border-line bg-white text-sm font-medium text-ink transition hover:bg-bg"
       >
         <GoogleIcon className="h-[18px] w-[18px]" />
         Tiếp tục với Google
-      </button>
+      </a>
     </form>
   );
 }

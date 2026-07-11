@@ -24,7 +24,7 @@ export async function POST(req: Request) {
   // 2) Admin lưu trong database (role = admin)
   if (!ok && email) {
     const user = await prisma.user.findUnique({ where: { email } });
-    if (user && user.role === "admin") {
+    if (user && user.role === "admin" && user.passwordHash) {
       ok = await bcrypt.compare(password, user.passwordHash);
     }
   }

@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import Link from "next/link";
 import { useCart } from "./CartContext";
 import { ProductImage } from "@/components/ProductImage";
@@ -26,6 +26,27 @@ export function CartCheckout() {
   const [values, setValues] = useState(EMPTY);
   const [errors, setErrors] = useState<Record<string, string>>({});
   const [done, setDone] = useState(false);
+  const [loggedIn, setLoggedIn] = useState(false);
+
+  // Đã đăng nhập: điền sẵn tên/SĐT cho khách và báo đơn sẽ lưu vào tài khoản.
+  useEffect(() => {
+    let alive = true;
+    fetch("/api/me")
+      .then((r) => r.json())
+      .then((d) => {
+        if (!alive || !d?.user) return;
+        setLoggedIn(true);
+        setValues((v) => ({
+          ...v,
+          name: v.name || (d.user.name ?? ""),
+          phone: v.phone || (d.user.phone ?? ""),
+        }));
+      })
+      .catch(() => {});
+    return () => {
+      alive = false;
+    };
+  }, []);
 
   function set<K extends keyof typeof values>(key: K, val: string) {
     setValues((v) => ({ ...v, [key]: val }));
@@ -223,6 +244,23 @@ export function CartCheckout() {
           <h2 className="mb-4 text-[15px] font-bold text-ink">
             Thông tin giao hàng
           </h2>
+          {loggedIn ? (
+            <div className="mb-4 flex items-center gap-2 rounded-xl bg-green-soft px-3.5 py-2.5 text-[12.5px] text-green-d">
+              <CheckIcon className="h-4 w-4 shrink-0" />
+              Đơn hàng sẽ được lưu vào tài khoản của bạn. Xem lại tại{" "}
+              <Link href="/tai-khoan/don-hang" className="font-semibold underline">
+                Đơn hàng của tôi
+              </Link>
+              .
+            </div>
+          ) : (
+            <div className="mb-4 rounded-xl bg-bg px-3.5 py-2.5 text-[12.5px] text-ink-2">
+              <Link href="/dang-nhap" className="font-semibold text-green-d underline">
+                Đăng nhập
+              </Link>{" "}
+              để lưu đơn vào tài khoản và theo dõi lịch sử mua hàng.
+            </div>
+          )}
           <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
             {field("name", "Họ và tên", "Nguyễn Văn A")}
             {field("phone", "Số điện thoại", "0912345678")}

@@ -2,10 +2,12 @@
 
 import { useState } from "react";
 import Link from "next/link";
+import { useRouter } from "next/navigation";
 import { registerSchema } from "@/lib/validations/auth";
 import {
   EyeIcon,
   EyeOffIcon,
+  GoogleIcon,
   LockIcon,
   MailIcon,
   PhoneIcon,
@@ -23,6 +25,7 @@ const EMPTY = {
 };
 
 export function RegisterForm() {
+  const router = useRouter();
   const [values, setValues] = useState(EMPTY);
   const [errors, setErrors] = useState<Record<string, string>>({});
   const [showPass, setShowPass] = useState(false);
@@ -61,7 +64,10 @@ export function RegisterForm() {
         }),
       });
       if (res.ok) {
+        // Đã tự đăng nhập (cookie đặt ở API). Vào thẳng trang tài khoản.
         setDone(true);
+        router.push("/tai-khoan");
+        router.refresh();
       } else if (res.status === 409) {
         setErrors({ email: "Email này đã được đăng ký" });
       } else {
@@ -81,11 +87,7 @@ export function RegisterForm() {
           Đăng ký thành công!
         </p>
         <p className="mt-1 text-[13.5px] text-ink-2">
-          Tài khoản của bạn đã được tạo. Bạn có thể{" "}
-          <Link href="/dang-nhap" className="font-semibold text-green-d underline">
-            đăng nhập
-          </Link>{" "}
-          ngay.
+          Đang đưa bạn vào trang tài khoản…
         </p>
       </div>
     );
@@ -206,6 +208,20 @@ export function RegisterForm() {
       >
         {submitting ? "Đang tạo..." : "Tạo tài khoản"}
       </button>
+
+      <div className="flex items-center gap-3 text-[12px] text-muted">
+        <span className="h-px flex-1 bg-line" />
+        Hoặc
+        <span className="h-px flex-1 bg-line" />
+      </div>
+
+      <a
+        href="/api/auth/google"
+        className="flex h-11 items-center justify-center gap-2.5 rounded-xl border border-line bg-white text-sm font-medium text-ink transition hover:bg-bg"
+      >
+        <GoogleIcon className="h-[18px] w-[18px]" />
+        Tiếp tục với Google
+      </a>
     </form>
   );
 }
