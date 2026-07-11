@@ -150,7 +150,21 @@ export function ProductCard({
           Mua ngay
         </AddToCartButton>
 
-        <CompareButton id={product.id} name={product.name} />
+        <CompareButton
+          product={{
+            id: product.id,
+            slug: product.slug,
+            name: product.name,
+            brand: product.brand,
+            accent: product.accent,
+            price: product.price,
+            oldPrice: product.oldPrice,
+            cpu: product.cpu,
+            ram: product.ram,
+            storage: product.storage,
+            rating: product.rating,
+          }}
+        />
       </div>
     </article>
   );

@@ -4,19 +4,32 @@ import {
   createContext,
   useCallback,
   useContext,
+  useEffect,
   useMemo,
   useState,
   type ReactNode,
 } from "react";
+import type { ProductAccent } from "@/lib/types";
 
-// State cho tính năng "So sánh sản phẩm". Chỉ là Client Component vì cần
-// tương tác (thêm/xoá) và chia sẻ state giữa card và thanh so sánh.
+// State cho tính năng "So sánh sản phẩm". Client Component vì cần tương tác
+// (thêm/xoá) và chia sẻ state giữa card, thanh so sánh và bảng so sánh.
+// Lưu localStorage để danh sách không mất khi chuyển trang / tải lại.
 
 export const COMPARE_MAX = 4;
+const STORAGE_KEY = "compare_items";
 
 export interface CompareItem {
   id: string;
+  slug: string;
   name: string;
+  brand: string;
+  accent: ProductAccent;
+  price: number;
+  oldPrice?: number;
+  cpu: string;
+  ram: string;
+  storage: string;
+  rating: number;
 }
 
 interface CompareContextValue {
@@ -24,12 +37,32 @@ interface CompareContextValue {
   add: (item: CompareItem) => void;
   remove: (id: string) => void;
   clear: () => void;
+  has: (id: string) => boolean;
 }
 
 const CompareContext = createContext<CompareContextValue | null>(null);
 
 export function CompareProvider({ children }: { children: ReactNode }) {
   const [items, setItems] = useState<CompareItem[]>([]);
+
+  // Nạp từ localStorage khi mount.
+  useEffect(() => {
+    try {
+      const raw = localStorage.getItem(STORAGE_KEY);
+      if (raw) setItems(JSON.parse(raw) as CompareItem[]);
+    } catch {
+      // bỏ qua dữ liệu hỏng
+    }
+  }, []);
+
+  // Lưu lại mỗi khi đổi.
+  useEffect(() => {
+    try {
+      localStorage.setItem(STORAGE_KEY, JSON.stringify(items));
+    } catch {
+      // bỏ qua (vd chế độ ẩn danh hết dung lượng)
+    }
+  }, [items]);
 
   const add = useCallback((item: CompareItem) => {
     setItems((prev) => {
@@ -46,9 +79,14 @@ export function CompareProvider({ children }: { children: ReactNode }) {
 
   const clear = useCallback(() => setItems([]), []);
 
+  const has = useCallback(
+    (id: string) => items.some((p) => p.id === id),
+    [items],
+  );
+
   const value = useMemo(
-    () => ({ items, add, remove, clear }),
-    [items, add, remove, clear],
+    () => ({ items, add, remove, clear, has }),
+    [items, add, remove, clear, has],
   );
 
   return (

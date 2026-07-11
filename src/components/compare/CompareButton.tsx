@@ -1,20 +1,27 @@
 "use client";
 
-import { CompareIcon } from "@/components/icons";
-import { useCompare } from "./CompareContext";
+import { CheckIcon, CompareIcon } from "@/components/icons";
+import { useCompare, type CompareItem } from "./CompareContext";
 
-/** Nút "So sánh" trong mỗi card — thêm sản phẩm vào thanh so sánh. */
-export function CompareButton({ id, name }: { id: string; name: string }) {
-  const { add } = useCompare();
+/** Nút "So sánh" trong mỗi card — thêm/bỏ sản phẩm khỏi thanh so sánh. */
+export function CompareButton({ product }: { product: CompareItem }) {
+  const { add, remove, has } = useCompare();
+  const active = has(product.id);
 
   return (
     <button
       type="button"
-      onClick={() => add({ id, name })}
-      className="mt-2 flex w-full items-center justify-center gap-[5px] text-xs font-medium text-muted transition hover:text-green-d"
+      onClick={() => (active ? remove(product.id) : add(product))}
+      className={`mt-2 flex w-full items-center justify-center gap-[5px] text-xs font-medium transition ${
+        active ? "text-green-d" : "text-muted hover:text-green-d"
+      }`}
     >
-      <CompareIcon className="h-[13px] w-[13px]" />
-      So sánh
+      {active ? (
+        <CheckIcon className="h-[13px] w-[13px]" />
+      ) : (
+        <CompareIcon className="h-[13px] w-[13px]" />
+      )}
+      {active ? "Đang so sánh" : "So sánh"}
     </button>
   );
 }
