@@ -14,13 +14,13 @@ import { CompareBar } from "@/components/compare/CompareBar";
 import { CompareProvider } from "@/components/compare/CompareContext";
 import {
   FEATURED_BRAND_TABS,
-  CUSTOMER_PHOTOS,
   HERO_SLIDES,
   SIDE_BANNERS,
 } from "@/lib/mock-data";
 import {
   getBlogPosts,
   getCategories,
+  getCustomerPhotos,
   getFeaturedProducts,
   getFlashSaleProducts,
   getSetting,
@@ -65,12 +65,13 @@ const jsonLd = {
 };
 
 export default async function HomePage() {
-  const [flashProducts, featured, categories, posts, flashSetting] =
+  const [flashProducts, featured, categories, posts, customerPhotos, flashSetting] =
     await Promise.all([
       getFlashSaleProducts(),
       getFeaturedProducts(),
       getCategories(),
       getBlogPosts(),
+      getCustomerPhotos(),
       getSetting("flashSaleEnabled"),
     ]);
   const flashOn = flashSetting === "true" && flashProducts.length > 0;
@@ -89,7 +90,7 @@ export default async function HomePage() {
         {flashOn && <FlashSale products={flashProducts} />}
         <CategoryGrid categories={categories} />
         <FeaturedProducts products={featured} tabs={FEATURED_BRAND_TABS} />
-        <CustomerGallery photos={CUSTOMER_PHOTOS} />
+        <CustomerGallery photos={customerPhotos} />
         <BlogSection posts={posts} />
         <TrustBar />
       </main>

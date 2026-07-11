@@ -6,6 +6,7 @@ import type {
   Brand,
   Category,
   CategoryIconName,
+  CustomerPhoto,
   Product,
   ProductAccent,
 } from "./types";
@@ -13,6 +14,7 @@ import {
   ALL_PRODUCTS,
   BLOG_POSTS,
   CATEGORIES,
+  CUSTOMER_PHOTOS,
   FEATURED_PRODUCTS,
   FLASH_SALE_PRODUCTS,
 } from "./mock-data";
@@ -283,6 +285,32 @@ export async function getCustomerUsers(page = 1) {
     prisma.user.count({ where: { role: "user" } }),
   ]);
   return { users, total, totalPages: Math.ceil(total / CUSTOMERS_PER_PAGE) };
+}
+
+// --- Ảnh khách hàng (lưu danh sách URL trong Setting "customerPhotos") ---
+export async function getCustomerPhotoUrls(): Promise<string[]> {
+  if (NO_DB) return [];
+  const s = await prisma.setting.findUnique({
+    where: { key: "customerPhotos" },
+  });
+  try {
+    const parsed = s ? JSON.parse(s.value) : [];
+    return Array.isArray(parsed)
+      ? parsed.filter((x): x is string => typeof x === "string")
+      : [];
+  } catch {
+    return [];
+  }
+}
+
+export async function getCustomerPhotos(): Promise<CustomerPhoto[]> {
+  const urls = await getCustomerPhotoUrls();
+  if (!urls.length) return CUSTOMER_PHOTOS; // chưa cấu hình -> dùng placeholder
+  return urls.map((image, i) => ({
+    id: `kh-${i}`,
+    alt: `Khách hàng ${i + 1} tại Laptop Chính Nguyễn`,
+    image,
+  }));
 }
 
 // --- Cài đặt ---

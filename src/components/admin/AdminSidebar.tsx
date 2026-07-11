@@ -22,6 +22,7 @@ const NAV = [
   { href: "/admin/thuong-hieu", label: "Thương hiệu", icon: TagIcon },
   { href: "/admin/blog", label: "Blog", icon: FileTextIcon },
   { href: "/admin/banner", label: "Banner", icon: ImageIcon },
+  { href: "/admin/anh-khach-hang", label: "Ảnh khách hàng", icon: ImageIcon },
   { href: "/admin/trang-tinh", label: "Trang nội dung", icon: LayoutIcon },
   { href: "/admin/don-hang", label: "Đơn hàng", icon: CartIcon },
   { href: "/admin/khach-hang", label: "Khách hàng", icon: UsersIcon },
