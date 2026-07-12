@@ -1,14 +1,70 @@
 "use client";
 
-import { useState } from "react";
+import { useState, type ReactNode } from "react";
+import Image from "next/image";
+import Link from "next/link";
 import { useRouter } from "next/navigation";
-import { CartIcon, CloseIcon, EyeIcon, TrashIcon } from "@/components/icons";
+import {
+  CartIcon,
+  CloseIcon,
+  EyeIcon,
+  MapPinIcon,
+  PhoneIcon,
+  TrashIcon,
+  UserIcon,
+} from "@/components/icons";
+import { ProductImage } from "@/components/ProductImage";
+import type { ProductAccent } from "@/lib/types";
 import { formatPrice } from "@/lib/format";
 
 export interface AdminOrderItem {
   name: string;
   qty: number;
   price: number;
+  slug?: string;
+  image?: string;
+}
+
+// Chọn màu art ổn định theo slug/tên (khi sản phẩm chưa có ảnh thật).
+const ACCENTS: ProductAccent[] = ["blue", "red", "silver", "crimson", "dark"];
+function pickAccent(key: string): ProductAccent {
+  let h = 0;
+  for (let i = 0; i < key.length; i++) h = (h * 31 + key.charCodeAt(i)) >>> 0;
+  return ACCENTS[h % ACCENTS.length];
+}
+
+// Ô ảnh sản phẩm (ảnh thật nếu có, không thì art) — bấm sang trang sản phẩm.
+function ItemThumb({ item }: { item: AdminOrderItem }) {
+  const key = item.slug ?? item.name;
+  const inner = item.image ? (
+    <Image
+      src={item.image}
+      alt={item.name}
+      width={56}
+      height={56}
+      className="h-full w-full object-cover"
+    />
+  ) : (
+    <ProductImage accent={pickAccent(key)} uid={`ord-${key}`} />
+  );
+  const box = (
+    <div className="h-14 w-14 shrink-0 overflow-hidden rounded-xl border border-line bg-[#F5F7F5]">
+      {inner}
+    </div>
+  );
+  return item.slug ? (
+    <Link
+      href={`/san-pham/${item.slug}`}
+      target="_blank"
+      rel="noreferrer"
+      title="Xem trang sản phẩm"
+      className="shrink-0 transition hover:opacity-80"
+    >
+      {box}
+    </Link>
+  ) : (
+    box
+  );
 }
 
 export interface AdminOrder {
@@ -178,96 +234,143 @@ function OrderDetailModal({
   onClose: () => void;
   onDelete: () => void;
 }) {
+  const isTradein = order.type === "tradein";
+  const shortId = order.id.slice(-6).toUpperCase();
+
   return (
     <div
       className="fixed inset-0 z-[70] flex items-center justify-center bg-black/50 p-4"
       onClick={onClose}
     >
       <div
-        className="flex max-h-[88vh] w-full max-w-lg flex-col overflow-hidden rounded-2xl bg-white shadow-xl"
+        className="flex max-h-[90vh] w-full max-w-xl flex-col overflow-hidden rounded-2xl bg-white shadow-2xl"
         onClick={(e) => e.stopPropagation()}
       >
-        <div className="flex items-center justify-between border-b border-line px-5 py-3.5">
-          <div className="flex items-center gap-2">
-            <span
-              className={`rounded-full px-2.5 py-1 text-[11.5px] font-semibold ${
-                order.type === "tradein"
-                  ? "bg-amber/15 text-[#B8860B]"
-                  : "bg-green-soft text-green-d"
-              }`}
-            >
-              {order.type === "tradein" ? "Thu cũ đổi mới" : "Đơn mua hàng"}
-            </span>
-            <span className="text-[12.5px] text-muted">
-              {fmtDate(order.createdAt)}
-            </span>
-          </div>
+        {/* Header gradient */}
+        <div className="relative bg-gradient-to-r from-green-d to-green px-5 py-4 text-white">
           <button
             type="button"
             onClick={onClose}
             aria-label="Đóng"
-            className="flex h-8 w-8 items-center justify-center rounded-lg text-muted transition hover:bg-bg hover:text-ink"
+            className="absolute right-3 top-3 flex h-8 w-8 items-center justify-center rounded-lg text-white/80 transition hover:bg-white/15 hover:text-white"
           >
             <CloseIcon className="h-5 w-5" />
           </button>
+          <div className="flex items-center gap-2">
+            <span className="rounded-full bg-white/20 px-2.5 py-1 text-[11.5px] font-semibold">
+              {isTradein ? "Thu cũ đổi mới" : "Đơn mua hàng"}
+            </span>
+            <span className="rounded-full bg-white/15 px-2.5 py-1 text-[11.5px] font-medium">
+              #{shortId}
+            </span>
+          </div>
+          <div className="mt-2 text-[12.5px] text-white/85">
+            Đặt lúc {fmtDate(order.createdAt)}
+          </div>
         </div>
 
-        <div className="flex-1 overflow-auto p-5 text-[13.5px]">
+        <div className="flex-1 overflow-auto bg-bg/40 p-5 text-[13.5px]">
           {/* Thông tin khách */}
-          <div className="rounded-xl border border-line">
-            <div className="border-b border-line bg-bg px-4 py-2 text-[12px] font-semibold uppercase tracking-wide text-muted">
+          <div className="overflow-hidden rounded-xl border border-line bg-white">
+            <div className="border-b border-line px-4 py-2.5 text-[12px] font-bold uppercase tracking-wide text-muted">
               Thông tin khách hàng
             </div>
-            <dl className="flex flex-col gap-2 px-4 py-3">
-              <Field label="Họ tên" value={order.name} />
-              <Field label="Điện thoại" value={order.phone} />
-              {order.email && <Field label="Email" value={order.email} />}
-              <Field label="Địa chỉ" value={order.address} />
-              {order.note && <Field label="Ghi chú" value={order.note} />}
-            </dl>
+            <div className="flex flex-col gap-2.5 px-4 py-3.5">
+              <InfoRow icon={<UserIcon className="h-4 w-4" />} value={order.name} />
+              <InfoRow
+                icon={<PhoneIcon className="h-4 w-4" />}
+                value={
+                  <a href={`tel:${order.phone}`} className="text-green-d hover:underline">
+                    {order.phone}
+                  </a>
+                }
+              />
+              {order.email && (
+                <InfoRow
+                  icon={<span className="text-[13px]">@</span>}
+                  value={
+                    <a href={`mailto:${order.email}`} className="text-green-d hover:underline">
+                      {order.email}
+                    </a>
+                  }
+                />
+              )}
+              <InfoRow
+                icon={<MapPinIcon className="h-4 w-4" />}
+                value={order.address}
+              />
+              {order.note && (
+                <div className="mt-1 rounded-lg bg-amber/10 px-3 py-2 text-[12.5px] text-[#8a6d0b]">
+                  <b>Ghi chú:</b> {order.note}
+                </div>
+              )}
+            </div>
           </div>
 
           {/* Nội dung đơn */}
           {order.type === "purchase" ? (
-            <div className="mt-4 rounded-xl border border-line">
-              <div className="border-b border-line bg-bg px-4 py-2 text-[12px] font-semibold uppercase tracking-wide text-muted">
-                Sản phẩm
+            <div className="mt-4 overflow-hidden rounded-xl border border-line bg-white">
+              <div className="border-b border-line px-4 py-2.5 text-[12px] font-bold uppercase tracking-wide text-muted">
+                Sản phẩm ({order.items.length})
               </div>
-              <div className="flex flex-col divide-y divide-line px-4">
+              <div className="flex flex-col divide-y divide-line">
                 {order.items.map((it, i) => (
-                  <div key={i} className="flex items-center justify-between gap-3 py-2.5">
-                    <span className="text-ink">
-                      {it.name} <span className="text-muted">× {it.qty}</span>
-                    </span>
-                    <span className="shrink-0 font-medium text-ink">
+                  <div key={i} className="flex items-center gap-3 px-4 py-3">
+                    <ItemThumb item={it} />
+                    <div className="min-w-0 flex-1">
+                      {it.slug ? (
+                        <Link
+                          href={`/san-pham/${it.slug}`}
+                          target="_blank"
+                          rel="noreferrer"
+                          className="line-clamp-2 font-semibold text-ink transition hover:text-green-d"
+                        >
+                          {it.name}
+                        </Link>
+                      ) : (
+                        <span className="line-clamp-2 font-semibold text-ink">
+                          {it.name}
+                        </span>
+                      )}
+                      <div className="mt-0.5 text-[12.5px] text-muted">
+                        {formatPrice(it.price)} × {it.qty}
+                      </div>
+                    </div>
+                    <span className="shrink-0 text-[13.5px] font-bold text-ink">
                       {formatPrice(it.price * it.qty)}
                     </span>
                   </div>
                 ))}
-                <div className="flex items-center justify-between py-3">
-                  <b className="text-ink">Tổng cộng</b>
-                  <b className="text-[15px] text-sale">
-                    {order.total != null ? formatPrice(order.total) : "—"}
-                  </b>
-                </div>
+              </div>
+              <div className="flex items-center justify-between border-t-2 border-line bg-green-soft/40 px-4 py-3">
+                <b className="text-[14px] text-ink">Tổng cộng</b>
+                <b className="text-[18px] text-sale">
+                  {order.total != null ? formatPrice(order.total) : "—"}
+                </b>
               </div>
             </div>
           ) : (
-            <div className="mt-4 rounded-xl border border-line">
-              <div className="border-b border-line bg-bg px-4 py-2 text-[12px] font-semibold uppercase tracking-wide text-muted">
+            <div className="mt-4 overflow-hidden rounded-xl border border-line bg-white">
+              <div className="border-b border-line px-4 py-2.5 text-[12px] font-bold uppercase tracking-wide text-muted">
                 Máy cần thu
               </div>
-              <dl className="flex flex-col gap-2 px-4 py-3">
-                <Field label="Mẫu máy" value={order.model ?? "—"} />
+              <div className="flex flex-col gap-2.5 px-4 py-3.5">
+                <InfoRow
+                  icon={<CartIcon className="h-4 w-4" />}
+                  value={<b className="text-ink">{order.model ?? "—"}</b>}
+                />
                 {order.upgradeTo && (
-                  <Field label="Muốn lên đời" value={order.upgradeTo} />
+                  <InfoRow
+                    icon={<span className="text-[13px]">↑</span>}
+                    value={<>Muốn lên đời: {order.upgradeTo}</>}
+                  />
                 )}
-              </dl>
+              </div>
             </div>
           )}
         </div>
 
-        <div className="flex justify-end gap-2 border-t border-line px-5 py-3">
+        <div className="flex justify-end gap-2 border-t border-line bg-white px-5 py-3">
           <button
             type="button"
             onClick={onDelete}
@@ -278,8 +381,9 @@ function OrderDetailModal({
           </button>
           <a
             href={`tel:${order.phone}`}
-            className="rounded-lg bg-green px-4 py-2 text-[13px] font-semibold text-white transition hover:bg-green-d"
+            className="flex items-center gap-1.5 rounded-lg bg-green px-4 py-2 text-[13px] font-semibold text-white transition hover:bg-green-d"
           >
+            <PhoneIcon className="h-4 w-4" />
             Gọi khách
           </a>
         </div>
@@ -288,11 +392,19 @@ function OrderDetailModal({
   );
 }
 
-function Field({ label, value }: { label: string; value: string }) {
+function InfoRow({
+  icon,
+  value,
+}: {
+  icon: ReactNode;
+  value: ReactNode;
+}) {
   return (
-    <div className="flex gap-3">
-      <dt className="w-24 shrink-0 text-muted">{label}</dt>
-      <dd className="text-ink">{value}</dd>
+    <div className="flex items-start gap-2.5">
+      <span className="mt-0.5 flex h-5 w-5 shrink-0 items-center justify-center text-muted">
+        {icon}
+      </span>
+      <span className="text-ink">{value}</span>
     </div>
   );
 }
