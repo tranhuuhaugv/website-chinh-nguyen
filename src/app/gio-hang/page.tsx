@@ -31,7 +31,9 @@ export default async function CartPage() {
           </h1>
           <CartCheckout
             initialUser={
-              user ? { name: user.name, phone: user.phone } : null
+              user
+                ? { name: user.name, phone: user.phone, email: user.email }
+                : null
             }
           />
         </Container>

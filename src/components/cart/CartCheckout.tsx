@@ -20,14 +20,18 @@ import { SITE } from "@/lib/site";
 
 // Giỏ hàng + thanh toán COD trên cùng 1 trang. Client Component.
 
-const EMPTY = { name: "", phone: "", address: "", note: "" };
+const EMPTY = { name: "", phone: "", email: "", address: "", note: "" };
 
 // initialUser lấy từ server (trang giỏ hàng đọc cookie) -> trạng thái đăng nhập
-// + tên/SĐT hiện đúng NGAY từ lần render đầu, không phải chờ fetch (đỡ nhấp nháy).
+// + tên/SĐT/email hiện đúng NGAY từ lần render đầu, không phải chờ fetch.
 export function CartCheckout({
   initialUser = null,
 }: {
-  initialUser?: { name: string | null; phone: string | null } | null;
+  initialUser?: {
+    name: string | null;
+    phone: string | null;
+    email: string | null;
+  } | null;
 }) {
   const { items, subtotal, totalItems, updateQty, removeItem, clear, ready } =
     useCart();
@@ -35,6 +39,7 @@ export function CartCheckout({
     ...EMPTY,
     name: initialUser?.name ?? "",
     phone: initialUser?.phone ?? "",
+    email: initialUser?.email ?? "",
   });
   const [errors, setErrors] = useState<Record<string, string>>({});
   const [done, setDone] = useState(false);
@@ -62,6 +67,7 @@ export function CartCheckout({
       type: "purchase" as const,
       name: values.name,
       phone: values.phone,
+      email: values.email,
       address: values.address,
       note: values.note,
       items: items.map((i) => ({
@@ -327,6 +333,12 @@ export function CartCheckout({
           <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
             {field("name", "Họ và tên", "Nguyễn Văn A")}
             {field("phone", "Số điện thoại", "0912345678")}
+            {field(
+              "email",
+              "Email (để nhận xác nhận đơn — không bắt buộc)",
+              "email@example.com",
+              true,
+            )}
             {field(
               "address",
               "Địa chỉ nhận hàng",

@@ -6,6 +6,10 @@ export const checkoutSchema = z.object({
   phone: z
     .string()
     .regex(/^0\d{9}$/, "Số điện thoại không hợp lệ (VD: 0912345678)"),
+  // Email không bắt buộc — điền để nhận thư xác nhận đơn hàng.
+  email: z
+    .union([z.string().email("Email không hợp lệ"), z.literal("")])
+    .optional(),
   address: z.string().min(5, "Vui lòng nhập địa chỉ nhận hàng"),
   note: z.string().optional(),
 });

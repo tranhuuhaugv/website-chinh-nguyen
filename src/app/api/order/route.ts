@@ -49,6 +49,13 @@ export async function POST(req: Request) {
   // Gắn đơn với tài khoản nếu khách đang đăng nhập (để hiện ở "Đơn hàng của tôi").
   const user = await getCurrentUser().catch(() => null);
 
+  // Email khách để gửi thư xác nhận: đơn thu cũ lấy từ form; đơn mua lấy ô email
+  // (nếu điền) hoặc email tài khoản đang đăng nhập.
+  const customerEmail =
+    d.type === "tradein"
+      ? d.email
+      : (d.email && d.email.trim()) || user?.email || null;
+
   // Lưu đơn vào database (để hiện trong admin).
   try {
     await prisma.order.create({
@@ -56,7 +63,7 @@ export async function POST(req: Request) {
         type: d.type,
         name: d.name,
         phone: d.phone,
-        email: d.type === "tradein" ? d.email : null,
+        email: customerEmail,
         address: d.address,
         note: d.note ?? null,
         items: d.type === "purchase" ? d.items : undefined,
@@ -73,7 +80,7 @@ export async function POST(req: Request) {
   // Gửi email thông báo.
   let emailed = false;
   try {
-    emailed = await sendOrderEmail(d);
+    emailed = await sendOrderEmail(d, customerEmail);
   } catch (err) {
     console.error("Gửi email đơn hàng lỗi:", err);
   }

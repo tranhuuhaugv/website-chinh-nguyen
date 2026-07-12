@@ -125,33 +125,26 @@ function itemRow(i: {
     </tr>`;
 }
 
-function buildEmail(order: OrderInput): { subject: string; html: string } {
-  if (order.type === "tradein") {
-    const subject = `[Thu cũ đổi mới] ${order.name} - ${order.model}`;
-    const info = `
-      <table role="presentation" width="100%" cellpadding="0" cellspacing="0">
-        ${row("Họ và tên", order.name)}
-        ${row("Số điện thoại", order.phone)}
-        ${row("Email", order.email)}
-        ${row("Địa chỉ", order.address)}
-      </table>`;
-    const trade = `
-      <table role="presentation" width="100%" cellpadding="0" cellspacing="0">
-        ${row("Mẫu máy cần thu", order.model)}
-        ${order.upgradeTo ? row("Muốn lên đời", order.upgradeTo) : ""}
-        ${order.note ? row("Mô tả tình trạng", order.note) : ""}
-      </table>`;
-    const html = shell(
-      "Yêu cầu thu cũ đổi mới",
-      "Có khách gửi yêu cầu thu cũ đổi mới",
-      card("Thông tin khách hàng", info) + card("Máy cần thu", trade),
-    );
-    return { subject, html };
-  }
+// ——— Các khối nội dung dùng lại cho cả email shop lẫn email khách ———
 
-  const itemsHtml = order.items.map(itemRow).join("");
-  const subject = `[Đơn hàng mới] ${order.name} - ${formatPrice(order.total)}`;
+function tradeInfoCards(order: Extract<OrderInput, { type: "tradein" }>): string {
+  const info = `
+    <table role="presentation" width="100%" cellpadding="0" cellspacing="0">
+      ${row("Họ và tên", order.name)}
+      ${row("Số điện thoại", order.phone)}
+      ${row("Email", order.email)}
+      ${row("Địa chỉ", order.address)}
+    </table>`;
+  const trade = `
+    <table role="presentation" width="100%" cellpadding="0" cellspacing="0">
+      ${row("Mẫu máy cần thu", order.model)}
+      ${order.upgradeTo ? row("Muốn lên đời", order.upgradeTo) : ""}
+      ${order.note ? row("Mô tả tình trạng", order.note) : ""}
+    </table>`;
+  return card("Thông tin khách hàng", info) + card("Máy cần thu", trade);
+}
 
+function purchaseCards(order: Extract<OrderInput, { type: "purchase" }>): string {
   const info = `
     <table role="presentation" width="100%" cellpadding="0" cellspacing="0">
       ${row("Họ và tên", order.name)}
@@ -159,10 +152,9 @@ function buildEmail(order: OrderInput): { subject: string; html: string } {
       ${row("Địa chỉ giao", order.address)}
       ${order.note ? row("Ghi chú", order.note) : ""}
     </table>`;
-
   const products = `
     <table role="presentation" width="100%" cellpadding="0" cellspacing="0">
-      ${itemsHtml}
+      ${order.items.map(itemRow).join("")}
       <tr><td colspan="3" style="border-top:1px solid ${C.line};padding-top:12px">
         <table role="presentation" width="100%" cellpadding="0" cellspacing="0"><tr>
           <td style="font-size:14px;font-weight:800;color:${C.ink}">Tổng cộng</td>
@@ -170,33 +162,127 @@ function buildEmail(order: OrderInput): { subject: string; html: string } {
         </tr></table>
       </td></tr>
     </table>`;
-
-  const html = shell(
-    "Đơn hàng mới (COD)",
-    "Có đơn hàng mới trên website",
-    card("Thông tin giao hàng", info) + card("Sản phẩm", products),
-  );
-  return { subject, html };
+  return card("Thông tin giao hàng", info) + card("Sản phẩm", products);
 }
 
-async function sendMail(subject: string, html: string): Promise<boolean> {
-  if (!mailReady) return false;
+// Khối "cam kết" trong email GỬI KHÁCH.
+function commitmentsCard(type: OrderInput["type"]): string {
+  const lines =
+    type === "purchase"
+      ? [
+          "Trong vòng <b>15 phút</b>, chúng tôi sẽ liên hệ để xác nhận đơn hàng.",
+          "Đơn đặt từ <b>21h30 tối đến 8h sáng</b> hôm sau sẽ được liên hệ xác nhận <b>trước 9h sáng</b> cùng ngày.",
+          "Thanh toán khi nhận hàng (COD) — Quý khách được kiểm tra máy trước khi thanh toán.",
+        ]
+      : [
+          "Trong vòng <b>15 phút</b>, kỹ thuật viên sẽ liên hệ để định giá máy cũ của Quý khách.",
+          "Yêu cầu gửi từ <b>21h30 tối đến 8h sáng</b> hôm sau sẽ được liên hệ <b>trước 9h sáng</b> cùng ngày.",
+          "Định giá minh bạch, trừ thẳng vào giá máy mới khi Quý khách lên đời.",
+        ];
+  const body = lines
+    .map(
+      (l) =>
+        `<div style="font-size:13.5px;color:${C.ink2};line-height:1.6;padding:5px 0">• ${l}</div>`,
+    )
+    .join("");
+  return card("Cam kết của chúng tôi", body);
+}
+
+// Email GỬI SHOP (thông báo có đơn mới).
+function buildAdminEmail(order: OrderInput): { subject: string; html: string } {
+  if (order.type === "tradein") {
+    return {
+      subject: `[Thu cũ đổi mới] ${order.name} - ${order.model}`,
+      html: shell(
+        "Yêu cầu thu cũ đổi mới",
+        "Có khách gửi yêu cầu thu cũ đổi mới",
+        tradeInfoCards(order),
+      ),
+    };
+  }
+  return {
+    subject: `[Đơn hàng mới] ${order.name} - ${formatPrice(order.total)}`,
+    html: shell(
+      "Đơn hàng mới (COD)",
+      "Có đơn hàng mới trên website",
+      purchaseCards(order),
+    ),
+  };
+}
+
+// Email GỬI KHÁCH (xác nhận + cảm ơn).
+function buildCustomerEmail(order: OrderInput): { subject: string; html: string } {
+  const greeting = `
+    <table role="presentation" width="100%" cellpadding="0" cellspacing="0">
+      <tr><td style="padding:4px 28px 0;font-size:14px;color:${C.ink2};line-height:1.7">
+        Chào <b style="color:${C.ink}">${order.name}</b>,<br/>
+        Cảm ơn Quý khách đã ${order.type === "purchase" ? "đặt hàng" : "gửi yêu cầu thu cũ đổi mới"} tại <b style="color:${C.greenD}">${SITE.name}</b>. Chúng tôi đã ghi nhận thông tin của Quý khách.
+      </td></tr>
+    </table>`;
+
+  if (order.type === "tradein") {
+    return {
+      subject: `Xác nhận yêu cầu thu cũ đổi mới - ${SITE.name}`,
+      html: shell(
+        "Đã nhận yêu cầu thu cũ đổi mới",
+        "Cảm ơn Quý khách",
+        greeting + tradeInfoCards(order) + commitmentsCard("tradein"),
+      ),
+    };
+  }
+  return {
+    subject: `Xác nhận đơn hàng - ${SITE.name}`,
+    html: shell(
+      "Đặt hàng thành công!",
+      "Cảm ơn Quý khách đã mua hàng",
+      greeting + purchaseCards(order) + commitmentsCard("purchase"),
+    ),
+  };
+}
+
+async function sendMail(
+  subject: string,
+  html: string,
+  to: string,
+): Promise<boolean> {
+  if (!mailReady || !to) return false;
   const transporter = nodemailer.createTransport({
     service: "gmail",
     auth: { user: GMAIL_USER, pass: GMAIL_APP_PASSWORD },
   });
   await transporter.sendMail({
     from: `"${SITE.name}" <${GMAIL_USER}>`,
-    to: MAIL_TO || GMAIL_USER,
+    to,
     subject,
     html,
   });
   return true;
 }
 
-export async function sendOrderEmail(order: OrderInput): Promise<boolean> {
-  const { subject, html } = buildEmail(order);
-  return sendMail(subject, html);
+/**
+ * Gửi email cho đơn: (1) thông báo về shop, (2) xác nhận cho khách (nếu có email).
+ * Email khách: đơn thu cũ lấy từ form; đơn mua lấy từ `customerEmail` (ô email
+ * hoặc email tài khoản). Trả về true nếu email SHOP gửi thành công.
+ */
+export async function sendOrderEmail(
+  order: OrderInput,
+  customerEmail?: string | null,
+): Promise<boolean> {
+  const admin = buildAdminEmail(order);
+  const adminOk = await sendMail(admin.subject, admin.html, MAIL_TO || GMAIL_USER || "");
+
+  const toCustomer =
+    order.type === "tradein" ? order.email : (customerEmail ?? "").trim();
+  if (toCustomer) {
+    const cust = buildCustomerEmail(order);
+    // Không để lỗi gửi khách làm hỏng kết quả chung.
+    await sendMail(cust.subject, cust.html, toCustomer).catch((err) => {
+      console.error("Gửi email xác nhận cho khách lỗi:", err);
+      return false;
+    });
+  }
+
+  return adminOk;
 }
 
 export async function sendRegisterEmail(user: {
@@ -216,5 +302,5 @@ export async function sendRegisterEmail(user: {
     "Có tài khoản mới trên website",
     card("Thông tin tài khoản", info),
   );
-  return sendMail(subject, html);
+  return sendMail(subject, html, MAIL_TO || GMAIL_USER || "");
 }
