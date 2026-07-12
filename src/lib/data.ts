@@ -11,6 +11,7 @@ import type {
   Product,
   ProductAccent,
 } from "./types";
+import type { Policy, Section } from "./policies";
 import {
   ALL_PRODUCTS,
   BLOG_POSTS,
@@ -245,6 +246,27 @@ export async function getAllPostSlugs(): Promise<string[]> {
   if (NO_DB) return BLOG_POSTS.map((p) => p.slug);
   const rows = await prisma.blogPost.findMany({ select: { slug: true } });
   return rows.map((r) => r.slug);
+}
+
+// --- Trang chính sách (nội dung sửa qua admin, ghi đè bản mặc định) ---
+export async function getPolicyOverride(
+  slug: string,
+): Promise<Policy | null> {
+  if (NO_DB) return null;
+  try {
+    const page = await prisma.page.findUnique({ where: { id: slug } });
+    if (!page) return null;
+    const content =
+      (page.content as { intro?: string[]; sections?: Section[] } | null) ?? {};
+    return {
+      title: page.title,
+      lead: page.lead ?? "",
+      intro: Array.isArray(content.intro) ? content.intro : [],
+      sections: Array.isArray(content.sections) ? content.sections : [],
+    };
+  } catch {
+    return null;
+  }
 }
 
 // --- Đơn hàng (admin) ---

@@ -1,30 +1,27 @@
 import { notFound } from "next/navigation";
-import { AdminForm, type AdminField } from "@/components/admin/AdminForm";
-import { getStaticPage } from "@/lib/mock-data";
+import { PolicyEditor } from "@/components/admin/PolicyEditor";
+import { POLICIES } from "@/lib/policies";
+import { getPolicyOverride } from "@/lib/data";
 
-export const metadata = { title: "Trang nội dung" };
+export const metadata = { title: "Sửa trang nội dung" };
+export const dynamic = "force-dynamic";
 
-const FIELDS: AdminField[] = [
-  { name: "title", label: "Tiêu đề trang", full: true },
-  { name: "lead", label: "Mô tả ngắn (dưới tiêu đề)", type: "textarea" },
-  { name: "content", label: "Nội dung (đoạn văn + chèn ảnh)", type: "blocks" },
-];
-
-export default function AdminStaticPageFormPage({
+export default async function EditStaticPage({
   params,
 }: {
   params: { id: string };
 }) {
-  const page = getStaticPage(params.id);
-  if (!page) notFound();
+  const base = POLICIES[params.id];
+  if (!base) notFound();
+
+  // Ưu tiên bản đã lưu DB, chưa có thì lấy bản mặc định.
+  const policy = (await getPolicyOverride(params.id)) ?? base;
 
   return (
-    <AdminForm
-      title={`Chỉnh sửa: ${page.title}`}
-      fields={FIELDS}
-      initialValues={{ title: page.title }}
-      submitLabel="Lưu thay đổi"
-      backHref="/admin/trang-tinh"
+    <PolicyEditor
+      id={params.id}
+      policy={policy}
+      path={`/chinh-sach/${params.id}`}
     />
   );
 }
