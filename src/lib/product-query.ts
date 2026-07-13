@@ -13,9 +13,11 @@ export const PRICE_OPTIONS: { value: string; label: string }[] = [
 ];
 
 export const NEED_OPTIONS: { value: string; label: string }[] = [
-  { value: "van-phong", label: "Văn phòng" },
   { value: "gaming", label: "Gaming" },
-  { value: "do-hoa", label: "Máy trạm - Đồ họa" },
+  { value: "do-hoa", label: "Đồ họa - Máy trạm" },
+  { value: "van-phong", label: "Văn phòng" },
+  { value: "mong-nhe", label: "Mỏng nhẹ" },
+  { value: "doanh-nhan", label: "Doanh nhân" },
 ];
 
 export const SORT_OPTIONS: { value: string; label: string }[] = [

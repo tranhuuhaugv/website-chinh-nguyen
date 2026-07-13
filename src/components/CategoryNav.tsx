@@ -5,7 +5,6 @@ import type { CategoryIconName } from "@/lib/types";
 
 // Thanh danh mục ngang (icon + tên) đặt trên banner chính. Server Component.
 const ITEMS: { label: string; href: string; icon: CategoryIconName }[] = [
-  { label: "Laptop mới", href: "/danh-muc/laptop-moi", icon: "new" },
   { label: "Laptop cũ", href: "/danh-muc/laptop-cu", icon: "used" },
   { label: "Dell", href: "/danh-muc/dell", icon: "dell" },
   { label: "HP", href: "/danh-muc/hp", icon: "hp" },

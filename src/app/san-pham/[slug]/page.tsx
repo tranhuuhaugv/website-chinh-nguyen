@@ -11,13 +11,8 @@ import { ProductGallery } from "@/components/product/ProductGallery";
 import { ProductPurchase } from "@/components/product/ProductPurchase";
 import { CompareBar } from "@/components/compare/CompareBar";
 import { CompareProvider } from "@/components/compare/CompareContext";
-import {
-  InstallmentIcon,
-  ShieldIcon,
-  StarIcon,
-  TruckIcon,
-  WarrantyIcon,
-} from "@/components/icons";
+import { StarIcon } from "@/components/icons";
+import { CommitmentCards } from "@/components/product/CommitmentCards";
 import {
   getAllProductSlugs,
   getProductBySlug,
@@ -54,24 +49,6 @@ export async function generateMetadata({
     alternates: { canonical: url },
     openGraph: { title: product.name, description, url, type: "website" },
   };
-}
-
-// Cam kết theo tình trạng máy (mới / cũ) — nội dung khớp thực tế shop bán.
-function commitmentsFor(condition?: string) {
-  if (condition === "new") {
-    return [
-      { icon: ShieldIcon, text: "Máy chính hãng, nguyên seal, đầy đủ hóa đơn VAT" },
-      { icon: WarrantyIcon, text: "Bảo hành chính hãng · 1 đổi 1 trong 30 ngày" },
-      { icon: TruckIcon, text: "Giao nhanh 2h nội thành, toàn quốc 1-3 ngày" },
-      { icon: InstallmentIcon, text: "Hỗ trợ trả góp 0% qua thẻ / công ty tài chính" },
-    ];
-  }
-  return [
-    { icon: ShieldIcon, text: "Máy đã kiểm tra kỹ, test đầy đủ chức năng" },
-    { icon: WarrantyIcon, text: "Bảo hành shop · hỗ trợ kỹ thuật tận nơi" },
-    { icon: TruckIcon, text: "Giao nhanh 2h nội thành, toàn quốc 1-3 ngày" },
-    { icon: InstallmentIcon, text: "Trả góp 0% · thu cũ đổi mới lên đời" },
-  ];
 }
 
 function Bullet({ children }: { children: React.ReactNode }) {
@@ -186,19 +163,9 @@ export default async function ProductPage({
               />
 
               {/* Cam kết — dưới ảnh (chỉ DESKTOP; mobile gộp vào box Ưu đãi bên dưới) */}
-              <ul className="mt-5 flex flex-col gap-3.5 rounded-2xl border border-line bg-white p-5 max-lg:hidden">
-                {commitmentsFor(product.condition).map(({ icon: Icon, text }) => (
-                  <li
-                    key={text}
-                    className="flex items-start gap-3 text-[13.5px] leading-snug text-ink-2"
-                  >
-                    <span className="flex h-8 w-8 shrink-0 items-center justify-center rounded-lg bg-green-soft text-green">
-                      <Icon className="h-[18px] w-[18px]" />
-                    </span>
-                    <span className="pt-1">{text}</span>
-                  </li>
-                ))}
-              </ul>
+              <div className="mt-5 max-lg:hidden">
+                <CommitmentCards condition={product.condition} />
+              </div>
             </div>
 
             <div>
@@ -305,19 +272,9 @@ export default async function ProductPage({
                 </ul>
 
                 {/* Cam kết — chỉ hiện MOBILE (gộp vào box ưu đãi, để giá lên trên) */}
-                <ul className="mt-3 flex flex-col gap-3 border-t border-green/20 pt-3 lg:hidden">
-                  {commitmentsFor(product.condition).map(({ icon: Icon, text }) => (
-                    <li
-                      key={text}
-                      className="flex items-start gap-3 text-[13px] leading-snug text-ink-2"
-                    >
-                      <span className="flex h-7 w-7 shrink-0 items-center justify-center rounded-lg bg-white text-green">
-                        <Icon className="h-4 w-4" />
-                      </span>
-                      <span className="pt-0.5">{text}</span>
-                    </li>
-                  ))}
-                </ul>
+                <div className="mt-3 border-t border-green/20 pt-3 lg:hidden">
+                  <CommitmentCards condition={product.condition} />
+                </div>
               </div>
 
               {/* Mua hàng */}

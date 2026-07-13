@@ -349,6 +349,7 @@ export const FEATURED_PRODUCTS: Product[] = [
 ];
 
 // Shop bán cả máy MỚI & CŨ -> lọc theo tình trạng + hãng + nhu cầu (tiện SEO).
+// (Laptop mới VẪN là danh mục — chỉ ẩn khỏi thanh nav trên đầu, xem CategoryNav.)
 export const CATEGORIES: Category[] = [
   { slug: "laptop-moi", name: "Laptop mới", icon: "new" },
   { slug: "laptop-cu", name: "Laptop cũ", icon: "used", tag: "Giá tốt" },
