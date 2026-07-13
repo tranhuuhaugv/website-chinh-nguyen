@@ -162,13 +162,13 @@ export default async function ProductPage({
                 }
               />
 
-              {/* Cam kết — dưới ảnh (chỉ DESKTOP; mobile gộp vào box Ưu đãi bên dưới) */}
-              <div className="mt-5 max-lg:hidden">
+              {/* Cam kết — ngay dưới ảnh (không ghim đáy để khỏi hở khoảng trên) */}
+              <div className="mt-4 max-lg:hidden">
                 <CommitmentCards condition={product.condition} />
               </div>
             </div>
 
-            <div>
+            <div className="flex flex-col">
               <h1 className="text-[28px] font-bold leading-tight text-ink">
                 {product.name}
               </h1>
@@ -252,22 +252,12 @@ export default async function ProductPage({
                     </Bullet>
                   )}
                   <Bullet>
-                    Thu cũ đổi mới:{" "}
-                    <b className="text-ink">trợ giá đến 3.000.000₫</b> khi lên
-                    đời.
-                  </Bullet>
-                  {product.installmentPerMonth && (
-                    <Bullet>
-                      Trả góp 0% · chỉ từ{" "}
-                      <b className="text-ink">
-                        {formatPrice(product.installmentPerMonth)}
-                      </b>
-                      /tháng.
-                    </Bullet>
-                  )}
-                  <Bullet>
                     Bảo hành <b className="text-ink">24 tháng</b> + kiểm tra máy
                     trực tiếp khi nhận.
+                  </Bullet>
+                  <Bullet>
+                    Đổi trả trong <b className="text-ink">7 ngày</b> · miễn phí cài
+                    đặt phần mềm.
                   </Bullet>
                 </ul>
 
@@ -277,8 +267,8 @@ export default async function ProductPage({
                 </div>
               </div>
 
-              {/* Mua hàng */}
-              <div className="mt-5">
+              {/* Mua hàng — ghim xuống đáy cột để ngang hàng khối cam kết bên trái */}
+              <div className="mt-auto pt-5">
                 <ProductPurchase item={item} />
               </div>
             </div>

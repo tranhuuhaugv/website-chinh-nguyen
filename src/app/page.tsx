@@ -8,7 +8,6 @@ import { FloatButtons } from "@/components/FloatButtons";
 import { Footer } from "@/components/Footer";
 import { Header } from "@/components/Header";
 import { HeroSlider } from "@/components/HeroSlider";
-import { NeedsSection } from "@/components/NeedsSection";
 import { SideBanners } from "@/components/SideBanners";
 import { TrustBar } from "@/components/TrustBar";
 import { CompareBar } from "@/components/compare/CompareBar";
@@ -106,7 +105,6 @@ export default async function HomePage() {
         <HeroSlider slides={HERO_SLIDES} imageSlides={heroBanners} />
         {flashOn && <FlashSale products={flashProducts} />}
         <CategoryGrid categories={categories} />
-        <NeedsSection />
         <FeaturedProducts products={featured} tabs={FEATURED_BRAND_TABS} />
         <CustomerGallery photos={customerPhotos} />
         <BlogSection posts={posts} />
