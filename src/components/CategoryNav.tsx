@@ -26,20 +26,24 @@ export function CategoryNav() {
   return (
     <div className="pt-4">
       <Container>
-        <div className="flex gap-1 overflow-x-auto rounded-2xl border border-line bg-white p-1.5 shadow-card [scrollbar-width:none] [&::-webkit-scrollbar]:hidden">
-          {ITEMS.map((item) => (
-            <Link
-              key={item.href}
-              href={item.href}
-              className="group flex shrink-0 items-center gap-2 whitespace-nowrap rounded-xl px-3.5 py-2 text-[13.5px] font-medium text-ink-2 transition hover:bg-green-tint hover:text-green-d"
-            >
-              <CategoryIcon
-                name={item.icon}
-                className="h-[18px] w-[18px] text-green transition group-hover:scale-110"
-              />
-              {item.label}
-            </Link>
-          ))}
+        {/* Thanh cuộn ngang: mờ dần 2 mép để báo "còn mục, cuộn được" (không cắt cụt xấu) */}
+        <div className="relative">
+          <div className="flex gap-0.5 overflow-x-auto rounded-2xl border border-line bg-white p-1.5 pr-8 shadow-card [scrollbar-width:none] [&::-webkit-scrollbar]:hidden">
+            {ITEMS.map((item) => (
+              <Link
+                key={item.href}
+                href={item.href}
+                className="group flex shrink-0 items-center gap-1.5 whitespace-nowrap rounded-xl px-3 py-2 text-[13.5px] font-medium text-ink-2 transition hover:bg-green-tint hover:text-green-d"
+              >
+                <CategoryIcon
+                  name={item.icon}
+                  className="h-[18px] w-[18px] shrink-0 text-green transition group-hover:scale-110"
+                />
+                {item.label}
+              </Link>
+            ))}
+          </div>
+          <div className="pointer-events-none absolute inset-y-0 right-0 w-10 rounded-r-2xl bg-gradient-to-l from-white to-transparent" />
         </div>
       </Container>
     </div>
