@@ -348,8 +348,10 @@ export const FEATURED_PRODUCTS: Product[] = [
   },
 ];
 
-// Shop chuyên MÁY CŨ -> ưu tiên duyệt theo hãng, kèm nhu cầu + PC/màn hình/phụ kiện.
+// Shop bán cả máy MỚI & CŨ -> lọc theo tình trạng + hãng + nhu cầu (tiện SEO).
 export const CATEGORIES: Category[] = [
+  { slug: "laptop-moi", name: "Laptop mới", icon: "new" },
+  { slug: "laptop-cu", name: "Laptop cũ", icon: "used", tag: "Giá tốt" },
   { slug: "dell", name: "Dell", icon: "dell", tag: "Nhiều mẫu" },
   { slug: "hp", name: "HP", icon: "hp" },
   { slug: "lenovo", name: "Lenovo", icon: "lenovo" },
@@ -527,6 +529,10 @@ export function getRelatedProducts(product: Product, limit = 4): Product[] {
 
 // Nhóm danh mục cho mega-menu (thanh điều hướng).
 export const CATEGORY_GROUPS: { title: string; slugs: string[] }[] = [
+  {
+    title: "Loại máy",
+    slugs: ["laptop-moi", "laptop-cu"],
+  },
   {
     title: "Theo thương hiệu",
     slugs: ["dell", "hp", "lenovo", "asus", "acer", "msi", "macbook"],

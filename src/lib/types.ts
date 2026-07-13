@@ -13,6 +13,9 @@ export type Brand =
 /** Màu gradient của ảnh placeholder (khớp các card trong design). */
 export type ProductAccent = "blue" | "red" | "silver" | "crimson" | "dark";
 
+/** Tình trạng máy: mới hoặc đã qua sử dụng. */
+export type ProductCondition = "new" | "used";
+
 export interface Product {
   id: string;
   slug: string;
@@ -34,6 +37,10 @@ export interface Product {
   badge?: string;
   isNew?: boolean;
   accent: ProductAccent;
+  /** Tình trạng: "new" máy mới | "used" máy cũ (mặc định used cho shop máy cũ). */
+  condition?: ProductCondition;
+  /** Nhóm nhu cầu để lọc/SEO: van-phong, gaming, do-hoa... */
+  needs?: string[];
 }
 
 export interface Category {
@@ -62,7 +69,8 @@ export type CategoryIconName =
   | "msi"
   | "monitor"
   | "accessory"
-  | "pc";
+  | "pc"
+  | "new";
 
 /** 1 dòng trong giỏ hàng. */
 export interface CartItem {

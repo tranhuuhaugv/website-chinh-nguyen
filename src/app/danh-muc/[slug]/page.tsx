@@ -40,10 +40,23 @@ export default async function CategoryPage({
   ]);
   const name = categoryName ?? brand ?? "Danh mục sản phẩm";
 
-  // Nếu slug là một hãng -> lọc theo hãng; ngược lại hiển thị tất cả.
-  const baseProducts = brand
-    ? allProducts.filter((p) => p.brand === brand)
-    : allProducts;
+  // Lọc theo loại danh mục: hãng / tình trạng (mới-cũ) / nhu cầu / tất cả.
+  const NEED_BY_SLUG: Record<string, string> = {
+    "laptop-gaming": "gaming",
+    "laptop-do-hoa": "do-hoa",
+    "laptop-van-phong": "van-phong",
+  };
+  let baseProducts = allProducts;
+  if (brand) {
+    baseProducts = allProducts.filter((p) => p.brand === brand);
+  } else if (params.slug === "laptop-moi") {
+    baseProducts = allProducts.filter((p) => p.condition === "new");
+  } else if (params.slug === "laptop-cu") {
+    baseProducts = allProducts.filter((p) => (p.condition ?? "used") === "used");
+  } else if (NEED_BY_SLUG[params.slug]) {
+    const need = NEED_BY_SLUG[params.slug];
+    baseProducts = allProducts.filter((p) => (p.needs ?? []).includes(need));
+  }
 
   const brands = Array.from(new Set(baseProducts.map((p) => p.brand)));
 

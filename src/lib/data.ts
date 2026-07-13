@@ -10,6 +10,7 @@ import type {
   CustomerPhoto,
   Product,
   ProductAccent,
+  ProductCondition,
 } from "./types";
 import type { Policy, Section } from "./policies";
 import {
@@ -61,6 +62,8 @@ function toProduct(p: PrismaProductWithBrand): Product {
     badge: p.badge ?? undefined,
     isNew: p.isNew,
     accent: p.accent as ProductAccent,
+    condition: (p.condition as ProductCondition) ?? "used",
+    needs: p.needs ?? [],
   };
 }
 
