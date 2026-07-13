@@ -1,0 +1,2540 @@
+[
+ {
+  "name": "Dell Precision 3551 RAM 8GB SSD 256GB FHD (CŨ)",
+  "slug": "dell-precision-3551-ram-8gb-ssd-256gb-fhd",
+  "brand": "Dell",
+  "price": 8500000,
+  "cpu": "i5 10400H",
+  "ram": "8GB",
+  "storage": "256GB",
+  "gpu": "",
+  "screen": "FHD · 15.6 inch",
+  "resolution": "1920x1080",
+  "os": "Windows 10",
+  "condition": "used",
+  "needs": [
+   "van-phong"
+  ],
+  "note": ""
+ },
+ {
+  "name": "Dell XPS 15 9500 RAM 8GB SSD 256GB FHD+ (CŨ)",
+  "slug": "dell-xps-15-9500-ram-8gb-ssd-256gb-fhd",
+  "brand": "Dell",
+  "price": 13500000,
+  "cpu": "i5 10300H",
+  "ram": "8GB",
+  "storage": "256GB",
+  "gpu": "",
+  "screen": "FHD+ · 15.6 inch",
+  "resolution": "1920x1200",
+  "os": "Windows 10",
+  "condition": "used",
+  "needs": [
+   "van-phong"
+  ],
+  "note": ""
+ },
+ {
+  "name": "Dell XPS 15 9500 RAM 16GB SSD 512GB FHD + (CŨ)",
+  "slug": "dell-xps-15-9500-ram-16gb-ssd-512gb-fhd",
+  "brand": "Dell",
+  "price": 13500000,
+  "cpu": "i5 10300H",
+  "ram": "16GB",
+  "storage": "512GB",
+  "gpu": "",
+  "screen": "FHD + · 15.6 inch",
+  "resolution": "1920x1200",
+  "os": "Windows 10",
+  "condition": "used",
+  "needs": [
+   "van-phong"
+  ],
+  "note": ""
+ },
+ {
+  "name": "Dell XPS 15 9500 RAM 16GB SSD 512GB GTX 1650Ti FHD+ (CŨ)",
+  "slug": "dell-xps-15-9500-ram-16gb-ssd-512gb-gtx-1650ti-fhd",
+  "brand": "Dell",
+  "price": 16500000,
+  "cpu": "i7 10750H",
+  "ram": "16GB",
+  "storage": "512GB",
+  "gpu": "GTX 1650Ti",
+  "screen": "FHD+ · 15.6 inch",
+  "resolution": "1920x1200",
+  "os": "Windows 10",
+  "condition": "used",
+  "needs": [
+   "gaming"
+  ],
+  "note": ""
+ },
+ {
+  "name": "Dell XPS 16 9640 RAM 16GB SSD 1TB RTX 4050 FHD+ (CŨ)",
+  "slug": "dell-xps-16-9640-ram-16gb-ssd-1tb-rtx-4050-fhd",
+  "brand": "Dell",
+  "price": 32500000,
+  "cpu": "Ultra 7 155H",
+  "ram": "16GB",
+  "storage": "1TB",
+  "gpu": "RTX 4050",
+  "screen": "FHD+ · 16.3 inch",
+  "resolution": "1920x1200",
+  "os": "Windows 11",
+  "condition": "used",
+  "needs": [
+   "gaming"
+  ],
+  "note": ""
+ },
+ {
+  "name": "Dell XPS 16 9640 RAM 16GB SSD 512GB RTX 4060 FHD+ (CŨ)",
+  "slug": "dell-xps-16-9640-ram-16gb-ssd-512gb-rtx-4060-fhd",
+  "brand": "Dell",
+  "price": 33500000,
+  "cpu": "Ultra 7 155H",
+  "ram": "16GB",
+  "storage": "512GB",
+  "gpu": "RTX 4060",
+  "screen": "FHD+ · 16.3 inch",
+  "resolution": "1920x1200",
+  "os": "Windows 11",
+  "condition": "used",
+  "needs": [
+   "gaming"
+  ],
+  "note": ""
+ },
+ {
+  "name": "Dell Precision 5540 RAM 16GB SSD 512GB T1000 FHD+ (CŨ)",
+  "slug": "dell-precision-5540-ram-16gb-ssd-512gb-t1000-fhd",
+  "brand": "Dell",
+  "price": 12800000,
+  "cpu": "i7 9850H",
+  "ram": "16GB",
+  "storage": "512GB",
+  "gpu": "T1000",
+  "screen": "FHD+ · 15.6 inch",
+  "resolution": "1920x1080",
+  "os": "Windows 10",
+  "condition": "used",
+  "needs": [
+   "do-hoa"
+  ],
+  "note": ""
+ },
+ {
+  "name": "Dell Precision 5540 RAM 16GB SSD 512GB T2000 FHD+ (CŨ)",
+  "slug": "dell-precision-5540-ram-16gb-ssd-512gb-t2000-fhd",
+  "brand": "Dell",
+  "price": 13300000,
+  "cpu": "i7 9850H",
+  "ram": "16GB",
+  "storage": "512GB",
+  "gpu": "T2000",
+  "screen": "FHD+ · 15.6 inch",
+  "resolution": "1920x1080",
+  "os": "Windows 10",
+  "condition": "used",
+  "needs": [
+   "do-hoa"
+  ],
+  "note": ""
+ },
+ {
+  "name": "Dell Precision 5550 RAM 16GB SSD 256GB T1000 FHD+ (CŨ)",
+  "slug": "dell-precision-5550-ram-16gb-ssd-256gb-t1000-fhd",
+  "brand": "Dell",
+  "price": 14800000,
+  "cpu": "i7 10750H",
+  "ram": "16GB",
+  "storage": "256GB",
+  "gpu": "T1000",
+  "screen": "FHD+ · 15.6 inch",
+  "resolution": "1920x1200",
+  "os": "Windows 10",
+  "condition": "used",
+  "needs": [
+   "do-hoa"
+  ],
+  "note": ""
+ },
+ {
+  "name": "Dell Precision 5550 RAM 16GB SSD 512GB T2000 FHD+ (CŨ)",
+  "slug": "dell-precision-5550-ram-16gb-ssd-512gb-t2000-fhd",
+  "brand": "Dell",
+  "price": 15500000,
+  "cpu": "i7 10850H",
+  "ram": "16GB",
+  "storage": "512GB",
+  "gpu": "T2000",
+  "screen": "FHD+ · 15.6 inch",
+  "resolution": "1920x1200",
+  "os": "Windows 10",
+  "condition": "used",
+  "needs": [
+   "do-hoa"
+  ],
+  "note": ""
+ },
+ {
+  "name": "Dell Precision 5550 RAM 16GB SSD 512GB T2000 FHD+ (CŨ)",
+  "slug": "dell-precision-5550-ram-16gb-ssd-512gb-t2000-fhd",
+  "brand": "Dell",
+  "price": 16500000,
+  "cpu": "i9 10885H",
+  "ram": "16GB",
+  "storage": "512GB",
+  "gpu": "T2000",
+  "screen": "FHD+ · 15.6 inch",
+  "resolution": "1920x1200",
+  "os": "Windows 10",
+  "condition": "used",
+  "needs": [
+   "do-hoa"
+  ],
+  "note": ""
+ },
+ {
+  "name": "Dell Precision 5560 RAM 16GB SSD 512GB RTX A2000 FHD+ (CŨ)",
+  "slug": "dell-precision-5560-ram-16gb-ssd-512gb-rtx-a2000-fhd",
+  "brand": "Dell",
+  "price": 19700000,
+  "cpu": "i7 11850H",
+  "ram": "16GB",
+  "storage": "512GB",
+  "gpu": "RTX A2000",
+  "screen": "FHD+ · 15.6 inch",
+  "resolution": "1920x1200",
+  "os": "Windows 10",
+  "condition": "used",
+  "needs": [
+   "do-hoa"
+  ],
+  "note": ""
+ },
+ {
+  "name": "Dell Precision 5760 RAM 64GB SSD 512GB A3000 FHD+ (CŨ)",
+  "slug": "dell-precision-5760-ram-64gb-ssd-512gb-a3000-fhd",
+  "brand": "Dell",
+  "price": 24500000,
+  "cpu": "i7 11850H",
+  "ram": "64GB",
+  "storage": "512GB",
+  "gpu": "A3000",
+  "screen": "FHD+ · 17 inch",
+  "resolution": "1920x1200",
+  "os": "Windows 10",
+  "condition": "used",
+  "needs": [
+   "do-hoa"
+  ],
+  "note": ""
+ },
+ {
+  "name": "Dell Precision 5560 RAM 32GB SSD 512GB A2000 4K cảm ứng+ (CŨ)",
+  "slug": "dell-precision-5560-ram-32gb-ssd-512gb-a2000-4k-cam-ung",
+  "brand": "Dell",
+  "price": 22500000,
+  "cpu": "i9 11950H",
+  "ram": "32GB",
+  "storage": "512GB",
+  "gpu": "A2000",
+  "screen": "4K cảm ứng+ · 15.6 inch",
+  "resolution": "3840x2400",
+  "os": "Windows 10",
+  "condition": "used",
+  "needs": [
+   "do-hoa"
+  ],
+  "note": ""
+ },
+ {
+  "name": "Dell Precision 7670 RAM 32GB SSD 512GB A1000 FHD+ (CŨ)",
+  "slug": "dell-precision-7670-ram-32gb-ssd-512gb-a1000-fhd",
+  "brand": "Dell",
+  "price": 25700000,
+  "cpu": "i7 12850HX",
+  "ram": "32GB",
+  "storage": "512GB",
+  "gpu": "A1000",
+  "screen": "FHD+ · 16 inch",
+  "resolution": "1920x1200",
+  "os": "Windows 11",
+  "condition": "used",
+  "needs": [
+   "do-hoa"
+  ],
+  "note": ""
+ },
+ {
+  "name": "Dell Precision 7670 RAM 64GB SSD 1TB RTX A3000 12GB FHD+ (CŨ)",
+  "slug": "dell-precision-7670-ram-64gb-ssd-1tb-rtx-a3000-12gb-fhd",
+  "brand": "Dell",
+  "price": 35800000,
+  "cpu": "i7 12850HX",
+  "ram": "64GB",
+  "storage": "1TB",
+  "gpu": "RTX A3000 12GB",
+  "screen": "FHD+ · 16 inch",
+  "resolution": "1920x1200",
+  "os": "Windows 11",
+  "condition": "used",
+  "needs": [
+   "do-hoa"
+  ],
+  "note": "Ram đúc"
+ },
+ {
+  "name": "Dell G15 5525 RAM 16GB SSD 512GB RTX 3050 FHD 144Hz (CŨ)",
+  "slug": "dell-g15-5525-ram-16gb-ssd-512gb-rtx-3050-fhd-144hz",
+  "brand": "Dell",
+  "price": 15500000,
+  "cpu": "R5 6600H",
+  "ram": "16GB",
+  "storage": "512GB",
+  "gpu": "RTX 3050",
+  "screen": "FHD 144Hz · 15.6 inch",
+  "resolution": "1920x1080",
+  "os": "Windows 11",
+  "condition": "used",
+  "needs": [
+   "gaming"
+  ],
+  "note": ""
+ },
+ {
+  "name": "Dell G15 5520 RAM 16GB SSD 512GB RTX 3050 FHD 120Hz (CŨ)",
+  "slug": "dell-g15-5520-ram-16gb-ssd-512gb-rtx-3050-fhd-120hz",
+  "brand": "Dell",
+  "price": 15500000,
+  "cpu": "i5 12500H",
+  "ram": "16GB",
+  "storage": "512GB",
+  "gpu": "RTX 3050",
+  "screen": "FHD 120Hz · 15.6 inch",
+  "resolution": "1920x1080",
+  "os": "Windows 11",
+  "condition": "used",
+  "needs": [
+   "gaming"
+  ],
+  "note": ""
+ },
+ {
+  "name": "Dell XPS 13 9360 RAM 8GB SSD 256GB 4K cảm ứng (CŨ)",
+  "slug": "dell-xps-13-9360-ram-8gb-ssd-256gb-4k-cam-ung",
+  "brand": "Dell",
+  "price": 8000000,
+  "cpu": "i5 8250U",
+  "ram": "8GB",
+  "storage": "256GB",
+  "gpu": "",
+  "screen": "4K cảm ứng · 13.3 inch",
+  "resolution": "3200x1800",
+  "os": "Windows 10",
+  "condition": "used",
+  "needs": [
+   "van-phong"
+  ],
+  "note": ""
+ },
+ {
+  "name": "Dell XPS 13 9370 RAM 8GB SSD 256GB FHD màn gương (CŨ)",
+  "slug": "dell-xps-13-9370-ram-8gb-ssd-256gb-fhd-man-guong",
+  "brand": "Dell",
+  "price": 9000000,
+  "cpu": "i5 8350U",
+  "ram": "8GB",
+  "storage": "256GB",
+  "gpu": "",
+  "screen": "FHD màn gương · 13.3 inch",
+  "resolution": "1920x1080",
+  "os": "Windows 10",
+  "condition": "used",
+  "needs": [
+   "van-phong"
+  ],
+  "note": ""
+ },
+ {
+  "name": "Dell XPS 13 7390 RAM 8GB SSD 256GB FHD (CŨ)",
+  "slug": "dell-xps-13-7390-ram-8gb-ssd-256gb-fhd",
+  "brand": "Dell",
+  "price": 11800000,
+  "cpu": "i5 10",
+  "ram": "8GB",
+  "storage": "256GB",
+  "gpu": "",
+  "screen": "FHD · 13.3 inch",
+  "resolution": "1920x1080",
+  "os": "Windows 10",
+  "condition": "used",
+  "needs": [
+   "van-phong"
+  ],
+  "note": ""
+ },
+ {
+  "name": "Dell XPS 13 7390 RAM 16GB SSD 256GB FHD (CŨ)",
+  "slug": "dell-xps-13-7390-ram-16gb-ssd-256gb-fhd",
+  "brand": "Dell",
+  "price": 12500000,
+  "cpu": "i7 10210U",
+  "ram": "16GB",
+  "storage": "256GB",
+  "gpu": "",
+  "screen": "FHD · 13.3 inch",
+  "resolution": "1920x1080",
+  "os": "Windows 10",
+  "condition": "used",
+  "needs": [
+   "van-phong"
+  ],
+  "note": ""
+ },
+ {
+  "name": "Dell XPS 13 9370 RAM 16GB SSD 256GB FHD màn gương (CŨ)",
+  "slug": "dell-xps-13-9370-ram-16gb-ssd-256gb-fhd-man-guong",
+  "brand": "Dell",
+  "price": 12000000,
+  "cpu": "i7 8560U",
+  "ram": "16GB",
+  "storage": "256GB",
+  "gpu": "",
+  "screen": "FHD  màn gương · 13.3 inch",
+  "resolution": "1920x1080",
+  "os": "Windows 10",
+  "condition": "used",
+  "needs": [
+   "van-phong"
+  ],
+  "note": ""
+ },
+ {
+  "name": "Dell XPS 13 9370 RAM 16GB SSD 256GB 4K cảm ứng (CŨ)",
+  "slug": "dell-xps-13-9370-ram-16gb-ssd-256gb-4k-cam-ung",
+  "brand": "Dell",
+  "price": 12000000,
+  "cpu": "i7 8550U",
+  "ram": "16GB",
+  "storage": "256GB",
+  "gpu": "",
+  "screen": "4K cảm ứng · 13.3 inch",
+  "resolution": "3840x2160",
+  "os": "Windows 10",
+  "condition": "used",
+  "needs": [
+   "van-phong"
+  ],
+  "note": "1 TCV màu gold"
+ },
+ {
+  "name": "Dell XPS 13 9380 RAM 8GB SSD 256GB FHD (CŨ)",
+  "slug": "dell-xps-13-9380-ram-8gb-ssd-256gb-fhd",
+  "brand": "Dell",
+  "price": 9500000,
+  "cpu": "i7 8665U",
+  "ram": "8GB",
+  "storage": "256GB",
+  "gpu": "",
+  "screen": "FHD · 13.3 inch",
+  "resolution": "1920x1080",
+  "os": "Windows 10",
+  "condition": "used",
+  "needs": [
+   "van-phong"
+  ],
+  "note": ""
+ },
+ {
+  "name": "Dell XPS 13 9380 RAM 16GB SSD 256GB FHD (CŨ)",
+  "slug": "dell-xps-13-9380-ram-16gb-ssd-256gb-fhd",
+  "brand": "Dell",
+  "price": 12000000,
+  "cpu": "i7 8665U",
+  "ram": "16GB",
+  "storage": "256GB",
+  "gpu": "",
+  "screen": "FHD · 13.3 inch",
+  "resolution": "1920x1080",
+  "os": "Windows 10",
+  "condition": "used",
+  "needs": [
+   "van-phong"
+  ],
+  "note": ""
+ },
+ {
+  "name": "Dell XPS 13 9380 RAM 16GB SSD 256GB 4K cảm ứng (CŨ)",
+  "slug": "dell-xps-13-9380-ram-16gb-ssd-256gb-4k-cam-ung",
+  "brand": "Dell",
+  "price": 12500000,
+  "cpu": "i7 8665U",
+  "ram": "16GB",
+  "storage": "256GB",
+  "gpu": "",
+  "screen": "4K cảm ứng · 13.3 inch",
+  "resolution": "3840x2160",
+  "os": "Windows 10",
+  "condition": "used",
+  "needs": [
+   "van-phong"
+  ],
+  "note": ""
+ },
+ {
+  "name": "Dell XPS 13 9300 RAM 16GB SSD 512GB FHD (CŨ)",
+  "slug": "dell-xps-13-9300-ram-16gb-ssd-512gb-fhd",
+  "brand": "Dell",
+  "price": 14800000,
+  "cpu": "i7 1065G7",
+  "ram": "16GB",
+  "storage": "512GB",
+  "gpu": "",
+  "screen": "FHD · 13.4 inch",
+  "resolution": "1920x1200",
+  "os": "Windows 10",
+  "condition": "used",
+  "needs": [
+   "van-phong"
+  ],
+  "note": ""
+ },
+ {
+  "name": "Dell XPS 13 9315 RAM 16GB SSD 512GB FHD (CŨ)",
+  "slug": "dell-xps-13-9315-ram-16gb-ssd-512gb-fhd",
+  "brand": "Dell",
+  "price": 19500000,
+  "cpu": "i7 1250U",
+  "ram": "16GB",
+  "storage": "512GB",
+  "gpu": "",
+  "screen": "FHD · 13.4 inch",
+  "resolution": "1920x1200",
+  "os": "Windows 11",
+  "condition": "used",
+  "needs": [
+   "van-phong"
+  ],
+  "note": ""
+ },
+ {
+  "name": "Dell XPS 13 9315 RAM 32GB SSD 1TB FHD (CŨ)",
+  "slug": "dell-xps-13-9315-ram-32gb-ssd-1tb-fhd",
+  "brand": "Dell",
+  "price": 22500000,
+  "cpu": "i7 1250U",
+  "ram": "32GB",
+  "storage": "1TB",
+  "gpu": "",
+  "screen": "FHD · 13.4 inch",
+  "resolution": "1920x1200",
+  "os": "Windows 11",
+  "condition": "used",
+  "needs": [
+   "van-phong"
+  ],
+  "note": ""
+ },
+ {
+  "name": "Dell XPS 13 9340 RAM 16GB SSD 512GB FHD (CŨ)",
+  "slug": "dell-xps-13-9340-ram-16gb-ssd-512gb-fhd",
+  "brand": "Dell",
+  "price": 28500000,
+  "cpu": "Ultra 7 155H",
+  "ram": "16GB",
+  "storage": "512GB",
+  "gpu": "",
+  "screen": "FHD · 13.4 inch",
+  "resolution": "1920x1200",
+  "os": "Windows 11",
+  "condition": "used",
+  "needs": [
+   "van-phong"
+  ],
+  "note": ""
+ },
+ {
+  "name": "Dell XPS 13 9310 2-in-1 RAM 8GB SSD 256GB FHD cảm ứng (CŨ)",
+  "slug": "dell-xps-13-9310-2-in-1-ram-8gb-ssd-256gb-fhd-cam-ung",
+  "brand": "Dell",
+  "price": 12500000,
+  "cpu": "i5 1135G7",
+  "ram": "8GB",
+  "storage": "256GB",
+  "gpu": "",
+  "screen": "FHD cảm ứng · 13.4 inch",
+  "resolution": "1920x1200",
+  "os": "Windows 10",
+  "condition": "used",
+  "needs": [
+   "van-phong"
+  ],
+  "note": ""
+ },
+ {
+  "name": "Dell XPS 13 7390 2-in-1 RAM 8GB SSD 256GB FHD cảm ứng (CŨ)",
+  "slug": "dell-xps-13-7390-2-in-1-ram-8gb-ssd-256gb-fhd-cam-ung",
+  "brand": "Dell",
+  "price": 12500000,
+  "cpu": "i5 1035G1",
+  "ram": "8GB",
+  "storage": "256GB",
+  "gpu": "",
+  "screen": "FHD cảm ứng · 13.4 inch",
+  "resolution": "1920x1200",
+  "os": "Windows 10",
+  "condition": "used",
+  "needs": [
+   "van-phong"
+  ],
+  "note": ""
+ },
+ {
+  "name": "Dell XPS 13 7390 2-in-1 RAM 16GB SSD 256GB FHD cảm ứng (CŨ)",
+  "slug": "dell-xps-13-7390-2-in-1-ram-16gb-ssd-256gb-fhd-cam-ung",
+  "brand": "Dell",
+  "price": 15000000,
+  "cpu": "i7 1065G7",
+  "ram": "16GB",
+  "storage": "256GB",
+  "gpu": "",
+  "screen": "FHD cảm ứng · 13.4 inch",
+  "resolution": "1920x1200",
+  "os": "Windows 10",
+  "condition": "used",
+  "needs": [
+   "van-phong"
+  ],
+  "note": "1 Đẹp keng"
+ },
+ {
+  "name": "Dell Vostro 5481 RAM 8GB SSD 256GB FHD (CŨ)",
+  "slug": "dell-vostro-5481-ram-8gb-ssd-256gb-fhd",
+  "brand": "Dell",
+  "price": 7000000,
+  "cpu": "i7 8565U",
+  "ram": "8GB",
+  "storage": "256GB",
+  "gpu": "",
+  "screen": "FHD · 14 inch",
+  "resolution": "1920x1080",
+  "os": "Windows 10",
+  "condition": "used",
+  "needs": [
+   "van-phong"
+  ],
+  "note": ""
+ },
+ {
+  "name": "Dell Vostro 5410 RAM 8GB SSD 256GB FHD (CŨ)",
+  "slug": "dell-vostro-5410-ram-8gb-ssd-256gb-fhd",
+  "brand": "Dell",
+  "price": 9500000,
+  "cpu": "i7 11390H",
+  "ram": "8GB",
+  "storage": "256GB",
+  "gpu": "",
+  "screen": "FHD · 14 inch",
+  "resolution": "1920x1080",
+  "os": "Windows 10",
+  "condition": "used",
+  "needs": [
+   "van-phong"
+  ],
+  "note": ""
+ },
+ {
+  "name": "Dell Vostro 5401 RAM 8GB SSD 256GB MX330 FHD (CŨ)",
+  "slug": "dell-vostro-5401-ram-8gb-ssd-256gb-mx330-fhd",
+  "brand": "Dell",
+  "price": 9500000,
+  "cpu": "i7 1065G7",
+  "ram": "8GB",
+  "storage": "256GB",
+  "gpu": "MX330",
+  "screen": "FHD · 14 inch",
+  "resolution": "1920x1080",
+  "os": "Windows 10",
+  "condition": "used",
+  "needs": [
+   "van-phong"
+  ],
+  "note": ""
+ },
+ {
+  "name": "Dell Vostro 5390 RAM 8GB SSD 256GB MX250 FHD (CŨ)",
+  "slug": "dell-vostro-5390-ram-8gb-ssd-256gb-mx250-fhd",
+  "brand": "Dell",
+  "price": 8000000,
+  "cpu": "i7 8565U",
+  "ram": "8GB",
+  "storage": "256GB",
+  "gpu": "MX250",
+  "screen": "FHD · 13.3 inch",
+  "resolution": "1920x1080",
+  "os": "Windows 10",
+  "condition": "used",
+  "needs": [
+   "van-phong"
+  ],
+  "note": "xanh rêu"
+ },
+ {
+  "name": "Dell Vostro 5391 RAM 8GB SSD 256GB MX250 FHD (CŨ)",
+  "slug": "dell-vostro-5391-ram-8gb-ssd-256gb-mx250-fhd",
+  "brand": "Dell",
+  "price": 9000000,
+  "cpu": "i7 10510U",
+  "ram": "8GB",
+  "storage": "256GB",
+  "gpu": "MX250",
+  "screen": "FHD · 13.3 inch",
+  "resolution": "1920x1080",
+  "os": "Windows 10",
+  "condition": "used",
+  "needs": [
+   "van-phong"
+  ],
+  "note": "xanh rêu"
+ },
+ {
+  "name": "Dell Vostro 5402 RAM 8GB SSD 256GB MX330 FHD (CŨ)",
+  "slug": "dell-vostro-5402-ram-8gb-ssd-256gb-mx330-fhd",
+  "brand": "Dell",
+  "price": 10500000,
+  "cpu": "i7 1165G7",
+  "ram": "8GB",
+  "storage": "256GB",
+  "gpu": "MX330",
+  "screen": "FHD · 14 inch",
+  "resolution": "1920x1080",
+  "os": "Windows 10",
+  "condition": "used",
+  "needs": [
+   "van-phong"
+  ],
+  "note": ""
+ },
+ {
+  "name": "Dell Inspiron 13 5310 RAM 16GB SSD 512GB 2K5 (CŨ)",
+  "slug": "dell-inspiron-13-5310-ram-16gb-ssd-512gb-2k5",
+  "brand": "Dell",
+  "price": 12500000,
+  "cpu": "i5 11300H",
+  "ram": "16GB",
+  "storage": "512GB",
+  "gpu": "",
+  "screen": "2K5 · 13.3 inch",
+  "resolution": "2560x1600",
+  "os": "Windows 11",
+  "condition": "used",
+  "needs": [
+   "van-phong"
+  ],
+  "note": ""
+ },
+ {
+  "name": "Dell Vostro 5310 RAM 16GB SSD 512GB 2K5 (CŨ)",
+  "slug": "dell-vostro-5310-ram-16gb-ssd-512gb-2k5",
+  "brand": "Dell",
+  "price": 12500000,
+  "cpu": "i5-11300H",
+  "ram": "16GB",
+  "storage": "512GB",
+  "gpu": "",
+  "screen": "2K5 · 13.3 inch",
+  "resolution": "2560x1600",
+  "os": "Windows 10",
+  "condition": "used",
+  "needs": [
+   "van-phong"
+  ],
+  "note": "xanh rêu"
+ },
+ {
+  "name": "Dell Vostro 5310 RAM 16GB SSD 512GB VGA 2K5 (CŨ)",
+  "slug": "dell-vostro-5310-ram-16gb-ssd-512gb-vga-2k5",
+  "brand": "Dell",
+  "price": 13500000,
+  "cpu": "i5-11300H",
+  "ram": "16GB",
+  "storage": "512GB",
+  "gpu": "",
+  "screen": "VGA 2K5 · 13.3 inch",
+  "resolution": "2560x1600",
+  "os": "Windows 10",
+  "condition": "used",
+  "needs": [
+   "van-phong"
+  ],
+  "note": "xanh rêu"
+ },
+ {
+  "name": "Dell Vostro 5310 RAM 16GB SSD 512GB 2K5 NEW OUTLED (CŨ)",
+  "slug": "dell-vostro-5310-ram-16gb-ssd-512gb-2k5-new-outled",
+  "brand": "Dell",
+  "price": 13500000,
+  "cpu": "i7 11390H",
+  "ram": "16GB",
+  "storage": "512GB",
+  "gpu": "",
+  "screen": "2K5 NEW OUTLED · 13.3 inch",
+  "resolution": "2560x1600",
+  "os": "Windows 11",
+  "condition": "used",
+  "needs": [
+   "van-phong"
+  ],
+  "note": "1 xanh + 1 xám"
+ },
+ {
+  "name": "Dell Vostro 5625 RAM 16GB SSD 512GB FHD (CŨ)",
+  "slug": "dell-vostro-5625-ram-16gb-ssd-512gb-fhd",
+  "brand": "Dell",
+  "price": 12000000,
+  "cpu": "R5 5625U",
+  "ram": "16GB",
+  "storage": "512GB",
+  "gpu": "",
+  "screen": "FHD · 16 inch",
+  "resolution": "1920x1200",
+  "os": "Windows 11",
+  "condition": "used",
+  "needs": [
+   "van-phong"
+  ],
+  "note": "bạc"
+ },
+ {
+  "name": "Dell Inspiron 15 3511 RAM 8GB SSD 256GB FHD (CŨ)",
+  "slug": "dell-inspiron-15-3511-ram-8gb-ssd-256gb-fhd",
+  "brand": "Dell",
+  "price": 6000000,
+  "cpu": "i3 1115G4",
+  "ram": "8GB",
+  "storage": "256GB",
+  "gpu": "",
+  "screen": "FHD · 15.6 inch",
+  "resolution": "1920x1080",
+  "os": "Windows 11",
+  "condition": "used",
+  "needs": [
+   "van-phong"
+  ],
+  "note": ""
+ },
+ {
+  "name": "Dell Inspiron 13 7380 RAM 8GB SSD 256GB FHD (CŨ)",
+  "slug": "dell-inspiron-13-7380-ram-8gb-ssd-256gb-fhd",
+  "brand": "Dell",
+  "price": 7800000,
+  "cpu": "i7 8565U",
+  "ram": "8GB",
+  "storage": "256GB",
+  "gpu": "",
+  "screen": "FHD · 13.3 inch",
+  "resolution": "1920x1080",
+  "os": "Windows 10",
+  "condition": "used",
+  "needs": [
+   "van-phong"
+  ],
+  "note": ""
+ },
+ {
+  "name": "Dell Inspiron 15 5510 RAM 16GB SSD 512GB FHD NEW OUTLED (CŨ)",
+  "slug": "dell-inspiron-15-5510-ram-16gb-ssd-512gb-fhd-new-outled",
+  "brand": "Dell",
+  "price": 14000000,
+  "cpu": "i7 11390H",
+  "ram": "16GB",
+  "storage": "512GB",
+  "gpu": "",
+  "screen": "FHD  NEW OUTLED · 15.6 inch",
+  "resolution": "1920x1080",
+  "os": "Windows 11",
+  "condition": "used",
+  "needs": [
+   "van-phong"
+  ],
+  "note": ""
+ },
+ {
+  "name": "Dell Inspiron 15 5510 RAM 16GB SSD 512GB MX450 FHD NEW OUTLED (CŨ)",
+  "slug": "dell-inspiron-15-5510-ram-16gb-ssd-512gb-mx450-fhd-new-outled",
+  "brand": "Dell",
+  "price": 14500000,
+  "cpu": "i7 11390H",
+  "ram": "16GB",
+  "storage": "512GB",
+  "gpu": "MX450",
+  "screen": "FHD  NEW OUTLED · 15.6 inch",
+  "resolution": "1920x1080",
+  "os": "Windows 11",
+  "condition": "used",
+  "needs": [
+   "van-phong"
+  ],
+  "note": ""
+ },
+ {
+  "name": "Dell Inspiron 14 5409 RAM 16GB SSD 512GB FHD (CŨ)",
+  "slug": "dell-inspiron-14-5409-ram-16gb-ssd-512gb-fhd",
+  "brand": "Dell",
+  "price": 12000000,
+  "cpu": "i5 1135G7",
+  "ram": "16GB",
+  "storage": "512GB",
+  "gpu": "",
+  "screen": "FHD · 14 inch",
+  "resolution": "1920x1080",
+  "os": "Windows 10",
+  "condition": "used",
+  "needs": [
+   "van-phong"
+  ],
+  "note": ""
+ },
+ {
+  "name": "Dell Inspiron 15 3530 RAM 16GB SSD 512GB FHD (CŨ)",
+  "slug": "dell-inspiron-15-3530-ram-16gb-ssd-512gb-fhd",
+  "brand": "Dell",
+  "price": 12500000,
+  "cpu": "i5 -1335U",
+  "ram": "16GB",
+  "storage": "512GB",
+  "gpu": "",
+  "screen": "FHD · 15.6 inch",
+  "resolution": "1920x1080",
+  "os": "Windows 11",
+  "condition": "used",
+  "needs": [
+   "van-phong"
+  ],
+  "note": ""
+ },
+ {
+  "name": "Dell Inspiron 13 5330 RAM 16GB SSD 512GB 2K5 NEW OUTLED (CŨ)",
+  "slug": "dell-inspiron-13-5330-ram-16gb-ssd-512gb-2k5-new-outled",
+  "brand": "Dell",
+  "price": 15500000,
+  "cpu": "i7 1360P",
+  "ram": "16GB",
+  "storage": "512GB",
+  "gpu": "",
+  "screen": "2K5 NEW OUTLED · 13.3 inch",
+  "resolution": "2560x1600",
+  "os": "Windows 11",
+  "condition": "used",
+  "needs": [
+   "van-phong"
+  ],
+  "note": ""
+ },
+ {
+  "name": "Dell Inspiron 16 5630 RAM 16GB SSD 512GB FHD NEW OUTLED (CŨ)",
+  "slug": "dell-inspiron-16-5630-ram-16gb-ssd-512gb-fhd-new-outled",
+  "brand": "Dell",
+  "price": 16500000,
+  "cpu": "i7 1360P",
+  "ram": "16GB",
+  "storage": "512GB",
+  "gpu": "",
+  "screen": "FHD NEW OUTLED · 16 inch",
+  "resolution": "1920x1200",
+  "os": "Windows 11",
+  "condition": "used",
+  "needs": [
+   "van-phong"
+  ],
+  "note": "xanh đậm"
+ },
+ {
+  "name": "Dell Inspiron 13 7386 2-in-1 RAM 8GB SSD 256GB FHD cảm ứng (CŨ)",
+  "slug": "dell-inspiron-13-7386-2-in-1-ram-8gb-ssd-256gb-fhd-cam-ung",
+  "brand": "Dell",
+  "price": 9500000,
+  "cpu": "i5 8265U",
+  "ram": "8GB",
+  "storage": "256GB",
+  "gpu": "",
+  "screen": "FHD cảm ứng · 13.3 inch",
+  "resolution": "1920x1080",
+  "os": "Windows 10",
+  "condition": "used",
+  "needs": [
+   "van-phong"
+  ],
+  "note": ""
+ },
+ {
+  "name": "Dell Inspiron 14 7435 2-in-1 RAM 8GB SSD 512GB FHD cảm ứng (CŨ)",
+  "slug": "dell-inspiron-14-7435-2-in-1-ram-8gb-ssd-512gb-fhd-cam-ung",
+  "brand": "Dell",
+  "price": 12000000,
+  "cpu": "R5 7530U",
+  "ram": "8GB",
+  "storage": "512GB",
+  "gpu": "",
+  "screen": "FHD cảm ứng · 14 inch",
+  "resolution": "1920x1200",
+  "os": "Windows 11",
+  "condition": "used",
+  "needs": [
+   "van-phong"
+  ],
+  "note": "xanh ngọc"
+ },
+ {
+  "name": "Dell Inspiron 14 2-in-1 7445 RAM 8GB SSD 512GB FHD cảm ứng (CŨ)",
+  "slug": "dell-inspiron-14-2-in-1-7445-ram-8gb-ssd-512gb-fhd-cam-ung",
+  "brand": "Dell",
+  "price": 14500000,
+  "cpu": "R5 8640HS",
+  "ram": "8GB",
+  "storage": "512GB",
+  "gpu": "",
+  "screen": "FHD cảm ứng · 14 inch",
+  "resolution": "1920x1200",
+  "os": "Windows 11",
+  "condition": "used",
+  "needs": [
+   "van-phong"
+  ],
+  "note": "xanh đậm"
+ },
+ {
+  "name": "Dell Inspiron 16 2-in-1 7620 RAM 16GB SSD 512GB FHD cảm ứng (CŨ)",
+  "slug": "dell-inspiron-16-2-in-1-7620-ram-16gb-ssd-512gb-fhd-cam-ung",
+  "brand": "Dell",
+  "price": 16500000,
+  "cpu": "i5 -1235U",
+  "ram": "16GB",
+  "storage": "512GB",
+  "gpu": "",
+  "screen": "FHD cảm ứng · 16 inch",
+  "resolution": "1920x1200",
+  "os": "Windows 11",
+  "condition": "used",
+  "needs": [
+   "van-phong"
+  ],
+  "note": ""
+ },
+ {
+  "name": "Dell Latitude 7480 RAM 8GB SSD 256GB (CŨ)",
+  "slug": "dell-latitude-7480-ram-8gb-ssd-256gb",
+  "brand": "Dell",
+  "price": 6200000,
+  "cpu": "i7-6",
+  "ram": "8GB",
+  "storage": "256GB",
+  "gpu": "",
+  "screen": "14 inch",
+  "resolution": "1920x1080",
+  "os": "Windows 10",
+  "condition": "used",
+  "needs": [
+   "van-phong"
+  ],
+  "note": ""
+ },
+ {
+  "name": "Dell Latitude 7480 RAM 8GB SSD 256GB (CŨ)",
+  "slug": "dell-latitude-7480-ram-8gb-ssd-256gb",
+  "brand": "Dell",
+  "price": 6700000,
+  "cpu": "i7 7",
+  "ram": "8GB",
+  "storage": "256GB",
+  "gpu": "",
+  "screen": "14 inch",
+  "resolution": "1920x1080",
+  "os": "Windows 10",
+  "condition": "used",
+  "needs": [
+   "van-phong"
+  ],
+  "note": ""
+ },
+ {
+  "name": "Dell Latitude 7400 RAM 8GB SSD 256GB FHD (CŨ)",
+  "slug": "dell-latitude-7400-ram-8gb-ssd-256gb-fhd",
+  "brand": "Dell",
+  "price": 6500000,
+  "cpu": "i5 8365U",
+  "ram": "8GB",
+  "storage": "256GB",
+  "gpu": "",
+  "screen": "FHD · 14 inch",
+  "resolution": "1920x1080",
+  "os": "Windows 10",
+  "condition": "used",
+  "needs": [
+   "van-phong"
+  ],
+  "note": ""
+ },
+ {
+  "name": "Dell Latitude 7400 RAM 8GB SSD 256GB FHD (CŨ)",
+  "slug": "dell-latitude-7400-ram-8gb-ssd-256gb-fhd",
+  "brand": "Dell",
+  "price": 8000000,
+  "cpu": "i5 8365U",
+  "ram": "8GB",
+  "storage": "256GB",
+  "gpu": "",
+  "screen": "FHD · 14 inch",
+  "resolution": "1920x1080",
+  "os": "Windows 10",
+  "condition": "used",
+  "needs": [
+   "van-phong"
+  ],
+  "note": ""
+ },
+ {
+  "name": "Dell Latitude 7390 RAM 8GB SSD 256GB FHD (CŨ)",
+  "slug": "dell-latitude-7390-ram-8gb-ssd-256gb-fhd",
+  "brand": "Dell",
+  "price": 6000000,
+  "cpu": "i5 8350U",
+  "ram": "8GB",
+  "storage": "256GB",
+  "gpu": "",
+  "screen": "FHD · 13.3 inch",
+  "resolution": "1920x1080",
+  "os": "Windows 10",
+  "condition": "used",
+  "needs": [
+   "van-phong"
+  ],
+  "note": ""
+ },
+ {
+  "name": "Dell Latitude 5310 RAM 8GB SSD 256GB FHD (CŨ)",
+  "slug": "dell-latitude-5310-ram-8gb-ssd-256gb-fhd",
+  "brand": "Dell",
+  "price": 7500000,
+  "cpu": "i5 10210U",
+  "ram": "8GB",
+  "storage": "256GB",
+  "gpu": "",
+  "screen": "FHD · 13.3 inch",
+  "resolution": "1920x1080",
+  "os": "Windows 10",
+  "condition": "used",
+  "needs": [
+   "van-phong"
+  ],
+  "note": ""
+ },
+ {
+  "name": "Dell Latitude 3410 RAM 8GB SSD 256GB FHD (CŨ)",
+  "slug": "dell-latitude-3410-ram-8gb-ssd-256gb-fhd",
+  "brand": "Dell",
+  "price": 8000000,
+  "cpu": "i7 10510U",
+  "ram": "8GB",
+  "storage": "256GB",
+  "gpu": "",
+  "screen": "FHD · 14 inch",
+  "resolution": "1920x1080",
+  "os": "Windows 10",
+  "condition": "used",
+  "needs": [
+   "van-phong"
+  ],
+  "note": ""
+ },
+ {
+  "name": "Dell Latitude 3320 RAM 8GB SSD 256GB FHD (CŨ)",
+  "slug": "dell-latitude-3320-ram-8gb-ssd-256gb-fhd",
+  "brand": "Dell",
+  "price": 8000000,
+  "cpu": "i5 1135G7",
+  "ram": "8GB",
+  "storage": "256GB",
+  "gpu": "",
+  "screen": "FHD · 13.3 inch",
+  "resolution": "1920x1080",
+  "os": "Windows 10",
+  "condition": "used",
+  "needs": [
+   "van-phong"
+  ],
+  "note": ""
+ },
+ {
+  "name": "Dell Latitude 3320 RAM 16GB SSD 256GB FHD (CŨ)",
+  "slug": "dell-latitude-3320-ram-16gb-ssd-256gb-fhd",
+  "brand": "Dell",
+  "price": 8500000,
+  "cpu": "i5 1135G7",
+  "ram": "16GB",
+  "storage": "256GB",
+  "gpu": "",
+  "screen": "FHD · 13.3 inch",
+  "resolution": "1920x1080",
+  "os": "Windows 10",
+  "condition": "used",
+  "needs": [
+   "van-phong"
+  ],
+  "note": ""
+ },
+ {
+  "name": "Dell Latitude 7430 RAM 32GB SSD 512GB FHD (CŨ)",
+  "slug": "dell-latitude-7430-ram-32gb-ssd-512gb-fhd",
+  "brand": "Dell",
+  "price": 14000000,
+  "cpu": "i7 1265U",
+  "ram": "32GB",
+  "storage": "512GB",
+  "gpu": "",
+  "screen": "FHD · 14 inch",
+  "resolution": "1920x1080",
+  "os": "Windows 11",
+  "condition": "used",
+  "needs": [
+   "van-phong"
+  ],
+  "note": ""
+ },
+ {
+  "name": "Dell Latitude 7390 2-in-1 RAM 8GB SSD 256GB FHD cảm ứng (CŨ)",
+  "slug": "dell-latitude-7390-2-in-1-ram-8gb-ssd-256gb-fhd-cam-ung",
+  "brand": "Dell",
+  "price": 7500000,
+  "cpu": "i5 8350U",
+  "ram": "8GB",
+  "storage": "256GB",
+  "gpu": "",
+  "screen": "FHD cảm ứng · 13.3 inch",
+  "resolution": "1920x1080",
+  "os": "Windows 10",
+  "condition": "used",
+  "needs": [
+   "van-phong"
+  ],
+  "note": ""
+ },
+ {
+  "name": "Dell Latitude 5300 2-in-1 RAM 8GB SSD 256GB FHD cảm ứng (CŨ)",
+  "slug": "dell-latitude-5300-2-in-1-ram-8gb-ssd-256gb-fhd-cam-ung",
+  "brand": "Dell",
+  "price": 8000000,
+  "cpu": "i5 8265U",
+  "ram": "8GB",
+  "storage": "256GB",
+  "gpu": "",
+  "screen": "FHD cảm ứng · 13.3 inch",
+  "resolution": "1920x1080",
+  "os": "Windows 10",
+  "condition": "used",
+  "needs": [
+   "van-phong"
+  ],
+  "note": ""
+ },
+ {
+  "name": "Dell Latitude 5300 2-in-1 RAM 8GB SSD 256GB FHD cảm ứng (CŨ)",
+  "slug": "dell-latitude-5300-2-in-1-ram-8gb-ssd-256gb-fhd-cam-ung",
+  "brand": "Dell",
+  "price": 8500000,
+  "cpu": "i7 8665U",
+  "ram": "8GB",
+  "storage": "256GB",
+  "gpu": "",
+  "screen": "FHD cảm ứng · 13.3 inch",
+  "resolution": "1920x1080",
+  "os": "Windows 10",
+  "condition": "used",
+  "needs": [
+   "van-phong"
+  ],
+  "note": ""
+ },
+ {
+  "name": "Dell Latitude 5320 2-in-1 RAM 16GB SSD 256GB FHD cảm ứng (CŨ)",
+  "slug": "dell-latitude-5320-2-in-1-ram-16gb-ssd-256gb-fhd-cam-ung",
+  "brand": "Dell",
+  "price": 9500000,
+  "cpu": "i7 1185G7",
+  "ram": "16GB",
+  "storage": "256GB",
+  "gpu": "",
+  "screen": "FHD cảm ứng · 13.3 inch",
+  "resolution": "1920x1080",
+  "os": "Windows 10",
+  "condition": "used",
+  "needs": [
+   "van-phong"
+  ],
+  "note": ""
+ },
+ {
+  "name": "Dell Latitude 7410 2-in-1 RAM 16GB SSD 256GB FHD cảm ứng (CŨ)",
+  "slug": "dell-latitude-7410-2-in-1-ram-16gb-ssd-256gb-fhd-cam-ung",
+  "brand": "Dell",
+  "price": 11000000,
+  "cpu": "i5 10310U",
+  "ram": "16GB",
+  "storage": "256GB",
+  "gpu": "",
+  "screen": "FHD cảm ứng · 14 inch",
+  "resolution": "1920x1080",
+  "os": "Windows 10",
+  "condition": "used",
+  "needs": [
+   "van-phong"
+  ],
+  "note": ""
+ },
+ {
+  "name": "Dell Latitude 9410 2-in-1 RAM 16GB SSD 256GB FHD cảm ứng (CŨ)",
+  "slug": "dell-latitude-9410-2-in-1-ram-16gb-ssd-256gb-fhd-cam-ung",
+  "brand": "Dell",
+  "price": 10500000,
+  "cpu": "i5-10310U",
+  "ram": "16GB",
+  "storage": "256GB",
+  "gpu": "",
+  "screen": "FHD  cảm ứng · 14 inch",
+  "resolution": "1920x1080",
+  "os": "Windows 10",
+  "condition": "used",
+  "needs": [
+   "van-phong"
+  ],
+  "note": ""
+ },
+ {
+  "name": "Dell Latitude 9410 2-in-1 RAM 16GB SSD 256GB FHD cảm ứng (CŨ)",
+  "slug": "dell-latitude-9410-2-in-1-ram-16gb-ssd-256gb-fhd-cam-ung",
+  "brand": "Dell",
+  "price": 13000000,
+  "cpu": "i7-10610U",
+  "ram": "16GB",
+  "storage": "256GB",
+  "gpu": "",
+  "screen": "FHD cảm ứng · 14 inch",
+  "resolution": "1920x1080",
+  "os": "Windows 10",
+  "condition": "used",
+  "needs": [
+   "van-phong"
+  ],
+  "note": ""
+ },
+ {
+  "name": "Dell Latitude 7320 2-in-1 RAM 16GB SSD 256GB FHD cảm ứng (CŨ)",
+  "slug": "dell-latitude-7320-2-in-1-ram-16gb-ssd-256gb-fhd-cam-ung",
+  "brand": "Dell",
+  "price": 12500000,
+  "cpu": "i7 1185G7",
+  "ram": "16GB",
+  "storage": "256GB",
+  "gpu": "",
+  "screen": "FHD cảm ứng · 13.3 inch",
+  "resolution": "1920x1080",
+  "os": "Windows 10",
+  "condition": "used",
+  "needs": [
+   "van-phong"
+  ],
+  "note": ""
+ },
+ {
+  "name": "Dell Latitude 7420 2-in-1 RAM 16GB SSD 512GB FHD cảm ứng (CŨ)",
+  "slug": "dell-latitude-7420-2-in-1-ram-16gb-ssd-512gb-fhd-cam-ung",
+  "brand": "Dell",
+  "price": 12500000,
+  "cpu": "i7 1185G7",
+  "ram": "16GB",
+  "storage": "512GB",
+  "gpu": "",
+  "screen": "FHD cảm ứng · 14 inch",
+  "resolution": "1920x1080",
+  "os": "Windows 10",
+  "condition": "used",
+  "needs": [
+   "van-phong"
+  ],
+  "note": ""
+ },
+ {
+  "name": "Dell Latitude 9420 2-in-1 RAM 16GB SSD 256GB 2K5 cảm ứng (CŨ)",
+  "slug": "dell-latitude-9420-2-in-1-ram-16gb-ssd-256gb-2k5-cam-ung",
+  "brand": "Dell",
+  "price": 15500000,
+  "cpu": "i7 1185G7",
+  "ram": "16GB",
+  "storage": "256GB",
+  "gpu": "",
+  "screen": "2K5 cảm ứng · 14 inch",
+  "resolution": "2560x1600",
+  "os": "Windows 10",
+  "condition": "used",
+  "needs": [
+   "van-phong"
+  ],
+  "note": ""
+ },
+ {
+  "name": "HP EliteBook 830 G6 (CŨ)",
+  "slug": "hp-elitebook-830-g6",
+  "brand": "HP",
+  "price": 6500000,
+  "cpu": "i5-8365U",
+  "ram": "",
+  "storage": "",
+  "gpu": "",
+  "screen": "13.3 inch",
+  "resolution": "1920x1080",
+  "os": "Windows 10",
+  "condition": "used",
+  "needs": [
+   "van-phong"
+  ],
+  "note": ""
+ },
+ {
+  "name": "HP EliteBook 830 G7 RAM 16GB SSD 256GB FHD (CŨ)",
+  "slug": "hp-elitebook-830-g7-ram-16gb-ssd-256gb-fhd",
+  "brand": "HP",
+  "price": 8500000,
+  "cpu": "i5 10210U",
+  "ram": "16GB",
+  "storage": "256GB",
+  "gpu": "",
+  "screen": "FHD · 13.3 inch",
+  "resolution": "1920x1080",
+  "os": "Windows 10",
+  "condition": "used",
+  "needs": [
+   "van-phong"
+  ],
+  "note": "Chỉ dùng sạc HP kim xanh"
+ },
+ {
+  "name": "HP EliteBook 840 G6 RAM 8GB SSD 256GB FHD (CŨ)",
+  "slug": "hp-elitebook-840-g6-ram-8gb-ssd-256gb-fhd",
+  "brand": "HP",
+  "price": 6500000,
+  "cpu": "i5 8365U",
+  "ram": "8GB",
+  "storage": "256GB",
+  "gpu": "",
+  "screen": "FHD · 14 inch",
+  "resolution": "1920x1080",
+  "os": "Windows 10",
+  "condition": "used",
+  "needs": [
+   "van-phong"
+  ],
+  "note": ""
+ },
+ {
+  "name": "HP Spectre x360 13-ae RAM 16GB SSD 360GB FHD cảm ứng (CŨ)",
+  "slug": "hp-spectre-x360-13-ae-ram-16gb-ssd-360gb-fhd-cam-ung",
+  "brand": "HP",
+  "price": 10500000,
+  "cpu": "i7 8550U",
+  "ram": "16GB",
+  "storage": "360GB",
+  "gpu": "",
+  "screen": "FHD cảm ứng · 13.3 inch",
+  "resolution": "1920x1080",
+  "os": "Windows 10",
+  "condition": "used",
+  "needs": [
+   "van-phong"
+  ],
+  "note": "màu hồng gold"
+ },
+ {
+  "name": "HP EliteBook x360 1040 G10 RAM 16GB SSD 512GB FHD cảm ứng (CŨ)",
+  "slug": "hp-elitebook-x360-1040-g10-ram-16gb-ssd-512gb-fhd-cam-ung",
+  "brand": "HP",
+  "price": 15500000,
+  "cpu": "i7 -1365U",
+  "ram": "16GB",
+  "storage": "512GB",
+  "gpu": "",
+  "screen": "FHD cảm ứng · 14 inch",
+  "resolution": "1920x1200",
+  "os": "Windows 11",
+  "condition": "used",
+  "needs": [
+   "van-phong"
+  ],
+  "note": ""
+ },
+ {
+  "name": "HP ZBook Studio G8 RAM 32GB SSD 1TB RTX 3070 4K 120Hz (CŨ)",
+  "slug": "hp-zbook-studio-g8-ram-32gb-ssd-1tb-rtx-3070-4k-120hz",
+  "brand": "HP",
+  "price": 23500000,
+  "cpu": "i7 11850H",
+  "ram": "32GB",
+  "storage": "1TB",
+  "gpu": "RTX 3070",
+  "screen": "4K 120Hz · 15.6 inch",
+  "resolution": "3840x2160",
+  "os": "Windows 11",
+  "condition": "used",
+  "needs": [
+   "gaming"
+  ],
+  "note": ""
+ },
+ {
+  "name": "HP ZBook Fury 15 G8 RAM 16GB SSD 512GB T1200 FHD (CŨ)",
+  "slug": "hp-zbook-fury-15-g8-ram-16gb-ssd-512gb-t1200-fhd",
+  "brand": "HP",
+  "price": 17500000,
+  "cpu": "i7 11800H",
+  "ram": "16GB",
+  "storage": "512GB",
+  "gpu": "T1200",
+  "screen": "FHD · 15.6 inch",
+  "resolution": "1920x1080",
+  "os": "Windows 10",
+  "condition": "used",
+  "needs": [
+   "do-hoa"
+  ],
+  "note": ""
+ },
+ {
+  "name": "HP Victus 15 RAM 16GB SSD 512GB RTX 2050 FHD 144Hz (CŨ)",
+  "slug": "hp-victus-15-ram-16gb-ssd-512gb-rtx-2050-fhd-144hz",
+  "brand": "HP",
+  "price": 13000000,
+  "cpu": "R5 7535HS",
+  "ram": "16GB",
+  "storage": "512GB",
+  "gpu": "RTX 2050",
+  "screen": "FHD 144Hz · 15.6 inch",
+  "resolution": "1920x1080",
+  "os": "Windows 11",
+  "condition": "used",
+  "needs": [
+   "gaming"
+  ],
+  "note": ""
+ },
+ {
+  "name": "Asus Vivobook 14 X1405VA RAM 16GB SSD 512GB FHD (CŨ)",
+  "slug": "asus-vivobook-14-x1405va-ram-16gb-ssd-512gb-fhd",
+  "brand": "Asus",
+  "price": 12500000,
+  "cpu": "i5 13420H",
+  "ram": "16GB",
+  "storage": "512GB",
+  "gpu": "",
+  "screen": "FHD · 14 inch",
+  "resolution": "1920x1200",
+  "os": "Windows 11",
+  "condition": "used",
+  "needs": [
+   "van-phong"
+  ],
+  "note": ""
+ },
+ {
+  "name": "Asus Zenbook UX425UG RAM 8GB SSD 256GB MX450 FHD (CŨ)",
+  "slug": "asus-zenbook-ux425ug-ram-8gb-ssd-256gb-mx450-fhd",
+  "brand": "Asus",
+  "price": 12000000,
+  "cpu": "R5 5500U",
+  "ram": "8GB",
+  "storage": "256GB",
+  "gpu": "MX450",
+  "screen": "FHD · 14 inch",
+  "resolution": "1920x1080",
+  "os": "Windows 11",
+  "condition": "used",
+  "needs": [
+   "van-phong"
+  ],
+  "note": ""
+ },
+ {
+  "name": "Asus Zenbook 14X OLED UX3404VA RAM 8GB SSD 512GB OLED cảm ứng (CŨ)",
+  "slug": "asus-zenbook-14x-oled-ux3404va-ram-8gb-ssd-512gb-oled-cam-ung",
+  "brand": "Asus",
+  "price": 15500000,
+  "cpu": "i5 13500H",
+  "ram": "8GB",
+  "storage": "512GB",
+  "gpu": "",
+  "screen": "OLED cảm ứng · 14.5 inch",
+  "resolution": "2880x1800",
+  "os": "Windows 11",
+  "condition": "used",
+  "needs": [
+   "van-phong"
+  ],
+  "note": ""
+ },
+ {
+  "name": "Asus Zenbook 14 OLED UX3402ZA RAM 16GB SSD 512GB 3K (CŨ)",
+  "slug": "asus-zenbook-14-oled-ux3402za-ram-16gb-ssd-512gb-3k",
+  "brand": "Asus",
+  "price": 16000000,
+  "cpu": "i7 1260P",
+  "ram": "16GB",
+  "storage": "512GB",
+  "gpu": "",
+  "screen": "3K · 14 inch",
+  "resolution": "2880x1800",
+  "os": "Windows 11",
+  "condition": "used",
+  "needs": [
+   "van-phong"
+  ],
+  "note": ""
+ },
+ {
+  "name": "Asus TUF Gaming F15 FX506HF RAM 8GB SSD 512GB RTX 2050 FHD 144Hz (CŨ)",
+  "slug": "asus-tuf-gaming-f15-fx506hf-ram-8gb-ssd-512gb-rtx-2050-fhd-144hz",
+  "brand": "Asus",
+  "price": 12500000,
+  "cpu": "i5 11400H",
+  "ram": "8GB",
+  "storage": "512GB",
+  "gpu": "RTX 2050",
+  "screen": "FHD 144Hz · 15.6 inch",
+  "resolution": "1920x1080",
+  "os": "Windows 11",
+  "condition": "used",
+  "needs": [
+   "gaming"
+  ],
+  "note": ""
+ },
+ {
+  "name": "Asus TUF Gaming A15 FA506QM RAM 16GB SSD 512GB RTX3060 FHD 360Hz (CŨ)",
+  "slug": "asus-tuf-gaming-a15-fa506qm-ram-16gb-ssd-512gb-rtx3060-fhd-360hz",
+  "brand": "Asus",
+  "price": 16500000,
+  "cpu": "R7 5800H",
+  "ram": "16GB",
+  "storage": "512GB",
+  "gpu": "RTX3060",
+  "screen": "FHD 360Hz · 15.6 inch",
+  "resolution": "1920x1080",
+  "os": "Windows 10",
+  "condition": "used",
+  "needs": [
+   "gaming"
+  ],
+  "note": ""
+ },
+ {
+  "name": "Asus TUF Gaming A15 FA507RE RAM 8GB SSD 512GB RTX 3050Ti FHD 144Hz (CŨ)",
+  "slug": "asus-tuf-gaming-a15-fa507re-ram-8gb-ssd-512gb-rtx-3050ti-fhd-144hz",
+  "brand": "Asus",
+  "price": 16500000,
+  "cpu": "R7 6800H",
+  "ram": "8GB",
+  "storage": "512GB",
+  "gpu": "RTX 3050Ti",
+  "screen": "FHD 144Hz · 15.6 inch",
+  "resolution": "1920x1080",
+  "os": "Windows 11",
+  "condition": "used",
+  "needs": [
+   "gaming"
+  ],
+  "note": ""
+ },
+ {
+  "name": "Asus ROG Strix G15 G513RC RAM 16GB SSD 512GB RTX 3050 FHD 144Hz (CŨ)",
+  "slug": "asus-rog-strix-g15-g513rc-ram-16gb-ssd-512gb-rtx-3050-fhd-144hz",
+  "brand": "Asus",
+  "price": 17500000,
+  "cpu": "R7 6800H",
+  "ram": "16GB",
+  "storage": "512GB",
+  "gpu": "RTX 3050",
+  "screen": "FHD 144Hz · 15.6 inch",
+  "resolution": "1920x1080",
+  "os": "Windows 11",
+  "condition": "used",
+  "needs": [
+   "gaming"
+  ],
+  "note": ""
+ },
+ {
+  "name": "Asus ROG Strix G15 G513QM RAM 16GB SSD 512GB RTX3060 FHD 240Hz (CŨ)",
+  "slug": "asus-rog-strix-g15-g513qm-ram-16gb-ssd-512gb-rtx3060-fhd-240hz",
+  "brand": "Asus",
+  "price": 19500000,
+  "cpu": "R9 5900HX",
+  "ram": "16GB",
+  "storage": "512GB",
+  "gpu": "RTX3060",
+  "screen": "FHD 240Hz · 15.6 inch",
+  "resolution": "1920x1080",
+  "os": "Windows 10",
+  "condition": "used",
+  "needs": [
+   "gaming"
+  ],
+  "note": ""
+ },
+ {
+  "name": "Lenovo ThinkPad X1 Yoga Gen 6 RAM 16GB SSD 256GB 4K cảm ứng (CŨ)",
+  "slug": "lenovo-thinkpad-x1-yoga-gen-6-ram-16gb-ssd-256gb-4k-cam-ung",
+  "brand": "Lenovo",
+  "price": 16000000,
+  "cpu": "i7 1185G7",
+  "ram": "16GB",
+  "storage": "256GB",
+  "gpu": "",
+  "screen": "4K cảm ứng · 14 inch",
+  "resolution": "3840x2400",
+  "os": "Windows 10",
+  "condition": "used",
+  "needs": [
+   "van-phong"
+  ],
+  "note": ""
+ },
+ {
+  "name": "Lenovo Yoga Air 14c 2022 (IAP7) RAM 16GB SSD 1TB 3K (CŨ)",
+  "slug": "lenovo-yoga-air-14c-2022-iap7-ram-16gb-ssd-1tb-3k",
+  "brand": "Lenovo",
+  "price": 19500000,
+  "cpu": "i7 1280P",
+  "ram": "16GB",
+  "storage": "1TB",
+  "gpu": "",
+  "screen": "3K · 14 inch",
+  "resolution": "2880x1800",
+  "os": "Windows 11",
+  "condition": "used",
+  "needs": [
+   "van-phong"
+  ],
+  "note": "màu bạc ánh sáng"
+ },
+ {
+  "name": "Lenovo IdeaPad Slim 3 15IRH8 RAM 16GB SSD 512GB FHD (CŨ)",
+  "slug": "lenovo-ideapad-slim-3-15irh8-ram-16gb-ssd-512gb-fhd",
+  "brand": "Lenovo",
+  "price": 14500000,
+  "cpu": "i5 13420H",
+  "ram": "16GB",
+  "storage": "512GB",
+  "gpu": "",
+  "screen": "FHD · 15.6 inch",
+  "resolution": "1920x1080",
+  "os": "Windows 11",
+  "condition": "used",
+  "needs": [
+   "van-phong"
+  ],
+  "note": "còn BH hãng tới tháng 4/2027"
+ },
+ {
+  "name": "Lenovo ThinkPad X1 Carbon Gen 9 RAM 32GB SSD 256GB 4K (CŨ)",
+  "slug": "lenovo-thinkpad-x1-carbon-gen-9-ram-32gb-ssd-256gb-4k",
+  "brand": "Lenovo",
+  "price": 15800000,
+  "cpu": "i7 -11",
+  "ram": "32GB",
+  "storage": "256GB",
+  "gpu": "",
+  "screen": "4K · 14 inch",
+  "resolution": "3840x2400",
+  "os": "Windows 10",
+  "condition": "used",
+  "needs": [
+   "van-phong"
+  ],
+  "note": ""
+ },
+ {
+  "name": "Lenovo ThinkPad X1 Carbon Gen 10 RAM 16GB SSD 512FHDGB 512FHD (CŨ)",
+  "slug": "lenovo-thinkpad-x1-carbon-gen-10-ram-16gb-ssd-512fhdgb-512fhd",
+  "brand": "Lenovo",
+  "price": 17500000,
+  "cpu": "i7 1270P",
+  "ram": "16GB",
+  "storage": "512FHDGB",
+  "gpu": "",
+  "screen": "512FHD · 14 inch",
+  "resolution": "1920x1200",
+  "os": "Windows 11",
+  "condition": "used",
+  "needs": [
+   "van-phong"
+  ],
+  "note": ""
+ },
+ {
+  "name": "Lenovo ThinkPad X1 Titanium Yoga Gen 1 RAM 16GB SSD 512GB 2K cảm ứng (CŨ)",
+  "slug": "lenovo-thinkpad-x1-titanium-yoga-gen-1-ram-16gb-ssd-512gb-2k-cam-ung",
+  "brand": "Lenovo",
+  "price": 13500000,
+  "cpu": "i7 1160G7",
+  "ram": "16GB",
+  "storage": "512GB",
+  "gpu": "",
+  "screen": "2K cảm ứng · 13.5 inch",
+  "resolution": "2256x1504",
+  "os": "Windows 10",
+  "condition": "used",
+  "needs": [
+   "van-phong"
+  ],
+  "note": ""
+ },
+ {
+  "name": "Lenovo LOQ 15IRH8 RAM 12GB SSD 512GB RTX 3050 FHD 144Hz (CŨ)",
+  "slug": "lenovo-loq-15irh8-ram-12gb-ssd-512gb-rtx-3050-fhd-144hz",
+  "brand": "Lenovo",
+  "price": 16700000,
+  "cpu": "i5 13420H",
+  "ram": "12GB",
+  "storage": "512GB",
+  "gpu": "RTX 3050",
+  "screen": "FHD 144Hz · 15.6 inch",
+  "resolution": "1920x1080",
+  "os": "Windows 11",
+  "condition": "used",
+  "needs": [
+   "gaming"
+  ],
+  "note": ""
+ },
+ {
+  "name": "Lenovo LOQ RAM 16GB SSD 512GB RTX 3050 6G FHD 144hz (CŨ)",
+  "slug": "lenovo-loq-ram-16gb-ssd-512gb-rtx-3050-6g-fhd-144hz",
+  "brand": "Lenovo",
+  "price": 16500000,
+  "cpu": "i5 12th",
+  "ram": "16GB",
+  "storage": "512GB",
+  "gpu": "RTX 3050 6G",
+  "screen": "FHD 144hz · 15.6 inch",
+  "resolution": "1920x1080",
+  "os": "Windows 11",
+  "condition": "used",
+  "needs": [
+   "gaming"
+  ],
+  "note": "ĐQ :BH hãng 15/3/2028\nTCV: BH hãng 2/10/2027"
+ },
+ {
+  "name": "Lenovo LOQ 15APH8 RAM 16GB SSD 512GB RTX 4050 FHD 144Hz (CŨ)",
+  "slug": "lenovo-loq-15aph8-ram-16gb-ssd-512gb-rtx-4050-fhd-144hz",
+  "brand": "Lenovo",
+  "price": 18500000,
+  "cpu": "R5 7235HS",
+  "ram": "16GB",
+  "storage": "512GB",
+  "gpu": "RTX 4050",
+  "screen": "FHD 144Hz · 15.6 inch",
+  "resolution": "1920x1080",
+  "os": "Windows 11",
+  "condition": "used",
+  "needs": [
+   "gaming"
+  ],
+  "note": ""
+ },
+ {
+  "name": "Lenovo LOQ 15APH8 RAM 16GB SSD 512GB RTX 4050 FHD 144Hz (CŨ)",
+  "slug": "lenovo-loq-15aph8-ram-16gb-ssd-512gb-rtx-4050-fhd-144hz",
+  "brand": "Lenovo",
+  "price": 20500000,
+  "cpu": "R7 7435HS",
+  "ram": "16GB",
+  "storage": "512GB",
+  "gpu": "RTX 4050",
+  "screen": "FHD 144Hz · 15.6 inch",
+  "resolution": "1920x1080",
+  "os": "Windows 11",
+  "condition": "used",
+  "needs": [
+   "gaming"
+  ],
+  "note": ""
+ },
+ {
+  "name": "Lenovo LOQ 15IRH8 RAM 16GB SSD 512GB RTX 4050 FHD 144Hz (CŨ)",
+  "slug": "lenovo-loq-15irh8-ram-16gb-ssd-512gb-rtx-4050-fhd-144hz",
+  "brand": "Lenovo",
+  "price": 23500000,
+  "cpu": "i7 13650HX",
+  "ram": "16GB",
+  "storage": "512GB",
+  "gpu": "RTX 4050",
+  "screen": "FHD 144Hz · 15.6 inch",
+  "resolution": "1920x1080",
+  "os": "Windows 11",
+  "condition": "used",
+  "needs": [
+   "gaming"
+  ],
+  "note": "1 TCV CÒN BẢO BH HÃNG 10/2026"
+ },
+ {
+  "name": "Lenovo LOQ 15AHP10 83JG0047VN Laptop AI RAM 16GB SSD 512GB RTX 5050 8GB GDDR7 15.6FHD IPS 144Hz (CŨ)",
+  "slug": "lenovo-loq-15ahp10-83jg0047vn-laptop-ai-ram-16gb-ssd-512gb-rtx-5050-8gb-gddr7-15-6fhd-ips-144hz",
+  "brand": "Lenovo",
+  "price": 27000000,
+  "cpu": "AMD Ryzen 7 250",
+  "ram": "16GB",
+  "storage": "512GB",
+  "gpu": "RTX 5050 8GB GDDR7",
+  "screen": "15.6FHD IPS 144Hz · 15.6 inch",
+  "resolution": "1920x1080",
+  "os": "Windows 11",
+  "condition": "used",
+  "needs": [
+   "gaming"
+  ],
+  "note": "Bảo hành chính hãng 12/2026"
+ },
+ {
+  "name": "Lenovo IdeaPad Gaming 3 15IMH05 RAM 8GB SSD 512GB GTX 1650 FHD 120Hz (CŨ)",
+  "slug": "lenovo-ideapad-gaming-3-15imh05-ram-8gb-ssd-512gb-gtx-1650-fhd-120hz",
+  "brand": "Lenovo",
+  "price": 10500000,
+  "cpu": "i5 10300H",
+  "ram": "8GB",
+  "storage": "512GB",
+  "gpu": "GTX 1650",
+  "screen": "FHD 120Hz · 15.6 inch",
+  "resolution": "1920x1080",
+  "os": "Windows 10",
+  "condition": "used",
+  "needs": [
+   "gaming"
+  ],
+  "note": ""
+ },
+ {
+  "name": "Lenovo Legion Y540-15 RAM 16GB SSD 256GB GTX 1650 FHD 60Hz (CŨ)",
+  "slug": "lenovo-legion-y540-15-ram-16gb-ssd-256gb-gtx-1650-fhd-60hz",
+  "brand": "Lenovo",
+  "price": 10500000,
+  "cpu": "i5 9300H",
+  "ram": "16GB",
+  "storage": "256GB",
+  "gpu": "GTX 1650",
+  "screen": "FHD 60Hz · 15.6 inch",
+  "resolution": "1920x1080",
+  "os": "Windows 10",
+  "condition": "used",
+  "needs": [
+   "gaming"
+  ],
+  "note": ""
+ },
+ {
+  "name": "Lenovo Legion 5 15ACH6 RAM 16GB SSD 512GB RX 6600M FHD 165Hz (CŨ)",
+  "slug": "lenovo-legion-5-15ach6-ram-16gb-ssd-512gb-rx-6600m-fhd-165hz",
+  "brand": "Lenovo",
+  "price": 16000000,
+  "cpu": "R5 5600H",
+  "ram": "16GB",
+  "storage": "512GB",
+  "gpu": "RX 6600M",
+  "screen": "FHD 165Hz · 15.6 inch",
+  "resolution": "1920x1080",
+  "os": "Windows 11",
+  "condition": "used",
+  "needs": [
+   "gaming"
+  ],
+  "note": ""
+ },
+ {
+  "name": "Lenovo Legion 5 15ACH6H RAM 16GB SSD 512GB RTX 3060 FHD 165Hz (CŨ)",
+  "slug": "lenovo-legion-5-15ach6h-ram-16gb-ssd-512gb-rtx-3060-fhd-165hz",
+  "brand": "Lenovo",
+  "price": 21500000,
+  "cpu": "R7 5800H",
+  "ram": "16GB",
+  "storage": "512GB",
+  "gpu": "RTX 3060",
+  "screen": "FHD 165Hz · 15.6 inch",
+  "resolution": "1920x1080",
+  "os": "Windows 11",
+  "condition": "used",
+  "needs": [
+   "gaming"
+  ],
+  "note": ""
+ },
+ {
+  "name": "Lenovo Legion 5 RAM 16GB SSD 512GB RTX 3050 2K5 165Hz (CŨ)",
+  "slug": "lenovo-legion-5-ram-16gb-ssd-512gb-rtx-3050-2k5-165hz",
+  "brand": "Lenovo",
+  "price": 18500000,
+  "cpu": "R7 6800H",
+  "ram": "16GB",
+  "storage": "512GB",
+  "gpu": "RTX 3050",
+  "screen": "2K5 165Hz · 16 inch",
+  "resolution": "2560x1600",
+  "os": "Windows 11",
+  "condition": "used",
+  "needs": [
+   "gaming"
+  ],
+  "note": ""
+ },
+ {
+  "name": "Lenovo LOQ 15 RAM 16GB SSD 512GB RTX 4060 FHD 144hz (CŨ)",
+  "slug": "lenovo-loq-15-ram-16gb-ssd-512gb-rtx-4060-fhd-144hz",
+  "brand": "Lenovo",
+  "price": 26500000,
+  "cpu": "R7 8745H",
+  "ram": "16GB",
+  "storage": "512GB",
+  "gpu": "RTX 4060",
+  "screen": "FHD 144hz · 15.6 inch",
+  "resolution": "1920x1080",
+  "os": "Windows 11",
+  "condition": "used",
+  "needs": [
+   "gaming"
+  ],
+  "note": ""
+ },
+ {
+  "name": "Acer Nitro V 15 (ANV15-41) RAM 16GB SSD 512GB RTX 2050 FHD 165Hz (CŨ)",
+  "slug": "acer-nitro-v-15-anv15-41-ram-16gb-ssd-512gb-rtx-2050-fhd-165hz",
+  "brand": "Acer",
+  "price": 13000000,
+  "cpu": "R5 6600H",
+  "ram": "16GB",
+  "storage": "512GB",
+  "gpu": "RTX 2050",
+  "screen": "FHD 165Hz · 15.6 inch",
+  "resolution": "1920x1080",
+  "os": "Windows 11",
+  "condition": "used",
+  "needs": [
+   "gaming"
+  ],
+  "note": ""
+ },
+ {
+  "name": "Acer Aspire 5 (A515-58GM) RAM 16GB SSD 512GB RTX 2050 FHD 60Hz (CŨ)",
+  "slug": "acer-aspire-5-a515-58gm-ram-16gb-ssd-512gb-rtx-2050-fhd-60hz",
+  "brand": "Acer",
+  "price": 13500000,
+  "cpu": "i5 13420H",
+  "ram": "16GB",
+  "storage": "512GB",
+  "gpu": "RTX 2050",
+  "screen": "FHD 60Hz · 15.6 inch",
+  "resolution": "1920x1080",
+  "os": "Windows 11",
+  "condition": "used",
+  "needs": [
+   "gaming"
+  ],
+  "note": ""
+ },
+ {
+  "name": "Acer Aspire 7 (A715-51G) RAM 16GB SSD 512GB RTX 3050 6G FHD 144Hz (CŨ)",
+  "slug": "acer-aspire-7-a715-51g-ram-16gb-ssd-512gb-rtx-3050-6g-fhd-144hz",
+  "brand": "Acer",
+  "price": 16500000,
+  "cpu": "i5 12450H",
+  "ram": "16GB",
+  "storage": "512GB",
+  "gpu": "RTX 3050 6G",
+  "screen": "FHD 144Hz · 15.6 inch",
+  "resolution": "1920x1080",
+  "os": "Windows 11",
+  "condition": "used",
+  "needs": [
+   "gaming"
+  ],
+  "note": ""
+ },
+ {
+  "name": "Acer Nitro 5 Tiger (AN515-58) RAM 16GB SSD 512GB RTX 3050 FHD 165 Hz (CŨ)",
+  "slug": "acer-nitro-5-tiger-an515-58-ram-16gb-ssd-512gb-rtx-3050-fhd-165-hz",
+  "brand": "Acer",
+  "price": 14500000,
+  "cpu": "i5 12500H",
+  "ram": "16GB",
+  "storage": "512GB",
+  "gpu": "RTX 3050",
+  "screen": "FHD 165 Hz · 15.6 inch",
+  "resolution": "1920x1080",
+  "os": "Windows 11",
+  "condition": "used",
+  "needs": [
+   "gaming"
+  ],
+  "note": ""
+ },
+ {
+  "name": "Acer Nitro 5 Tiger (AN515-58) RAM 8GB SSD 512GB RTX 3050 FHD 144 Hz (CŨ)",
+  "slug": "acer-nitro-5-tiger-an515-58-ram-8gb-ssd-512gb-rtx-3050-fhd-144-hz",
+  "brand": "Acer",
+  "price": 17000000,
+  "cpu": "i7 12700H",
+  "ram": "8GB",
+  "storage": "512GB",
+  "gpu": "RTX 3050",
+  "screen": "FHD 144 Hz · 15.6 inch",
+  "resolution": "1920x1080",
+  "os": "Windows 11",
+  "condition": "used",
+  "needs": [
+   "gaming"
+  ],
+  "note": ""
+ },
+ {
+  "name": "Acer Nitro 5 (AN515-46) RAM 16GB SSD 512GB RTX 3050 FHD 165Hz (CŨ)",
+  "slug": "acer-nitro-5-an515-46-ram-16gb-ssd-512gb-rtx-3050-fhd-165hz",
+  "brand": "Acer",
+  "price": 15500000,
+  "cpu": "R7 6800H",
+  "ram": "16GB",
+  "storage": "512GB",
+  "gpu": "RTX 3050",
+  "screen": "FHD 165Hz · 15.6 inch",
+  "resolution": "1920x1080",
+  "os": "Windows 11",
+  "condition": "used",
+  "needs": [
+   "gaming"
+  ],
+  "note": ""
+ },
+ {
+  "name": "Acer Nitro 5 (AN517-55) RAM 8GB SSD 512GB RTX 3050 17 inch FHD 144Hz (CŨ)",
+  "slug": "acer-nitro-5-an517-55-ram-8gb-ssd-512gb-rtx-3050-17-inch-fhd-144hz",
+  "brand": "Acer",
+  "price": 14500000,
+  "cpu": "i5 12500H",
+  "ram": "8GB",
+  "storage": "512GB",
+  "gpu": "RTX 3050",
+  "screen": "17 inch FHD 144Hz · 17.3 inch",
+  "resolution": "1920x1080",
+  "os": "Windows 11",
+  "condition": "used",
+  "needs": [
+   "gaming"
+  ],
+  "note": ""
+ },
+ {
+  "name": "Acer Nitro 5 Tiger (AN515-58) RAM 16GB SSD 512GB RTX 3060 FHD 165Hz (CŨ)",
+  "slug": "acer-nitro-5-tiger-an515-58-ram-16gb-ssd-512gb-rtx-3060-fhd-165hz",
+  "brand": "Acer",
+  "price": 16500000,
+  "cpu": "i5 12500H",
+  "ram": "16GB",
+  "storage": "512GB",
+  "gpu": "RTX 3060",
+  "screen": "FHD 165Hz · 15.6 inch",
+  "resolution": "1920x1080",
+  "os": "Windows 11",
+  "condition": "used",
+  "needs": [
+   "gaming"
+  ],
+  "note": ""
+ },
+ {
+  "name": "Acer Predator Helios Neo 16 (PHN16-71) RAM 16GB SSD 512GB RTX 4050 FHD 165Hz (CŨ)",
+  "slug": "acer-predator-helios-neo-16-phn16-71-ram-16gb-ssd-512gb-rtx-4050-fhd-165hz",
+  "brand": "Acer",
+  "price": 22500000,
+  "cpu": "i5 13500HX",
+  "ram": "16GB",
+  "storage": "512GB",
+  "gpu": "RTX 4050",
+  "screen": "FHD 165Hz · 16 inch",
+  "resolution": "1920x1200",
+  "os": "Windows 11",
+  "condition": "used",
+  "needs": [
+   "gaming"
+  ],
+  "note": ""
+ },
+ {
+  "name": "Acer Predator Helios 300 (PH315-54) RAM 16GB SSD 512GB 3050ti (CŨ)",
+  "slug": "acer-predator-helios-300-ph315-54-ram-16gb-ssd-512gb-3050ti",
+  "brand": "Acer",
+  "price": 14500000,
+  "cpu": "i7 11800H",
+  "ram": "16GB",
+  "storage": "512GB",
+  "gpu": "",
+  "screen": "3050ti · 15.6 inch",
+  "resolution": "1920x1080",
+  "os": "Windows 10",
+  "condition": "used",
+  "needs": [
+   "van-phong"
+  ],
+  "note": ""
+ },
+ {
+  "name": "Acer Predator Helios 300 (PH315-55) RAM 16GB SSD 512GB RTX 3060 FHD 165Hz (CŨ)",
+  "slug": "acer-predator-helios-300-ph315-55-ram-16gb-ssd-512gb-rtx-3060-fhd-165hz",
+  "brand": "Acer",
+  "price": 21500000,
+  "cpu": "i7 12700H",
+  "ram": "16GB",
+  "storage": "512GB",
+  "gpu": "RTX 3060",
+  "screen": "FHD 165Hz · 15.6 inch",
+  "resolution": "1920x1080",
+  "os": "Windows 11",
+  "condition": "used",
+  "needs": [
+   "gaming"
+  ],
+  "note": ""
+ },
+ {
+  "name": "Acer Predator Helios Neo 16 (PHN16-71) RAM 16GB SSD 512GB RTX 4050 FHD 165Hz (CŨ)",
+  "slug": "acer-predator-helios-neo-16-phn16-71-ram-16gb-ssd-512gb-rtx-4050-fhd-165hz",
+  "brand": "Acer",
+  "price": 24500000,
+  "cpu": "i7 13700HX",
+  "ram": "16GB",
+  "storage": "512GB",
+  "gpu": "RTX 4050",
+  "screen": "FHD 165Hz · 16 inch",
+  "resolution": "1920x1200",
+  "os": "Windows 11",
+  "condition": "used",
+  "needs": [
+   "gaming"
+  ],
+  "note": ""
+ },
+ {
+  "name": "Acer Predator Helios Neo 16 (PHN16-72) RAM 16GB SSD 1TB RTX 4070 2K5 120Hz full box (CŨ)",
+  "slug": "acer-predator-helios-neo-16-phn16-72-ram-16gb-ssd-1tb-rtx-4070-2k5-120hz-full-box",
+  "brand": "Acer",
+  "price": 32500000,
+  "cpu": "Ultra 7 155H",
+  "ram": "16GB",
+  "storage": "1TB",
+  "gpu": "RTX 4070",
+  "screen": "2K5 120Hz full box · 16 inch",
+  "resolution": "2560x1600",
+  "os": "Windows 11",
+  "condition": "used",
+  "needs": [
+   "gaming"
+  ],
+  "note": ""
+ },
+ {
+  "name": "MSI GF63 Thin (12UC) RAM 8GB SSD 512GB RTX 3050 FHD 144Hz (CŨ)",
+  "slug": "msi-gf63-thin-12uc-ram-8gb-ssd-512gb-rtx-3050-fhd-144hz",
+  "brand": "MSI",
+  "price": 12500000,
+  "cpu": "i5 12450H",
+  "ram": "8GB",
+  "storage": "512GB",
+  "gpu": "RTX 3050",
+  "screen": "FHD 144Hz · 15.6 inch",
+  "resolution": "1920x1080",
+  "os": "Windows 11",
+  "condition": "used",
+  "needs": [
+   "gaming"
+  ],
+  "note": ""
+ },
+ {
+  "name": "MSI GF63 Thin (11UC) RAM 8GB SSD 512GB RTX 3050 FHD 144Hz (CŨ)",
+  "slug": "msi-gf63-thin-11uc-ram-8gb-ssd-512gb-rtx-3050-fhd-144hz",
+  "brand": "MSI",
+  "price": 13500000,
+  "cpu": "i7 11800H",
+  "ram": "8GB",
+  "storage": "512GB",
+  "gpu": "RTX 3050",
+  "screen": "FHD 144Hz · 15.6 inch",
+  "resolution": "1920x1080",
+  "os": "Windows 10",
+  "condition": "used",
+  "needs": [
+   "gaming"
+  ],
+  "note": ""
+ },
+ {
+  "name": "MSI Modern 15 (B13M) RAM 16GB SSD 512GB FHD 60Hz (CŨ)",
+  "slug": "msi-modern-15-b13m-ram-16gb-ssd-512gb-fhd-60hz",
+  "brand": "MSI",
+  "price": 14500000,
+  "cpu": "i7 13700H",
+  "ram": "16GB",
+  "storage": "512GB",
+  "gpu": "",
+  "screen": "FHD 60Hz · 15.6 inch",
+  "resolution": "1920x1080",
+  "os": "Windows 11",
+  "condition": "used",
+  "needs": [
+   "van-phong"
+  ],
+  "note": "BH HÃNG ĐẾN THÁNG 10/2026"
+ },
+ {
+  "name": "MSI Thin GF75 i7 RAM 8GB SSD 512GB GTX 1650Ti FHD 144hz (CŨ)",
+  "slug": "msi-thin-gf75-i7-ram-8gb-ssd-512gb-gtx-1650ti-fhd-144hz",
+  "brand": "MSI",
+  "price": 12500000,
+  "cpu": "i7 10750H",
+  "ram": "8GB",
+  "storage": "512GB",
+  "gpu": "GTX 1650Ti",
+  "screen": "FHD 144hz · 17.3 inch",
+  "resolution": "1920x1080",
+  "os": "Windows 10",
+  "condition": "used",
+  "needs": [
+   "gaming"
+  ],
+  "note": ""
+ },
+ {
+  "name": "MSI Katana GF66 RAM 16GB SSD 512GB RTX 3050Ti FHD 144Hz (CŨ)",
+  "slug": "msi-katana-gf66-ram-16gb-ssd-512gb-rtx-3050ti-fhd-144hz",
+  "brand": "MSI",
+  "price": 15500000,
+  "cpu": "i7 11800H",
+  "ram": "16GB",
+  "storage": "512GB",
+  "gpu": "RTX 3050Ti",
+  "screen": "FHD 144Hz · 15.6 inch",
+  "resolution": "1920x1080",
+  "os": "Windows 11",
+  "condition": "used",
+  "needs": [
+   "gaming"
+  ],
+  "note": ""
+ },
+ {
+  "name": "MSI Thin 15 B13UC i7 RAM 16GB SSD 512GB RTX 3050 144hz (CŨ)",
+  "slug": "msi-thin-15-b13uc-i7-ram-16gb-ssd-512gb-rtx-3050-144hz",
+  "brand": "MSI",
+  "price": 17500000,
+  "cpu": "i7 13620H",
+  "ram": "16GB",
+  "storage": "512GB",
+  "gpu": "RTX 3050",
+  "screen": "144hz · 15.6 inch",
+  "resolution": "1920x1080",
+  "os": "Windows 11",
+  "condition": "used",
+  "needs": [
+   "gaming"
+  ],
+  "note": ""
+ },
+ {
+  "name": "MSI Pulse GL76 11UEK RAM 16GB SSD 512GB RTX 3060 FHD 144Hz (CŨ)",
+  "slug": "msi-pulse-gl76-11uek-ram-16gb-ssd-512gb-rtx-3060-fhd-144hz",
+  "brand": "MSI",
+  "price": 19500000,
+  "cpu": "i7 11800H",
+  "ram": "16GB",
+  "storage": "512GB",
+  "gpu": "RTX 3060",
+  "screen": "FHD 144Hz · 17.3 inch",
+  "resolution": "1920x1080",
+  "os": "Windows 11",
+  "condition": "used",
+  "needs": [
+   "gaming"
+  ],
+  "note": ""
+ },
+ {
+  "name": "MSI Vector GP68HX 13V RAM 16GB SSD 512GB RTX 4060 8GB 2K 240Hz (CŨ)",
+  "slug": "msi-vector-gp68hx-13v-ram-16gb-ssd-512gb-rtx-4060-8gb-2k-240hz",
+  "brand": "MSI",
+  "price": 28500000,
+  "cpu": "i9-13950HX",
+  "ram": "16GB",
+  "storage": "512GB",
+  "gpu": "RTX 4060 8GB",
+  "screen": "2K 240Hz · 16 inch",
+  "resolution": "2560x1600",
+  "os": "Windows 11",
+  "condition": "used",
+  "needs": [
+   "gaming"
+  ],
+  "note": ""
+ },
+ {
+  "name": "MSI Katana 15 HX B14WEK i9 RAM 16GB SSD 512GB RTX 5050 2K5 165Hz (CŨ)",
+  "slug": "msi-katana-15-hx-b14wek-i9-ram-16gb-ssd-512gb-rtx-5050-2k5-165hz",
+  "brand": "MSI",
+  "price": 28500000,
+  "cpu": "i9 14900HX",
+  "ram": "16GB",
+  "storage": "512GB",
+  "gpu": "RTX 5050",
+  "screen": "2K5 165Hz · 15.6 inch",
+  "resolution": "2560x1440",
+  "os": "Windows 11",
+  "condition": "used",
+  "needs": [
+   "gaming"
+  ],
+  "note": "BH hãng đến 12/8/2027"
+ },
+ {
+  "name": "Gigabyte G6 KF RAM 16GB SSD 512GB RTX 4060 FHD 165Hz (CŨ)",
+  "slug": "gigabyte-g6-kf-ram-16gb-ssd-512gb-rtx-4060-fhd-165hz",
+  "brand": "Gigabyte",
+  "price": 21500000,
+  "cpu": "i7 13620H",
+  "ram": "16GB",
+  "storage": "512GB",
+  "gpu": "RTX 4060",
+  "screen": "FHD 165Hz · 16 inch",
+  "resolution": "1920x1200",
+  "os": "Windows 11",
+  "condition": "used",
+  "needs": [
+   "gaming"
+  ],
+  "note": ""
+ },
+ {
+  "name": "Surface Surface Laptop Go RAM 8GB SSD 128GB FHD touch (CŨ)",
+  "slug": "surface-surface-laptop-go-ram-8gb-ssd-128gb-fhd-touch",
+  "brand": "Surface",
+  "price": 9000000,
+  "cpu": "i5 1035G1",
+  "ram": "8GB",
+  "storage": "128GB",
+  "gpu": "",
+  "screen": "FHD touch · 12.4 inch",
+  "resolution": "1536x1024",
+  "os": "Windows 10",
+  "condition": "used",
+  "needs": [
+   "van-phong"
+  ],
+  "note": ""
+ },
+ {
+  "name": "Surface Surface Laptop 2 RAM 8GB SSD 256GB 2K Touch (CŨ)",
+  "slug": "surface-surface-laptop-2-ram-8gb-ssd-256gb-2k-touch",
+  "brand": "Surface",
+  "price": 10000000,
+  "cpu": "i5-8350U",
+  "ram": "8GB",
+  "storage": "256GB",
+  "gpu": "",
+  "screen": "2K Touch · 13.5 inch",
+  "resolution": "2256x1504",
+  "os": "Windows 10",
+  "condition": "used",
+  "needs": [
+   "van-phong"
+  ],
+  "note": ""
+ },
+ {
+  "name": "Surface Surface Laptop 3 RAM 8GB SSD 256GB 2K Touch (CŨ)",
+  "slug": "surface-surface-laptop-3-ram-8gb-ssd-256gb-2k-touch",
+  "brand": "Surface",
+  "price": 11300000,
+  "cpu": "i5-1035G7",
+  "ram": "8GB",
+  "storage": "256GB",
+  "gpu": "",
+  "screen": "2K Touch · 13.5 inch",
+  "resolution": "2256x1504",
+  "os": "Windows 10",
+  "condition": "used",
+  "needs": [
+   "van-phong"
+  ],
+  "note": ""
+ },
+ {
+  "name": "Surface Surface Laptop 3 RAM 16GB SSD 256GB 15.6\" 2K Touch (CŨ)",
+  "slug": "surface-surface-laptop-3-ram-16gb-ssd-256gb-15-6-2k-touch",
+  "brand": "Surface",
+  "price": 12300000,
+  "cpu": "i5-1035G7",
+  "ram": "16GB",
+  "storage": "256GB",
+  "gpu": "",
+  "screen": "15.6\" 2K Touch · 13.5 inch",
+  "resolution": "2256x1504",
+  "os": "Windows 10",
+  "condition": "used",
+  "needs": [
+   "van-phong"
+  ],
+  "note": ""
+ },
+ {
+  "name": "MacBook Air 11 inch 2015 RAM 4GB SSD 128GB 11,6 (CŨ)",
+  "slug": "macbook-air-11-inch-2015-ram-4gb-ssd-128gb-11-6",
+  "brand": "MacBook",
+  "price": 6500000,
+  "cpu": "i5",
+  "ram": "4GB",
+  "storage": "128GB",
+  "gpu": "",
+  "screen": "11,6 · 11.6 inch",
+  "resolution": "1366x768",
+  "os": "macOS",
+  "condition": "used",
+  "needs": [
+   "van-phong"
+  ],
+  "note": "đăng 4tr5 ko lách"
+ },
+ {
+  "name": "MacBook Air 2018 RAM 8GB SSD 128GB 13.3 inch Retina màu hồng gold (CŨ)",
+  "slug": "macbook-air-2018-ram-8gb-ssd-128gb-13-3-inch-retina-mau-hong-gold",
+  "brand": "MacBook",
+  "price": 8500000,
+  "cpu": "i5",
+  "ram": "8GB",
+  "storage": "128GB",
+  "gpu": "",
+  "screen": "13.3 inch Retina màu hồng gold · 13.3 inch",
+  "resolution": "2560x1600",
+  "os": "macOS",
+  "condition": "used",
+  "needs": [
+   "van-phong"
+  ],
+  "note": ""
+ }
+]

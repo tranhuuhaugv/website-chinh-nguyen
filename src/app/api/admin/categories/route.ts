@@ -95,6 +95,27 @@ export async function PUT(req: Request) {
   return NextResponse.json({ ok: true, slug });
 }
 
+// Lưu lại THỨ TỰ danh mục: body { order: string[] } (mảng slug theo thứ tự mới).
+export async function PATCH(req: Request) {
+  if (!(await requireAdmin())) {
+    return NextResponse.json({ ok: false }, { status: 401 });
+  }
+  const body = (await req.json().catch(() => null)) as { order?: unknown } | null;
+  const order = Array.isArray(body?.order)
+    ? body!.order.filter((s): s is string => typeof s === "string")
+    : [];
+  if (!order.length) {
+    return NextResponse.json({ ok: false, error: "missing_order" }, { status: 400 });
+  }
+  await prisma.$transaction(
+    order.map((slug, i) =>
+      prisma.category.update({ where: { slug }, data: { sort: i } }),
+    ),
+  );
+  done();
+  return NextResponse.json({ ok: true });
+}
+
 export async function DELETE(req: Request) {
   if (!(await requireAdmin())) {
     return NextResponse.json({ ok: false }, { status: 401 });

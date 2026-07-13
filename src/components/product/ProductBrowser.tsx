@@ -7,7 +7,7 @@ import {
   mergeParams,
   parseQuery,
   queryProducts,
-  toggleParam,
+  setParam,
   type RawParams,
 } from "@/lib/product-query";
 import { ProductCard } from "@/components/ProductCard";
@@ -16,7 +16,8 @@ import { Pagination } from "@/components/Pagination";
 // Khối duyệt sản phẩm: bộ lọc dạng nút ở trên cùng + lưới sản phẩm full-width.
 // Server Component; lọc/sắp xếp/phân trang qua URL (SEO-friendly).
 
-function Pill({
+// Chip lọc hiện đại: chọn = xanh đặc; chưa chọn = nền dịu, hover xanh nhạt.
+function Chip({
   href,
   active,
   children,
@@ -28,10 +29,10 @@ function Pill({
   return (
     <Link
       href={href}
-      className={`rounded-full px-3.5 py-1.5 text-[13px] transition ${
+      className={`shrink-0 whitespace-nowrap rounded-full px-3.5 py-1.5 text-[13px] font-medium transition ${
         active
-          ? "bg-gradient-to-r from-green-d to-green font-semibold text-white shadow-[0_4px_12px_rgba(21,154,72,.30)]"
-          : "border border-line bg-white font-medium text-ink-2 hover:border-green hover:text-green-d"
+          ? "bg-green text-white shadow-[0_2px_8px_rgba(21,154,72,.28)]"
+          : "bg-bg text-ink-2 hover:bg-green-tint hover:text-green-d"
       }`}
     >
       {children}
@@ -39,13 +40,16 @@ function Pill({
   );
 }
 
+// 1 hàng lọc: nhãn nhỏ in hoa + dải chip cuộn ngang.
 function FilterRow({ label, children }: { label: string; children: ReactNode }) {
   return (
-    <div className="flex flex-wrap items-center gap-2">
-      <span className="w-14 shrink-0 text-[13px] font-semibold text-ink-2">
+    <div className="flex items-center gap-3 px-4 py-2.5">
+      <span className="w-16 shrink-0 text-[11.5px] font-bold uppercase tracking-wide text-muted">
         {label}
       </span>
-      {children}
+      <div className="flex flex-1 gap-2 overflow-x-auto [scrollbar-width:none] [&::-webkit-scrollbar]:hidden">
+        {children}
+      </div>
     </div>
   );
 }
@@ -66,62 +70,77 @@ export function ProductBrowser({
   const query = parseQuery(searchParams);
   const { items, total, page, totalPages } = queryProducts(products, query);
 
+  // Hãng & Giá: CHỌN 1 (single-select). Bấm lại mục đang chọn -> bỏ (về "Tất cả").
+  const activeBrand = query.brands[0];
+  const activePrice = query.prices[0];
+
   return (
     <div>
       {/* Thanh bộ lọc trên cùng */}
-      <div className="mb-6 flex flex-col gap-3 rounded-2xl border border-line bg-white p-4 shadow-card">
-        {brands.length > 1 && (
-          <FilterRow label="Hãng">
-            <Pill
-              href={
-                basePath +
-                mergeParams(searchParams, { hang: undefined, trang: undefined })
-              }
-              active={query.brands.length === 0}
+      <div className="mb-6 overflow-hidden rounded-2xl border border-line bg-white shadow-card">
+        <div className="flex flex-col divide-y divide-line">
+          {brands.length > 1 && (
+            <FilterRow label="Hãng">
+              <Chip
+                href={basePath + setParam(searchParams, "hang", undefined)}
+                active={!activeBrand}
+              >
+                Tất cả
+              </Chip>
+              {brands.map((brand) => (
+                <Chip
+                  key={brand}
+                  href={
+                    basePath +
+                    setParam(
+                      searchParams,
+                      "hang",
+                      activeBrand === brand ? undefined : brand,
+                    )
+                  }
+                  active={activeBrand === brand}
+                >
+                  {brand}
+                </Chip>
+              ))}
+            </FilterRow>
+          )}
+
+          <FilterRow label="Giá">
+            <Chip
+              href={basePath + setParam(searchParams, "gia", undefined)}
+              active={!activePrice}
             >
               Tất cả
-            </Pill>
-            {brands.map((brand) => (
-              <Pill
-                key={brand}
-                href={basePath + toggleParam(searchParams, "hang", brand)}
-                active={query.brands.includes(brand)}
+            </Chip>
+            {PRICE_OPTIONS.map((opt) => (
+              <Chip
+                key={opt.value}
+                href={
+                  basePath +
+                  setParam(
+                    searchParams,
+                    "gia",
+                    activePrice === opt.value ? undefined : opt.value,
+                  )
+                }
+                active={activePrice === opt.value}
               >
-                {brand}
-              </Pill>
+                {opt.label}
+              </Chip>
             ))}
           </FilterRow>
-        )}
+        </div>
 
-        <FilterRow label="Giá">
-          <Pill
-            href={
-              basePath +
-              mergeParams(searchParams, { gia: undefined, trang: undefined })
-            }
-            active={query.prices.length === 0}
-          >
-            Tất cả
-          </Pill>
-          {PRICE_OPTIONS.map((opt) => (
-            <Pill
-              key={opt.value}
-              href={basePath + toggleParam(searchParams, "gia", opt.value)}
-              active={query.prices.includes(opt.value)}
-            >
-              {opt.label}
-            </Pill>
-          ))}
-        </FilterRow>
-
-        <div className="flex flex-wrap items-center justify-between gap-3 border-t border-line pt-3">
-          <p className="text-[13.5px] text-ink-2">
+        {/* Chân: số lượng + sắp xếp */}
+        <div className="flex flex-wrap items-center justify-between gap-3 border-t border-line bg-bg/50 px-4 py-2.5">
+          <p className="text-[13px] text-ink-2">
             <b className="text-ink">{total}</b> sản phẩm
           </p>
-          <div className="flex flex-wrap items-center gap-2">
-            <span className="text-[13px] text-muted">Sắp xếp:</span>
+          <div className="flex items-center gap-1.5 overflow-x-auto [scrollbar-width:none] [&::-webkit-scrollbar]:hidden">
+            <span className="shrink-0 text-[12.5px] text-muted">Sắp xếp:</span>
             {SORT_OPTIONS.map((opt) => (
-              <Pill
+              <Link
                 key={opt.value}
                 href={
                   basePath +
@@ -130,10 +149,14 @@ export function ProductBrowser({
                     trang: undefined,
                   })
                 }
-                active={query.sort === opt.value}
+                className={`shrink-0 whitespace-nowrap rounded-lg px-2.5 py-1.5 text-[12.5px] font-medium transition ${
+                  query.sort === opt.value
+                    ? "bg-green-tint text-green-d"
+                    : "text-ink-2 hover:bg-bg"
+                }`}
               >
                 {opt.label}
-              </Pill>
+              </Link>
             ))}
           </div>
         </div>

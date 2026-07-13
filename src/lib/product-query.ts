@@ -119,6 +119,26 @@ export function toggleParam(
 }
 
 /**
+ * Chọn ĐƠN (single-select): đặt key = value (bỏ nếu value undefined), reset trang.
+ * Dùng cho bộ lọc chỉ chọn 1 (hãng, khoảng giá).
+ */
+export function setParam(
+  current: RawParams,
+  key: string,
+  value: string | undefined,
+): string {
+  const sp = new URLSearchParams();
+  for (const [k, v] of Object.entries(current)) {
+    if (k === key || k === "trang") continue;
+    if (v == null) continue;
+    for (const val of Array.isArray(v) ? v : [v]) sp.append(k, val);
+  }
+  if (value != null) sp.append(key, value);
+  const s = sp.toString();
+  return s ? `?${s}` : "";
+}
+
+/**
  * Ghép query string từ params hiện tại + ghi đè. Value undefined/"" -> bỏ.
  * Dùng để tạo link sắp xếp / phân trang mà vẫn giữ các bộ lọc khác.
  */

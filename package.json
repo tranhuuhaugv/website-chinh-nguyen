@@ -10,7 +10,8 @@
     "postinstall": "prisma generate",
     "db:push": "prisma db push",
     "db:seed": "prisma db seed",
-    "db:categories": "tsx prisma/sync-categories.ts"
+    "db:categories": "tsx prisma/sync-categories.ts",
+    "db:import-laptops": "tsx prisma/import-laptops.ts"
   },
   "prisma": {
     "seed": "tsx prisma/seed.ts"
