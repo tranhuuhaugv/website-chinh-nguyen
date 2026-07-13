@@ -12,6 +12,12 @@ export const PRICE_OPTIONS: { value: string; label: string }[] = [
   { value: "tren-35", label: "Trên 35 triệu" },
 ];
 
+export const NEED_OPTIONS: { value: string; label: string }[] = [
+  { value: "van-phong", label: "Văn phòng" },
+  { value: "gaming", label: "Gaming" },
+  { value: "do-hoa", label: "Máy trạm - Đồ họa" },
+];
+
 export const SORT_OPTIONS: { value: string; label: string }[] = [
   { value: "moi", label: "Mới nhất" },
   { value: "ban-chay", label: "Bán chạy" },
@@ -29,6 +35,7 @@ const PRICE_MATCHERS: Record<string, (price: number) => boolean> = {
 export interface ProductQuery {
   brands: string[];
   prices: string[];
+  needs: string[];
   sort: string;
   page: number;
 }
@@ -49,6 +56,11 @@ export function queryProducts(all: Product[], q: ProductQuery): QueryResult {
   if (q.prices.length) {
     list = list.filter((p) =>
       q.prices.some((bucket) => PRICE_MATCHERS[bucket]?.(p.price)),
+    );
+  }
+  if (q.needs.length) {
+    list = list.filter((p) =>
+      q.needs.some((n) => (p.needs ?? []).includes(n)),
     );
   }
 
@@ -87,6 +99,7 @@ export function parseQuery(sp: RawParams): ProductQuery {
   return {
     brands: toArray(sp.hang),
     prices: toArray(sp.gia),
+    needs: toArray(sp.nhucau),
     sort: typeof sp.sapxep === "string" ? sp.sapxep : "moi",
     page: Number(sp.trang) > 0 ? Number(sp.trang) : 1,
   };

@@ -56,12 +56,23 @@ export async function generateMetadata({
   };
 }
 
-const COMMITMENTS = [
-  { icon: ShieldIcon, text: "Máy chính hãng, nguyên seal, đầy đủ hóa đơn VAT" },
-  { icon: WarrantyIcon, text: "Bảo hành 24 tháng · 1 đổi 1 trong 30 ngày" },
-  { icon: TruckIcon, text: "Giao nhanh 2h nội thành, toàn quốc 1-3 ngày" },
-  { icon: InstallmentIcon, text: "Hỗ trợ trả góp 0% qua thẻ / công ty tài chính" },
-];
+// Cam kết theo tình trạng máy (mới / cũ) — nội dung khớp thực tế shop bán.
+function commitmentsFor(condition?: string) {
+  if (condition === "new") {
+    return [
+      { icon: ShieldIcon, text: "Máy chính hãng, nguyên seal, đầy đủ hóa đơn VAT" },
+      { icon: WarrantyIcon, text: "Bảo hành chính hãng · 1 đổi 1 trong 30 ngày" },
+      { icon: TruckIcon, text: "Giao nhanh 2h nội thành, toàn quốc 1-3 ngày" },
+      { icon: InstallmentIcon, text: "Hỗ trợ trả góp 0% qua thẻ / công ty tài chính" },
+    ];
+  }
+  return [
+    { icon: ShieldIcon, text: "Máy đã kiểm tra kỹ, test đầy đủ chức năng" },
+    { icon: WarrantyIcon, text: "Bảo hành shop · hỗ trợ kỹ thuật tận nơi" },
+    { icon: TruckIcon, text: "Giao nhanh 2h nội thành, toàn quốc 1-3 ngày" },
+    { icon: InstallmentIcon, text: "Trả góp 0% · thu cũ đổi mới lên đời" },
+  ];
+}
 
 function Bullet({ children }: { children: React.ReactNode }) {
   return (
@@ -174,17 +185,17 @@ export default async function ProductPage({
                 }
               />
 
-              {/* Cam kết — đặt dưới ảnh cho cân đối 2 cột */}
-              <ul className="mt-5 grid grid-cols-1 gap-2.5 rounded-2xl border border-line bg-white p-4 sm:grid-cols-2">
-                {COMMITMENTS.map(({ icon: Icon, text }) => (
+              {/* Cam kết — dưới ảnh (chỉ DESKTOP; mobile gộp vào box Ưu đãi bên dưới) */}
+              <ul className="mt-5 flex flex-col gap-3.5 rounded-2xl border border-line bg-white p-5 max-lg:hidden">
+                {commitmentsFor(product.condition).map(({ icon: Icon, text }) => (
                   <li
                     key={text}
-                    className="flex items-center gap-2.5 text-[13px] text-ink-2"
+                    className="flex items-start gap-3 text-[13.5px] leading-snug text-ink-2"
                   >
-                    <span className="flex h-7 w-7 shrink-0 items-center justify-center rounded-lg bg-green-soft text-green">
-                      <Icon className="h-4 w-4" />
+                    <span className="flex h-8 w-8 shrink-0 items-center justify-center rounded-lg bg-green-soft text-green">
+                      <Icon className="h-[18px] w-[18px]" />
                     </span>
-                    {text}
+                    <span className="pt-1">{text}</span>
                   </li>
                 ))}
               </ul>
@@ -291,6 +302,21 @@ export default async function ProductPage({
                     Bảo hành <b className="text-ink">24 tháng</b> + kiểm tra máy
                     trực tiếp khi nhận.
                   </Bullet>
+                </ul>
+
+                {/* Cam kết — chỉ hiện MOBILE (gộp vào box ưu đãi, để giá lên trên) */}
+                <ul className="mt-3 flex flex-col gap-3 border-t border-green/20 pt-3 lg:hidden">
+                  {commitmentsFor(product.condition).map(({ icon: Icon, text }) => (
+                    <li
+                      key={text}
+                      className="flex items-start gap-3 text-[13px] leading-snug text-ink-2"
+                    >
+                      <span className="flex h-7 w-7 shrink-0 items-center justify-center rounded-lg bg-white text-green">
+                        <Icon className="h-4 w-4" />
+                      </span>
+                      <span className="pt-0.5">{text}</span>
+                    </li>
+                  ))}
                 </ul>
               </div>
 

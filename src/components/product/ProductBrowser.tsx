@@ -2,6 +2,7 @@ import Link from "next/link";
 import type { ReactNode } from "react";
 import type { Product } from "@/lib/types";
 import {
+  NEED_OPTIONS,
   PRICE_OPTIONS,
   SORT_OPTIONS,
   mergeParams,
@@ -70,9 +71,10 @@ export function ProductBrowser({
   const query = parseQuery(searchParams);
   const { items, total, page, totalPages } = queryProducts(products, query);
 
-  // Hãng & Giá: CHỌN 1 (single-select). Bấm lại mục đang chọn -> bỏ (về "Tất cả").
+  // Hãng / Giá / Nhu cầu: CHỌN 1. Bấm lại mục đang chọn -> bỏ (về "Tất cả").
   const activeBrand = query.brands[0];
   const activePrice = query.prices[0];
+  const activeNeed = query.needs[0];
 
   return (
     <div>
@@ -105,6 +107,31 @@ export function ProductBrowser({
               ))}
             </FilterRow>
           )}
+
+          <FilterRow label="Nhu cầu">
+            <Chip
+              href={basePath + setParam(searchParams, "nhucau", undefined)}
+              active={!activeNeed}
+            >
+              Tất cả
+            </Chip>
+            {NEED_OPTIONS.map((opt) => (
+              <Chip
+                key={opt.value}
+                href={
+                  basePath +
+                  setParam(
+                    searchParams,
+                    "nhucau",
+                    activeNeed === opt.value ? undefined : opt.value,
+                  )
+                }
+                active={activeNeed === opt.value}
+              >
+                {opt.label}
+              </Chip>
+            ))}
+          </FilterRow>
 
           <FilterRow label="Giá">
             <Chip
