@@ -39,8 +39,9 @@ yarn-error.log*
 *.tsbuildinfo
 next-env.d.ts
 
-# File Excel nhap san pham (du lieu lam viec cuc bo, khong commit)
+# File Excel nhap san pham + du lieu bao gia noi bo (KHONG commit len repo public)
 *.xlsx
+*.csv
 ~$*
 
 # Anh tu upload len VPS (luu cuc bo, khong commit)

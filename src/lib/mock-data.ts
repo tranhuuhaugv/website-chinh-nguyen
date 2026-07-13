@@ -348,23 +348,21 @@ export const FEATURED_PRODUCTS: Product[] = [
   },
 ];
 
+// Shop chuyên MÁY CŨ -> ưu tiên duyệt theo hãng, kèm nhu cầu + PC/màn hình/phụ kiện.
 export const CATEGORIES: Category[] = [
-  { slug: "laptop-van-phong", name: "Laptop văn phòng", icon: "office" },
-  { slug: "laptop-gaming", name: "Laptop Gaming", icon: "gaming" },
-  { slug: "laptop-do-hoa", name: "Laptop đồ họa", icon: "graphic" },
-  { slug: "laptop-mong-nhe", name: "Laptop mỏng nhẹ", icon: "slim" },
-  { slug: "laptop-sinh-vien", name: "Laptop sinh viên", icon: "student" },
-  { slug: "macbook", name: "MacBook", icon: "macbook" },
-  { slug: "laptop-ai", name: "Laptop AI", icon: "ai" },
-  { slug: "laptop-cu", name: "Laptop cũ", icon: "used", tag: "Giá tốt" },
-  { slug: "dell", name: "Dell", icon: "dell" },
+  { slug: "dell", name: "Dell", icon: "dell", tag: "Nhiều mẫu" },
+  { slug: "hp", name: "HP", icon: "hp" },
+  { slug: "lenovo", name: "Lenovo", icon: "lenovo" },
   { slug: "asus", name: "Asus", icon: "asus" },
   { slug: "acer", name: "Acer", icon: "acer" },
-  { slug: "lenovo", name: "Lenovo", icon: "lenovo" },
-  { slug: "hp", name: "HP", icon: "hp" },
-  { slug: "msi", name: "MSI", icon: "msi", tag: "Hot" },
+  { slug: "msi", name: "MSI", icon: "msi" },
+  { slug: "macbook", name: "MacBook", icon: "macbook" },
+  { slug: "laptop-gaming", name: "Laptop Gaming", icon: "gaming" },
+  { slug: "laptop-do-hoa", name: "Máy trạm - Đồ họa", icon: "graphic" },
+  { slug: "laptop-van-phong", name: "Laptop văn phòng", icon: "office" },
+  { slug: "pc", name: "PC đồng bộ", icon: "pc" },
   { slug: "man-hinh", name: "Màn hình", icon: "monitor" },
-  { slug: "phu-kien", name: "Phụ kiện", icon: "accessory" },
+  { slug: "phu-kien", name: "Sạc & Phụ kiện", icon: "accessory" },
 ];
 
 // Trợ giúp gọn khi khai báo bài viết mẫu (mỗi khối 1 dòng).
@@ -530,23 +528,16 @@ export function getRelatedProducts(product: Product, limit = 4): Product[] {
 // Nhóm danh mục cho mega-menu (thanh điều hướng).
 export const CATEGORY_GROUPS: { title: string; slugs: string[] }[] = [
   {
-    title: "Theo nhu cầu",
-    slugs: [
-      "laptop-van-phong",
-      "laptop-gaming",
-      "laptop-do-hoa",
-      "laptop-mong-nhe",
-      "laptop-sinh-vien",
-      "laptop-ai",
-    ],
+    title: "Theo thương hiệu",
+    slugs: ["dell", "hp", "lenovo", "asus", "acer", "msi", "macbook"],
   },
   {
-    title: "Theo thương hiệu",
-    slugs: ["dell", "asus", "acer", "lenovo", "hp", "msi", "macbook"],
+    title: "Theo nhu cầu",
+    slugs: ["laptop-gaming", "laptop-do-hoa", "laptop-van-phong"],
   },
   {
     title: "Khác",
-    slugs: ["laptop-cu", "man-hinh", "phu-kien"],
+    slugs: ["pc", "man-hinh", "phu-kien"],
   },
 ];
 

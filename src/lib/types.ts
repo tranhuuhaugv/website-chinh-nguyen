@@ -61,7 +61,8 @@ export type CategoryIconName =
   | "hp"
   | "msi"
   | "monitor"
-  | "accessory";
+  | "accessory"
+  | "pc";
 
 /** 1 dòng trong giỏ hàng. */
 export interface CartItem {

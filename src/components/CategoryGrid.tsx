@@ -26,6 +26,7 @@ const CAT_COLOR: Record<CategoryIconName, string> = {
   msi: "from-[#B91C1C] to-[#7F1D1D]",
   monitor: "from-[#475569] to-[#334155]",
   accessory: "from-[#FB923C] to-[#EA580C]",
+  pc: "from-[#0F766E] to-[#115E59]",
 };
 
 export function CategoryGrid({ categories }: { categories: Category[] }) {

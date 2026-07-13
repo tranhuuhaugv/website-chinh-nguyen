@@ -430,6 +430,12 @@ const CATEGORY_PATHS: Record<CategoryIconName, JSX.Element> = {
       <path d="M2 20h20M9 20v-4M15 20v-4" />
     </>
   ),
+  pc: (
+    <>
+      <rect x="4" y="3" width="9" height="18" rx="1" />
+      <path d="M16 7h5v14h-5M7 7v0M7 11v0" />
+    </>
+  ),
 };
 
 export function CategoryIcon({
