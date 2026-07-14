@@ -3,6 +3,15 @@ import type { ReactNode } from "react";
 // Biểu đồ đường lượt truy cập — vẽ bằng SVG, không thư viện.
 // Tổng quát: nhận mảng giá trị + nhãn trục X + tiêu đề + control (bộ lọc) tuỳ chọn.
 
+/** Làm tròn lên "số đẹp" cho trục Y (5, 10, 20, 50, 100, 200...). */
+function niceCeil(v: number): number {
+  if (v <= 5) return 5;
+  const mag = Math.pow(10, Math.floor(Math.log10(v)));
+  const norm = v / mag; // 1..10
+  const step = norm <= 1 ? 1 : norm <= 2 ? 2 : norm <= 4 ? 4 : norm <= 5 ? 5 : 10;
+  return step * mag;
+}
+
 export function TrafficChart({
   values,
   labels,
@@ -24,7 +33,11 @@ export function TrafficChart({
   const padB = 40;
   const n = Math.max(values.length, 1);
   const max = Math.max(...values, 1);
-  const niceMax = Math.ceil(max / 5000) * 5000 || 5000;
+  // Trục Y tự co theo dữ liệu (trước đây ép bội số 5.000 -> web ít lượt bị nén
+  // thành đường thẳng, không đọc được). Làm tròn lên số "đẹp": 5/10/20/50/100...
+  const niceMax = niceCeil(max);
+  const total = values.reduce((a, b) => a + b, 0);
+  const avg = Math.round(total / n);
 
   const x = (i: number) =>
     padL + (n <= 1 ? 0 : (i * (W - padL - padR)) / (n - 1));
@@ -44,9 +57,12 @@ export function TrafficChart({
         <h2 className="text-[15px] font-bold text-ink">{title}</h2>
         {control}
       </div>
-      <p className="mb-3 flex items-center gap-1.5 text-[12.5px] text-muted">
+      <p className="mb-3 flex flex-wrap items-center gap-1.5 text-[12.5px] text-muted">
         <span className="h-2.5 w-2.5 rounded-full bg-green" />
-        Lượt truy cập{subtitle ? ` · ${subtitle}` : ""}
+        Lượt truy cập{subtitle ? ` · ${subtitle}` : ""} · Tổng{" "}
+        <b className="text-ink">{total.toLocaleString("vi-VN")}</b> · Cao nhất{" "}
+        <b className="text-ink">{max.toLocaleString("vi-VN")}</b> · Trung bình{" "}
+        <b className="text-ink">{avg.toLocaleString("vi-VN")}</b>
       </p>
 
       <div className="overflow-x-auto">
@@ -95,7 +111,26 @@ export function TrafficChart({
             strokeLinecap="round"
           />
           {values.map((v, i) => (
-            <circle key={i} cx={x(i)} cy={y(v)} r="3.5" fill="#159A48" />
+            <g key={i}>
+              <circle cx={x(i)} cy={y(v)} r="3.5" fill="#159A48" />
+              {/* Số ngay trên chấm khi ít điểm (vd xem theo tháng) */}
+              {n <= 14 && (
+                <text
+                  x={x(i)}
+                  y={y(v) - 10}
+                  textAnchor="middle"
+                  fontSize="11.5"
+                  fontWeight="600"
+                  fill="#17201A"
+                >
+                  {v.toLocaleString("vi-VN")}
+                </text>
+              )}
+              {/* Vùng rê chuột rộng hơn + tooltip số lượt */}
+              <circle cx={x(i)} cy={y(v)} r="12" fill="transparent">
+                <title>{`${labels[i]}: ${v.toLocaleString("vi-VN")} lượt`}</title>
+              </circle>
+            </g>
           ))}
 
           {labels.map((lb, i) =>
