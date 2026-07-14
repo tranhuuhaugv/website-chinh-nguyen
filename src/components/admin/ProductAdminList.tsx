@@ -2,178 +2,243 @@
 
 import { useMemo, useState } from "react";
 import Link from "next/link";
+import { useRouter } from "next/navigation";
 import { EditIcon, PlusIcon, TrashIcon } from "@/components/icons";
 import { formatPrice } from "@/lib/format";
-import type { Product } from "@/lib/types";
 
-// Quản lý sản phẩm: lọc theo hãng + nhóm theo dòng máy (thay vì show hết 1 bảng).
+// Quản lý sản phẩm: đọc DB thật, tìm kiếm + lọc hãng/tình trạng, sửa/xoá thật.
 
-// Suy ra "dòng máy" từ tên: bỏ tiền tố "Laptop", bỏ tên hãng, lấy các từ đầu
-// cho tới khi gặp từ có chữ số (thường là số hiệu). VD "Dell XPS 13..." -> "XPS".
-function seriesOf(p: Product): string {
-  const name = p.name.replace(/^laptop\s+/i, "").trim();
-  const words = name.split(/\s+/);
-  if (words[0]?.toLowerCase() === p.brand.toLowerCase()) words.shift();
-  const out: string[] = [];
-  for (const w of words) {
-    if (/\d/.test(w)) break;
-    out.push(w);
-    if (out.length >= 2) break;
-  }
-  return out.join(" ") || "Khác";
+export interface AdminProduct {
+  id: string;
+  slug: string;
+  name: string;
+  brand: string;
+  price: number;
+  condition: string;
+  cpu: string;
+  ram: string;
+  storage: string;
 }
 
-export function ProductAdminList({ products }: { products: Product[] }) {
+const PER_PAGE = 20;
+
+export function ProductAdminList({ products }: { products: AdminProduct[] }) {
+  const router = useRouter();
+  const [rows, setRows] = useState(products);
   const [q, setQ] = useState("");
-  const [brand, setBrand] = useState<string>("Tất cả");
-  const [hidden, setHidden] = useState<Set<string>>(new Set());
+  const [brand, setBrand] = useState("Tất cả");
+  const [cond, setCond] = useState("Tất cả");
+  const [page, setPage] = useState(1);
+  const [busy, setBusy] = useState<string | null>(null);
 
   const brands = useMemo(
-    () => Array.from(new Set(products.map((p) => p.brand))).sort(),
-    [products],
+    () => Array.from(new Set(rows.map((p) => p.brand))).sort(),
+    [rows],
   );
 
-  // Lọc theo hãng + từ khoá + ẩn (demo xoá).
   const filtered = useMemo(() => {
     const kw = q.trim().toLowerCase();
-    return products.filter(
+    return rows.filter(
       (p) =>
-        !hidden.has(p.id) &&
         (brand === "Tất cả" || p.brand === brand) &&
-        (!kw || `${p.name} ${p.brand}`.toLowerCase().includes(kw)),
+        (cond === "Tất cả" ||
+          (cond === "Cũ" ? p.condition !== "new" : p.condition === "new")) &&
+        (!kw || `${p.name} ${p.brand} ${p.cpu}`.toLowerCase().includes(kw)),
     );
-  }, [products, q, brand, hidden]);
+  }, [rows, q, brand, cond]);
 
-  // Nhóm: hãng -> dòng -> sản phẩm.
-  const grouped = useMemo(() => {
-    const byBrand = new Map<string, Map<string, Product[]>>();
-    for (const p of filtered) {
-      if (!byBrand.has(p.brand)) byBrand.set(p.brand, new Map());
-      const bySeries = byBrand.get(p.brand)!;
-      const s = seriesOf(p);
-      if (!bySeries.has(s)) bySeries.set(s, []);
-      bySeries.get(s)!.push(p);
+  const totalPages = Math.max(1, Math.ceil(filtered.length / PER_PAGE));
+  const cur = Math.min(page, totalPages);
+  const shown = filtered.slice((cur - 1) * PER_PAGE, cur * PER_PAGE);
+
+  async function remove(p: AdminProduct) {
+    if (!confirm(`Xoá sản phẩm "${p.name}"? Thao tác không thể hoàn tác.`)) return;
+    setBusy(p.id);
+    try {
+      const res = await fetch(`/api/admin/products?id=${p.id}`, {
+        method: "DELETE",
+      });
+      if (res.ok) {
+        setRows((prev) => prev.filter((x) => x.id !== p.id));
+        router.refresh();
+      } else {
+        alert("Xoá thất bại, vui lòng thử lại.");
+      }
+    } finally {
+      setBusy(null);
     }
-    return byBrand;
-  }, [filtered]);
+  }
 
-  const tabCls = (active: boolean) =>
-    `shrink-0 whitespace-nowrap rounded-full px-3.5 py-1.5 text-[13px] transition ${
-      active
-        ? "bg-gradient-to-r from-green-d to-green font-semibold text-white shadow-[0_4px_12px_rgba(21,154,72,.28)]"
-        : "border border-line bg-white font-medium text-ink-2 hover:border-green hover:text-green-d"
+  const chip = (active: boolean) =>
+    `shrink-0 rounded-full px-3 py-1.5 text-[13px] font-medium transition ${
+      active ? "bg-green text-white" : "bg-bg text-ink-2 hover:bg-green-tint"
     }`;
 
   return (
     <div className="flex flex-col gap-4">
-      {/* Thanh công cụ */}
       <div className="flex flex-wrap items-center justify-between gap-3">
-        <h1 className="text-[20px] font-bold text-ink">
-          Quản lý sản phẩm ({filtered.length})
-        </h1>
-        <div className="flex items-center gap-2">
-          <input
-            value={q}
-            onChange={(e) => setQ(e.target.value)}
-            placeholder="Tìm sản phẩm..."
-            className="h-9 w-48 rounded-lg border border-line bg-white px-3 text-sm outline-none focus:border-green"
-          />
-          <Link
-            href="/admin/san-pham/them"
-            className="flex h-9 items-center gap-1.5 rounded-lg bg-green px-3.5 text-sm font-semibold text-white transition hover:bg-green-d"
-          >
-            <PlusIcon className="h-4 w-4" />
-            Thêm sản phẩm
-          </Link>
+        <div>
+          <h1 className="text-[20px] font-bold text-ink">
+            Quản lý sản phẩm ({rows.length})
+          </h1>
+          <p className="mt-0.5 text-[12.5px] text-muted">
+            Dữ liệu thật từ database — sửa giá / cấu hình / ảnh tại đây.
+          </p>
         </div>
+        <Link
+          href="/admin/san-pham/them"
+          className="flex h-9 items-center gap-1.5 rounded-lg bg-green px-3.5 text-sm font-semibold text-white transition hover:bg-green-d"
+        >
+          <PlusIcon className="h-4 w-4" />
+          Thêm sản phẩm
+        </Link>
       </div>
 
-      {/* Tab lọc theo hãng */}
-      <div className="flex gap-2 overflow-x-auto pb-1 [scrollbar-width:none] [&::-webkit-scrollbar]:hidden">
-        <button type="button" onClick={() => setBrand("Tất cả")} className={tabCls(brand === "Tất cả")}>
-          Tất cả
-        </button>
-        {brands.map((b) => (
-          <button key={b} type="button" onClick={() => setBrand(b)} className={tabCls(brand === b)}>
-            {b}
-          </button>
-        ))}
-      </div>
-
-      {/* Danh sách nhóm theo hãng -> dòng */}
-      {filtered.length === 0 ? (
-        <div className="rounded-2xl border border-dashed border-line bg-white p-12 text-center text-muted">
-          Không có sản phẩm phù hợp.
-        </div>
-      ) : (
-        Array.from(grouped.entries()).map(([b, bySeries]) => {
-          const brandCount = Array.from(bySeries.values()).reduce(
-            (n, arr) => n + arr.length,
-            0,
-          );
-          return (
-            <section
+      {/* Tìm kiếm + lọc */}
+      <div className="flex flex-col gap-2.5 rounded-2xl border border-line bg-white p-3">
+        <input
+          value={q}
+          onChange={(e) => {
+            setQ(e.target.value);
+            setPage(1);
+          }}
+          placeholder="Tìm theo tên, hãng, CPU..."
+          className="h-10 w-full rounded-lg border border-line px-3 text-sm outline-none focus:border-green"
+        />
+        <div className="flex gap-2 overflow-x-auto [scrollbar-width:none] [&::-webkit-scrollbar]:hidden">
+          {["Tất cả", ...brands].map((b) => (
+            <button
               key={b}
-              className="overflow-hidden rounded-2xl border border-line bg-white shadow-sm"
+              type="button"
+              onClick={() => {
+                setBrand(b);
+                setPage(1);
+              }}
+              className={chip(brand === b)}
             >
-              <div className="flex items-center gap-2 border-b border-line bg-bg px-4 py-3">
-                <h2 className="text-[15px] font-bold text-ink">{b}</h2>
-                <span className="rounded-full bg-green-soft px-2 py-0.5 text-[12px] font-semibold text-green-d">
-                  {brandCount}
-                </span>
-              </div>
+              {b}
+            </button>
+          ))}
+          <span className="mx-1 w-px shrink-0 bg-line" />
+          {["Tất cả", "Cũ", "Mới"].map((c) => (
+            <button
+              key={c}
+              type="button"
+              onClick={() => {
+                setCond(c);
+                setPage(1);
+              }}
+              className={chip(cond === c)}
+            >
+              {c}
+            </button>
+          ))}
+        </div>
+      </div>
 
-              <div className="flex flex-col">
-                {Array.from(bySeries.entries()).map(([series, items]) => (
-                  <div key={series} className="border-b border-line last:border-0">
-                    <p className="bg-white px-4 pt-3 text-[12px] font-semibold uppercase tracking-wide text-muted">
-                      {series} · {items.length}
-                    </p>
-                    <ul>
-                      {items.map((p) => (
-                        <li
-                          key={p.id}
-                          className="flex items-center gap-3 px-4 py-2.5 transition hover:bg-bg/60"
-                        >
-                          <span className="min-w-0 flex-1">
-                            <span className="line-clamp-1 text-[13.5px] font-medium text-ink">
-                              {p.name}
-                            </span>
-                            <span className="text-[12px] text-muted">
-                              {p.rating.toFixed(1)} ★ ({p.reviewCount})
-                            </span>
-                          </span>
-                          <span className="shrink-0 text-[13.5px] font-semibold text-sale">
-                            {formatPrice(p.price)}
-                          </span>
-                          <span className="flex shrink-0 items-center gap-1.5">
-                            <Link
-                              href={`/admin/san-pham/${p.id}`}
-                              aria-label="Sửa"
-                              className="flex h-8 w-8 items-center justify-center rounded-lg border border-line text-ink-2 transition hover:border-green hover:text-green-d"
-                            >
-                              <EditIcon className="h-4 w-4" />
-                            </Link>
-                            <button
-                              type="button"
-                              aria-label="Xóa"
-                              onClick={() =>
-                                setHidden((prev) => new Set(prev).add(p.id))
-                              }
-                              className="flex h-8 w-8 items-center justify-center rounded-lg border border-line text-ink-2 transition hover:border-sale hover:text-sale"
-                            >
-                              <TrashIcon className="h-4 w-4" />
-                            </button>
-                          </span>
-                        </li>
-                      ))}
-                    </ul>
-                  </div>
-                ))}
-              </div>
-            </section>
-          );
-        })
+      <div className="overflow-x-auto rounded-2xl border border-line bg-white shadow-sm">
+        <table className="w-full min-w-[720px] text-left text-[13.5px]">
+          <thead>
+            <tr className="border-b border-line bg-bg text-[12.5px] uppercase tracking-wide text-muted">
+              <th className="px-4 py-3 font-semibold">Tên sản phẩm</th>
+              <th className="px-4 py-3 font-semibold">Hãng</th>
+              <th className="px-4 py-3 font-semibold">Tình trạng</th>
+              <th className="px-4 py-3 font-semibold">Giá</th>
+              <th className="px-4 py-3 text-right font-semibold">Thao tác</th>
+            </tr>
+          </thead>
+          <tbody>
+            {shown.length === 0 ? (
+              <tr>
+                <td colSpan={5} className="px-4 py-10 text-center text-muted">
+                  Không có sản phẩm phù hợp.
+                </td>
+              </tr>
+            ) : (
+              shown.map((p) => (
+                <tr
+                  key={p.id}
+                  className="border-b border-line last:border-0 hover:bg-bg/60"
+                >
+                  <td className="px-4 py-3">
+                    <div className="font-medium text-ink">{p.name}</div>
+                    <div className="text-[12px] text-muted">
+                      {[p.cpu, p.ram, p.storage].filter(Boolean).join(" · ")}
+                    </div>
+                  </td>
+                  <td className="px-4 py-3 text-ink-2">{p.brand}</td>
+                  <td className="px-4 py-3">
+                    <span
+                      className={`rounded-full px-2.5 py-1 text-[11.5px] font-semibold ${
+                        p.condition === "new"
+                          ? "bg-green-soft text-green-d"
+                          : "bg-amber/15 text-[#B8860B]"
+                      }`}
+                    >
+                      {p.condition === "new" ? "Mới" : "Cũ"}
+                    </span>
+                  </td>
+                  <td className="px-4 py-3 font-semibold text-sale">
+                    {formatPrice(p.price)}
+                  </td>
+                  <td className="px-4 py-3">
+                    <div className="flex items-center justify-end gap-1.5">
+                      <Link
+                        href={`/san-pham/${p.slug}`}
+                        target="_blank"
+                        rel="noreferrer"
+                        title="Xem trang sản phẩm"
+                        className="flex h-8 items-center rounded-lg border border-line px-2 text-[12px] text-ink-2 transition hover:border-green hover:text-green-d"
+                      >
+                        Xem
+                      </Link>
+                      <Link
+                        href={`/admin/san-pham/${p.id}`}
+                        aria-label="Sửa"
+                        className="flex h-8 w-8 items-center justify-center rounded-lg border border-line text-ink-2 transition hover:border-green hover:text-green-d"
+                      >
+                        <EditIcon className="h-4 w-4" />
+                      </Link>
+                      <button
+                        type="button"
+                        aria-label="Xoá"
+                        disabled={busy === p.id}
+                        onClick={() => remove(p)}
+                        className="flex h-8 w-8 items-center justify-center rounded-lg border border-line text-ink-2 transition hover:border-sale hover:text-sale disabled:opacity-40"
+                      >
+                        <TrashIcon className="h-4 w-4" />
+                      </button>
+                    </div>
+                  </td>
+                </tr>
+              ))
+            )}
+          </tbody>
+        </table>
+      </div>
+
+      {totalPages > 1 && (
+        <div className="flex items-center justify-center gap-2">
+          <button
+            type="button"
+            onClick={() => setPage((p) => Math.max(1, p - 1))}
+            disabled={cur === 1}
+            className="rounded-lg border border-line px-3 py-1.5 text-[13px] disabled:opacity-40"
+          >
+            ← Trước
+          </button>
+          <span className="text-[13px] text-muted">
+            Trang {cur}/{totalPages} · {filtered.length} sản phẩm
+          </span>
+          <button
+            type="button"
+            onClick={() => setPage((p) => Math.min(totalPages, p + 1))}
+            disabled={cur === totalPages}
+            className="rounded-lg border border-line px-3 py-1.5 text-[13px] disabled:opacity-40"
+          >
+            Sau →
+          </button>
+        </div>
       )}
     </div>
   );

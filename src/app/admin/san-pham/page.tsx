@@ -1,8 +1,10 @@
-"use client";
-
 import { ProductAdminList } from "@/components/admin/ProductAdminList";
-import { ALL_PRODUCTS } from "@/lib/mock-data";
+import { getAdminProducts } from "@/lib/data";
 
-export default function AdminProductsPage() {
-  return <ProductAdminList products={ALL_PRODUCTS} />;
+export const metadata = { title: "Sản phẩm" };
+export const dynamic = "force-dynamic";
+
+export default async function AdminProductsPage() {
+  const products = await getAdminProducts();
+  return <ProductAdminList products={products} />;
 }

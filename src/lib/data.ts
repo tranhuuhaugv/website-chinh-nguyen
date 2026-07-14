@@ -281,6 +281,50 @@ export async function getPolicyOverride(
   }
 }
 
+// --- Sản phẩm & thương hiệu (admin) ---
+/** Danh sách sản phẩm cho trang quản trị (đọc DB thật). */
+export async function getAdminProducts() {
+  if (NO_DB) return [];
+  const rows = await prisma.product.findMany({
+    ...withBrand,
+    orderBy: [{ sort: "asc" }, { createdAt: "desc" }],
+  });
+  return rows.map((p) => ({
+    id: p.id,
+    slug: p.slug,
+    name: p.name,
+    brand: p.brand.name,
+    price: p.price,
+    condition: p.condition,
+    cpu: p.cpu,
+    ram: p.ram,
+    storage: p.storage,
+  }));
+}
+
+/** 1 sản phẩm (đủ trường) để đổ vào form sửa. */
+export async function getAdminProductById(id: string) {
+  if (NO_DB) return null;
+  const p = await prisma.product.findUnique({ where: { id }, ...withBrand });
+  if (!p) return null;
+  return { ...p, brandName: p.brand.name };
+}
+
+/** Thương hiệu + số sản phẩm mỗi hãng. */
+export async function getAdminBrands() {
+  if (NO_DB) return [];
+  const rows = await prisma.brand.findMany({
+    orderBy: { name: "asc" },
+    include: { _count: { select: { products: true } } },
+  });
+  return rows.map((b) => ({
+    id: b.id,
+    name: b.name,
+    slug: b.slug,
+    count: b._count.products,
+  }));
+}
+
 // --- Đơn hàng (admin) ---
 export async function getOrders() {
   if (NO_DB) return [];

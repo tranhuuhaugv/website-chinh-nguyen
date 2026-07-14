@@ -171,7 +171,12 @@ export function AdminForm({
                   onChange={(url) => set(f.name, url)}
                 />
               ) : f.type === "images" ? (
-                <MultiImageUpload />
+                <MultiImageUpload
+                  value={
+                    values[f.name] ? values[f.name].split(",").filter(Boolean) : []
+                  }
+                  onChange={(urls) => set(f.name, urls.join(","))}
+                />
               ) : f.type === "blocks" ? (
                 <BlogContentEditor
                   value={values[f.name]}
