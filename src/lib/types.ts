@@ -28,6 +28,16 @@ export interface Product {
   cpu: string;
   ram: string;
   storage: string;
+  /** Thông số thật (nhập từ admin / import). Trống thì trang chi tiết bỏ qua dòng đó. */
+  gpu?: string;
+  screen?: string;
+  resolution?: string;
+  refresh?: string;
+  os?: string;
+  battery?: string;
+  weight?: string;
+  ports?: string;
+  warranty?: string;
   rating: number;
   reviewCount: number;
   /** Trả góp mỗi tháng (VND). */

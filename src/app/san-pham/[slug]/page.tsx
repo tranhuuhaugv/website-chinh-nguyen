@@ -39,9 +39,15 @@ export async function generateMetadata({
   const product = await getProductBySlug(params.slug);
   if (!product) return { title: "Không tìm thấy sản phẩm" };
 
+  // Mô tả SEO theo dữ liệu thật + đúng tình trạng máy (không hứa "chính hãng" với máy cũ).
+  const used = (product.condition ?? "used") === "used";
   const description = `${product.name} - ${product.cpu}, RAM ${product.ram}, ${product.storage}. Giá ${formatPrice(
     product.price,
-  )} tại Laptop Chính Nguyễn. Chính hãng, trả góp 0%, bảo hành 24 tháng.`;
+  )} tại Laptop Chính Nguyễn (Đà Nẵng). ${
+    used
+      ? "Máy đã qua sử dụng, kiểm tra kỹ, bảo hành tại shop, đổi trả 7 ngày."
+      : "Máy mới nguyên seal, bảo hành chính hãng, giao nhanh toàn quốc."
+  }`;
   const url = `${SITE_URL}/san-pham/${product.slug}`;
   return {
     title: product.name,
@@ -68,6 +74,8 @@ export default async function ProductPage({
   const product = await getProductBySlug(params.slug);
   if (!product) notFound();
 
+  // Máy cũ / máy mới -> nội dung bảo hành, cam kết khác nhau (không hứa sai).
+  const isUsed = (product.condition ?? "used") === "used";
   const discount = product.oldPrice
     ? Math.round((1 - product.price / product.oldPrice) * 100)
     : 0;
@@ -180,7 +188,9 @@ export default async function ProductPage({
                   ))}
                 </span>
                 <span className="text-muted">
-                  Đã kiểm tra kỹ · Còn bảo hành 24 tháng
+                  {isUsed
+                    ? "Đã kiểm tra kỹ · Bảo hành tại shop"
+                    : "Máy mới · Bảo hành chính hãng 24 tháng"}
                 </span>
               </div>
 
@@ -252,8 +262,17 @@ export default async function ProductPage({
                     </Bullet>
                   )}
                   <Bullet>
-                    Bảo hành <b className="text-ink">24 tháng</b> + kiểm tra máy
-                    trực tiếp khi nhận.
+                    {isUsed ? (
+                      <>
+                        <b className="text-ink">Bảo hành tại shop</b> + kiểm tra
+                        máy trực tiếp khi nhận.
+                      </>
+                    ) : (
+                      <>
+                        Bảo hành <b className="text-ink">24 tháng</b> + kiểm tra
+                        máy trực tiếp khi nhận.
+                      </>
+                    )}
                   </Bullet>
                   <Bullet>
                     Đổi trả trong <b className="text-ink">7 ngày</b> · miễn phí cài
