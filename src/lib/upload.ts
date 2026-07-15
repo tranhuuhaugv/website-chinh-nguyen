@@ -43,6 +43,39 @@ async function compress(file: File): Promise<Blob> {
   return blob && blob.size < file.size ? blob : file;
 }
 
+/** Lỗi tải ảnh từ link, kèm thông báo tiếng Việt để hiện thẳng cho admin. */
+const URL_ERRORS: Record<string, string> = {
+  bad_url: "Link không hợp lệ",
+  bad_protocol: "Chỉ nhận link http/https",
+  private_host: "Link trỏ vào địa chỉ nội bộ",
+  dns_failed: "Không tìm thấy tên miền",
+  bad_redirect: "Link chuyển hướng lỗi",
+  too_many_redirects: "Link chuyển hướng quá nhiều lần",
+  fetch_failed: "Không tải được ảnh từ link này",
+  bad_type: "Link không phải ảnh (jpg/png/webp/gif/avif)",
+  too_large: "Ảnh nặng quá 8MB",
+  empty: "Ảnh rỗng",
+};
+
+/**
+ * Tải ảnh từ LINK WEB về VPS (server đi tải, không phải trình duyệt) rồi trả về
+ * URL /uploads/... như upload thường. Ảnh không đi qua bước nén ở client.
+ */
+export async function uploadImageFromUrl(url: string): Promise<UploadResult> {
+  const res = await fetch("/api/upload/from-url", {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({ url }),
+  });
+  const json = (await res.json().catch(() => null)) as
+    | { url?: string; error?: string }
+    | null;
+  if (!res.ok || !json?.url) {
+    throw new Error(URL_ERRORS[json?.error ?? ""] ?? "Không tải được ảnh");
+  }
+  return { url: json.url, demo: false };
+}
+
 export async function uploadImage(file: File): Promise<UploadResult> {
   const data = await compress(file);
   const form = new FormData();

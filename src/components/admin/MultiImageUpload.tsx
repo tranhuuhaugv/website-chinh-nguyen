@@ -2,9 +2,10 @@
 
 import { useRef, useState } from "react";
 import { TrashIcon, UploadIcon } from "@/components/icons";
-import { uploadImage } from "@/lib/upload";
+import { uploadImage, uploadImageFromUrl } from "@/lib/upload";
 
-// Tải NHIỀU ảnh (thư viện ảnh sản phẩm). Chọn/kéo-thả nhiều file cùng lúc.
+// Tải NHIỀU ảnh (thư viện ảnh sản phẩm). Chọn/kéo-thả nhiều file cùng lúc,
+// hoặc dán link ảnh trên web -> server tự tải về VPS.
 export function MultiImageUpload({
   value = [],
   onChange,
@@ -15,10 +16,43 @@ export function MultiImageUpload({
   const inputRef = useRef<HTMLInputElement>(null);
   const [images, setImages] = useState<string[]>(value);
   const [busy, setBusy] = useState(false);
+  const [link, setLink] = useState("");
+  const [linkError, setLinkError] = useState("");
 
   function commit(next: string[]) {
     setImages(next);
     onChange?.(next);
+  }
+
+  // Dán 1 hoặc nhiều link (cách nhau bằng xuống dòng/dấu cách) -> tải hết về.
+  async function handleLinks() {
+    const links = link.split(/[\s\n]+/).filter(Boolean);
+    if (!links.length) return;
+    setBusy(true);
+    setLinkError("");
+
+    const results = await Promise.all(
+      links.map((l) =>
+        uploadImageFromUrl(l)
+          .then((r) => ({ url: r.url, err: "" }))
+          .catch((e: Error) => ({ url: "", err: e.message })),
+      ),
+    );
+    const added = results.map((r) => r.url).filter(Boolean);
+    if (added.length) commit([...images, ...added]);
+
+    const failed = results.filter((r) => !r.url);
+    if (failed.length) {
+      // Nhiều link hỏng -> báo gọn kèm lỗi đầu tiên, tránh đổ một đống chữ.
+      setLinkError(
+        failed.length === links.length
+          ? failed[0].err
+          : `${failed.length}/${links.length} link lỗi (${failed[0].err})`,
+      );
+    } else {
+      setLink("");
+    }
+    setBusy(false);
   }
 
   async function handleFiles(files: FileList | null) {
@@ -87,6 +121,39 @@ export function MultiImageUpload({
           </span>
           <span className="text-[11.5px] font-medium text-ink-2">Thêm ảnh</span>
         </button>
+      </div>
+
+      {/* Dán link ảnh trên web -> server tải về VPS (không nhúng link người khác). */}
+      <div className="mt-3">
+        <div className="flex gap-2">
+          <input
+            type="url"
+            value={link}
+            onChange={(e) => {
+              setLink(e.target.value);
+              setLinkError("");
+            }}
+            onKeyDown={(e) => {
+              if (e.key === "Enter") {
+                e.preventDefault();
+                handleLinks();
+              }
+            }}
+            placeholder="Hoặc dán link ảnh (https://...) — nhiều link cách nhau bằng dấu cách"
+            className="h-10 flex-1 rounded-xl border border-line bg-white px-3 text-[13px] text-ink outline-none transition focus:border-green"
+          />
+          <button
+            type="button"
+            onClick={handleLinks}
+            disabled={busy || !link.trim()}
+            className="h-10 shrink-0 rounded-xl bg-green px-4 text-[13px] font-semibold text-white transition hover:bg-green-d disabled:cursor-not-allowed disabled:opacity-50"
+          >
+            Tải về
+          </button>
+        </div>
+        {linkError && (
+          <p className="mt-1.5 text-[12.5px] text-sale">{linkError}</p>
+        )}
       </div>
 
       {busy && <p className="mt-2 text-[12.5px] text-ink-2">Đang tải ảnh…</p>}
