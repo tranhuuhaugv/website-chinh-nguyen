@@ -92,8 +92,9 @@ export function ProductGalleryClient({
 
   return (
     <div>
-      {/* Ảnh lớn */}
-      <div className="relative overflow-hidden rounded-2xl border border-line bg-gradient-to-b from-white to-[#F4F7F4] p-6 shadow-card">
+      {/* Ảnh lớn — tràn kín khung (không đệm), nền trắng cho phần thừa của ảnh
+          không vuông. object-contain để không cắt mất máy. */}
+      <div className="relative overflow-hidden rounded-2xl border border-line bg-white shadow-card">
         {badge && (
           <span className="absolute left-4 top-4 z-[2] rounded-full bg-sale px-3 py-1 text-[12px] font-bold text-white">
             {badge}
@@ -101,7 +102,7 @@ export function ProductGalleryClient({
         )}
 
         <div
-          className="relative mx-auto aspect-square max-w-[460px] overflow-hidden rounded-xl"
+          className="relative aspect-square w-full"
           onTouchStart={onTouchStart}
           onTouchEnd={onTouchEnd}
         >
@@ -109,7 +110,7 @@ export function ProductGalleryClient({
             src={current}
             alt={name}
             fill
-            sizes="(max-width: 900px) 100vw, 460px"
+            sizes="(max-width: 900px) 100vw, 580px"
             className="select-none object-contain"
             draggable={false}
             priority
