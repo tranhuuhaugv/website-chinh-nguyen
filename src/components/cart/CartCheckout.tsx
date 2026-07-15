@@ -43,6 +43,7 @@ export function CartCheckout({
   });
   const [errors, setErrors] = useState<Record<string, string>>({});
   const [done, setDone] = useState(false);
+  const [sending, setSending] = useState(false);
   const loggedIn = Boolean(initialUser);
 
   function set<K extends keyof typeof values>(key: K, val: string) {
@@ -78,6 +79,7 @@ export function CartCheckout({
       })),
       total: subtotal,
     };
+    setSending(true);
     try {
       await fetch("/api/order", {
         method: "POST",
@@ -88,6 +90,7 @@ export function CartCheckout({
       // bỏ qua lỗi mạng — vẫn xác nhận đơn cho khách
     }
 
+    setSending(false);
     clear();
     setDone(true);
   }
@@ -407,9 +410,10 @@ export function CartCheckout({
         <button
           type="button"
           onClick={placeOrder}
-          className="flex h-12 w-full items-center justify-center rounded-xl bg-green text-[15px] font-semibold text-white transition hover:bg-green-d"
+          disabled={sending}
+          className="flex h-12 w-full items-center justify-center rounded-xl bg-green text-[15px] font-semibold text-white transition hover:bg-green-d disabled:cursor-not-allowed disabled:opacity-70"
         >
-          Đặt hàng
+          {sending ? "Đang đặt hàng…" : "Đặt hàng"}
         </button>
 
         <p className="mt-3 flex items-center justify-center gap-1.5 text-[12px] text-muted">

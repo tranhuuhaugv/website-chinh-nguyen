@@ -47,6 +47,8 @@ export interface Product {
   badge?: string;
   isNew?: boolean;
   accent: ProductAccent;
+  /** Ảnh thật do admin tải lên (/uploads/...). Trống -> hiện ProductImage (SVG). */
+  images?: string[];
   /** Tình trạng: "new" máy mới | "used" máy cũ (mặc định used cho shop máy cũ). */
   condition?: ProductCondition;
   /** Nhóm nhu cầu để lọc/SEO: van-phong, gaming, do-hoa... */

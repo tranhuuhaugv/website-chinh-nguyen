@@ -71,6 +71,7 @@ function toProduct(p: PrismaProductWithBrand): Product {
     badge: p.badge ?? undefined,
     isNew: p.isNew,
     accent: p.accent as ProductAccent,
+    images: p.images ?? [],
     condition: (p.condition as ProductCondition) ?? "used",
     needs: p.needs ?? [],
   };

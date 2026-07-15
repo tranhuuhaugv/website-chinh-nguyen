@@ -1,3 +1,4 @@
+import Image from "next/image";
 import Link from "next/link";
 import type { Product } from "@/lib/types";
 import { formatPrice } from "@/lib/format";
@@ -31,6 +32,8 @@ export function ProductCard({
   progress?: { sold: number; total: number };
 }) {
   const href = productHref(product.slug);
+  // Ảnh thật (nếu admin đã tải lên); chưa có -> ProductImage vẽ SVG minh hoạ.
+  const cover = product.images?.[0];
   const soldPct = progress
     ? Math.min(100, Math.round((progress.sold / progress.total) * 100))
     : 0;
@@ -65,9 +68,19 @@ export function ProductCard({
         </button>
         <Link
           href={href}
-          className="block aspect-[4/3] overflow-hidden rounded-lg"
+          className="relative block aspect-square overflow-hidden rounded-lg"
         >
-          <ProductImage accent={product.accent} uid={product.slug} />
+          {cover ? (
+            <Image
+              src={cover}
+              alt={product.name}
+              fill
+              sizes="(max-width: 640px) 45vw, 240px"
+              className="object-contain"
+            />
+          ) : (
+            <ProductImage accent={product.accent} uid={product.slug} />
+          )}
         </Link>
       </div>
 

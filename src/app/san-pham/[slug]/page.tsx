@@ -49,11 +49,19 @@ export async function generateMetadata({
       : "Máy mới nguyên seal, bảo hành chính hãng, giao nhanh toàn quốc."
   }`;
   const url = `${SITE_URL}/san-pham/${product.slug}`;
+  // Ảnh thật -> URL tuyệt đối để Facebook/Zalo hiện ảnh khi share.
+  const ogImages = (product.images ?? []).map((i) => `${SITE_URL}${i}`);
   return {
     title: product.name,
     description,
     alternates: { canonical: url },
-    openGraph: { title: product.name, description, url, type: "website" },
+    openGraph: {
+      title: product.name,
+      description,
+      url,
+      type: "website",
+      ...(ogImages.length ? { images: ogImages } : {}),
+    },
   };
 }
 
@@ -95,6 +103,9 @@ export default async function ProductPage({
         brand: { "@type": "Brand", name: product.brand },
         category: `Laptop ${product.brand}`,
         sku: product.id,
+        ...(product.images?.length
+          ? { image: product.images.map((i) => `${SITE_URL}${i}`) }
+          : {}),
         description: description[0].paragraphs[0],
         aggregateRating: {
           "@type": "AggregateRating",
@@ -106,7 +117,10 @@ export default async function ProductPage({
           price: product.price,
           priceCurrency: "VND",
           availability: "https://schema.org/InStock",
-          itemCondition: "https://schema.org/NewCondition",
+          // Khai báo đúng tình trạng máy: máy cũ KHÔNG được báo Google là hàng mới.
+          itemCondition: isUsed
+            ? "https://schema.org/UsedCondition"
+            : "https://schema.org/NewCondition",
           url,
           seller: { "@type": "Organization", name: "Laptop Chính Nguyễn" },
         },
@@ -161,6 +175,7 @@ export default async function ProductPage({
                 accent={product.accent}
                 slug={product.slug}
                 name={product.name}
+                images={product.images}
                 badge={
                   product.isNew
                     ? "Mới"

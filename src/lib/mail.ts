@@ -240,17 +240,32 @@ function buildCustomerEmail(order: OrderInput): { subject: string; html: string 
   };
 }
 
+// Transporter dạng singleton + pool: giữ sẵn kết nối tới Gmail thay vì bắt tay
+// SMTP lại từ đầu cho từng email (mỗi lần bắt tay tốn ~1-2 giây).
+const globalForMail = globalThis as unknown as {
+  mailTransporter?: nodemailer.Transporter;
+};
+
+function getTransporter(): nodemailer.Transporter {
+  const transporter =
+    globalForMail.mailTransporter ??
+    nodemailer.createTransport({
+      service: "gmail",
+      auth: { user: GMAIL_USER, pass: GMAIL_APP_PASSWORD },
+      pool: true,
+      maxConnections: 2,
+    });
+  globalForMail.mailTransporter = transporter;
+  return transporter;
+}
+
 async function sendMail(
   subject: string,
   html: string,
   to: string,
 ): Promise<boolean> {
   if (!mailReady || !to) return false;
-  const transporter = nodemailer.createTransport({
-    service: "gmail",
-    auth: { user: GMAIL_USER, pass: GMAIL_APP_PASSWORD },
-  });
-  await transporter.sendMail({
+  await getTransporter().sendMail({
     from: `"${SITE.name}" <${GMAIL_USER}>`,
     to,
     subject,
@@ -269,18 +284,22 @@ export async function sendOrderEmail(
   customerEmail?: string | null,
 ): Promise<boolean> {
   const admin = buildAdminEmail(order);
-  const adminOk = await sendMail(admin.subject, admin.html, MAIL_TO || GMAIL_USER || "");
-
   const toCustomer =
     order.type === "tradein" ? order.email : (customerEmail ?? "").trim();
-  if (toCustomer) {
-    const cust = buildCustomerEmail(order);
-    // Không để lỗi gửi khách làm hỏng kết quả chung.
-    await sendMail(cust.subject, cust.html, toCustomer).catch((err) => {
-      console.error("Gửi email xác nhận cho khách lỗi:", err);
-      return false;
-    });
-  }
+
+  // Gửi song song: email khách không phải chờ email shop xong.
+  const [adminOk] = await Promise.all([
+    sendMail(admin.subject, admin.html, MAIL_TO || GMAIL_USER || ""),
+    (async () => {
+      if (!toCustomer) return false;
+      const cust = buildCustomerEmail(order);
+      // Không để lỗi gửi khách làm hỏng kết quả chung.
+      return sendMail(cust.subject, cust.html, toCustomer).catch((err) => {
+        console.error("Gửi email xác nhận cho khách lỗi:", err);
+        return false;
+      });
+    })(),
+  ]);
 
   return adminOk;
 }

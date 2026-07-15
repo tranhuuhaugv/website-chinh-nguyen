@@ -1,20 +1,28 @@
 import type { ProductAccent } from "@/lib/types";
 import { ProductImage } from "@/components/ProductImage";
+import { ProductGalleryClient } from "./ProductGalleryClient";
 
-// Khu ảnh sản phẩm: ảnh lớn + hàng ảnh nhỏ. Server Component.
-// Khi có nhiều ảnh thật -> chuyển sang gallery client + next/image.
+// Khu ảnh sản phẩm: ảnh lớn + hàng ảnh nhỏ. Khung VUÔNG 1:1 -> ảnh thật nên 1600x1600.
+// Có ảnh thật -> ProductGalleryClient (bấm đổi ảnh được).
+// Chưa có ảnh  -> vẽ SVG minh hoạ ngay tại Server Component (khỏi tốn JS).
 
 export function ProductGallery({
   accent,
   slug,
   name,
   badge,
+  images,
 }: {
   accent: ProductAccent;
   slug: string;
   name: string;
   badge?: string;
+  images?: string[];
 }) {
+  if (images?.length) {
+    return <ProductGalleryClient images={images} name={name} badge={badge} />;
+  }
+
   return (
     <div>
       <div className="relative overflow-hidden rounded-2xl border border-line bg-gradient-to-b from-white to-[#F4F7F4] p-6 shadow-card">
@@ -23,7 +31,7 @@ export function ProductGallery({
             {badge}
           </span>
         )}
-        <div className="mx-auto aspect-[4/3] max-w-[460px] overflow-hidden rounded-xl">
+        <div className="mx-auto aspect-square max-w-[460px] overflow-hidden rounded-xl">
           <ProductImage accent={accent} uid={`${slug}-main`} />
         </div>
       </div>

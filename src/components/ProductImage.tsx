@@ -1,8 +1,9 @@
 import type { ProductAccent } from "@/lib/types";
 
 // Ảnh placeholder minh hoạ laptop (SVG), khớp card trong design.
-// KHI CÓ ẢNH THẬT: thay bằng <Image> của next/image, dùng Cloudinary transform
-// trả đúng kích thước ô hiển thị (xem next.config.mjs + CLAUDE.md).
+// Khung VUÔNG 1:1 (chuẩn ảnh sản phẩm) -> viewBox 400x400, hình laptop căn giữa.
+// KHI CÓ ẢNH THẬT: thay bằng <Image> của next/image + khai báo sizes đúng ô
+// hiển thị (xem CLAUDE.md). Ảnh thật cũng nên là ảnh vuông 1600x1600.
 
 const SCREEN_GRADIENT: Record<ProductAccent, [string, string]> = {
   blue: ["#2E86DE", "#10559A"],
@@ -26,7 +27,7 @@ export function ProductImage({
 
   return (
     <svg
-      viewBox="0 0 400 300"
+      viewBox="0 0 400 400"
       preserveAspectRatio="xMidYMid slice"
       xmlns="http://www.w3.org/2000/svg"
       className="h-full w-full"
@@ -43,16 +44,19 @@ export function ProductImage({
           <stop offset="1" stopColor="#EEF0EE" />
         </linearGradient>
       </defs>
-      <rect width="400" height="300" fill={`url(#${bgId})`} />
-      <ellipse cx="200" cy="236" rx="150" ry="13" fill="#000" opacity="0.05" />
-      <rect x="92" y="52" width="216" height="146" rx="12" fill="#20262E" />
-      <rect x="102" y="62" width="196" height="126" rx="5" fill={`url(#${screenId})`} />
-      <circle cx="150" cy="100" r="34" fill="#ffffff" opacity="0.1" />
-      <circle cx="255" cy="150" r="26" fill="#ffffff" opacity="0.09" />
-      <circle cx="200" cy="57" r="1.6" fill="#3a424c" />
-      <path d="M70 198 H330 L352 232 H48 Z" fill="#C9CED4" />
-      <path d="M70 198 H330 L331 203 H69 Z" fill="#00000012" />
-      <rect x="175" y="200" width="50" height="5" rx="2.5" fill="#9aa1a8" />
+      <rect width="400" height="400" fill={`url(#${bgId})`} />
+      {/* Hình laptop giữ nguyên tỉ lệ cũ, dịch xuống 50 để nằm giữa khung vuông. */}
+      <g transform="translate(0 50)">
+        <ellipse cx="200" cy="236" rx="150" ry="13" fill="#000" opacity="0.05" />
+        <rect x="92" y="52" width="216" height="146" rx="12" fill="#20262E" />
+        <rect x="102" y="62" width="196" height="126" rx="5" fill={`url(#${screenId})`} />
+        <circle cx="150" cy="100" r="34" fill="#ffffff" opacity="0.1" />
+        <circle cx="255" cy="150" r="26" fill="#ffffff" opacity="0.09" />
+        <circle cx="200" cy="57" r="1.6" fill="#3a424c" />
+        <path d="M70 198 H330 L352 232 H48 Z" fill="#C9CED4" />
+        <path d="M70 198 H330 L331 203 H69 Z" fill="#00000012" />
+        <rect x="175" y="200" width="50" height="5" rx="2.5" fill="#9aa1a8" />
+      </g>
     </svg>
   );
 }

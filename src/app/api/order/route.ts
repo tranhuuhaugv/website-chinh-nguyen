@@ -57,6 +57,7 @@ export async function POST(req: Request) {
       : (d.email && d.email.trim()) || user?.email || null;
 
   // Lưu đơn vào database (để hiện trong admin).
+  let saved = false;
   try {
     await prisma.order.create({
       data: {
@@ -73,17 +74,17 @@ export async function POST(req: Request) {
         userId: user?.id ?? null,
       },
     });
+    saved = true;
   } catch (err) {
     console.error("Lưu đơn hàng lỗi:", err);
   }
 
-  // Gửi email thông báo.
-  let emailed = false;
-  try {
-    emailed = await sendOrderEmail(d, customerEmail);
-  } catch (err) {
+  // Gửi email CHẠY NỀN: khách không phải chờ SMTP Gmail (vài giây) mới thấy
+  // màn hình "Đặt hàng thành công". App chạy Node thường trên VPS (PM2) nên
+  // promise vẫn chạy tiếp sau khi response đã trả về.
+  void sendOrderEmail(d, customerEmail).catch((err) => {
     console.error("Gửi email đơn hàng lỗi:", err);
-  }
+  });
 
-  return NextResponse.json({ ok: true, emailed });
+  return NextResponse.json({ ok: true, saved });
 }
