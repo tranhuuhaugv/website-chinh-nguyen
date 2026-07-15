@@ -49,6 +49,12 @@ export interface Product {
   accent: ProductAccent;
   /** Ảnh thật do admin tải lên (/uploads/...). Trống -> hiện ProductImage (SVG). */
   images?: string[];
+  /**
+   * Mô tả sản phẩm dạng khối (đoạn văn / tiêu đề / ảnh) do admin tự soạn —
+   * chỗ để đăng ẢNH THẬT của đúng chiếc máy đang bán.
+   * Trống -> trang chi tiết tự sinh mô tả từ thông số (buildDescription).
+   */
+  description?: BlogBlock[];
   /** Tình trạng: "new" máy mới | "used" máy cũ (mặc định used cho shop máy cũ). */
   condition?: ProductCondition;
   /** Nhóm nhu cầu để lọc/SEO: van-phong, gaming, do-hoa... */

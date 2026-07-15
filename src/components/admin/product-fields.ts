@@ -83,6 +83,18 @@ export function productFields(brandNames: string[]): AdminField[] {
     },
     { name: "sort", label: "Thứ tự hiển thị (số nhỏ lên trước)", type: "number" },
 
+    {
+      name: "hMoTa",
+      label: "Mô tả sản phẩm (để trống sẽ tự sinh theo thông số máy)",
+      type: "heading",
+    },
+    {
+      name: "description",
+      label: "Nội dung mô tả — chỗ đăng ẢNH THẬT của chiếc máy này",
+      type: "blocks",
+      full: true,
+    },
+
     { name: "h4", label: "SEO (để trống sẽ tự lấy theo tên)", type: "heading" },
     { name: "slug", label: "Slug (đường dẫn)", full: true, placeholder: "tu-dong-tao-tu-ten" },
     { name: "metaTitle", label: "Meta title", full: true },

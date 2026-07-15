@@ -44,6 +44,9 @@ export default async function EditProductPage({
         warranty: s(product.warranty),
         needs: (product.needs ?? []).join(","),
         images: (product.images ?? []).join(","),
+        description: Array.isArray(product.description)
+          ? JSON.stringify(product.description)
+          : "",
         gift: s(product.gift),
         badge: s(product.badge),
         accent: s(product.accent) || "dark",

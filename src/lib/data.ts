@@ -72,6 +72,8 @@ function toProduct(p: PrismaProductWithBrand): Product {
     isNew: p.isNew,
     accent: p.accent as ProductAccent,
     images: p.images ?? [],
+    // Mô tả admin tự soạn (khối văn bản/ảnh). Dùng chung toBlocks với blog.
+    description: toBlocks(p.description),
     condition: (p.condition as ProductCondition) ?? "used",
     needs: p.needs ?? [],
   };

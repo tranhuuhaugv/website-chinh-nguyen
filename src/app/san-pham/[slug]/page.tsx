@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import Image from "next/image";
 import { notFound } from "next/navigation";
 import { Breadcrumb } from "@/components/Breadcrumb";
 import { Container } from "@/components/Container";
@@ -93,6 +94,12 @@ export default async function ProductPage({
   const url = `${SITE_URL}/san-pham/${product.slug}`;
   const specGroups = buildSpecGroups(product);
   const description = buildDescription(product);
+  // Mô tả admin tự soạn (kèm ảnh thật). Chưa soạn -> dùng mô tả tự sinh ở trên.
+  const ownDescription = product.description ?? [];
+  // Schema.org: ưu tiên chữ admin viết, không có thì lấy câu đầu của mô tả tự sinh.
+  const ldDescription =
+    ownDescription.find((b) => b.type === "text")?.value ??
+    description[0].paragraphs[0];
 
   const jsonLd = {
     "@context": "https://schema.org",
@@ -106,7 +113,7 @@ export default async function ProductPage({
         ...(product.images?.length
           ? { image: product.images.map((i) => `${SITE_URL}${i}`) }
           : {}),
-        description: description[0].paragraphs[0],
+        description: ldDescription,
         aggregateRating: {
           "@type": "AggregateRating",
           ratingValue: product.rating,
@@ -331,23 +338,61 @@ export default async function ProductPage({
             className="mt-6 scroll-mt-20 rounded-2xl border border-line bg-white p-6 lg:p-8"
           >
             <h2 className="text-[20px] font-bold text-ink">Mô tả sản phẩm</h2>
-            <article className="mt-4 flex max-w-[780px] flex-col gap-6">
-              {description.map((sec) => (
-                <div key={sec.heading}>
-                  <h3 className="text-[16px] font-bold text-ink">
-                    {sec.heading}
-                  </h3>
-                  {sec.paragraphs.map((para, i) => (
+            {ownDescription.length > 0 ? (
+              // Mô tả admin tự soạn (kèm ảnh thật của chính chiếc máy này).
+              <article className="mt-4 flex max-w-[780px] flex-col gap-4">
+                {ownDescription.map((block, i) => {
+                  if (block.type === "heading") {
+                    return (
+                      <h3 key={i} className="text-[16px] font-bold text-ink">
+                        {block.value}
+                      </h3>
+                    );
+                  }
+                  if (block.type === "image") {
+                    return (
+                      <figure key={i} className="overflow-hidden rounded-2xl">
+                        <Image
+                          src={block.value}
+                          alt={`${product.name} - ảnh thực tế`}
+                          width={1280}
+                          height={960}
+                          sizes="(max-width: 820px) 100vw, 780px"
+                          className="h-auto w-full"
+                        />
+                      </figure>
+                    );
+                  }
+                  return (
                     <p
                       key={i}
-                      className="mt-2 text-[14.5px] leading-relaxed text-ink-2"
+                      className="text-[14.5px] leading-relaxed text-ink-2"
                     >
-                      {para}
+                      {block.value}
                     </p>
-                  ))}
-                </div>
-              ))}
-            </article>
+                  );
+                })}
+              </article>
+            ) : (
+              // Chưa soạn mô tả -> tự sinh theo thông số máy.
+              <article className="mt-4 flex max-w-[780px] flex-col gap-6">
+                {description.map((sec) => (
+                  <div key={sec.heading}>
+                    <h3 className="text-[16px] font-bold text-ink">
+                      {sec.heading}
+                    </h3>
+                    {sec.paragraphs.map((para, i) => (
+                      <p
+                        key={i}
+                        className="mt-2 text-[14.5px] leading-relaxed text-ink-2"
+                      >
+                        {para}
+                      </p>
+                    ))}
+                  </div>
+                ))}
+              </article>
+            )}
           </section>
 
           {/* Thông số kỹ thuật theo nhóm */}

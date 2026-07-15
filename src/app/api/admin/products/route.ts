@@ -29,6 +29,28 @@ const list = (v: unknown) =>
     .map((x) => x.trim())
     .filter(Boolean);
 
+/**
+ * Mô tả dạng khối: form gửi lên chuỗi JSON [{type,value}] (BlogContentEditor).
+ * Bỏ khối rỗng; dữ liệu hỏng -> mảng rỗng (coi như chưa soạn mô tả).
+ */
+function blocks(v: unknown): { type: string; value: string }[] {
+  const s = str(v);
+  if (!s) return [];
+  try {
+    const arr = JSON.parse(s);
+    if (!Array.isArray(arr)) return [];
+    return arr
+      .map((b) => ({
+        type:
+          b?.type === "heading" || b?.type === "image" ? String(b.type) : "text",
+        value: String(b?.value ?? "").trim(),
+      }))
+      .filter((b) => b.value);
+  } catch {
+    return [];
+  }
+}
+
 async function uniqueSlug(base: string, excludeId?: string): Promise<string> {
   const root = base || "san-pham";
   let slug = root;
@@ -78,6 +100,7 @@ async function buildData(body: Body) {
     condition: str(body.condition) === "new" ? "new" : "used",
     needs: list(body.needs),
     images: list(body.images),
+    description: blocks(body.description),
     gift: str(body.gift) || null,
     badge: str(body.badge) || null,
     isNew: str(body.isNew) === "co",
