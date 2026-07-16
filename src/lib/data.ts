@@ -187,6 +187,15 @@ function xepTheoDungLuong(a: VariantOption, b: VariantOption): number {
   );
 }
 
+/** Máy ĐANG XEM đứng đầu, các máy nối thêm xếp sau theo dung lượng tăng dần. */
+function xepNut(list: VariantOption[], slugDangXem: string): VariantOption[] {
+  const dangXem = list.filter((o) => o.slug === slugDangXem);
+  const conLai = list
+    .filter((o) => o.slug !== slugDangXem)
+    .sort(xepTheoDungLuong);
+  return [...dangXem, ...conLai];
+}
+
 const chonCot = { slug: true, ram: true, storage: true, price: true } as const;
 
 /**
@@ -216,9 +225,15 @@ export async function getProductVariants(
     const buoc2 = MOCK_PRODUCTS.filter(
       (p) => !daCo.has(p.slug) && buoc1.some((n) => noiVoi(n, p)),
     );
-    return [...buoc1, ...buoc2, product]
-      .map((p) => ({ slug: p.slug, ram: p.ram, storage: p.storage, price: p.price }))
-      .sort(xepTheoDungLuong);
+    return xepNut(
+      [...buoc1, ...buoc2, product].map((p) => ({
+        slug: p.slug,
+        ram: p.ram,
+        storage: p.storage,
+        price: p.price,
+      })),
+      product.slug,
+    );
   }
 
   const buoc1 = await prisma.product.findMany({
@@ -245,14 +260,20 @@ export async function getProductVariants(
       })
     : [];
 
-  // Kèm chính máy đang xem để nó là nút đang chọn.
-  return [
-    ...buoc1,
-    ...buoc2,
-    { slug: product.slug, ram: product.ram, storage: product.storage, price: product.price },
-  ]
-    .map((p) => ({ slug: p.slug, ram: p.ram, storage: p.storage, price: p.price }))
-    .sort(xepTheoDungLuong);
+  // Kèm chính máy đang xem để nó là nút đang chọn (và đứng đầu).
+  return xepNut(
+    [
+      ...buoc1,
+      ...buoc2,
+      {
+        slug: product.slug,
+        ram: product.ram,
+        storage: product.storage,
+        price: product.price,
+      },
+    ].map((p) => ({ slug: p.slug, ram: p.ram, storage: p.storage, price: p.price })),
+    product.slug,
+  );
 }
 
 export async function getRelatedProducts(
