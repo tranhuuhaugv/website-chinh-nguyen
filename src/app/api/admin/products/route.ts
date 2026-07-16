@@ -134,6 +134,38 @@ async function buildData(body: Body, selfSlug: string) {
   };
 }
 
+/**
+ * Nối link 2 CHIỀU: nối máy 1 -> máy 2 thì tự ghi ngược máy 2 -> máy 1.
+ * Không làm thế thì mở form máy 2 sẽ thấy ô link TRỐNG (dù ngoài web vẫn hiện
+ * đủ nút nhờ tra 2 chiều) -> admin tưởng chưa nối. Gỡ link cũng gỡ cả 2 bên.
+ */
+async function dongBoHaiChieu(selfSlug: string, moi: string[], cu: string[]) {
+  const them = moi.filter((s) => !cu.includes(s));
+  const bo = cu.filter((s) => !moi.includes(s));
+  if (!them.length && !bo.length) return;
+
+  const rows = await prisma.product.findMany({
+    where: { slug: { in: [...them, ...bo] } },
+    select: { id: true, slug: true, variantSlugs: true },
+  });
+
+  await Promise.all(
+    rows.map((r) => {
+      const dangCo = r.variantSlugs ?? [];
+      const canThem = them.includes(r.slug) && !dangCo.includes(selfSlug);
+      const canBo = bo.includes(r.slug) && dangCo.includes(selfSlug);
+      if (!canThem && !canBo) return null;
+      const moiList = canThem
+        ? [...dangCo, selfSlug]
+        : dangCo.filter((s) => s !== selfSlug);
+      return prisma.product.update({
+        where: { id: r.id },
+        data: { variantSlugs: moiList },
+      });
+    }),
+  );
+}
+
 function done(slug?: string, variants: string[] = []) {
   revalidatePath("/");
   revalidatePath("/san-pham");
@@ -161,6 +193,7 @@ export async function POST(req: Request) {
   }
   try {
     await prisma.product.create({ data: { ...data, slug } });
+    await dongBoHaiChieu(slug, data.variantSlugs, []);
     done(slug, data.variantSlugs);
     return NextResponse.json({ ok: true, slug });
   } catch (err) {
@@ -192,6 +225,7 @@ export async function PUT(req: Request) {
   }
   try {
     await prisma.product.update({ where: { id }, data: { ...data, slug } });
+    await dongBoHaiChieu(slug, data.variantSlugs, current.variantSlugs ?? []);
     // Gồm cả link CŨ: máy vừa bị gỡ link cũng phải bỏ nút chọn trên trang nó.
     done(
       slug,
@@ -213,12 +247,21 @@ export async function DELETE(req: Request) {
   if (!id) return NextResponse.json({ ok: false }, { status: 400 });
   try {
     const p = await prisma.product.delete({ where: { id } });
-    // Máy khác đang nối tới máy vừa xoá -> làm mới trang chúng để bỏ nút chọn,
-    // không thì khách bấm vào nút đó sẽ ra trang 404.
+    // Máy khác đang nối tới máy vừa xoá -> gỡ link ra khỏi chúng (không thì form
+    // của chúng còn link tới máy đã mất) + làm mới trang để bỏ nút chọn, tránh
+    // khách bấm vào nút đó ra trang 404.
     const linkers = await prisma.product.findMany({
       where: { variantSlugs: { has: p.slug } },
-      select: { slug: true },
+      select: { id: true, slug: true, variantSlugs: true },
     });
+    await Promise.all(
+      linkers.map((l) =>
+        prisma.product.update({
+          where: { id: l.id },
+          data: { variantSlugs: l.variantSlugs.filter((s) => s !== p.slug) },
+        }),
+      ),
+    );
     done(
       p.slug,
       Array.from(

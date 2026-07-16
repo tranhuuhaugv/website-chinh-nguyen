@@ -430,6 +430,24 @@ export async function getAdminProductById(id: string) {
   return { ...p, brandName: p.brand.name };
 }
 
+/**
+ * Slug các máy cùng dòng để đổ vào form admin — gồm CẢ máy đang nối ngược về
+ * máy này. API lưu 2 chiều rồi, nhưng dữ liệu nối từ trước đó còn 1 chiều:
+ * đọc cả 2 chiều thì mở form máy nào cũng thấy link, lưu lại là dữ liệu tự lành.
+ */
+export async function getVariantLinkSlugs(product: {
+  slug: string;
+  variantSlugs?: string[];
+}): Promise<string[]> {
+  const cuaMinh = product.variantSlugs ?? [];
+  if (NO_DB) return cuaMinh;
+  const nguoc = await prisma.product.findMany({
+    where: { variantSlugs: { has: product.slug } },
+    select: { slug: true },
+  });
+  return Array.from(new Set([...cuaMinh, ...nguoc.map((r) => r.slug)]));
+}
+
 /** Thương hiệu + số sản phẩm mỗi hãng. */
 export async function getAdminBrands() {
   if (NO_DB) return [];
