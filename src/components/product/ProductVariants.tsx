@@ -12,7 +12,8 @@ export function ProductVariants({
   options: VariantOption[];
   currentSlug: string;
 }) {
-  if (options.length < 2) return null;
+  // Luôn hiện, kể cả khi chỉ có nút của chính máy đang xem.
+  if (!options.length) return null;
 
   const base =
     "rounded-xl border px-4 py-2 text-[13px] font-semibold transition";

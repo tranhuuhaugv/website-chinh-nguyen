@@ -1,11 +1,7 @@
 import { notFound } from "next/navigation";
 import { AdminForm } from "@/components/admin/AdminForm";
 import { productFields } from "@/components/admin/product-fields";
-import {
-  getAdminBrands,
-  getAdminProductById,
-  getVariantLinkSlugs,
-} from "@/lib/data";
+import { getAdminBrands, getAdminProductById } from "@/lib/data";
 
 export const metadata = { title: "Sửa sản phẩm" };
 export const dynamic = "force-dynamic";
@@ -21,8 +17,6 @@ export default async function EditProductPage({
   ]);
   if (!product) notFound();
 
-  // Gồm cả link do máy khác nối tới -> mở form máy nào cũng thấy đủ.
-  const variantLinks = await getVariantLinkSlugs(product);
   const names = brands.map((b) => b.name);
   const s = (v: unknown) => (v == null ? "" : String(v));
 
@@ -51,7 +45,9 @@ export default async function EditProductPage({
         needs: (product.needs ?? []).join(","),
         images: (product.images ?? []).join(","),
         // Hiện lại dạng link cho dễ đọc/sửa (lưu trong DB là slug).
-        variantLinks: variantLinks.map((s) => `/san-pham/${s}`).join("\n"),
+        variantLinks: (product.variantSlugs ?? [])
+          .map((s) => `/san-pham/${s}`)
+          .join("\n"),
         description: Array.isArray(product.description)
           ? JSON.stringify(product.description)
           : "",

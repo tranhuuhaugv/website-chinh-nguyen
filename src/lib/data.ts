@@ -199,81 +199,51 @@ function xepNut(list: VariantOption[], slugDangXem: string): VariantOption[] {
 const chonCot = { slug: true, ram: true, storage: true, price: true } as const;
 
 /**
- * Các máy CÙNG DÒNG khác cấu hình -> nút chọn "Dung lượng" ở trang chi tiết.
+ * Nút chọn "Dung lượng" ở trang chi tiết.
  *
- * Gom 2 BƯỚC để admin chỉ phải nối link ở MỘT máy là đủ:
- *  - Bước 1: máy này trỏ tới ai + ai đang trỏ về máy này (2 chiều).
- *  - Bước 2: lấy thêm máy mà hàng xóm ở bước 1 trỏ tới. Nếu admin nối
- *    A -> [B, C] thì đứng ở B vẫn thấy C (qua A), không thì trang A hiện 3 nút
- *    còn trang B chỉ hiện 2 -> khách thấy lệch.
+ * LUÔN có nút của chính máy đang xem (dù chưa gán link nào). Gán thêm link thì
+ * có thêm nút của máy đó.
  *
- * Trả về [] nếu chưa nối máy nào (trang không hiện mục Dung lượng).
+ * CHỈ lấy link admin gán ở CHÍNH máy này (1 chiều). KHÔNG tra ngược "ai đang
+ * trỏ về đây": gán link ở máy nào thì chỉ máy đó hiện thêm nút, máy kia muốn có
+ * thì admin tự gán — mỗi trang admin toàn quyền quyết định.
  */
 export async function getProductVariants(
   product: Product,
 ): Promise<VariantOption[]> {
-  const noiVoi = (a: Product, b: Product) =>
-    (a.variantSlugs ?? []).includes(b.slug) ||
-    (b.variantSlugs ?? []).includes(a.slug);
+  const banThan = {
+    slug: product.slug,
+    ram: product.ram,
+    storage: product.storage,
+    price: product.price,
+  };
+  const links = (product.variantSlugs ?? []).filter((s) => s !== product.slug);
+  if (!links.length) return [banThan];
 
   if (NO_DB) {
-    const buoc1 = MOCK_PRODUCTS.filter(
-      (p) => p.slug !== product.slug && noiVoi(product, p),
-    );
-    if (!buoc1.length) return [];
-    const daCo = new Set([product.slug, ...buoc1.map((p) => p.slug)]);
-    const buoc2 = MOCK_PRODUCTS.filter(
-      (p) => !daCo.has(p.slug) && buoc1.some((n) => noiVoi(n, p)),
-    );
+    const list = MOCK_PRODUCTS.filter((p) => links.includes(p.slug));
     return xepNut(
-      [...buoc1, ...buoc2, product].map((p) => ({
-        slug: p.slug,
-        ram: p.ram,
-        storage: p.storage,
-        price: p.price,
-      })),
+      [
+        ...list.map((p) => ({
+          slug: p.slug,
+          ram: p.ram,
+          storage: p.storage,
+          price: p.price,
+        })),
+        banThan,
+      ],
       product.slug,
     );
   }
 
-  const buoc1 = await prisma.product.findMany({
-    where: {
-      slug: { not: product.slug },
-      OR: [
-        { slug: { in: product.variantSlugs ?? [] } },
-        { variantSlugs: { has: product.slug } },
-      ],
-    },
-    select: { ...chonCot, variantSlugs: true },
+  // Link trỏ tới máy đã xoá -> không tìm thấy -> chỉ còn nút của máy này.
+  const rows = await prisma.product.findMany({
+    where: { slug: { in: links } },
+    select: chonCot,
   });
-  if (!buoc1.length) return [];
-
-  const daCo = new Set([product.slug, ...buoc1.map((r) => r.slug)]);
-  const conThieu = Array.from(
-    new Set(buoc1.flatMap((r) => r.variantSlugs ?? [])),
-  ).filter((s) => !daCo.has(s));
-
-  const buoc2 = conThieu.length
-    ? await prisma.product.findMany({
-        where: { slug: { in: conThieu } },
-        select: chonCot,
-      })
-    : [];
 
   // Kèm chính máy đang xem để nó là nút đang chọn (và đứng đầu).
-  return xepNut(
-    [
-      ...buoc1,
-      ...buoc2,
-      {
-        slug: product.slug,
-        ram: product.ram,
-        storage: product.storage,
-        price: product.price,
-      },
-    ].map((p) => ({ slug: p.slug, ram: p.ram, storage: p.storage, price: p.price })),
-    product.slug,
-  );
+  return xepNut([...rows, banThan], product.slug);
 }
 
 export async function getRelatedProducts(
@@ -430,23 +400,6 @@ export async function getAdminProductById(id: string) {
   return { ...p, brandName: p.brand.name };
 }
 
-/**
- * Slug các máy cùng dòng để đổ vào form admin — gồm CẢ máy đang nối ngược về
- * máy này. API lưu 2 chiều rồi, nhưng dữ liệu nối từ trước đó còn 1 chiều:
- * đọc cả 2 chiều thì mở form máy nào cũng thấy link, lưu lại là dữ liệu tự lành.
- */
-export async function getVariantLinkSlugs(product: {
-  slug: string;
-  variantSlugs?: string[];
-}): Promise<string[]> {
-  const cuaMinh = product.variantSlugs ?? [];
-  if (NO_DB) return cuaMinh;
-  const nguoc = await prisma.product.findMany({
-    where: { variantSlugs: { has: product.slug } },
-    select: { slug: true },
-  });
-  return Array.from(new Set([...cuaMinh, ...nguoc.map((r) => r.slug)]));
-}
 
 /** Thương hiệu + số sản phẩm mỗi hãng. */
 export async function getAdminBrands() {

@@ -135,44 +135,24 @@ async function buildData(body: Body, selfSlug: string) {
 }
 
 /**
- * Nối link 2 CHIỀU: nối máy 1 -> máy 2 thì tự ghi ngược máy 2 -> máy 1.
- * Không làm thế thì mở form máy 2 sẽ thấy ô link TRỐNG (dù ngoài web vẫn hiện
- * đủ nút nhờ tra 2 chiều) -> admin tưởng chưa nối. Gỡ link cũng gỡ cả 2 bên.
+ * `lienQuan`: slug các máy mà nút "Dung lượng" của chúng ĐANG hiện thông số của
+ * máy này (tức các máy nối TỚI nó) -> sửa máy này thì trang chúng cũng phải làm
+ * mới, không thì nút bên đó còn ghi RAM/ổ cứng cũ.
  */
-async function dongBoHaiChieu(selfSlug: string, moi: string[], cu: string[]) {
-  const them = moi.filter((s) => !cu.includes(s));
-  const bo = cu.filter((s) => !moi.includes(s));
-  if (!them.length && !bo.length) return;
-
-  const rows = await prisma.product.findMany({
-    where: { slug: { in: [...them, ...bo] } },
-    select: { id: true, slug: true, variantSlugs: true },
-  });
-
-  await Promise.all(
-    rows.map((r) => {
-      const dangCo = r.variantSlugs ?? [];
-      const canThem = them.includes(r.slug) && !dangCo.includes(selfSlug);
-      const canBo = bo.includes(r.slug) && dangCo.includes(selfSlug);
-      if (!canThem && !canBo) return null;
-      const moiList = canThem
-        ? [...dangCo, selfSlug]
-        : dangCo.filter((s) => s !== selfSlug);
-      return prisma.product.update({
-        where: { id: r.id },
-        data: { variantSlugs: moiList },
-      });
-    }),
-  );
-}
-
-function done(slug?: string, variants: string[] = []) {
+function done(slug?: string, lienQuan: string[] = []) {
   revalidatePath("/");
   revalidatePath("/san-pham");
   if (slug) revalidatePath(`/san-pham/${slug}`);
-  // Máy được nối cũng hiện nút chọn (tra 2 chiều) -> trang chúng cũng đổi.
-  // Không làm mới thì khách phải chờ hết hạn ISR (1 tiếng) mới thấy.
-  variants.forEach((s) => revalidatePath(`/san-pham/${s}`));
+  lienQuan.forEach((s) => revalidatePath(`/san-pham/${s}`));
+}
+
+/** Các máy đang nối TỚI slug này (nút của chúng hiện thông số máy này). */
+async function mayNoiToi(slug: string): Promise<string[]> {
+  const rows = await prisma.product.findMany({
+    where: { variantSlugs: { has: slug } },
+    select: { slug: true },
+  });
+  return rows.map((r) => r.slug);
 }
 
 export async function POST(req: Request) {
@@ -193,8 +173,7 @@ export async function POST(req: Request) {
   }
   try {
     await prisma.product.create({ data: { ...data, slug } });
-    await dongBoHaiChieu(slug, data.variantSlugs, []);
-    done(slug, data.variantSlugs);
+    done(slug);
     return NextResponse.json({ ok: true, slug });
   } catch (err) {
     console.error("Tạo sản phẩm lỗi:", err);
@@ -225,12 +204,9 @@ export async function PUT(req: Request) {
   }
   try {
     await prisma.product.update({ where: { id }, data: { ...data, slug } });
-    await dongBoHaiChieu(slug, data.variantSlugs, current.variantSlugs ?? []);
-    // Gồm cả link CŨ: máy vừa bị gỡ link cũng phải bỏ nút chọn trên trang nó.
-    done(
-      slug,
-      Array.from(new Set([...data.variantSlugs, ...(current.variantSlugs ?? [])])),
-    );
+    // Máy khác đang nối tới máy này -> nút bên đó hiện RAM/ổ cứng của máy này,
+    // sửa xong phải làm mới trang chúng.
+    done(slug, await mayNoiToi(current.slug));
     if (slug !== current.slug) revalidatePath(`/san-pham/${current.slug}`);
     return NextResponse.json({ ok: true, slug });
   } catch (err) {
@@ -264,9 +240,7 @@ export async function DELETE(req: Request) {
     );
     done(
       p.slug,
-      Array.from(
-        new Set([...(p.variantSlugs ?? []), ...linkers.map((l) => l.slug)]),
-      ),
+      linkers.map((l) => l.slug),
     );
     return NextResponse.json({ ok: true });
   } catch (err) {
