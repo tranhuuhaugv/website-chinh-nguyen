@@ -30,6 +30,26 @@ const list = (v: unknown) =>
     .filter(Boolean);
 
 /**
+ * Link máy cùng dòng -> mảng slug. Admin dán kiểu gì cũng nhận:
+ * link đầy đủ (https://.../san-pham/abc), đường dẫn (/san-pham/abc) hay slug trần.
+ * Cách nhau bằng dấu phẩy / xuống dòng / dấu cách.
+ */
+function variantSlugs(v: unknown, selfSlug?: string): string[] {
+  const out = str(v)
+    .split(/[\s,\n]+/)
+    .map((x) => x.trim())
+    .filter(Boolean)
+    .map((x) => {
+      // Bỏ query/hash rồi lấy đoạn cuối của đường dẫn.
+      const clean = x.split(/[?#]/)[0].replace(/\/+$/, "");
+      const last = clean.split("/").filter(Boolean).pop() ?? "";
+      return last.toLowerCase();
+    })
+    .filter((s) => s && s !== selfSlug); // không tự nối vào chính nó
+  return Array.from(new Set(out));
+}
+
+/**
  * Mô tả dạng khối: form gửi lên chuỗi JSON [{type,value}] (BlogContentEditor).
  * Bỏ khối rỗng; dữ liệu hỏng -> mảng rỗng (coi như chưa soạn mô tả).
  */
@@ -76,8 +96,8 @@ async function brandIdFor(name: string): Promise<string | null> {
   return brand.id;
 }
 
-/** Dựng data chung cho create/update từ body form. */
-async function buildData(body: Body) {
+/** Dựng data chung cho create/update từ body form. `selfSlug` để không tự nối vào mình. */
+async function buildData(body: Body, selfSlug: string) {
   const brandId = await brandIdFor(str(body.brand));
   if (!brandId) return null;
   return {
@@ -100,6 +120,7 @@ async function buildData(body: Body) {
     condition: str(body.condition) === "new" ? "new" : "used",
     needs: list(body.needs),
     images: list(body.images),
+    variantSlugs: variantSlugs(body.variantLinks, selfSlug),
     description: blocks(body.description),
     gift: str(body.gift) || null,
     badge: str(body.badge) || null,
@@ -113,10 +134,13 @@ async function buildData(body: Body) {
   };
 }
 
-function done(slug?: string) {
+function done(slug?: string, variants: string[] = []) {
   revalidatePath("/");
   revalidatePath("/san-pham");
   if (slug) revalidatePath(`/san-pham/${slug}`);
+  // Máy được nối cũng hiện nút chọn (tra 2 chiều) -> trang chúng cũng đổi.
+  // Không làm mới thì khách phải chờ hết hạn ISR (1 tiếng) mới thấy.
+  variants.forEach((s) => revalidatePath(`/san-pham/${s}`));
 }
 
 export async function POST(req: Request) {
@@ -130,14 +154,14 @@ export async function POST(req: Request) {
   if (!name) {
     return NextResponse.json({ ok: false, error: "missing_name" }, { status: 400 });
   }
-  const data = await buildData(body);
+  const slug = await uniqueSlug(slugify(str(body.slug) || name));
+  const data = await buildData(body, slug);
   if (!data) {
     return NextResponse.json({ ok: false, error: "missing_brand" }, { status: 400 });
   }
-  const slug = await uniqueSlug(slugify(str(body.slug) || name));
   try {
     await prisma.product.create({ data: { ...data, slug } });
-    done(slug);
+    done(slug, data.variantSlugs);
     return NextResponse.json({ ok: true, slug });
   } catch (err) {
     console.error("Tạo sản phẩm lỗi:", err);
@@ -158,17 +182,21 @@ export async function PUT(req: Request) {
   if (!current) {
     return NextResponse.json({ ok: false, error: "not_found" }, { status: 404 });
   }
-  const data = await buildData(body);
+  const slug = await uniqueSlug(
+    slugify(str(body.slug) || str(body.name) || current.slug),
+    id,
+  );
+  const data = await buildData(body, slug);
   if (!data) {
     return NextResponse.json({ ok: false, error: "missing_brand" }, { status: 400 });
   }
-  const slug = await uniqueSlug(
-    slugify(str(body.slug) || data.name || current.slug),
-    id,
-  );
   try {
     await prisma.product.update({ where: { id }, data: { ...data, slug } });
-    done(slug);
+    // Gồm cả link CŨ: máy vừa bị gỡ link cũng phải bỏ nút chọn trên trang nó.
+    done(
+      slug,
+      Array.from(new Set([...data.variantSlugs, ...(current.variantSlugs ?? [])])),
+    );
     if (slug !== current.slug) revalidatePath(`/san-pham/${current.slug}`);
     return NextResponse.json({ ok: true, slug });
   } catch (err) {
@@ -185,7 +213,18 @@ export async function DELETE(req: Request) {
   if (!id) return NextResponse.json({ ok: false }, { status: 400 });
   try {
     const p = await prisma.product.delete({ where: { id } });
-    done(p.slug);
+    // Máy khác đang nối tới máy vừa xoá -> làm mới trang chúng để bỏ nút chọn,
+    // không thì khách bấm vào nút đó sẽ ra trang 404.
+    const linkers = await prisma.product.findMany({
+      where: { variantSlugs: { has: p.slug } },
+      select: { slug: true },
+    });
+    done(
+      p.slug,
+      Array.from(
+        new Set([...(p.variantSlugs ?? []), ...linkers.map((l) => l.slug)]),
+      ),
+    );
     return NextResponse.json({ ok: true });
   } catch (err) {
     console.error("Xoá sản phẩm lỗi:", err);

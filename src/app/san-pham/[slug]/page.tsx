@@ -10,6 +10,7 @@ import { ProductCard } from "@/components/ProductCard";
 import { SectionHead } from "@/components/SectionHead";
 import { ProductGallery } from "@/components/product/ProductGallery";
 import { ProductPurchase } from "@/components/product/ProductPurchase";
+import { ProductVariants } from "@/components/product/ProductVariants";
 import { CompareBar } from "@/components/compare/CompareBar";
 import { CompareProvider } from "@/components/compare/CompareContext";
 import { StarIcon } from "@/components/icons";
@@ -17,6 +18,7 @@ import { CommitmentCards } from "@/components/product/CommitmentCards";
 import {
   getAllProductSlugs,
   getProductBySlug,
+  getProductVariants,
   getRelatedProducts,
 } from "@/lib/data";
 import { buildDescription, buildSpecGroups } from "@/lib/product-content";
@@ -89,7 +91,11 @@ export default async function ProductPage({
     ? Math.round((1 - product.price / product.oldPrice) * 100)
     : 0;
   const savings = product.oldPrice ? product.oldPrice - product.price : 0;
-  const related = await getRelatedProducts(product);
+  // Song song: 2 truy vấn độc lập nhau, không cộng dồn độ trễ.
+  const [related, variants] = await Promise.all([
+    getRelatedProducts(product),
+    getProductVariants(product),
+  ]);
 
   const url = `${SITE_URL}/san-pham/${product.slug}`;
   const specGroups = buildSpecGroups(product);
@@ -270,6 +276,9 @@ export default async function ProductPage({
                   ))}
                 </div>
               </div>
+
+              {/* Chọn cấu hình khác (máy cùng dòng admin đã nối link) */}
+              <ProductVariants options={variants} currentSlug={product.slug} />
 
               {/* Ưu đãi */}
               <div className="mt-5 rounded-2xl border border-green/30 bg-green-tint/50 p-4">

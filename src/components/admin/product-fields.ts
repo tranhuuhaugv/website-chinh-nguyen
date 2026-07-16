@@ -84,6 +84,21 @@ export function productFields(brandNames: string[]): AdminField[] {
     { name: "sort", label: "Thứ tự hiển thị (số nhỏ lên trước)", type: "number" },
 
     {
+      name: "hVariant",
+      label: "Máy cùng dòng khác cấu hình",
+      type: "heading",
+    },
+    {
+      name: "variantLinks",
+      label:
+        "Dán link các máy cùng dòng (mỗi link 1 dòng) — trang chi tiết sẽ hiện nút chọn Dung lượng",
+      type: "textarea",
+      full: true,
+      placeholder:
+        "https://laptopchinhnguyen.com.vn/san-pham/dell-xps-13-9370-ram-16gb-ssd-256gb",
+    },
+
+    {
       name: "hMoTa",
       label: "Mô tả sản phẩm (để trống sẽ tự sinh theo thông số máy)",
       type: "heading",

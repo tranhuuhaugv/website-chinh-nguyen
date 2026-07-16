@@ -49,6 +49,8 @@ export interface Product {
   accent: ProductAccent;
   /** Ảnh thật do admin tải lên (/uploads/...). Trống -> hiện ProductImage (SVG). */
   images?: string[];
+  /** Slug các máy cùng dòng khác cấu hình (admin nối bằng link). */
+  variantSlugs?: string[];
   /**
    * Mô tả sản phẩm dạng khối (đoạn văn / tiêu đề / ảnh) do admin tự soạn —
    * chỗ để đăng ẢNH THẬT của đúng chiếc máy đang bán.

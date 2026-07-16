@@ -72,6 +72,7 @@ function toProduct(p: PrismaProductWithBrand): Product {
     isNew: p.isNew,
     accent: p.accent as ProductAccent,
     images: p.images ?? [],
+    variantSlugs: p.variantSlugs ?? [],
     // Mô tả admin tự soạn (khối văn bản/ảnh). Dùng chung toBlocks với blog.
     description: toBlocks(p.description),
     condition: (p.condition as ProductCondition) ?? "used",
@@ -157,6 +158,101 @@ export async function getProductBySlug(slug: string): Promise<Product | null> {
   if (NO_DB) return MOCK_PRODUCTS.find((p) => p.slug === slug) ?? null;
   const row = await prisma.product.findUnique({ where: { slug }, ...withBrand });
   return row ? toProduct(row as PrismaProductWithBrand) : null;
+}
+
+/** 1 lựa chọn cấu hình ở trang chi tiết (nút "8GB - 256GB"). */
+export interface VariantOption {
+  slug: string;
+  ram: string;
+  storage: string;
+  price: number;
+}
+
+/** "512GB" -> 512, "1TB" -> 1024. Không đọc được -> 0 (xếp lên đầu). */
+function dungLuongGB(s: string): number {
+  const m = /([\d.]+)\s*(TB|GB)/i.exec(s ?? "");
+  if (!m) return 0;
+  const n = parseFloat(m[1]);
+  if (!Number.isFinite(n)) return 0;
+  return m[2].toUpperCase() === "TB" ? n * 1024 : n;
+}
+
+/** Xếp nút theo DUNG LƯỢNG tăng dần (RAM rồi ổ cứng), không theo giá: giá
+ *  không phải lúc nào cũng tăng theo dung lượng -> nút sẽ nhảy lộn xộn. */
+function xepTheoDungLuong(a: VariantOption, b: VariantOption): number {
+  return (
+    dungLuongGB(a.ram) - dungLuongGB(b.ram) ||
+    dungLuongGB(a.storage) - dungLuongGB(b.storage) ||
+    a.price - b.price
+  );
+}
+
+const chonCot = { slug: true, ram: true, storage: true, price: true } as const;
+
+/**
+ * Các máy CÙNG DÒNG khác cấu hình -> nút chọn "Dung lượng" ở trang chi tiết.
+ *
+ * Gom 2 BƯỚC để admin chỉ phải nối link ở MỘT máy là đủ:
+ *  - Bước 1: máy này trỏ tới ai + ai đang trỏ về máy này (2 chiều).
+ *  - Bước 2: lấy thêm máy mà hàng xóm ở bước 1 trỏ tới. Nếu admin nối
+ *    A -> [B, C] thì đứng ở B vẫn thấy C (qua A), không thì trang A hiện 3 nút
+ *    còn trang B chỉ hiện 2 -> khách thấy lệch.
+ *
+ * Trả về [] nếu chưa nối máy nào (trang không hiện mục Dung lượng).
+ */
+export async function getProductVariants(
+  product: Product,
+): Promise<VariantOption[]> {
+  const noiVoi = (a: Product, b: Product) =>
+    (a.variantSlugs ?? []).includes(b.slug) ||
+    (b.variantSlugs ?? []).includes(a.slug);
+
+  if (NO_DB) {
+    const buoc1 = MOCK_PRODUCTS.filter(
+      (p) => p.slug !== product.slug && noiVoi(product, p),
+    );
+    if (!buoc1.length) return [];
+    const daCo = new Set([product.slug, ...buoc1.map((p) => p.slug)]);
+    const buoc2 = MOCK_PRODUCTS.filter(
+      (p) => !daCo.has(p.slug) && buoc1.some((n) => noiVoi(n, p)),
+    );
+    return [...buoc1, ...buoc2, product]
+      .map((p) => ({ slug: p.slug, ram: p.ram, storage: p.storage, price: p.price }))
+      .sort(xepTheoDungLuong);
+  }
+
+  const buoc1 = await prisma.product.findMany({
+    where: {
+      slug: { not: product.slug },
+      OR: [
+        { slug: { in: product.variantSlugs ?? [] } },
+        { variantSlugs: { has: product.slug } },
+      ],
+    },
+    select: { ...chonCot, variantSlugs: true },
+  });
+  if (!buoc1.length) return [];
+
+  const daCo = new Set([product.slug, ...buoc1.map((r) => r.slug)]);
+  const conThieu = Array.from(
+    new Set(buoc1.flatMap((r) => r.variantSlugs ?? [])),
+  ).filter((s) => !daCo.has(s));
+
+  const buoc2 = conThieu.length
+    ? await prisma.product.findMany({
+        where: { slug: { in: conThieu } },
+        select: chonCot,
+      })
+    : [];
+
+  // Kèm chính máy đang xem để nó là nút đang chọn.
+  return [
+    ...buoc1,
+    ...buoc2,
+    { slug: product.slug, ram: product.ram, storage: product.storage, price: product.price },
+  ]
+    .map((p) => ({ slug: p.slug, ram: p.ram, storage: p.storage, price: p.price }))
+    .sort(xepTheoDungLuong);
 }
 
 export async function getRelatedProducts(

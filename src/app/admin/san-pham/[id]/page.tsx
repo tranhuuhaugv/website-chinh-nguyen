@@ -44,6 +44,10 @@ export default async function EditProductPage({
         warranty: s(product.warranty),
         needs: (product.needs ?? []).join(","),
         images: (product.images ?? []).join(","),
+        // Hiện lại dạng link cho dễ đọc/sửa (lưu trong DB là slug).
+        variantLinks: (product.variantSlugs ?? [])
+          .map((s) => `/san-pham/${s}`)
+          .join("\n"),
         description: Array.isArray(product.description)
           ? JSON.stringify(product.description)
           : "",

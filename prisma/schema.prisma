@@ -64,6 +64,9 @@ model Product {
   needs               String[] // slug nhu cầu: van-phong, gaming, sinh-vien...
   commitments         String[]
   description         Json? // các khối nội dung (đoạn văn / ảnh)
+  // Slug các máy CÙNG DÒNG khác cấu hình (admin tự nối bằng link). Trang chi
+  // tiết hiện chúng thành nút chọn "Dung lượng" để khách nhảy qua lại.
+  variantSlugs        String[]
   // SEO
   metaTitle       String?
   metaDescription String?
