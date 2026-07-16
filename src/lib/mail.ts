@@ -27,15 +27,17 @@ const C = {
   soft: "#EAF5EE",
 };
 
-// Chèn transform Cloudinary để lấy thumbnail nhẹ (ô ~120px). URL không phải
-// Cloudinary thì giữ nguyên.
-function thumb(url: string | undefined, size = 120): string {
+/**
+ * Ảnh trong email PHẢI là URL tuyệt đối: Gmail/Outlook mở thư ngoài website nên
+ * đường dẫn kiểu "/uploads/abc.jpg" không tải được (hiện ô ảnh vỡ).
+ * Ảnh tự host -> ghép domain vào trước.
+ */
+function absUrl(url: string | undefined): string {
   if (!url) return "";
-  const marker = "/upload/";
-  const at = url.indexOf(marker);
-  if (at === -1) return url;
-  const t = `w_${size},h_${size},c_pad,b_white,q_auto,f_auto`;
-  return url.slice(0, at + marker.length) + t + "/" + url.slice(at + marker.length);
+  if (/^https?:\/\//i.test(url)) return url;
+  const base = (process.env.NEXT_PUBLIC_SITE_URL ?? "").replace(/\/+$/, "");
+  if (!base) return "";
+  return `${base}${url.startsWith("/") ? "" : "/"}${url}`;
 }
 
 // 1 dòng thông tin (nhãn trái / giá trị phải).
@@ -110,7 +112,7 @@ function itemRow(i: {
   qty: number;
   image?: string;
 }): string {
-  const src = thumb(i.image);
+  const src = absUrl(i.image);
   const pic = src
     ? `<img src="${src}" width="56" height="56" alt="" style="display:block;width:56px;height:56px;border-radius:10px;border:1px solid ${C.line};object-fit:cover;background:#fff" />`
     : `<div style="width:56px;height:56px;border-radius:10px;border:1px solid ${C.line};background:${C.bg}"></div>`;
@@ -144,11 +146,16 @@ function tradeInfoCards(order: Extract<OrderInput, { type: "tradein" }>): string
   return card("Thông tin khách hàng", info) + card("Máy cần thu", trade);
 }
 
-function purchaseCards(order: Extract<OrderInput, { type: "purchase" }>): string {
+function purchaseCards(
+  order: Extract<OrderInput, { type: "purchase" }>,
+  /** Email khách (nếu có) — chỉ hiện ở thư báo shop để tiện liên hệ lại. */
+  customerEmail?: string | null,
+): string {
   const info = `
     <table role="presentation" width="100%" cellpadding="0" cellspacing="0">
       ${row("Họ và tên", order.name)}
       ${row("Số điện thoại", order.phone)}
+      ${customerEmail ? row("Email", customerEmail) : ""}
       ${row("Địa chỉ giao", order.address)}
       ${order.note ? row("Ghi chú", order.note) : ""}
     </table>`;
@@ -189,7 +196,10 @@ function commitmentsCard(type: OrderInput["type"]): string {
 }
 
 // Email GỬI SHOP (thông báo có đơn mới).
-function buildAdminEmail(order: OrderInput): { subject: string; html: string } {
+function buildAdminEmail(
+  order: OrderInput,
+  customerEmail?: string | null,
+): { subject: string; html: string } {
   if (order.type === "tradein") {
     return {
       subject: `[Thu cũ đổi mới] ${order.name} - ${order.model}`,
@@ -205,7 +215,7 @@ function buildAdminEmail(order: OrderInput): { subject: string; html: string } {
     html: shell(
       "Đơn hàng mới (COD)",
       "Có đơn hàng mới trên website",
-      purchaseCards(order),
+      purchaseCards(order, customerEmail),
     ),
   };
 }
@@ -263,6 +273,8 @@ async function sendMail(
   subject: string,
   html: string,
   to: string,
+  /** Bấm "Trả lời" trong thư báo shop -> gửi thẳng cho khách. */
+  replyTo?: string,
 ): Promise<boolean> {
   if (!mailReady || !to) return false;
   await getTransporter().sendMail({
@@ -270,6 +282,7 @@ async function sendMail(
     to,
     subject,
     html,
+    ...(replyTo ? { replyTo } : {}),
   });
   return true;
 }
@@ -283,13 +296,18 @@ export async function sendOrderEmail(
   order: OrderInput,
   customerEmail?: string | null,
 ): Promise<boolean> {
-  const admin = buildAdminEmail(order);
   const toCustomer =
     order.type === "tradein" ? order.email : (customerEmail ?? "").trim();
+  const admin = buildAdminEmail(order, toCustomer);
 
   // Gửi song song: email khách không phải chờ email shop xong.
   const [adminOk] = await Promise.all([
-    sendMail(admin.subject, admin.html, MAIL_TO || GMAIL_USER || ""),
+    sendMail(
+      admin.subject,
+      admin.html,
+      MAIL_TO || GMAIL_USER || "",
+      toCustomer || undefined,
+    ),
     (async () => {
       if (!toCustomer) return false;
       const cust = buildCustomerEmail(order);

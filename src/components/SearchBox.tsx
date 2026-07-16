@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useRef, useState } from "react";
+import Image from "next/image";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import type { ProductAccent } from "@/lib/types";
@@ -17,6 +18,8 @@ interface Suggestion {
   price: number;
   oldPrice: number | null;
   accent: ProductAccent;
+  /** Ảnh thật do admin tải lên. Chưa có -> ProductImage vẽ SVG theo accent. */
+  image?: string | null;
 }
 
 export function SearchBox({
@@ -130,10 +133,23 @@ export function SearchBox({
                       onClick={() => setOpen(false)}
                       className="flex items-center gap-3 px-3 py-2 transition hover:bg-bg"
                     >
-                      <span className="h-12 w-14 shrink-0 overflow-hidden rounded-lg bg-[#F5F7F5] p-1">
-                        <span className="block h-full w-full overflow-hidden rounded">
-                          <ProductImage accent={p.accent} uid={`s-${p.slug}`} />
-                        </span>
+                      <span className="relative h-12 w-14 shrink-0 overflow-hidden rounded-lg bg-[#F5F7F5] p-1">
+                        {p.image ? (
+                          <Image
+                            src={p.image}
+                            alt=""
+                            fill
+                            sizes="56px"
+                            // Thẻ ảnh chỉ tồn tại khi khách mở gợi ý -> lazy
+                            // không tiết kiệm được gì, chỉ làm ảnh hiện chậm.
+                            loading="eager"
+                            className="object-contain p-1"
+                          />
+                        ) : (
+                          <span className="block h-full w-full overflow-hidden rounded">
+                            <ProductImage accent={p.accent} uid={`s-${p.slug}`} />
+                          </span>
+                        )}
                       </span>
                       <span className="min-w-0 flex-1">
                         <span className="line-clamp-1 text-[13.5px] font-medium text-ink">

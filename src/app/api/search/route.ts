@@ -15,6 +15,8 @@ export async function GET(req: Request) {
         price: p.price,
         oldPrice: p.oldPrice ?? null,
         accent: p.accent,
+        // Ảnh thật (nếu có) để gợi ý hiện đúng ảnh máy; chưa có -> accent vẽ SVG.
+        image: p.images?.[0] ?? null,
       })),
     });
   } catch {
