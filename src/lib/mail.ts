@@ -322,6 +322,42 @@ export async function sendOrderEmail(
   return adminOk;
 }
 
+/**
+ * Gửi link đặt lại mật khẩu cho khách. `link` phải là URL tuyệt đối.
+ * Trả về false nếu chưa cấu hình Gmail (chế độ demo).
+ */
+export async function sendPasswordResetEmail(
+  to: string,
+  link: string,
+  minutes: number,
+): Promise<boolean> {
+  const body = `
+    <div style="font-size:14px;color:${C.ink2};line-height:1.7;padding:6px 0">
+      Chúng tôi nhận được yêu cầu đặt lại mật khẩu cho tài khoản <b style="color:${C.ink}">${to}</b>.
+      Bấm nút bên dưới để đặt mật khẩu mới.
+    </div>
+    <table role="presentation" cellpadding="0" cellspacing="0" style="margin:14px 0 6px">
+      <tr><td style="border-radius:10px;background:${C.green}">
+        <a href="${link}" style="display:inline-block;padding:12px 22px;font-size:14px;font-weight:700;color:#ffffff;text-decoration:none">
+          Đặt lại mật khẩu
+        </a>
+      </td></tr>
+    </table>
+    <div style="font-size:12.5px;color:${C.muted};line-height:1.7;padding-top:6px">
+      Link chỉ dùng được <b>1 lần</b> và hết hạn sau <b>${minutes} phút</b>.<br/>
+      Nút không bấm được thì sao chép link này vào trình duyệt:<br/>
+      <span style="color:${C.ink2};word-break:break-all">${link}</span><br/><br/>
+      Nếu Quý khách <b>không</b> yêu cầu đặt lại mật khẩu, hãy bỏ qua email này —
+      mật khẩu hiện tại vẫn giữ nguyên.
+    </div>`;
+  const html = shell(
+    "Đặt lại mật khẩu",
+    "Yêu cầu đặt lại mật khẩu",
+    card("Xác nhận yêu cầu", body),
+  );
+  return sendMail(`Đặt lại mật khẩu - ${SITE.name}`, html, to);
+}
+
 export async function sendRegisterEmail(user: {
   name: string;
   email: string;

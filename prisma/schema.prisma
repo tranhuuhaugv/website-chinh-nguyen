@@ -126,6 +126,20 @@ model User {
   createdAt    DateTime @default(now())
 }
 
+// Token đặt lại mật khẩu (gửi qua email). Chỉ lưu SHA-256 của token, không lưu
+// token thô -> lộ DB cũng không đặt lại được mật khẩu của khách.
+model PasswordResetToken {
+  id        String    @id @default(cuid())
+  tokenHash String    @unique
+  userId    String
+  expiresAt DateTime
+  usedAt    DateTime? // đã dùng -> không cho dùng lại
+  createdAt DateTime  @default(now())
+
+  @@index([userId])
+  @@index([expiresAt])
+}
+
 model Setting {
   key   String @id
   value String

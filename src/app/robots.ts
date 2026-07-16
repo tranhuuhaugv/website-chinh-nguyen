@@ -15,6 +15,9 @@ export default function robots(): MetadataRoute.Robots {
         "/tai-khoan",
         "/dang-nhap",
         "/dang-ky",
+        "/quen-mat-khau",
+        // Link đặt lại có token ngay trên URL -> tuyệt đối không cho bò vào.
+        "/dat-lai-mat-khau",
         "/admin",
       ],
     },
