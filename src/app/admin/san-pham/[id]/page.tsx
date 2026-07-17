@@ -55,6 +55,7 @@ export default async function EditProductPage({
         badge: s(product.badge),
         accent: s(product.accent) || "dark",
         isNew: product.isNew ? "co" : "khong",
+        isFeatured: product.isFeatured ? "co" : "khong",
         isFlashSale: product.isFlashSale ? "co" : "khong",
         installmentPerMonth: s(product.installmentPerMonth),
         sort: s(product.sort),

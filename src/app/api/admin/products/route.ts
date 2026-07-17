@@ -125,6 +125,7 @@ async function buildData(body: Body, selfSlug: string) {
     gift: str(body.gift) || null,
     badge: str(body.badge) || null,
     isNew: str(body.isNew) === "co",
+    isFeatured: str(body.isFeatured) === "co",
     isFlashSale: str(body.isFlashSale) === "co",
     accent: str(body.accent) || "dark",
     installmentPerMonth: num(body.installmentPerMonth),

@@ -70,6 +70,7 @@ function toProduct(p: PrismaProductWithBrand): Product {
     gift: p.gift ?? undefined,
     badge: p.badge ?? undefined,
     isNew: p.isNew,
+    isFeatured: p.isFeatured,
     accent: p.accent as ProductAccent,
     images: p.images ?? [],
     variantSlugs: p.variantSlugs ?? [],
@@ -144,14 +145,36 @@ export async function getFlashSaleProducts(): Promise<Product[]> {
   return rows.map((r) => toProduct(r as PrismaProductWithBrand));
 }
 
+/** Số máy tối đa cho khối "Sản phẩm nổi bật" (khối này có tab hãng + xem thêm). */
+const FEATURED_LIMIT = 24;
+
+/**
+ * Khối "Sản phẩm nổi bật" trang chủ: chỉ máy admin TÍCH nổi bật.
+ * Trước đây lấy MỌI máy không phải flash sale -> 157 máy đổ hết xuống trình
+ * duyệt dù chỉ hiện 8 (trái quy tắc "không query lấy tất cả" trong CLAUDE.md).
+ *
+ * CHƯA tích máy nào -> lấy máy mới nhất cho khối khỏi trống (lúc mới thêm cột
+ * này thì cả 157 máy đều chưa tích). Tích ít nhất 1 máy -> chỉ hiện máy đã tích.
+ */
 export async function getFeaturedProducts(): Promise<Product[]> {
   if (NO_DB) return FEATURED_PRODUCTS;
   const rows = await prisma.product.findMany({
-    where: { isFlashSale: false },
+    where: { isFeatured: true, isFlashSale: false },
     ...withBrand,
     orderBy: { sort: "asc" },
+    take: FEATURED_LIMIT,
   });
-  return rows.map((r) => toProduct(r as PrismaProductWithBrand));
+  if (rows.length) {
+    return rows.map((r) => toProduct(r as PrismaProductWithBrand));
+  }
+
+  const duPhong = await prisma.product.findMany({
+    where: { isFlashSale: false },
+    ...withBrand,
+    orderBy: { createdAt: "desc" },
+    take: FEATURED_LIMIT,
+  });
+  return duPhong.map((r) => toProduct(r as PrismaProductWithBrand));
 }
 
 export async function getProductBySlug(slug: string): Promise<Product | null> {

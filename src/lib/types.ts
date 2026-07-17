@@ -46,6 +46,8 @@ export interface Product {
   /** Nhãn "-18%", "Mới"... hiển thị góc trái ảnh. */
   badge?: string;
   isNew?: boolean;
+  /** Admin tích -> hiện ở khối "Sản phẩm nổi bật" trang chủ. */
+  isFeatured?: boolean;
   accent: ProductAccent;
   /** Ảnh thật do admin tải lên (/uploads/...). Trống -> hiện ProductImage (SVG). */
   images?: string[];

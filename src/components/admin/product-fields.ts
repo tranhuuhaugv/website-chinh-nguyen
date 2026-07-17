@@ -77,6 +77,12 @@ export function productFields(brandNames: string[]): AdminField[] {
       })),
     },
     { name: "isNew", label: "Gắn nhãn 'Mới về'", type: "select", options: YES_NO },
+    {
+      name: "isFeatured",
+      label: "Sản phẩm nổi bật (hiện ở trang chủ)",
+      type: "select",
+      options: YES_NO,
+    },
     { name: "isFlashSale", label: "Đưa vào Flash Sale", type: "select", options: YES_NO },
     {
       name: "installmentPerMonth",
