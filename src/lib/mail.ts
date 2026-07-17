@@ -1,4 +1,7 @@
 import nodemailer from "nodemailer";
+import { readFile } from "fs/promises";
+import path from "path";
+import { createHash } from "crypto";
 import type { OrderInput } from "./validations/order";
 import { formatPrice } from "./format";
 import { SITE } from "./site";
@@ -28,16 +31,51 @@ const C = {
 };
 
 /**
- * Ảnh trong email PHẢI là URL tuyệt đối: Gmail/Outlook mở thư ngoài website nên
- * đường dẫn kiểu "/uploads/abc.jpg" không tải được (hiện ô ảnh vỡ).
- * Ảnh tự host -> ghép domain vào trước.
+ * Ảnh sản phẩm trong email được NHÚNG THẲNG vào thư (đính kèm dạng cid) thay vì
+ * trỏ link ra website.
+ *
+ * Vì sao: Gmail CHẶN ảnh ngoài với thư từ người gửi chưa xác thực -> thư báo
+ * shop (gửi cho chính mình) thì hiện ảnh, còn thư gửi KHÁCH thì mất ảnh, dù
+ * HTML hai thư giống hệt nhau. Ảnh nhúng thì luôn hiện, không phụ thuộc Gmail,
+ * và cũng đỡ bị đánh spam hơn (ảnh remote là một dấu hiệu spam).
+ *
+ * Ảnh nằm sẵn trên đĩa VPS (public/uploads) -> đọc thẳng bằng fs, không gọi HTTP.
  */
-function absUrl(url: string | undefined): string {
+function cidCuaAnh(url: string): string {
+  // cid phải là chuỗi an toàn, không trùng nhau giữa các ảnh trong 1 thư.
+  return `anh-${createHash("md5").update(url).digest("hex").slice(0, 12)}`;
+}
+
+/** Đọc file ảnh trong public/uploads -> phần đính kèm cid. Ảnh lỗi -> null. */
+async function docAnhDeNhung(
+  url: string,
+): Promise<{ filename: string; content: Buffer; cid: string } | null> {
+  // Chỉ nhận ảnh tự host. Chặn ../ để không đọc lung tung ngoài thư mục uploads.
+  const m = /^\/uploads\/([A-Za-z0-9._-]+)$/.exec(url);
+  if (!m) return null;
+  try {
+    const duongDan = path.join(process.cwd(), "public", "uploads", m[1]);
+    const content = await readFile(duongDan);
+    // Ảnh quá nặng thì thôi, đừng để thư phình to.
+    if (content.byteLength > MAX_ANH_NHUNG) return null;
+    return { filename: m[1], content, cid: cidCuaAnh(url) };
+  } catch {
+    return null;
+  }
+}
+
+/** Ảnh nhúng tối đa cho mỗi ảnh (thư quá nặng dễ bị chặn / vào spam). */
+const MAX_ANH_NHUNG = 2 * 1024 * 1024;
+
+/**
+ * URL ảnh dùng trong HTML email:
+ *  - Ảnh tự host -> "cid:..." (nhúng kèm thư).
+ *  - Ảnh http(s) bên ngoài -> giữ nguyên link.
+ */
+function srcAnhEmail(url: string | undefined): string {
   if (!url) return "";
   if (/^https?:\/\//i.test(url)) return url;
-  const base = (process.env.NEXT_PUBLIC_SITE_URL ?? "").replace(/\/+$/, "");
-  if (!base) return "";
-  return `${base}${url.startsWith("/") ? "" : "/"}${url}`;
+  return `cid:${cidCuaAnh(url)}`;
 }
 
 // 1 dòng thông tin (nhãn trái / giá trị phải).
@@ -112,7 +150,7 @@ function itemRow(i: {
   qty: number;
   image?: string;
 }): string {
-  const src = absUrl(i.image);
+  const src = srcAnhEmail(i.image);
   const pic = src
     ? `<img src="${src}" width="56" height="56" alt="" style="display:block;width:56px;height:56px;border-radius:10px;border:1px solid ${C.line};object-fit:cover;background:#fff" />`
     : `<div style="width:56px;height:56px;border-radius:10px;border:1px solid ${C.line};background:${C.bg}"></div>`;
@@ -275,6 +313,8 @@ async function sendMail(
   to: string,
   /** Bấm "Trả lời" trong thư báo shop -> gửi thẳng cho khách. */
   replyTo?: string,
+  /** Ảnh nhúng kèm thư (src="cid:..." trong html). */
+  attachments?: { filename: string; content: Buffer; cid: string }[],
 ): Promise<boolean> {
   if (!mailReady || !to) return false;
   await getTransporter().sendMail({
@@ -283,6 +323,7 @@ async function sendMail(
     subject,
     html,
     ...(replyTo ? { replyTo } : {}),
+    ...(attachments?.length ? { attachments } : {}),
   });
   return true;
 }
@@ -300,6 +341,10 @@ export async function sendOrderEmail(
     order.type === "tradein" ? order.email : (customerEmail ?? "").trim();
   const admin = buildAdminEmail(order, toCustomer);
 
+  // Đọc ảnh sản phẩm để nhúng kèm thư (cả 2 thư dùng chung bộ đính kèm).
+  const anhKem =
+    order.type === "purchase" ? await docAnhSanPham(order.items) : [];
+
   // Gửi song song: email khách không phải chờ email shop xong.
   const [adminOk] = await Promise.all([
     sendMail(
@@ -307,12 +352,19 @@ export async function sendOrderEmail(
       admin.html,
       MAIL_TO || GMAIL_USER || "",
       toCustomer || undefined,
+      anhKem,
     ),
     (async () => {
       if (!toCustomer) return false;
       const cust = buildCustomerEmail(order);
       // Không để lỗi gửi khách làm hỏng kết quả chung.
-      return sendMail(cust.subject, cust.html, toCustomer).catch((err) => {
+      return sendMail(
+        cust.subject,
+        cust.html,
+        toCustomer,
+        undefined,
+        anhKem,
+      ).catch((err) => {
         console.error("Gửi email xác nhận cho khách lỗi:", err);
         return false;
       });
@@ -320,6 +372,17 @@ export async function sendOrderEmail(
   ]);
 
   return adminOk;
+}
+
+/** Đọc ảnh của các sản phẩm trong đơn -> danh sách đính kèm (khử trùng ảnh). */
+async function docAnhSanPham(
+  items: { image?: string }[],
+): Promise<{ filename: string; content: Buffer; cid: string }[]> {
+  const urls = Array.from(
+    new Set(items.map((i) => i.image).filter((u): u is string => Boolean(u))),
+  );
+  const ket = await Promise.all(urls.map(docAnhDeNhung));
+  return ket.filter((a): a is NonNullable<typeof a> => a !== null);
 }
 
 /**
