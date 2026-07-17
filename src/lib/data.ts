@@ -11,7 +11,7 @@ import type {
   ProductAccent,
   ProductCondition,
 } from "./types";
-import { toRichHtml } from "./rich-text";
+import { sanitizeRichText, toRichHtml } from "./rich-text";
 import type { Policy, Section } from "./policies";
 import {
   ALL_PRODUCTS,
@@ -316,6 +316,33 @@ export async function getCategoryName(slug: string): Promise<string | null> {
   if (NO_DB) return CATEGORIES.find((c) => c.slug === slug)?.name ?? null;
   const c = await prisma.category.findUnique({ where: { slug } });
   return c?.name ?? null;
+}
+
+/** Thông tin SEO của 1 danh mục cho trang khách. `seoContent` đã lọc XSS sẵn. */
+export interface CategorySeo {
+  name: string;
+  metaDescription: string | null;
+  seoContent: string; // HTML đã sanitize; "" nếu chưa soạn
+}
+
+export async function getCategorySeo(slug: string): Promise<CategorySeo | null> {
+  if (NO_DB) {
+    const c = CATEGORIES.find((x) => x.slug === slug);
+    return c ? { name: c.name, metaDescription: null, seoContent: "" } : null;
+  }
+  const c = await prisma.category.findUnique({ where: { slug } });
+  if (!c) return null;
+  return {
+    name: c.name,
+    metaDescription: c.metaDescription ?? null,
+    seoContent: c.seoContent ? sanitizeRichText(c.seoContent) : "",
+  };
+}
+
+/** Lấy nguyên bản 1 danh mục cho form sửa admin (gồm cả trường SEO). */
+export async function getCategoryEdit(slug: string) {
+  if (NO_DB) return null;
+  return prisma.category.findUnique({ where: { slug } });
 }
 
 export async function getBrandBySlug(slug: string): Promise<string | null> {

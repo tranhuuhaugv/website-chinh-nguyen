@@ -4,11 +4,18 @@ import { revalidatePath } from "next/cache";
 import { prisma } from "@/lib/prisma";
 import { ADMIN_COOKIE, verifyAdminToken } from "@/lib/admin-auth";
 import { slugify } from "@/lib/slug";
+import { richTextRong, sanitizeRichText } from "@/lib/rich-text";
 
 // CRUD danh mục (lưu thật vào DB). Chỉ admin.
 async function requireAdmin(): Promise<boolean> {
   const token = cookies().get(ADMIN_COOKIE)?.value;
   return token ? verifyAdminToken(token) : false;
+}
+
+/** Bài SEO: lọc XSS ngay khi lưu (không tin dữ liệu gửi lên). Rỗng -> null. */
+function cleanSeo(v: unknown): string | null {
+  const html = sanitizeRichText(String(v ?? ""));
+  return richTextRong(html) ? null : html;
 }
 
 async function uniqueSlug(base: string, exclude?: string): Promise<string> {
@@ -49,6 +56,8 @@ export async function POST(req: Request) {
       tag: String(body?.tag ?? "").trim() || null,
       image: String(body?.image ?? "").trim() || null,
       group: String(body?.group ?? "").trim() || null,
+      metaDescription: String(body?.metaDescription ?? "").trim() || null,
+      seoContent: cleanSeo(body?.seoContent),
       sort: (last?.sort ?? 0) + 1,
     },
   });
@@ -89,6 +98,8 @@ export async function PUT(req: Request) {
       tag: String(body?.tag ?? "").trim() || null,
       image: String(body?.image ?? "").trim() || null,
       group: String(body?.group ?? "").trim() || current.group,
+      metaDescription: String(body?.metaDescription ?? "").trim() || null,
+      seoContent: cleanSeo(body?.seoContent),
     },
   });
   done();

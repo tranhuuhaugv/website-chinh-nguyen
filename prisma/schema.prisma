@@ -26,6 +26,8 @@ model Category {
   image String?
   group String? // nhóm cho mega-menu: nhu-cau | thuong-hieu | khac
   sort  Int     @default(0)
+  metaDescription String? // thẻ meta description riêng cho trang danh mục (SEO)
+  seoContent      String? // bài viết SEO (HTML) hiện DƯỚI danh sách sản phẩm
 }
 
 model Product {

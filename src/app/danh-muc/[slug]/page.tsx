@@ -7,7 +7,7 @@ import { FloatButtons } from "@/components/FloatButtons";
 import { ProductBrowser } from "@/components/product/ProductBrowser";
 import { CompareBar } from "@/components/compare/CompareBar";
 import { CompareProvider } from "@/components/compare/CompareContext";
-import { getAllProducts, getBrandBySlug, getCategoryName } from "@/lib/data";
+import { getAllProducts, getBrandBySlug, getCategorySeo } from "@/lib/data";
 import type { RawParams } from "@/lib/product-query";
 
 const SITE_URL =
@@ -18,10 +18,14 @@ export async function generateMetadata({
 }: {
   params: { slug: string };
 }): Promise<Metadata> {
-  const name = (await getCategoryName(params.slug)) ?? "Danh mục sản phẩm";
+  const category = await getCategorySeo(params.slug);
+  const name = category?.name ?? "Danh mục sản phẩm";
   return {
     title: name,
-    description: `Mua ${name} chính hãng, giá tốt tại Laptop Chính Nguyễn. Trả góp 0%, bảo hành 24 tháng, giao nhanh toàn quốc.`,
+    // Meta description admin tự soạn -> ưu tiên; chưa có thì dùng mẫu mặc định.
+    description:
+      category?.metaDescription ||
+      `Mua ${name} chính hãng, giá tốt tại Laptop Chính Nguyễn. Trả góp 0%, bảo hành 24 tháng, giao nhanh toàn quốc.`,
     alternates: { canonical: `${SITE_URL}/danh-muc/${params.slug}` },
   };
 }
@@ -33,12 +37,12 @@ export default async function CategoryPage({
   params: { slug: string };
   searchParams: RawParams;
 }) {
-  const [categoryName, brand, allProducts] = await Promise.all([
-    getCategoryName(params.slug),
+  const [category, brand, allProducts] = await Promise.all([
+    getCategorySeo(params.slug),
     getBrandBySlug(params.slug),
     getAllProducts(),
   ]);
-  const name = categoryName ?? brand ?? "Danh mục sản phẩm";
+  const name = category?.name ?? brand ?? "Danh mục sản phẩm";
 
   // Lọc theo loại danh mục: hãng / tình trạng (mới-cũ) / nhu cầu / tất cả.
   const NEED_BY_SLUG: Record<string, string> = {
@@ -76,6 +80,15 @@ export default async function CategoryPage({
             products={baseProducts}
             brands={brands}
           />
+
+          {/* Bài viết SEO (admin tự soạn) — đặt DƯỚI danh sách sản phẩm để
+              không đẩy sản phẩm xuống, vẫn giúp lên từ khoá. HTML đã lọc XSS. */}
+          {category?.seoContent && (
+            <section
+              className="rich-text mt-12 border-t border-line pt-8"
+              dangerouslySetInnerHTML={{ __html: category.seoContent }}
+            />
+          )}
         </Container>
       </main>
       <Footer />

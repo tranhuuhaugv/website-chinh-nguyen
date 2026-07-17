@@ -1,5 +1,5 @@
 import { AdminForm, type AdminField } from "@/components/admin/AdminForm";
-import { getCategories } from "@/lib/data";
+import { getCategoryEdit } from "@/lib/data";
 
 export const metadata = { title: "Danh mục" };
 export const dynamic = "force-dynamic";
@@ -23,6 +23,15 @@ const FIELDS: AdminField[] = [
   { name: "icon", label: "Icon", type: "select", options: ICON_OPTIONS },
   { name: "group", label: "Nhóm (mega-menu)", type: "select", options: GROUP_OPTIONS },
   { name: "tag", label: "Nhãn (tuỳ chọn)", placeholder: "Hot / Giá tốt" },
+
+  { name: "hSeo", label: "Nội dung SEO (hiện dưới danh sách sản phẩm)", type: "heading" },
+  { name: "metaDescription", label: "Meta description (mô tả ngắn cho Google)", type: "textarea" },
+  {
+    name: "seoContent",
+    label: "Bài viết SEO — chèn từ khoá cần lên top",
+    type: "blocks",
+    full: true,
+  },
 ];
 
 export default async function AdminCategoryFormPage({
@@ -31,17 +40,18 @@ export default async function AdminCategoryFormPage({
   params: { id: string };
 }) {
   const isNew = params.id === "them";
-  const category = isNew
-    ? undefined
-    : (await getCategories()).find((c) => c.slug === params.id);
+  const category = isNew ? null : await getCategoryEdit(params.id);
 
   const initialValues: Record<string, string> = category
     ? {
         name: category.name,
         slug: category.slug,
         icon: category.icon,
+        group: category.group ?? "",
         tag: category.tag ?? "",
         image: category.image ?? "",
+        metaDescription: category.metaDescription ?? "",
+        seoContent: category.seoContent ?? "",
       }
     : {};
 
