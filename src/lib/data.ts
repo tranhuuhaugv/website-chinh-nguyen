@@ -119,12 +119,16 @@ export async function getAllProducts(): Promise<Product[]> {
   return rows.map((r) => toProduct(r as PrismaProductWithBrand));
 }
 
+/** Số máy tối đa cho khối Flash Sale trang chủ (khối là 1 lưới, không phân trang). */
+const FLASH_SALE_LIMIT = 8;
+
 export async function getFlashSaleProducts(): Promise<Product[]> {
   if (NO_DB) return FLASH_SALE_PRODUCTS;
   const rows = await prisma.product.findMany({
     where: { isFlashSale: true },
     ...withBrand,
     orderBy: { sort: "asc" },
+    take: FLASH_SALE_LIMIT,
   });
   return rows.map((r) => toProduct(r as PrismaProductWithBrand));
 }
@@ -133,17 +137,17 @@ export async function getFlashSaleProducts(): Promise<Product[]> {
 const FEATURED_LIMIT = 24;
 
 /**
- * Khối "Sản phẩm nổi bật" trang chủ: chỉ máy admin TÍCH nổi bật.
- * Trước đây lấy MỌI máy không phải flash sale -> 157 máy đổ hết xuống trình
- * duyệt dù chỉ hiện 8 (trái quy tắc "không query lấy tất cả" trong CLAUDE.md).
+ * Khối "Sản phẩm nổi bật" trang chủ: máy admin TÍCH nổi bật.
+ * Máy có thể VỪA nổi bật VỪA flash sale (hiện ở cả hai khối) -> KHÔNG loại
+ * flash sale ở đây. Giới hạn FEATURED_LIMIT để không đổ hết máy xuống trình
+ * duyệt (quy tắc "không query lấy tất cả" trong CLAUDE.md).
  *
- * CHƯA tích máy nào -> lấy máy mới nhất cho khối khỏi trống (lúc mới thêm cột
- * này thì cả 157 máy đều chưa tích). Tích ít nhất 1 máy -> chỉ hiện máy đã tích.
+ * CHƯA tích máy nào -> lấy máy mới nhất cho khối khỏi trống.
  */
 export async function getFeaturedProducts(): Promise<Product[]> {
   if (NO_DB) return FEATURED_PRODUCTS;
   const rows = await prisma.product.findMany({
-    where: { isFeatured: true, isFlashSale: false },
+    where: { isFeatured: true },
     ...withBrand,
     orderBy: { sort: "asc" },
     take: FEATURED_LIMIT,
@@ -153,7 +157,6 @@ export async function getFeaturedProducts(): Promise<Product[]> {
   }
 
   const duPhong = await prisma.product.findMany({
-    where: { isFlashSale: false },
     ...withBrand,
     orderBy: { createdAt: "desc" },
     take: FEATURED_LIMIT,
