@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useRef, useState } from "react";
-import { TrashIcon, UploadIcon } from "@/components/icons";
+import { StarIcon, TrashIcon, UploadIcon } from "@/components/icons";
 import { uploadImage, uploadImageFromUrl } from "@/lib/upload";
 
 // Tải NHIỀU ảnh (thư viện ảnh sản phẩm). Chọn/kéo-thả nhiều file cùng lúc,
@@ -26,6 +26,10 @@ export function MultiImageUpload({
   const [busy, setBusy] = useState(false);
   const [link, setLink] = useState("");
   const [linkError, setLinkError] = useState("");
+
+  // Kéo-thả sắp xếp thứ tự ảnh: giữ vị trí đang kéo + vị trí đang thả tới (viền xanh).
+  const dragIndex = useRef<number | null>(null);
+  const [overIndex, setOverIndex] = useState<number | null>(null);
 
   // Nhiều ảnh tải xong lệch nhau -> đọc mảng mới nhất qua ref, không dùng state
   // cũ trong closure (ảnh xong sau sẽ ghi đè, làm mất ảnh xong trước).
@@ -112,6 +116,20 @@ export function MultiImageUpload({
     commit(images.filter((_, idx) => idx !== i));
   }
 
+  /** Di chuyển ảnh từ vị trí `from` tới `to` (dùng cho kéo-thả sắp xếp). */
+  function move(from: number, to: number) {
+    if (from === to || from < 0 || to < 0 || from >= images.length) return;
+    const next = [...images];
+    const [moved] = next.splice(from, 1);
+    next.splice(to, 0, moved);
+    commit(next);
+  }
+
+  /** Đưa ảnh lên đầu = ảnh đại diện. */
+  function makeCover(i: number) {
+    move(i, 0);
+  }
+
   return (
     <div>
       <input
@@ -128,9 +146,53 @@ export function MultiImageUpload({
         {images.map((url, i) => (
           <div
             key={`${url}-${i}`}
-            className="group relative aspect-square overflow-hidden rounded-xl border border-line bg-[#F5F7F5] bg-cover bg-center"
+            draggable
+            onDragStart={(e) => {
+              dragIndex.current = i;
+              e.dataTransfer.effectAllowed = "move";
+            }}
+            onDragEnd={() => {
+              dragIndex.current = null;
+              setOverIndex(null);
+            }}
+            onDragOver={(e) => {
+              // Chỉ nhận khi đang kéo 1 ảnh trong thư viện (không phải file từ máy).
+              if (dragIndex.current === null) return;
+              e.preventDefault();
+              if (overIndex !== i) setOverIndex(i);
+            }}
+            onDrop={(e) => {
+              e.preventDefault();
+              if (dragIndex.current !== null) move(dragIndex.current, i);
+              dragIndex.current = null;
+              setOverIndex(null);
+            }}
+            title="Kéo để đổi thứ tự"
+            className={`group relative aspect-square cursor-move overflow-hidden rounded-xl border bg-[#F5F7F5] bg-cover bg-center ${
+              overIndex === i ? "border-green ring-2 ring-green" : "border-line"
+            }`}
             style={{ backgroundImage: `url("${url}")` }}
           >
+            {/* Ảnh đầu tiên = ảnh đại diện */}
+            {i === 0 && (
+              <span className="absolute left-1.5 top-1.5 rounded-full bg-green px-2 py-0.5 text-[10px] font-semibold text-white shadow">
+                Đại diện
+              </span>
+            )}
+
+            {/* Đặt làm đại diện: đưa ảnh này lên đầu (tiện cho cả điện thoại) */}
+            {i !== 0 && (
+              <button
+                type="button"
+                onClick={() => makeCover(i)}
+                aria-label="Đặt làm ảnh đại diện"
+                title="Đặt làm ảnh đại diện"
+                className="absolute left-1.5 top-1.5 flex h-6 w-6 items-center justify-center rounded-full bg-white/90 text-ink-2 opacity-0 shadow transition hover:text-green group-hover:opacity-100"
+              >
+                <StarIcon className="h-3.5 w-3.5" />
+              </button>
+            )}
+
             <button
               type="button"
               onClick={() => removeAt(i)}
@@ -173,6 +235,14 @@ export function MultiImageUpload({
           <span className="text-[11.5px] font-medium text-ink-2">Thêm ảnh</span>
         </button>
       </div>
+
+      {images.length > 1 && (
+        <p className="mt-2 text-[12px] text-ink-2">
+          Kéo ảnh để đổi thứ tự · Ảnh đầu là <b>ảnh đại diện</b> · Rê chuột vào ảnh
+          rồi bấm <StarIcon className="inline h-3 w-3 -mt-0.5 text-green" /> để đặt
+          làm đại diện.
+        </p>
+      )}
 
       {/* Dán link ảnh trên web -> server tải về VPS (không nhúng link người khác). */}
       <div className="mt-3">
