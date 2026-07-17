@@ -5,7 +5,7 @@ import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { ImageUpload } from "./ImageUpload";
 import { MultiImageUpload } from "./MultiImageUpload";
-import { BlogContentEditor } from "./BlogContentEditor";
+import { RichTextEditorLoader } from "./RichTextEditorLoader";
 
 // Form generic dùng chung cho các CRUD admin. Sinh input từ cấu hình `fields`.
 // Có `endpoint` -> lưu thật vào DB qua API; không có -> chế độ demo (chỉ báo).
@@ -186,7 +186,7 @@ export function AdminForm({
                   onChange={(urls) => set(f.name, urls.join(","))}
                 />
               ) : f.type === "blocks" ? (
-                <BlogContentEditor
+                <RichTextEditorLoader
                   value={values[f.name]}
                   onChange={(v) => set(f.name, v)}
                 />

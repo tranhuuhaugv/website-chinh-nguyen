@@ -34,3 +34,111 @@ body {
     animation: none;
   }
 }
+
+/* ─── Nội dung soạn bằng CKEditor (mô tả SP + bài viết) ───────────────────
+   Tailwind preflight xoá sạch định dạng mặc định của ul/ol/h2/blockquote...
+   -> KHÔNG có phần này thì danh sách mất dấu chấm, tiêu đề bằng cỡ chữ thường.
+   Chỉ định dạng trong .rich-text, không đụng phần còn lại của site. */
+.rich-text {
+  font-size: 14.5px;
+  line-height: 1.75;
+  color: #5A6560;
+}
+.rich-text > *:first-child {
+  margin-top: 0;
+}
+.rich-text p {
+  margin: 0 0 0.9em;
+}
+.rich-text h2,
+.rich-text h3,
+.rich-text h4 {
+  color: #17201A;
+  font-weight: 700;
+  line-height: 1.35;
+  margin: 1.5em 0 0.6em;
+  scroll-margin-top: 5rem; /* bấm mục lục -> tiêu đề không bị header che */
+}
+.rich-text h2 {
+  font-size: 1.3em;
+}
+.rich-text h3 {
+  font-size: 1.12em;
+}
+.rich-text h4 {
+  font-size: 1em;
+}
+.rich-text strong,
+.rich-text b {
+  color: #17201A;
+  font-weight: 700;
+}
+.rich-text ul,
+.rich-text ol {
+  margin: 0 0 0.9em;
+  padding-left: 1.4em;
+}
+.rich-text ul {
+  list-style: disc;
+}
+.rich-text ol {
+  list-style: decimal;
+}
+.rich-text li {
+  margin: 0.3em 0;
+}
+.rich-text li::marker {
+  color: #159a48;
+}
+.rich-text a {
+  color: #0a5c2a;
+  font-weight: 600;
+  text-decoration: underline;
+}
+.rich-text blockquote {
+  margin: 1.1em 0;
+  border-left: 3px solid #159a48;
+  padding: 0.1em 0 0.1em 1.1em;
+  color: #17201A;
+  font-style: italic;
+}
+.rich-text figure {
+  margin: 1.2em 0;
+}
+.rich-text img {
+  max-width: 100%;
+  height: auto;
+  border-radius: 14px;
+  display: block;
+}
+.rich-text figcaption {
+  margin-top: 0.5em;
+  text-align: center;
+  font-size: 0.86em;
+  color: #8B948E;
+}
+/* Bảng: cuộn ngang trên điện thoại thay vì phá vỡ bố cục trang */
+.rich-text figure.table {
+  overflow-x: auto;
+}
+.rich-text table {
+  border-collapse: collapse;
+  width: 100%;
+  font-size: 0.95em;
+}
+.rich-text th,
+.rich-text td {
+  border: 1px solid #e4e8e3;
+  padding: 0.5em 0.7em;
+  text-align: left;
+}
+.rich-text th {
+  background: #f2f5f2;
+  font-weight: 700;
+  color: #17201A;
+}
+/* Bài viết: chữ to hơn, thoáng hơn mô tả sản phẩm */
+.rich-text--blog {
+  font-size: 16.5px;
+  line-height: 1.85;
+}

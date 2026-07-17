@@ -5,7 +5,6 @@ import { Container } from "@/components/Container";
 import { Footer } from "@/components/Footer";
 import { Header } from "@/components/Header";
 import { FloatButtons } from "@/components/FloatButtons";
-import Image from "next/image";
 import { Band, SectionIntro } from "@/components/static/Band";
 import { BlogCard, BlogCover } from "@/components/blog/BlogCard";
 import { ClockIcon } from "@/components/icons";
@@ -14,6 +13,7 @@ import {
   getPostBySlug,
   getRelatedPosts,
 } from "@/lib/data";
+import { bocMucLuc } from "@/lib/rich-text";
 
 export const revalidate = 3600;
 
@@ -56,10 +56,9 @@ export default async function BlogPostPage({
 
   const related = await getRelatedPosts(post);
 
-  // Mục lục: các khối tiêu đề trong bài (kèm vị trí gốc để làm anchor).
-  const headings = post.content
-    .map((b, i) => ({ ...b, i }))
-    .filter((b) => b.type === "heading");
+  // Mục lục: bóc các tiêu đề trong bài + gắn id vào HTML để bấm nhảy tới.
+  // HTML đã được lọc XSS ở tầng data (toRichHtml) + lúc lưu.
+  const { html: noiDung, mucLuc: headings } = bocMucLuc(post.content);
 
   const jsonLd = {
     "@context": "https://schema.org",
@@ -136,15 +135,15 @@ export default async function BlogPostPage({
                 </p>
                 <ol className="flex flex-col gap-2">
                   {headings.map((h, n) => (
-                    <li key={h.i}>
+                    <li key={h.id}>
                       <a
-                        href={`#muc-${h.i}`}
+                        href={`#${h.id}`}
                         className="flex gap-2 text-[14.5px] leading-snug text-ink-2 transition hover:text-green-d"
                       >
                         <span className="font-semibold text-green-d">
                           {n + 1}.
                         </span>
-                        <span>{h.value}</span>
+                        <span>{h.text}</span>
                       </a>
                     </li>
                   ))}
@@ -152,36 +151,10 @@ export default async function BlogPostPage({
               </nav>
             )}
 
-            <div className="mt-7 flex flex-col gap-5 text-[16.5px] leading-[1.85] text-ink-2">
-              {post.content.map((block, i) => {
-                if (block.type === "heading") {
-                  return (
-                    <h2
-                      key={i}
-                      id={`muc-${i}`}
-                      className="mt-3 scroll-mt-24 text-[21px] font-bold leading-snug tracking-[-0.01em] text-ink"
-                    >
-                      {block.value}
-                    </h2>
-                  );
-                }
-                if (block.type === "image") {
-                  return (
-                    <figure key={i} className="my-2 overflow-hidden rounded-2xl">
-                      <Image
-                        src={block.value}
-                        alt=""
-                        width={1280}
-                        height={720}
-                        sizes="(max-width: 720px) 100vw, 720px"
-                        className="h-auto w-full"
-                      />
-                    </figure>
-                  );
-                }
-                return <p key={i}>{block.value}</p>;
-              })}
-            </div>
+            <div
+              className="rich-text rich-text--blog mt-7"
+              dangerouslySetInnerHTML={{ __html: noiDung }}
+            />
           </article>
         </Band>
 

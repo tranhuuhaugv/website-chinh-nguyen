@@ -4,6 +4,7 @@ import { revalidatePath } from "next/cache";
 import { prisma } from "@/lib/prisma";
 import { ADMIN_COOKIE, verifyAdminToken } from "@/lib/admin-auth";
 import { slugify } from "@/lib/slug";
+import { richTextRong, sanitizeRichText } from "@/lib/rich-text";
 
 // CRUD sản phẩm (lưu thật vào DB). Chỉ admin đã đăng nhập.
 
@@ -50,25 +51,13 @@ function variantSlugs(v: unknown, selfSlug?: string): string[] {
 }
 
 /**
- * Mô tả dạng khối: form gửi lên chuỗi JSON [{type,value}] (BlogContentEditor).
- * Bỏ khối rỗng; dữ liệu hỏng -> mảng rỗng (coi như chưa soạn mô tả).
+ * Mô tả: form gửi lên HTML (CKEditor). LỌC NGAY khi lưu — không tin dữ liệu
+ * gửi lên, kể cả từ admin (tài khoản admin có thể bị chiếm).
+ * Rỗng (CKEditor trống trả "<p>&nbsp;</p>") -> "" = coi như chưa soạn mô tả.
  */
-function blocks(v: unknown): { type: string; value: string }[] {
-  const s = str(v);
-  if (!s) return [];
-  try {
-    const arr = JSON.parse(s);
-    if (!Array.isArray(arr)) return [];
-    return arr
-      .map((b) => ({
-        type:
-          b?.type === "heading" || b?.type === "image" ? String(b.type) : "text",
-        value: String(b?.value ?? "").trim(),
-      }))
-      .filter((b) => b.value);
-  } catch {
-    return [];
-  }
+function richText(v: unknown): string {
+  const s = sanitizeRichText(str(v));
+  return richTextRong(s) ? "" : s;
 }
 
 async function uniqueSlug(base: string, excludeId?: string): Promise<string> {
@@ -121,7 +110,7 @@ async function buildData(body: Body, selfSlug: string) {
     needs: list(body.needs),
     images: list(body.images),
     variantSlugs: variantSlugs(body.variantLinks, selfSlug),
-    description: blocks(body.description),
+    description: richText(body.description),
     gift: str(body.gift) || null,
     badge: str(body.badge) || null,
     isNew: str(body.isNew) === "co",

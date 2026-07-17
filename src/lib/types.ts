@@ -54,11 +54,11 @@ export interface Product {
   /** Slug các máy cùng dòng khác cấu hình (admin nối bằng link). */
   variantSlugs?: string[];
   /**
-   * Mô tả sản phẩm dạng khối (đoạn văn / tiêu đề / ảnh) do admin tự soạn —
-   * chỗ để đăng ẢNH THẬT của đúng chiếc máy đang bán.
+   * Mô tả sản phẩm do admin tự soạn (HTML từ CKEditor) — chỗ để đăng ẢNH THẬT
+   * của đúng chiếc máy đang bán. ĐÃ ĐƯỢC LỌC ở tầng data (xem lib/rich-text).
    * Trống -> trang chi tiết tự sinh mô tả từ thông số (buildDescription).
    */
-  description?: BlogBlock[];
+  description?: string;
   /** Tình trạng: "new" máy mới | "used" máy cũ (mặc định used cho shop máy cũ). */
   condition?: ProductCondition;
   /** Nhóm nhu cầu để lọc/SEO: van-phong, gaming, do-hoa... */
@@ -143,11 +143,14 @@ export interface CustomerPhoto {
 
 export type BlogAccent = "green" | "blue" | "purple";
 
-/** 1 khối nội dung bài viết: đoạn văn, tiêu đề phụ hoặc ảnh chèn trong bài. */
+/**
+ * ĐỊNH DẠNG CŨ của nội dung (trước khi dùng CKEditor): mảng khối.
+ * Không soạn mới kiểu này nữa, chỉ giữ để đọc dữ liệu cũ trong DB
+ * (lib/rich-text tự đổi sang HTML khi đọc).
+ */
 export type BlogBlockType = "text" | "heading" | "image";
 export interface BlogBlock {
   type: BlogBlockType;
-  /** text/heading: nội dung chữ · image: URL ảnh (Cloudinary). */
   value: string;
 }
 
@@ -159,8 +162,8 @@ export interface BlogPost {
   date: string;
   accent: BlogAccent;
   excerpt: string;
-  /** Ảnh bìa (banner) bài viết — URL Cloudinary. Bỏ trống -> ảnh gradient. */
+  /** Ảnh bìa (banner) bài viết. Bỏ trống -> ảnh gradient. */
   image?: string;
-  /** Nội dung bài viết theo khối (đoạn văn / tiêu đề / ảnh). */
-  content: BlogBlock[];
+  /** Nội dung bài viết (HTML từ CKEditor). ĐÃ ĐƯỢC LỌC ở tầng data. */
+  content: string;
 }

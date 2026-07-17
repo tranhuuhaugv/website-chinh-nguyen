@@ -3,6 +3,7 @@ import { cookies } from "next/headers";
 import { prisma } from "@/lib/prisma";
 import { ADMIN_COOKIE, verifyAdminToken } from "@/lib/admin-auth";
 import { slugify } from "@/lib/slug";
+import { richTextRong, sanitizeRichText } from "@/lib/rich-text";
 
 // CRUD bài viết blog cho khu admin (lưu thật vào DB). Chỉ admin đã đăng nhập.
 
@@ -11,36 +12,23 @@ async function requireAdmin(): Promise<boolean> {
   return token ? verifyAdminToken(token) : false;
 }
 
-type Block = { type: "text" | "heading" | "image"; value: string };
-
-// Chuẩn hoá nội dung gửi lên (chuỗi JSON của mảng khối, hoặc văn bản thô).
-function normalizeContent(raw: unknown): Block[] {
-  let arr: unknown = raw;
-  if (typeof raw === "string") {
-    try {
-      arr = JSON.parse(raw);
-    } catch {
-      // không phải JSON -> coi như 1 đoạn văn
-      return raw.trim() ? [{ type: "text", value: raw.trim() }] : [];
-    }
-  }
-  if (!Array.isArray(arr)) return [];
-  return arr
-    .map((b): Block => {
-      const o = (b ?? {}) as { type?: unknown; value?: unknown };
-      const type =
-        o.type === "heading" || o.type === "image" ? o.type : "text";
-      return { type, value: String(o.value ?? "") };
-    })
-    .filter((b) => b.value.trim());
+/**
+ * Nội dung bài viết: form gửi lên HTML (CKEditor). LỌC NGAY khi lưu — không tin
+ * dữ liệu gửi lên, kể cả từ admin (tài khoản admin có thể bị chiếm).
+ */
+function normalizeContent(raw: unknown): string {
+  const html = sanitizeRichText(String(raw ?? ""));
+  return richTextRong(html) ? "" : html;
 }
 
-function readMinutes(blocks: Block[]): number {
-  const words = blocks
-    .filter((b) => b.type !== "image")
-    .map((b) => b.value.trim().split(/\s+/).length)
-    .reduce((a, b) => a + b, 0);
-  return Math.max(1, Math.round(words / 200));
+/** Ước lượng phút đọc: bỏ thẻ HTML, đếm chữ (~200 chữ/phút). */
+function readMinutes(html: string): number {
+  const chu = html
+    .replace(/<[^>]*>/g, " ")
+    .trim()
+    .split(/\s+/)
+    .filter(Boolean).length;
+  return Math.max(1, Math.round(chu / 200));
 }
 
 function formatDate(d: Date): string {
@@ -92,7 +80,7 @@ export async function POST(req: Request) {
       tag,
       excerpt: String(body.excerpt ?? "").trim(),
       image: String(body.image ?? "").trim() || null,
-      content: JSON.parse(JSON.stringify(content)),
+      content,
       readMinutes: readMinutes(content),
       accent: ACCENT_BY_TAG[tag] ?? "green",
       date: formatDate(new Date()),
@@ -136,7 +124,7 @@ export async function PUT(req: Request) {
       tag,
       excerpt: String(body.excerpt ?? "").trim(),
       image: String(body.image ?? "").trim() || null,
-      content: JSON.parse(JSON.stringify(content)),
+      content,
       readMinutes: readMinutes(content),
       accent: ACCENT_BY_TAG[tag] ?? current.accent,
     },

@@ -2,7 +2,6 @@ import { prisma } from "./prisma";
 import type {
   BannerItem,
   BlogAccent,
-  BlogBlock,
   BlogPost,
   Brand,
   Category,
@@ -12,6 +11,7 @@ import type {
   ProductAccent,
   ProductCondition,
 } from "./types";
+import { toRichHtml } from "./rich-text";
 import type { Policy, Section } from "./policies";
 import {
   ALL_PRODUCTS,
@@ -74,29 +74,13 @@ function toProduct(p: PrismaProductWithBrand): Product {
     accent: p.accent as ProductAccent,
     images: p.images ?? [],
     variantSlugs: p.variantSlugs ?? [],
-    // Mô tả admin tự soạn (khối văn bản/ảnh). Dùng chung toBlocks với blog.
-    description: toBlocks(p.description),
+    // Mô tả admin tự soạn (HTML từ CKEditor). toRichHtml lọc XSS + tự đổi dữ
+    // liệu CŨ (mảng khối) sang HTML -> mô tả soạn trước đây vẫn hiện.
+    // "h3": trang SP đã có h1 (tên máy) + h2 ("Mô tả sản phẩm") ở trên.
+    description: toRichHtml(p.description, "h3"),
     condition: (p.condition as ProductCondition) ?? "used",
     needs: p.needs ?? [],
   };
-}
-
-// Chuẩn hoá content (Json trong DB) về mảng khối. Hỗ trợ cả dữ liệu cũ
-// (mảng chuỗi = các đoạn văn) lẫn dữ liệu mới (mảng khối {type, value}).
-function toBlocks(raw: unknown): BlogBlock[] {
-  if (!Array.isArray(raw)) return [];
-  return raw
-    .map((b): BlogBlock => {
-      if (typeof b === "string") return { type: "text", value: b };
-      if (b && typeof b === "object") {
-        const o = b as { type?: unknown; value?: unknown };
-        const type =
-          o.type === "heading" || o.type === "image" ? o.type : "text";
-        return { type, value: String(o.value ?? "") };
-      }
-      return { type: "text", value: "" };
-    })
-    .filter((b) => b.value);
 }
 
 function toPost(b: {
@@ -116,7 +100,7 @@ function toPost(b: {
     tag: b.tag,
     excerpt: b.excerpt,
     image: b.image ?? undefined,
-    content: toBlocks(b.content),
+    content: toRichHtml(b.content),
     readMinutes: b.readMinutes,
     accent: b.accent as BlogAccent,
     date: b.date,

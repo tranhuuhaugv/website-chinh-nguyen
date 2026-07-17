@@ -1,5 +1,4 @@
 import type {
-  BlogBlock,
   BlogPost,
   Category,
   CustomerPhoto,
@@ -368,9 +367,13 @@ export const CATEGORIES: Category[] = [
   { slug: "phu-kien", name: "Sạc & Phụ kiện", icon: "accessory" },
 ];
 
-// Trợ giúp gọn khi khai báo bài viết mẫu (mỗi khối 1 dòng).
-const t = (value: string): BlogBlock => ({ type: "text", value });
-const h = (value: string): BlogBlock => ({ type: "heading", value });
+// Trợ giúp gọn khi khai báo bài viết mẫu (mỗi dòng 1 đoạn / 1 tiêu đề).
+// Nội dung bài viết nay là HTML (khớp CKEditor) -> 2 hàm này xuất thẳng HTML.
+const esc = (s: string) =>
+  s.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;");
+const t = (value: string): string => `<p>${esc(value)}</p>`;
+// h2: bài viết có h1 = tên bài -> các mục là h2 (đúng cấp bậc SEO).
+const h = (value: string): string => `<h2>${esc(value)}</h2>`;
 
 export const BLOG_POSTS: BlogPost[] = [
   {
@@ -395,7 +398,7 @@ export const BLOG_POSTS: BlogPost[] = [
       t("Ngành kinh tế, sư phạm, ngoại ngữ: card đồ họa tích hợp (Intel Iris Xe / AMD Radeon) là đủ. Ngành CNTT, kỹ thuật: ưu tiên CPU dòng H mạnh và RAM 16GB để chạy máy ảo, biên dịch mã. Ngành thiết kế, dựng phim: cần card rời RTX — thường phải nâng ngân sách lên trên 20 triệu."),
       h("Những bẫy nên tránh"),
       t("Đừng ham cấu hình giá rẻ ảo với chỉ 8GB RAM để tiết kiệm ban đầu — máy sẽ nhanh giật lag với ứng dụng năm 2026. Cũng đừng chọn laptop gaming quá nặng chỉ vì mạnh: mang vác mỗi ngày rất cực. Nếu chọn máy cũ, hãy mua ở nơi uy tín và kiểm tra kỹ pin, linh kiện trước khi quyết định."),
-    ],
+    ].join(""),
   },
   {
     slug: "laptop-gaming-rtx-5060-5070-tam-gia-20-30-trieu-2026",
@@ -419,7 +422,7 @@ export const BLOG_POSTS: BlogPost[] = [
       t("Asus TUF Gaming RTX 5060 (màn 16 inch WUXGA 165Hz, có MUX Switch) và MSI RTX 5060 (màn QHD 165Hz, 100% DCI-P3, Core i7-14650HX) là lựa chọn cân bằng. Nếu ưu tiên di động, Asus TUF A14 (1.46kg, chuẩn quân sự) hay ROG Zephyrus G14 rất đáng xem — nhưng bản G14 cao cấp thường vượt 30 triệu."),
       h("Kết luận"),
       t("Trong tầm 20–30 triệu năm 2026, RTX 5060 là lựa chọn tối ưu hiệu năng trên giá thành cho phần lớn game thủ chơi ở Full HD/2K. Chỉ nên cố lên RTX 5070 12GB nếu bạn thực sự cần chơi 1440p có ray tracing và ngân sách cho phép."),
-    ],
+    ].join(""),
   },
   {
     slug: "intel-core-ultra-vs-amd-ryzen-ai-2026",
@@ -443,7 +446,7 @@ export const BLOG_POSTS: BlogPost[] = [
       t("AMD tỏa sáng ở game thế giới mở và game nặng CPU nhiều nhân (Cyberpunk 2077, Flight Simulator, chiến thuật). Intel lại có lợi thế xung đơn nhân cao, hợp cho game esports cần FPS tối đa (Valorant, CS2)."),
       h("Vậy nên chọn cái nào?"),
       t("Chọn Intel Core Ultra Series 2 nếu pin và sự mỏng nhẹ là ưu tiên số một — cần 18+ giờ và máy siêu nhẹ. Chọn AMD Ryzen AI 300 nếu bạn cần hiệu năng cao, đồ họa tích hợp mạnh, làm sáng tạo hoặc chơi game linh hoạt với giá dễ chịu hơn. Lưu ý: thời lượng pin phụ thuộc nhiều vào thiết kế của từng máy chứ không chỉ ở logo CPU."),
-    ],
+    ].join(""),
   },
   {
     slug: "cach-bao-ve-tang-tuoi-tho-pin-laptop-2026",
@@ -469,7 +472,7 @@ export const BLOG_POSTS: BlogPost[] = [
       t("Nếu không dùng máy trong thời gian dài, đừng cất khi pin đầy hoặc cạn — hãy để pin quanh 40–60% để giảm hao hụt dung lượng khi máy nằm im."),
       h("6. Kiểm tra sức khỏe pin định kỳ"),
       t("Trên Windows, mở Command Prompt (admin) và gõ lệnh powercfg /batteryreport để xem báo cáo pin. Đa số pin đạt 500–1.000 chu kỳ trước khi tụt dưới 80%. Chỉ nên thay pin khi dung lượng xuống dưới 65% và không trụ nổi 3 giờ tác vụ nhẹ."),
-    ],
+    ].join(""),
   },
 ];
 
