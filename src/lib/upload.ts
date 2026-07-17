@@ -6,11 +6,13 @@ export interface UploadResult {
   demo: boolean;
 }
 
-// Thu nhỏ + nén ảnh trước khi gửi để nhẹ, upload nhanh, đỡ tốn ổ VPS.
+// CHỈ thu nhỏ ảnh quá lớn trước khi gửi (để upload đỡ nặng), GIỮ chất lượng cao.
+// Phần nén thật (sang WebP) do server làm 1 lần duy nhất (lib/upload-server.ts) —
+// nén ở client rồi server nén lại = nén 2 lần, ảnh sẽ mờ. Vì thế ở đây dùng
+// chất lượng cao (0.92, gần như không thấy khác) và chỉ đụng vào ảnh lớn.
 async function compress(file: File): Promise<Blob> {
   if (typeof document === "undefined") return file;
   if (!/^image\/(jpe?g|png|webp)$/i.test(file.type)) return file; // gif... giữ nguyên
-  if (file.size < 500 * 1024) return file; // đã nhỏ thì thôi
 
   let bitmap: ImageBitmap;
   try {
@@ -21,6 +23,12 @@ async function compress(file: File): Promise<Blob> {
 
   const MAX = 1600;
   const scale = Math.min(1, MAX / Math.max(bitmap.width, bitmap.height));
+  // Ảnh đã nhỏ (không cần thu) và dưới ~2MB -> gửi thẳng, khỏi mã hoá lại cho khỏi hao nét.
+  if (scale === 1 && file.size < 2 * 1024 * 1024) {
+    bitmap.close();
+    return file;
+  }
+
   const w = Math.round(bitmap.width * scale);
   const h = Math.round(bitmap.height * scale);
 
@@ -38,7 +46,7 @@ async function compress(file: File): Promise<Blob> {
   bitmap.close();
 
   const blob = await new Promise<Blob | null>((res) =>
-    canvas.toBlob(res, "image/jpeg", 0.82),
+    canvas.toBlob(res, "image/jpeg", 0.92),
   );
   return blob && blob.size < file.size ? blob : file;
 }
