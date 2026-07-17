@@ -1,11 +1,18 @@
 "use client";
 
-import { useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { TrashIcon, UploadIcon } from "@/components/icons";
 import { uploadImage, uploadImageFromUrl } from "@/lib/upload";
 
 // Tải NHIỀU ảnh (thư viện ảnh sản phẩm). Chọn/kéo-thả nhiều file cùng lúc,
 // hoặc dán link ảnh trên web -> server tự tải về VPS.
+
+/** Ảnh vừa chọn, đang nén/tải lên — hiện ngay từ file trong máy. */
+interface DangTai {
+  id: number;
+  localUrl: string;
+}
+
 export function MultiImageUpload({
   value = [],
   onChange,
@@ -15,14 +22,28 @@ export function MultiImageUpload({
 }) {
   const inputRef = useRef<HTMLInputElement>(null);
   const [images, setImages] = useState<string[]>(value);
+  const [dangTai, setDangTai] = useState<DangTai[]>([]);
   const [busy, setBusy] = useState(false);
   const [link, setLink] = useState("");
   const [linkError, setLinkError] = useState("");
 
+  // Nhiều ảnh tải xong lệch nhau -> đọc mảng mới nhất qua ref, không dùng state
+  // cũ trong closure (ảnh xong sau sẽ ghi đè, làm mất ảnh xong trước).
+  const imagesRef = useRef<string[]>(value);
+
   function commit(next: string[]) {
+    imagesRef.current = next;
     setImages(next);
     onChange?.(next);
   }
+
+  // Thu hồi các URL tạm khi rời trang (tránh rò bộ nhớ).
+  useEffect(() => {
+    return () => {
+      dangTai.forEach((d) => URL.revokeObjectURL(d.localUrl));
+    };
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
   // Dán 1 hoặc nhiều link (cách nhau bằng xuống dòng/dấu cách) -> tải hết về.
   async function handleLinks() {
@@ -57,20 +78,34 @@ export function MultiImageUpload({
 
   async function handleFiles(files: FileList | null) {
     if (!files || files.length === 0) return;
-    setBusy(true);
-    // Upload song song (nén trước ở uploadImage) cho nhanh; giữ đúng thứ tự chọn.
     const list = Array.from(files).filter((f) => f.type.startsWith("image/"));
-    const results = await Promise.all(
-      list.map((file) =>
-        uploadImage(file)
-          .then((r) => r.url)
-          .catch(() => null),
-      ),
-    );
-    const added = results.filter((u): u is string => Boolean(u));
-    if (added.length) commit([...images, ...added]);
-    setBusy(false);
+    if (!list.length) return;
     if (inputRef.current) inputRef.current.value = "";
+
+    // 1) Hiện ảnh NGAY từ file trong máy — không chờ nén + tải lên xong.
+    //    (Trước đây await cả loạt rồi mới hiện -> chọn 7 ảnh là ngồi nhìn màn
+    //    hình trống tới khi ảnh cuối tải xong.)
+    const items = list.map((file, i) => ({
+      id: Date.now() + i,
+      localUrl: URL.createObjectURL(file),
+      file,
+    }));
+    setDangTai((d) => [...d, ...items.map(({ id, localUrl }) => ({ id, localUrl }))]);
+
+    // 2) Nén + tải ngầm. Ảnh nào xong trước thì vào thư viện trước.
+    await Promise.all(
+      items.map(async (it) => {
+        try {
+          const { url } = await uploadImage(it.file);
+          commit([...imagesRef.current, url]);
+        } catch {
+          // Lỗi -> bỏ ảnh đó, các ảnh khác vẫn tiếp tục.
+        } finally {
+          setDangTai((d) => d.filter((x) => x.id !== it.id));
+          URL.revokeObjectURL(it.localUrl);
+        }
+      }),
+    );
   }
 
   function removeAt(i: number) {
@@ -104,6 +139,21 @@ export function MultiImageUpload({
             >
               <TrashIcon className="h-3.5 w-3.5" />
             </button>
+          </div>
+        ))}
+
+        {/* Ảnh vừa chọn, đang nén/tải lên: hiện ngay từ file trong máy. */}
+        {dangTai.map((d) => (
+          <div
+            key={d.id}
+            className="relative aspect-square overflow-hidden rounded-xl border border-line bg-[#F5F7F5] bg-cover bg-center"
+            style={{ backgroundImage: `url("${d.localUrl}")` }}
+          >
+            <div className="absolute inset-0 flex items-end justify-center bg-white/45 pb-1.5">
+              <span className="rounded-full bg-white/90 px-2 py-0.5 text-[10.5px] font-medium text-ink-2 shadow-sm">
+                Đang tải…
+              </span>
+            </div>
           </div>
         ))}
 
