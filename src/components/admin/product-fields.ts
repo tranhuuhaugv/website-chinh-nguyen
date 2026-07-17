@@ -10,6 +10,10 @@ const YES_NO = [
 
 export function productFields(brandNames: string[]): AdminField[] {
   return [
+    // Ảnh để ĐẦU form: việc đầu tiên khi thêm/sửa máy là xem/thay ảnh.
+    { name: "hAnh", label: "Ảnh sản phẩm", type: "heading" },
+    { name: "images", label: "Ảnh sản phẩm (ảnh đầu tiên là ảnh đại diện)", type: "images" },
+
     { name: "h1", label: "Thông tin cơ bản", type: "heading" },
     {
       name: "name",
@@ -61,7 +65,6 @@ export function productFields(brandNames: string[]): AdminField[] {
       type: "checkboxes",
       options: NEED_OPTIONS,
     },
-    { name: "images", label: "Ảnh sản phẩm", type: "images" },
     { name: "gift", label: "Quà tặng kèm", placeholder: "Balo + chuột" },
     { name: "badge", label: "Nhãn góc ảnh", placeholder: "Bán chạy" },
     {

@@ -88,7 +88,8 @@ export function MultiImageUpload({
         onChange={(e) => handleFiles(e.target.files)}
       />
 
-      <div className="grid grid-cols-3 gap-3 sm:grid-cols-4">
+      {/* Form giờ tràn hết bề ngang -> thêm cột ở màn hình rộng cho ô ảnh khỏi phình to. */}
+      <div className="grid grid-cols-3 gap-3 sm:grid-cols-4 lg:grid-cols-6 xl:grid-cols-8">
         {images.map((url, i) => (
           <div
             key={`${url}-${i}`}

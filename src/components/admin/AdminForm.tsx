@@ -102,7 +102,7 @@ export function AdminForm({
     "h-11 w-full rounded-xl border border-line bg-white px-3 text-sm text-ink outline-none transition focus:border-green";
 
   return (
-    <div className="mx-auto max-w-3xl">
+    <div>
       <div className="mb-4 flex items-center gap-3">
         <Link
           href={backHref}
@@ -132,14 +132,15 @@ export function AdminForm({
           </p>
         )}
 
-        <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
+        {/* Màn hình rộng -> 3 cột, không thì ô nhập dài lê thê khi form tràn hết bề ngang. */}
+        <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 xl:grid-cols-3">
           {fields.map((f) => {
             // Tiêu đề mục (ngăn cách các nhóm field)
             if (f.type === "heading") {
               return (
                 <div
                   key={f.name}
-                  className="mt-2 border-b border-line pb-2 sm:col-span-2"
+                  className="mt-2 border-b border-line pb-2 sm:col-span-2 xl:col-span-3"
                 >
                   <h3 className="text-[14px] font-bold text-ink">{f.label}</h3>
                   {f.placeholder && (
@@ -159,7 +160,14 @@ export function AdminForm({
             <div
               key={f.name}
               className={
-                f.full || WIDE_TYPES.has(f.type ?? "text") ? "sm:col-span-2" : ""
+                // Ô cần cả hàng (ảnh, khối mô tả, tích nhu cầu...) -> chiếm hết cột.
+                // Ô `full` (tên máy, slug...) chỉ cần rộng hơn ô thường -> 2 cột,
+                // không thì ở lưới 3 cột chúng dài lê thê gần 2 mét.
+                WIDE_TYPES.has(f.type ?? "text")
+                  ? "sm:col-span-2 xl:col-span-3"
+                  : f.full
+                    ? "sm:col-span-2"
+                    : ""
               }
             >
               <label className="mb-1.5 block text-[13px] font-medium text-ink">
