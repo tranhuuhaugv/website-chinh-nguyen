@@ -6,8 +6,9 @@ import { Container } from "@/components/Container";
 import { Footer } from "@/components/Footer";
 import { Header } from "@/components/Header";
 import { FloatButtons } from "@/components/FloatButtons";
+import Image from "next/image";
 import { Band } from "@/components/static/Band";
-import { BlogCover } from "@/components/blog/BlogCard";
+import { BlogCover, BlogImage } from "@/components/blog/BlogCard";
 import { ClockIcon, PhoneIcon } from "@/components/icons";
 import { SITE } from "@/lib/site";
 import {
@@ -84,7 +85,8 @@ export default async function BlogPostPage({
         <section className="relative overflow-hidden border-b border-line bg-gradient-to-br from-green-tint via-white to-white">
           <div className="pointer-events-none absolute -right-24 -top-28 h-80 w-80 rounded-full bg-green-soft/50 blur-3xl" />
           <Container className="relative py-10 max-[600px]:py-8">
-            <div className="mx-auto max-w-[760px]">
+            {/* Cùng bề rộng 1120px với khối nội dung bên dưới để 2 khối thẳng mép trái */}
+            <div className="mx-auto max-w-[1120px]">
               <Breadcrumb
                 items={[
                   { label: "Trang chủ", href: "/" },
@@ -110,16 +112,23 @@ export default async function BlogPostPage({
         <Band tone="white">
           <div className="mx-auto grid max-w-[1120px] grid-cols-[minmax(0,1fr)_320px] items-start gap-10 max-[1100px]:grid-cols-1">
             <article className="min-w-0">
-              {/* Ảnh bìa */}
-              <div className="relative mb-7 aspect-[16/7] overflow-hidden rounded-2xl shadow-card max-[600px]:aspect-video">
-                <BlogCover
-                  image={post.image}
-                  accent={post.accent}
-                  uid={`hero-${post.slug}`}
+              {/* Ảnh bìa: ảnh thật hiện TRỌN theo tỉ lệ gốc (không cắt mép banner);
+                  chưa có ảnh thì dùng khung gradient tỉ lệ cố định. */}
+              {post.image ? (
+                <Image
+                  src={post.image}
                   alt={post.title}
+                  width={1600}
+                  height={600}
+                  priority
                   sizes="(max-width: 1100px) 100vw, 760px"
+                  className="mb-7 h-auto w-full rounded-2xl shadow-card"
                 />
-              </div>
+              ) : (
+                <div className="relative mb-7 aspect-[16/7] overflow-hidden rounded-2xl shadow-card max-[600px]:aspect-video">
+                  <BlogImage accent={post.accent} uid={`hero-${post.slug}`} />
+                </div>
+              )}
 
               <p className="border-l-[3px] border-green pl-5 text-[17px] font-medium leading-[1.7] text-ink">
                 {post.excerpt}
