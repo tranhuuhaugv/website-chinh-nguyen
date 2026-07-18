@@ -47,7 +47,7 @@ export function ProductCard({
       {/* Ảnh trên panel nền dịu (gradient nhẹ cho có chiều sâu) */}
       <div className="relative m-2 rounded-xl bg-gradient-to-b from-white to-[#EAEEEA] p-3">
         {product.isNew ? (
-          <span className="absolute left-2.5 top-2.5 z-[2] rounded-full bg-green px-2.5 py-1 text-[11px] font-bold text-white shadow-[0_2px_6px_rgba(21,154,72,.35)]">
+          <span className="absolute left-2.5 top-2.5 z-[2] rounded-full bg-green px-2.5 py-1 text-[11px] font-bold text-white shadow-[0_2px_6px_rgba(11,94,44,.35)]">
             Mới
           </span>
         ) : discount > 0 ? (
@@ -157,7 +157,7 @@ export function ProductCard({
             accent: product.accent,
           }}
           redirectTo="/gio-hang"
-          className="mt-3 flex w-full items-center justify-center gap-2 rounded-xl bg-gradient-to-r from-green-d to-green py-2.5 text-sm font-semibold text-white shadow-[0_4px_12px_rgba(21,154,72,.25)] transition hover:shadow-[0_6px_16px_rgba(21,154,72,.38)]"
+          className="mt-3 flex w-full items-center justify-center gap-2 rounded-xl bg-gradient-to-r from-green-d to-green py-2.5 text-sm font-semibold text-white shadow-[0_4px_12px_rgba(11,94,44,.25)] transition hover:shadow-[0_6px_16px_rgba(11,94,44,.38)]"
         >
           <CartIcon className="h-4 w-4" />
           Mua ngay

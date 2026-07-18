@@ -10,7 +10,7 @@ import { CloseIcon } from "./icons";
 // đè lên nội dung (khung giữa 1200px). Có nút đóng. Client Component vì cần state đóng.
 
 const GRADIENT: Record<BannerAccent, string> = {
-  green: "bg-[linear-gradient(160deg,#159A48,#0B5E2C)]",
+  green: "bg-[linear-gradient(160deg,#0B5E2C,#063619)]",
   blue: "bg-[linear-gradient(160deg,#1E5FA8,#123E70)]",
   purple: "bg-[linear-gradient(160deg,#6D3FB0,#3F2470)]",
 };

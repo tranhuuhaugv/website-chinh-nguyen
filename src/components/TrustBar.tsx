@@ -32,7 +32,7 @@ export function TrustBar() {
               key={title}
               className="flex items-center gap-3.5 rounded-2xl border border-line bg-white px-4 py-4 shadow-card transition duration-200 hover:-translate-y-0.5 hover:border-[#C9E4D2] hover:shadow-card-hover"
             >
-              <span className="flex h-11 w-11 shrink-0 items-center justify-center rounded-xl bg-gradient-to-br from-green to-green-dd text-white shadow-[0_6px_14px_rgba(21,154,72,0.28)]">
+              <span className="flex h-11 w-11 shrink-0 items-center justify-center rounded-xl bg-gradient-to-br from-green to-green-dd text-white shadow-[0_6px_14px_rgba(11,94,44,0.28)]">
                 <Icon className="h-[22px] w-[22px]" />
               </span>
               <div>

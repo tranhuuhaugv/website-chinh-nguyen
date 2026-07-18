@@ -88,16 +88,16 @@ body {
   margin: 0.3em 0;
 }
 .rich-text li::marker {
-  color: #159a48;
+  color: #0B5E2C;
 }
 .rich-text a {
-  color: #0a5c2a;
+  color: #0B5E2C;
   font-weight: 600;
   text-decoration: underline;
 }
 .rich-text blockquote {
   margin: 1.1em 0;
-  border-left: 3px solid #159a48;
+  border-left: 3px solid #0B5E2C;
   padding: 0.1em 0 0.1em 1.1em;
   color: #17201A;
   font-style: italic;

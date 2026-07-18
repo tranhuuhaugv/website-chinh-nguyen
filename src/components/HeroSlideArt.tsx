@@ -23,7 +23,7 @@ const ACCENT: Record<
     scr: ["#2ED06E", "#0C6E34"],
     badgeText: "#B7F0CC",
     subText: "#D6F2E0",
-    ctaText: "#0F7C39",
+    ctaText: "#0B5E2C",
   },
   blue: {
     from: "#1E5FA8",

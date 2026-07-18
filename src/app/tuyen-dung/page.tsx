@@ -161,7 +161,7 @@ export default function CareersPage() {
               </ul>
               <Link
                 href="/lien-he"
-                className="mt-5 flex h-11 items-center justify-center gap-1.5 rounded-xl bg-gradient-to-r from-green-d to-green text-[14px] font-semibold text-white shadow-[0_4px_12px_rgba(21,154,72,.25)] transition hover:shadow-[0_6px_16px_rgba(21,154,72,.38)]"
+                className="mt-5 flex h-11 items-center justify-center gap-1.5 rounded-xl bg-gradient-to-r from-green-d to-green text-[14px] font-semibold text-white shadow-[0_4px_12px_rgba(11,94,44,.25)] transition hover:shadow-[0_6px_16px_rgba(11,94,44,.38)]"
               >
                 Ứng tuyển ngay
                 <ArrowRightIcon className="h-4 w-4" />
@@ -177,7 +177,7 @@ export default function CareersPage() {
         <div className="mt-11 grid grid-cols-1 gap-x-6 gap-y-8 sm:grid-cols-2 lg:grid-cols-4">
           {PROCESS.map((step, i) => (
             <div key={step}>
-              <span className="flex h-12 w-12 items-center justify-center rounded-full bg-gradient-to-br from-green to-green-dd text-[18px] font-extrabold text-white shadow-[0_8px_18px_rgba(21,154,72,0.28)]">
+              <span className="flex h-12 w-12 items-center justify-center rounded-full bg-gradient-to-br from-green to-green-dd text-[18px] font-extrabold text-white shadow-[0_8px_18px_rgba(11,94,44,0.28)]">
                 {i + 1}
               </span>
               <p className="mt-4 text-[14.5px] leading-relaxed text-ink-2">

@@ -24,7 +24,7 @@ export function SideNav({
                 href={item.href}
                 className={`block rounded-xl px-3 py-2.5 text-[13.5px] transition ${
                   active
-                    ? "bg-gradient-to-r from-green-d to-green font-semibold text-white shadow-[0_4px_12px_rgba(21,154,72,.28)]"
+                    ? "bg-gradient-to-r from-green-d to-green font-semibold text-white shadow-[0_4px_12px_rgba(11,94,44,.28)]"
                     : "text-ink-2 hover:bg-bg hover:text-ink"
                 }`}
               >

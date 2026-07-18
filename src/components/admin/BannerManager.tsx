@@ -135,7 +135,7 @@ export function BannerManager({
           type="button"
           onClick={save}
           disabled={status === "saving"}
-          className="h-11 rounded-xl bg-gradient-to-r from-green-d to-green px-6 text-sm font-semibold text-white shadow-[0_4px_12px_rgba(21,154,72,.25)] transition hover:shadow-[0_6px_16px_rgba(21,154,72,.38)] disabled:opacity-60"
+          className="h-11 rounded-xl bg-gradient-to-r from-green-d to-green px-6 text-sm font-semibold text-white shadow-[0_4px_12px_rgba(11,94,44,.25)] transition hover:shadow-[0_6px_16px_rgba(11,94,44,.38)] disabled:opacity-60"
         >
           {status === "saving" ? "Đang lưu…" : "Lưu banner"}
         </button>

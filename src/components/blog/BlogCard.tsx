@@ -6,7 +6,7 @@ import { ClockIcon } from "@/components/icons";
 // Ảnh + card bài viết dùng chung (khối blog ở trang chủ và trang /blog).
 
 const BLOG_GRADIENT: Record<BlogAccent, [string, string]> = {
-  green: ["#159A48", "#0B5E2C"],
+  green: ["#0B5E2C", "#063619"],
   blue: ["#1E88C9", "#0E5A94"],
   purple: ["#7A4BC9", "#4A2A85"],
 };

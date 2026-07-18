@@ -57,7 +57,7 @@ export function FeaturedProducts({
                 onClick={() => selectTab(tab)}
                 className={`rounded-full px-4 py-[7px] text-[13.5px] transition ${
                   active
-                    ? "bg-gradient-to-r from-green-d to-green font-semibold text-white shadow-[0_4px_12px_rgba(21,154,72,.30)]"
+                    ? "bg-gradient-to-r from-green-d to-green font-semibold text-white shadow-[0_4px_12px_rgba(11,94,44,.30)]"
                     : "border border-line bg-white font-medium text-ink-2 hover:border-green hover:text-green-d"
                 }`}
               >

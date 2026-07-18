@@ -66,7 +66,7 @@ export default function ContactPage() {
             <ul className="mt-8 grid grid-cols-1 gap-x-6 gap-y-6 sm:grid-cols-2">
               {INFO.map(({ icon: Icon, label, value }) => (
                 <li key={label} className="flex items-start gap-3.5">
-                  <span className="flex h-11 w-11 shrink-0 items-center justify-center rounded-xl bg-gradient-to-br from-green to-green-dd text-white shadow-[0_6px_14px_rgba(21,154,72,0.24)]">
+                  <span className="flex h-11 w-11 shrink-0 items-center justify-center rounded-xl bg-gradient-to-br from-green to-green-dd text-white shadow-[0_6px_14px_rgba(11,94,44,0.24)]">
                     <Icon className="h-5 w-5" />
                   </span>
                   <div>
@@ -91,7 +91,7 @@ export default function ContactPage() {
         <div className="mt-10 grid grid-cols-1 gap-6 sm:grid-cols-2">
           {SITE.stores.map((s) => (
             <div key={s.address} className="flex items-start gap-4">
-              <span className="flex h-12 w-12 shrink-0 items-center justify-center rounded-xl bg-gradient-to-br from-green to-green-dd text-white shadow-[0_6px_14px_rgba(21,154,72,0.24)]">
+              <span className="flex h-12 w-12 shrink-0 items-center justify-center rounded-xl bg-gradient-to-br from-green to-green-dd text-white shadow-[0_6px_14px_rgba(11,94,44,0.24)]">
                 <MapPinIcon className="h-6 w-6" />
               </span>
               <div>

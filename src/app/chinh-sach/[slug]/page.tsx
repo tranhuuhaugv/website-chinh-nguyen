@@ -61,7 +61,7 @@ export default async function PolicyPage({
                   href={item.href}
                   className={`shrink-0 whitespace-nowrap rounded-full px-4 py-2 text-[13.5px] transition ${
                     active
-                      ? "bg-gradient-to-r from-green-d to-green font-semibold text-white shadow-[0_4px_12px_rgba(21,154,72,.28)]"
+                      ? "bg-gradient-to-r from-green-d to-green font-semibold text-white shadow-[0_4px_12px_rgba(11,94,44,.28)]"
                       : "border border-line font-medium text-ink-2 hover:border-green hover:text-green-d"
                   }`}
                 >

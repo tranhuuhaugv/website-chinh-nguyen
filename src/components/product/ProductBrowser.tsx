@@ -32,7 +32,7 @@ function Chip({
       href={href}
       className={`shrink-0 whitespace-nowrap rounded-full px-3.5 py-1.5 text-[13px] font-medium transition ${
         active
-          ? "bg-green text-white shadow-[0_2px_8px_rgba(21,154,72,.28)]"
+          ? "bg-green text-white shadow-[0_2px_8px_rgba(11,94,44,.28)]"
           : "bg-bg text-ink-2 hover:bg-green-tint hover:text-green-d"
       }`}
     >

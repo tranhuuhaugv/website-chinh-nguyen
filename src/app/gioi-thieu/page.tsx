@@ -138,7 +138,7 @@ export default function AboutPage() {
         <div className="mt-11 grid grid-cols-1 gap-x-6 gap-y-9 sm:grid-cols-2 lg:grid-cols-4">
           {VALUES.map(({ icon: Icon, title, desc }) => (
             <div key={title} className="text-center">
-              <span className="mx-auto mb-4 flex h-16 w-16 items-center justify-center rounded-2xl bg-gradient-to-br from-green to-green-dd text-white shadow-[0_12px_26px_rgba(21,154,72,0.30)]">
+              <span className="mx-auto mb-4 flex h-16 w-16 items-center justify-center rounded-2xl bg-gradient-to-br from-green to-green-dd text-white shadow-[0_12px_26px_rgba(11,94,44,0.30)]">
                 <Icon className="h-8 w-8" />
               </span>
               <h3 className="text-[15.5px] font-bold text-ink">{title}</h3>

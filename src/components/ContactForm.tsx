@@ -70,7 +70,7 @@ export function ContactForm() {
         {error && <p className="text-[12.5px] text-sale">{error}</p>}
         <button
           type="submit"
-          className="h-11 rounded-xl bg-gradient-to-r from-green-d to-green text-sm font-semibold text-white shadow-[0_4px_12px_rgba(21,154,72,.25)] transition hover:shadow-[0_6px_16px_rgba(21,154,72,.38)]"
+          className="h-11 rounded-xl bg-gradient-to-r from-green-d to-green text-sm font-semibold text-white shadow-[0_4px_12px_rgba(11,94,44,.25)] transition hover:shadow-[0_6px_16px_rgba(11,94,44,.38)]"
         >
           Gửi liên hệ
         </button>

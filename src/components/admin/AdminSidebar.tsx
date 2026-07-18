@@ -50,7 +50,7 @@ export function AdminSidebar() {
               href={href}
               className={`flex items-center gap-3 rounded-xl px-3 py-2.5 text-[13.5px] font-medium transition ${
                 active
-                  ? "bg-gradient-to-r from-green-d to-green text-white shadow-[0_6px_16px_rgba(21,154,72,0.3)]"
+                  ? "bg-gradient-to-r from-green-d to-green text-white shadow-[0_6px_16px_rgba(11,94,44,0.3)]"
                   : "text-ink-2 hover:bg-bg"
               }`}
             >

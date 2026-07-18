@@ -74,8 +74,8 @@ export function TrafficChart({
         >
           <defs>
             <linearGradient id="tcArea" x1="0" y1="0" x2="0" y2="1">
-              <stop offset="0" stopColor="#159A48" stopOpacity="0.22" />
-              <stop offset="1" stopColor="#159A48" stopOpacity="0" />
+              <stop offset="0" stopColor="#0B5E2C" stopOpacity="0.22" />
+              <stop offset="1" stopColor="#0B5E2C" stopOpacity="0" />
             </linearGradient>
           </defs>
 
@@ -112,7 +112,7 @@ export function TrafficChart({
           />
           {values.map((v, i) => (
             <g key={i}>
-              <circle cx={x(i)} cy={y(v)} r="3.5" fill="#159A48" />
+              <circle cx={x(i)} cy={y(v)} r="3.5" fill="#0B5E2C" />
               {/* Số ngay trên chấm khi ít điểm (vd xem theo tháng) */}
               {n <= 14 && (
                 <text

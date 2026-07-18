@@ -124,7 +124,7 @@ export default function TradeInPage() {
         <div className="mt-11 grid grid-cols-1 gap-x-6 gap-y-8 sm:grid-cols-2 lg:grid-cols-4">
           {STEPS.map((step, i) => (
             <div key={step.title}>
-              <span className="flex h-12 w-12 items-center justify-center rounded-full bg-gradient-to-br from-green to-green-dd text-[18px] font-extrabold text-white shadow-[0_8px_18px_rgba(21,154,72,0.28)]">
+              <span className="flex h-12 w-12 items-center justify-center rounded-full bg-gradient-to-br from-green to-green-dd text-[18px] font-extrabold text-white shadow-[0_8px_18px_rgba(11,94,44,0.28)]">
                 {i + 1}
               </span>
               <b className="mt-4 block text-[15.5px] text-ink">{step.title}</b>
@@ -146,7 +146,7 @@ export default function TradeInPage() {
         <div className="mt-11 grid grid-cols-1 gap-x-6 gap-y-9 sm:grid-cols-3">
           {BENEFITS.map(({ icon: Icon, title, desc }) => (
             <div key={title} className="text-center">
-              <span className="mx-auto mb-4 flex h-16 w-16 items-center justify-center rounded-2xl bg-gradient-to-br from-green to-green-dd text-white shadow-[0_12px_26px_rgba(21,154,72,0.30)]">
+              <span className="mx-auto mb-4 flex h-16 w-16 items-center justify-center rounded-2xl bg-gradient-to-br from-green to-green-dd text-white shadow-[0_12px_26px_rgba(11,94,44,0.30)]">
                 <Icon className="h-8 w-8" />
               </span>
               <h3 className="text-[15.5px] font-bold text-ink">{title}</h3>
