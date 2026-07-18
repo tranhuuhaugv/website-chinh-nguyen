@@ -1,5 +1,6 @@
 import { NextResponse } from "next/server";
 import { cookies } from "next/headers";
+import { revalidatePath } from "next/cache";
 import { prisma } from "@/lib/prisma";
 import { ADMIN_COOKIE, verifyAdminToken } from "@/lib/admin-auth";
 
@@ -53,6 +54,8 @@ export async function POST(req: Request) {
 
   await saveSetting("heroBanners", hero);
   await saveSetting("sideBanners", side);
+
+  revalidatePath("/"); // trang chủ hiện banner mới ngay, không chờ hết hạn ISR
 
   return NextResponse.json({ ok: true, hero: hero.length, side: side.length });
 }

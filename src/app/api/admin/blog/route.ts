@@ -1,5 +1,6 @@
 import { NextResponse } from "next/server";
 import { cookies } from "next/headers";
+import { revalidatePath } from "next/cache";
 import { prisma } from "@/lib/prisma";
 import { ADMIN_COOKIE, verifyAdminToken } from "@/lib/admin-auth";
 import { slugify } from "@/lib/slug";
@@ -34,6 +35,13 @@ function readMinutes(html: string): number {
 function formatDate(d: Date): string {
   const p = (n: number) => String(n).padStart(2, "0");
   return `${p(d.getDate())}/${p(d.getMonth() + 1)}/${d.getFullYear()}`;
+}
+
+/** Làm mới các trang tĩnh có bài viết để thay đổi hiện ra NGAY (không chờ hết hạn ISR 1h). */
+function revalidateBlog(...slugs: (string | undefined)[]) {
+  revalidatePath("/"); // khối tin tức trang chủ
+  revalidatePath("/blog");
+  for (const s of slugs) if (s) revalidatePath(`/blog/${s}`);
 }
 
 const ACCENT_BY_TAG: Record<string, string> = {
@@ -87,6 +95,8 @@ export async function POST(req: Request) {
     },
   });
 
+  revalidateBlog(slug);
+
   return NextResponse.json({ ok: true, slug });
 }
 
@@ -130,6 +140,8 @@ export async function PUT(req: Request) {
     },
   });
 
+  revalidateBlog(slug, originalSlug !== slug ? originalSlug : undefined);
+
   return NextResponse.json({ ok: true, slug });
 }
 
@@ -141,5 +153,6 @@ export async function DELETE(req: Request) {
   if (!slug) return NextResponse.json({ ok: false }, { status: 400 });
 
   await prisma.blogPost.delete({ where: { slug } }).catch(() => null);
+  revalidateBlog(slug);
   return NextResponse.json({ ok: true });
 }
