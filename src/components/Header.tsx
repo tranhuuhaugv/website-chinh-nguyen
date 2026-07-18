@@ -43,7 +43,7 @@ export function Header() {
       </div>
 
       {/* Thanh chính */}
-      <div className="bg-gradient-to-r from-green-d via-green to-green text-white">
+      <div className="bg-gradient-to-r from-green-dd via-green-d to-green-d text-white">
         <Container className="flex h-[70px] items-center gap-[22px]">
           <Logo />
 
