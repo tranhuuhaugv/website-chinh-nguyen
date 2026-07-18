@@ -33,6 +33,8 @@ jobs:
               echo "== Seeding database =="
               npm run db:seed
             fi
+            # Thêm bài blog soạn trong code (chỉ tạo bài thiếu, không ghi đè bài admin).
+            npm run db:sync-posts
             rm -rf .next
             npm run build
             pm2 restart chinhnguyen
