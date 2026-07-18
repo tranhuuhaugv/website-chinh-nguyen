@@ -12,6 +12,12 @@ async function requireAdmin(): Promise<boolean> {
   return token ? verifyAdminToken(token) : false;
 }
 
+/** Chuẩn hoá link admin gõ: thiếu "/" đầu thì tự thêm (vd "blog/abc" -> "/blog/abc"). */
+function normalizeHref(href: string): string {
+  if (!href || /^https?:\/\//i.test(href) || href.startsWith("/")) return href;
+  return `/${href}`;
+}
+
 function clean(raw: unknown): { image: string; href: string }[] {
   if (!Array.isArray(raw)) return [];
   return raw
@@ -19,7 +25,7 @@ function clean(raw: unknown): { image: string; href: string }[] {
       const o = (x ?? {}) as { image?: unknown; href?: unknown };
       return {
         image: typeof o.image === "string" ? o.image.trim() : "",
-        href: typeof o.href === "string" ? o.href.trim() : "",
+        href: normalizeHref(typeof o.href === "string" ? o.href.trim() : ""),
       };
     })
     .filter((b) => b.image !== ""); // chỉ giữ slot có ảnh

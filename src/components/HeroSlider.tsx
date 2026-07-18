@@ -95,9 +95,9 @@ export function HeroSlider({
               </button>
 
               <div className="absolute bottom-4 left-1/2 z-10 flex -translate-x-1/2 gap-2">
-                {slides.map((slide, i) => (
+                {Array.from({ length: count }, (_, i) => (
                   <button
-                    key={slide.id}
+                    key={i}
                     type="button"
                     onClick={() => goTo(i)}
                     aria-label={`Tới banner ${i + 1}`}

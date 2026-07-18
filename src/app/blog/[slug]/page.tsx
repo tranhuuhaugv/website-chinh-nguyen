@@ -1,13 +1,15 @@
 import type { Metadata } from "next";
+import Link from "next/link";
 import { notFound } from "next/navigation";
 import { Breadcrumb } from "@/components/Breadcrumb";
 import { Container } from "@/components/Container";
 import { Footer } from "@/components/Footer";
 import { Header } from "@/components/Header";
 import { FloatButtons } from "@/components/FloatButtons";
-import { Band, SectionIntro } from "@/components/static/Band";
-import { BlogCard, BlogCover } from "@/components/blog/BlogCard";
-import { ClockIcon } from "@/components/icons";
+import { Band } from "@/components/static/Band";
+import { BlogCover } from "@/components/blog/BlogCard";
+import { ClockIcon, PhoneIcon } from "@/components/icons";
+import { SITE } from "@/lib/site";
 import {
   getAllPostSlugs,
   getPostBySlug,
@@ -104,70 +106,186 @@ export default async function BlogPostPage({
           </Container>
         </section>
 
-        {/* Ảnh bìa */}
-        <Container className="pt-8">
-          <div className="relative mx-auto aspect-[16/7] max-w-[880px] overflow-hidden rounded-2xl shadow-card max-[600px]:aspect-video">
-            <BlogCover
-              image={post.image}
-              accent={post.accent}
-              uid={`hero-${post.slug}`}
-              alt={post.title}
-              sizes="(max-width: 900px) 100vw, 880px"
-            />
-          </div>
-        </Container>
-
-        {/* Nội dung */}
+        {/* Nội dung: 2 cột — bài viết bên trái, cột phụ (mục lục/liên quan/tư vấn) bên phải */}
         <Band tone="white">
-          <article className="mx-auto max-w-[720px]">
-            <p className="border-l-[3px] border-green pl-5 text-[17px] font-medium leading-[1.7] text-ink">
-              {post.excerpt}
-            </p>
+          <div className="mx-auto grid max-w-[1120px] grid-cols-[minmax(0,1fr)_320px] items-start gap-10 max-[1100px]:grid-cols-1">
+            <article className="min-w-0">
+              {/* Ảnh bìa */}
+              <div className="relative mb-7 aspect-[16/7] overflow-hidden rounded-2xl shadow-card max-[600px]:aspect-video">
+                <BlogCover
+                  image={post.image}
+                  accent={post.accent}
+                  uid={`hero-${post.slug}`}
+                  alt={post.title}
+                  sizes="(max-width: 1100px) 100vw, 760px"
+                />
+              </div>
 
-            {/* Mục lục — giúp khách xem tổng quan & nhảy tới từng mục */}
-            {headings.length >= 2 && (
-              <nav
-                aria-label="Nội dung bài viết"
-                className="mt-6 rounded-2xl border border-line bg-bg/60 p-5"
-              >
-                <p className="mb-3 text-[12.5px] font-bold uppercase tracking-[0.08em] text-green-d">
-                  Nội dung bài viết
-                </p>
-                <ol className="flex flex-col gap-2">
-                  {headings.map((h, n) => (
-                    <li key={h.id}>
-                      <a
-                        href={`#${h.id}`}
-                        className="flex gap-2 text-[14.5px] leading-snug text-ink-2 transition hover:text-green-d"
+              <p className="border-l-[3px] border-green pl-5 text-[17px] font-medium leading-[1.7] text-ink">
+                {post.excerpt}
+              </p>
+
+              {/* Mục lục cho màn hình hẹp (cột phải bị dồn xuống dưới) */}
+              {headings.length >= 2 && (
+                <nav
+                  aria-label="Nội dung bài viết"
+                  className="mt-6 hidden rounded-2xl border border-line bg-bg/60 p-5 max-[1100px]:block"
+                >
+                  <p className="mb-3 text-[12.5px] font-bold uppercase tracking-[0.08em] text-green-d">
+                    Nội dung bài viết
+                  </p>
+                  <ol className="flex flex-col gap-2">
+                    {headings.map((h, n) => (
+                      <li key={h.id}>
+                        <a
+                          href={`#${h.id}`}
+                          className="flex gap-2 text-[14.5px] leading-snug text-ink-2 transition hover:text-green-d"
+                        >
+                          <span className="font-semibold text-green-d">
+                            {n + 1}.
+                          </span>
+                          <span>{h.text}</span>
+                        </a>
+                      </li>
+                    ))}
+                  </ol>
+                </nav>
+              )}
+
+              <div
+                className="rich-text rich-text--blog mt-7"
+                dangerouslySetInnerHTML={{ __html: noiDung }}
+              />
+            </article>
+
+            {/* Cột phải sticky */}
+            <aside className="flex flex-col gap-5 max-[1100px]:hidden min-[1101px]:sticky min-[1101px]:top-24">
+              {headings.length >= 2 && (
+                <nav
+                  aria-label="Nội dung bài viết"
+                  className="rounded-2xl border border-line bg-bg/60 p-5"
+                >
+                  <p className="mb-3 text-[12.5px] font-bold uppercase tracking-[0.08em] text-green-d">
+                    Nội dung bài viết
+                  </p>
+                  <ol className="flex flex-col gap-2">
+                    {headings.map((h, n) => (
+                      <li key={h.id}>
+                        <a
+                          href={`#${h.id}`}
+                          className="flex gap-2 text-[13.5px] leading-snug text-ink-2 transition hover:text-green-d"
+                        >
+                          <span className="font-semibold text-green-d">
+                            {n + 1}.
+                          </span>
+                          <span>{h.text}</span>
+                        </a>
+                      </li>
+                    ))}
+                  </ol>
+                </nav>
+              )}
+
+              {related.length > 0 && (
+                <div className="rounded-2xl border border-line bg-white p-5 shadow-sm">
+                  <p className="mb-3 text-[12.5px] font-bold uppercase tracking-[0.08em] text-green-d">
+                    Bài viết liên quan
+                  </p>
+                  <div className="flex flex-col gap-4">
+                    {related.map((p) => (
+                      <Link
+                        key={p.slug}
+                        href={`/blog/${p.slug}`}
+                        className="group flex items-start gap-3"
                       >
-                        <span className="font-semibold text-green-d">
-                          {n + 1}.
+                        <span className="relative block h-14 w-20 shrink-0 overflow-hidden rounded-lg">
+                          <BlogCover
+                            image={p.image}
+                            accent={p.accent}
+                            uid={`side-${p.slug}`}
+                            alt={p.title}
+                            sizes="80px"
+                          />
                         </span>
-                        <span>{h.text}</span>
-                      </a>
-                    </li>
-                  ))}
-                </ol>
-              </nav>
-            )}
+                        <span className="min-w-0">
+                          <span className="line-clamp-2 text-[13.5px] font-semibold leading-snug text-ink transition group-hover:text-green-d">
+                            {p.title}
+                          </span>
+                          <span className="mt-1 flex items-center gap-1 text-[12px] text-muted">
+                            <ClockIcon className="h-3 w-3" />
+                            {p.readMinutes} phút đọc
+                          </span>
+                        </span>
+                      </Link>
+                    ))}
+                  </div>
+                </div>
+              )}
 
-            <div
-              className="rich-text rich-text--blog mt-7"
-              dangerouslySetInnerHTML={{ __html: noiDung }}
-            />
-          </article>
+              {/* Hộp tư vấn / hotline */}
+              <div className="overflow-hidden rounded-2xl bg-gradient-to-br from-green-d to-green-dd p-5 text-white">
+                <p className="text-[15px] font-bold leading-snug">
+                  Cần tư vấn chọn laptop?
+                </p>
+                <p className="mt-1.5 text-[13px] leading-relaxed text-white/80">
+                  Gọi ngay để được tư vấn 1-1 miễn phí, chọn đúng máy đúng nhu
+                  cầu.
+                </p>
+                <a
+                  href={`tel:${SITE.hotlineTel}`}
+                  className="mt-4 flex h-11 items-center justify-center gap-2 rounded-xl bg-white text-[15px] font-bold text-green-d transition hover:bg-green-soft"
+                >
+                  <PhoneIcon className="h-4 w-4" />
+                  {SITE.hotline}
+                </a>
+                <Link
+                  href="/san-pham"
+                  className="mt-2 flex h-10 items-center justify-center rounded-xl bg-white/[0.12] text-[13.5px] font-semibold text-white ring-1 ring-white/25 transition hover:bg-white/20"
+                >
+                  Xem laptop đang bán
+                </Link>
+              </div>
+            </aside>
+          </div>
         </Band>
 
-        {/* Bài viết liên quan */}
+        {/* Bài viết liên quan cho màn hình hẹp (cột phải bị ẩn) */}
         {related.length > 0 && (
-          <Band tone="tint">
-            <SectionIntro eyebrow="Đọc thêm" title="Bài viết liên quan" />
-            <div className="mt-8 grid grid-cols-3 gap-5 max-[900px]:grid-cols-2 max-[520px]:grid-cols-1">
-              {related.map((p) => (
-                <BlogCard key={p.slug} post={p} />
-              ))}
-            </div>
-          </Band>
+          <div className="hidden max-[1100px]:block">
+            <Band tone="tint">
+              <p className="mb-5 text-[18px] font-extrabold text-ink">
+                Bài viết liên quan
+              </p>
+              <div className="grid grid-cols-2 gap-5 max-[520px]:grid-cols-1">
+                {related.map((p) => (
+                  <Link
+                    key={p.slug}
+                    href={`/blog/${p.slug}`}
+                    className="group flex items-start gap-3"
+                  >
+                    <span className="relative block h-14 w-20 shrink-0 overflow-hidden rounded-lg">
+                      <BlogCover
+                        image={p.image}
+                        accent={p.accent}
+                        uid={`m-${p.slug}`}
+                        alt={p.title}
+                        sizes="80px"
+                      />
+                    </span>
+                    <span className="min-w-0">
+                      <span className="line-clamp-2 text-[13.5px] font-semibold leading-snug text-ink transition group-hover:text-green-d">
+                        {p.title}
+                      </span>
+                      <span className="mt-1 flex items-center gap-1 text-[12px] text-muted">
+                        <ClockIcon className="h-3 w-3" />
+                        {p.readMinutes} phút đọc
+                      </span>
+                    </span>
+                  </Link>
+                ))}
+              </div>
+            </Band>
+          </div>
         )}
       </main>
       <Footer />
