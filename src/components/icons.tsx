@@ -350,96 +350,186 @@ export const WarrantyIcon = (p: IconProps) => (
   </Stroke>
 );
 
-// --- Icon danh mục (stroke-width 1.4) ---
+// --- Icon danh mục: hình tượng trực quan (laptop %, gamepad, phích sạc...) ---
+// Hãng dùng chữ wordmark (DELL, hp, acer...) cho dễ nhận diện tức thì.
+
+/** Chữ trong icon (wordmark hãng, chip AI): đặc, không viền. */
+function IconText({
+  children,
+  size,
+  y,
+  ...rest
+}: {
+  children: string;
+  size: number;
+  y: number;
+  letterSpacing?: string;
+  fontStyle?: string;
+}) {
+  return (
+    <text
+      x="12"
+      y={y}
+      textAnchor="middle"
+      fontFamily="Arial, Helvetica, sans-serif"
+      fontWeight={800}
+      fontSize={size}
+      fill="currentColor"
+      stroke="none"
+      {...rest}
+    >
+      {children}
+    </text>
+  );
+}
+
 const CATEGORY_PATHS: Record<CategoryIconName, JSX.Element> = {
-  office: (
-    <>
-      <rect x="3" y="4" width="18" height="12" rx="1" />
-      <path d="M2 20h20l-2-4H4l-2 4z" />
-    </>
-  ),
-  gaming: (
-    <>
-      <rect x="2" y="6" width="20" height="12" rx="2" />
-      <path d="M6 12h4M8 10v4" />
-    </>
-  ),
-  graphic: (
-    <>
-      <path d="M12 2 2 7l10 5 10-5-10-5z" />
-      <path d="M2 17l10 5 10-5" />
-    </>
-  ),
-  slim: <path d="M4 4h16v3H4zM6 7v10M18 7v10M4 17h16" />,
-  student: (
-    <>
-      <path d="M22 10v6M2 10l10-5 10 5-10 5z" />
-      <path d="M6 12v5c3 3 9 3 12 0v-5" />
-    </>
-  ),
-  macbook: (
-    <path d="M12 2a7 7 0 0 0-7 7c0 3 2 5 2 5h10s2-2 2-5a7 7 0 0 0-7-7z" />
-  ),
-  ai: (
-    <>
-      <circle cx="12" cy="12" r="3" />
-      <path d="M12 2v4M12 18v4M2 12h4M18 12h4" />
-    </>
-  ),
+  // Laptop cũ: laptop + dấu % (giá tốt)
   used: (
     <>
-      <path d="M20 6H4v10h16z" />
-      <path d="M2 20h20" />
+      <rect x="3.5" y="4" width="17" height="11.5" rx="1.5" />
+      <path d="M2 19.5h20" />
+      <path d="M9.3 12.6l5.4-5.2" />
+      <circle cx="9.6" cy="8.3" r="1.05" />
+      <circle cx="14.4" cy="11.7" r="1.05" />
     </>
   ),
-  dell: <path d="M6 3h12l4 6-10 13L2 9z" />,
-  asus: (
+  // Laptop văn phòng: laptop + dòng văn bản
+  office: (
     <>
-      <circle cx="12" cy="12" r="9" />
-      <path d="M8 12h8" />
+      <rect x="3.5" y="4" width="17" height="11.5" rx="1.5" />
+      <path d="M2 19.5h20" />
+      <path d="M7 8h10M7 11.5h6" />
     </>
+  ),
+  // Gaming: tay cầm chơi game
+  gaming: (
+    <>
+      <path d="M7.5 7.5h9a5.3 5.3 0 0 1 5.2 6.1c-.4 2.6-1.5 4.9-3.1 4.9-1.3 0-2.1-.9-2.9-2.2H8.3c-.8 1.3-1.6 2.2-2.9 2.2-1.6 0-2.7-2.3-3.1-4.9A5.3 5.3 0 0 1 7.5 7.5z" />
+      <path d="M7.2 12.7h3.6M9 10.9v3.6" />
+      <circle cx="15.6" cy="11.4" r="1" fill="currentColor" stroke="none" />
+      <circle cx="17.8" cy="13.4" r="1" fill="currentColor" stroke="none" />
+    </>
+  ),
+  // Máy trạm - đồ họa: màn hình + ảnh
+  graphic: (
+    <>
+      <rect x="3" y="3.5" width="18" height="13" rx="1.5" />
+      <path d="M8.5 20.5h7M12 16.5v4" />
+      <path d="M6.5 13.2l3.3-3.9 2.4 2.8 1.9-2 3.4 3.1" />
+    </>
+  ),
+  // Mỏng nhẹ: lông vũ
+  slim: (
+    <>
+      <path d="M20.5 3.5C13.5 4 8 8.5 6 14.5L4 20.5" />
+      <path d="M20.5 3.5c1 6.5-2.5 12.5-9.5 13.5" />
+      <path d="M8.2 12.5h5M6.5 16.5h4.5" />
+    </>
+  ),
+  // Sinh viên: nón tốt nghiệp
+  student: (
+    <>
+      <path d="M2.5 9.5 12 5l9.5 4.5L12 14 2.5 9.5z" />
+      <path d="M6.5 11.6v4c3.2 2.7 7.8 2.7 11 0v-4" />
+      <path d="M21.5 10v4.5" />
+    </>
+  ),
+  // MacBook: logo Apple
+  macbook: (
+    <>
+      <path
+        fill="currentColor"
+        stroke="none"
+        d="M15.9 12.4c0-2.1 1.7-3.1 1.8-3.2-1-1.4-2.5-1.6-3-1.7-1.3-.1-2.5.8-3.1.8-.6 0-1.7-.8-2.7-.7-1.4 0-2.7.8-3.4 2-1.5 2.5-.4 6.2 1 8.2.7 1 1.5 2.1 2.6 2.1 1 0 1.4-.7 2.7-.7 1.2 0 1.6.7 2.7.7 1.1 0 1.8-1 2.5-2 .8-1.2 1.1-2.3 1.1-2.4-.1-.1-2.2-.9-2.2-3.1z"
+      />
+      <path
+        fill="currentColor"
+        stroke="none"
+        d="M14 6c.6-.7 1-1.7.8-2.7-.8.1-1.8.6-2.4 1.3-.5.6-1 1.6-.9 2.6 1 .1 1.9-.5 2.5-1.2z"
+      />
+    </>
+  ),
+  // Laptop AI: chip AI
+  ai: (
+    <>
+      <rect x="5" y="5" width="14" height="14" rx="2" />
+      <path d="M9 2.5V5M15 2.5V5M9 19v2.5M15 19v2.5M2.5 9H5M2.5 15H5M19 9h2.5M19 15h2.5" />
+      <IconText size={7.2} y={14.6}>
+        AI
+      </IconText>
+    </>
+  ),
+  // Màn hình
+  monitor: (
+    <>
+      <rect x="3" y="4" width="18" height="12.5" rx="1.5" />
+      <path d="M8.5 21h7M12 16.5V21" />
+    </>
+  ),
+  // Sạc & phụ kiện: phích cắm
+  accessory: (
+    <>
+      <path d="M9 2.5v4.5M15 2.5v4.5" />
+      <path d="M6.5 7h11v3.8a5.5 5.5 0 0 1-11 0z" />
+      <path d="M12 16.3v1.7a3 3 0 0 0 3 3h2" />
+    </>
+  ),
+  // PC đồng bộ: thùng máy + màn hình
+  pc: (
+    <>
+      <rect x="3.5" y="3.5" width="8" height="17" rx="1" />
+      <path d="M6.2 7h2.6M6.2 10h2.6" />
+      <circle cx="7.5" cy="17" r="1" fill="currentColor" stroke="none" />
+      <rect x="14.5" y="6.5" width="7" height="5.5" rx="1" />
+      <path d="M16.5 15.5h3M18 12v3.5" />
+    </>
+  ),
+  // Laptop mới: laptop + tia lấp lánh
+  new: (
+    <>
+      <rect x="3" y="5.5" width="14.5" height="9.5" rx="1.5" />
+      <path d="M1.5 19h17.5" />
+      <path
+        fill="currentColor"
+        stroke="none"
+        d="M19.6 2.6l1 2.3 2.3 1-2.3 1-1 2.3-1-2.3-2.3-1 2.3-1z"
+      />
+    </>
+  ),
+  // Thương hiệu: wordmark chữ
+  dell: (
+    <IconText size={7.4} y={14.6} letterSpacing="0.4">
+      DELL
+    </IconText>
+  ),
+  asus: (
+    <IconText size={7} y={14.5} letterSpacing="0.3" fontStyle="italic">
+      ASUS
+    </IconText>
   ),
   acer: (
-    <>
-      <circle cx="12" cy="12" r="9" />
-      <path d="M12 7v10M7 12h10" />
-    </>
+    <IconText size={8.8} y={15}>
+      acer
+    </IconText>
   ),
-  lenovo: <rect x="4" y="4" width="16" height="16" rx="2" />,
+  lenovo: (
+    <IconText size={6.2} y={14.3}>
+      lenovo
+    </IconText>
+  ),
   hp: (
     <>
-      <circle cx="12" cy="12" r="9" />
-      <path d="M9 8v8M15 8v8" />
+      <circle cx="12" cy="12" r="8.8" />
+      <IconText size={8.6} y={15}>
+        hp
+      </IconText>
     </>
   ),
   msi: (
-    <>
-      <path d="M3 5h18v14H3z" />
-      <path d="M12 5v14" />
-    </>
-  ),
-  monitor: (
-    <>
-      <rect x="4" y="4" width="16" height="12" rx="2" />
-      <path d="M9 20h6M12 16v4" />
-    </>
-  ),
-  accessory: (
-    <>
-      <path d="M4 4h16v12H4z" />
-      <path d="M2 20h20M9 20v-4M15 20v-4" />
-    </>
-  ),
-  pc: (
-    <>
-      <rect x="4" y="3" width="9" height="18" rx="1" />
-      <path d="M16 7h5v14h-5M7 7v0M7 11v0" />
-    </>
-  ),
-  new: (
-    <>
-      <path d="M12 2l2.4 4.9 5.4.8-3.9 3.8.9 5.4-4.8-2.5-4.8 2.5.9-5.4L4.2 7.7l5.4-.8z" />
-    </>
+    <IconText size={8.2} y={15} letterSpacing="0.5">
+      MSI
+    </IconText>
   ),
 };
 
@@ -448,7 +538,7 @@ export function CategoryIcon({
   ...props
 }: IconProps & { name: CategoryIconName }) {
   return (
-    <Stroke strokeWidth={1.4} {...props}>
+    <Stroke strokeWidth={1.5} {...props}>
       {CATEGORY_PATHS[name]}
     </Stroke>
   );
