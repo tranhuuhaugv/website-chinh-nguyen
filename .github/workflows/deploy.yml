@@ -35,6 +35,8 @@ jobs:
             fi
             # Thêm bài blog soạn trong code (chỉ tạo bài thiếu, không ghi đè bài admin).
             npm run db:sync-posts
+            # Điền giá gốc cho SP còn thiếu để mọi máy hiện giảm giá (không đè giá admin đặt).
+            npm run db:fill-discounts
             rm -rf .next
             npm run build
             pm2 restart chinhnguyen
