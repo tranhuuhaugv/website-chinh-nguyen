@@ -15,7 +15,7 @@ export function FloatButtons() {
         <PhoneIcon className="h-[26px] w-[26px]" />
       </a>
       <a
-        href="https://m.me/laptopchinhnguyen"
+        href={SITE.messenger}
         target="_blank"
         rel="noopener noreferrer"
         aria-label="Chat Messenger"

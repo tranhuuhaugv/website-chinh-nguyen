@@ -7,6 +7,8 @@ export const SITE = {
   techTel: "0926122144",
   email: "hotro@laptopchinhnguyen.vn",
   hours: "8:00 - 21:00 (T2 - CN)",
+  facebook: "https://www.facebook.com/ChinhNguyenLaptopUSA",
+  messenger: "https://m.me/ChinhNguyenLaptopUSA",
   stores: [
     {
       name: "Chính Nguyễn - Đỗ Quang",

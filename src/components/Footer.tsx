@@ -91,13 +91,24 @@ export function Footer() {
               Zalo
             </a>
             <a
-              href="https://m.me/laptopchinhnguyen"
+              href={SITE.messenger}
               target="_blank"
               rel="noopener noreferrer"
               className="flex h-11 items-center gap-2 rounded-full bg-white/15 px-4 text-[13.5px] font-semibold text-white ring-1 ring-white/25 transition hover:bg-white/25"
             >
               <MessengerIcon className="h-[18px] w-[18px]" />
               Messenger
+            </a>
+            <a
+              href={SITE.facebook}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="flex h-11 items-center gap-2 rounded-full bg-white/15 px-4 text-[13.5px] font-semibold text-white ring-1 ring-white/25 transition hover:bg-white/25"
+            >
+              <span className="flex h-5 w-5 items-center justify-center rounded-full bg-white text-[12px] font-black text-[#1877F2]">
+                f
+              </span>
+              Fanpage
             </a>
           </div>
         </div>

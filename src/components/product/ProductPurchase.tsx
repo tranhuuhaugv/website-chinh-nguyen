@@ -92,7 +92,7 @@ export function ProductPurchase({ item }: { item: Omit<CartItem, "qty"> }) {
           Chat Zalo
         </a>
         <a
-          href="https://m.me/laptopchinhnguyen"
+          href={SITE.messenger}
           target="_blank"
           rel="noopener noreferrer"
           className="flex h-11 items-center justify-center gap-2 rounded-xl border border-line bg-white text-[13.5px] font-semibold text-ink-2 transition hover:border-[#0084FF] hover:text-[#0084FF]"
