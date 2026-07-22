@@ -677,8 +677,9 @@ export async function getMonthlyViews(year: string): Promise<number[]> {
 
 // --- Cài đặt ---
 export async function getSetting(key: string): Promise<string | null> {
-  // Xem local: bật sẵn Flash Sale để thấy đủ khối trên trang chủ.
-  if (NO_DB) return key === "flashSaleEnabled" ? "true" : null;
+  // Xem local: bật sẵn Flash Sale + voucher để thấy đủ khối trên trang chủ.
+  if (NO_DB)
+    return ["flashSaleEnabled", "vouchersEnabled"].includes(key) ? "true" : null;
   const s = await prisma.setting.findUnique({ where: { key } });
   return s?.value ?? null;
 }

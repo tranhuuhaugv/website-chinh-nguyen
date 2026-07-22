@@ -16,6 +16,7 @@ import {
 } from "@/components/icons";
 import { formatPrice } from "@/lib/format";
 import { checkoutSchema } from "@/lib/validations/checkout";
+import { findVoucher } from "@/lib/vouchers";
 import { SITE } from "@/lib/site";
 
 // Giỏ hàng + thanh toán COD trên cùng 1 trang. Client Component.
@@ -45,6 +46,34 @@ export function CartCheckout({
   const [done, setDone] = useState(false);
   const [sending, setSending] = useState(false);
   const loggedIn = Boolean(initialUser);
+
+  // Mã giảm giá (voucher trang chủ). Giảm chỉ có hiệu lực khi đơn đủ mức tối
+  // thiểu — khách bớt hàng xuống dưới mức thì tự mất giảm (có dòng nhắc).
+  const [voucherInput, setVoucherInput] = useState("");
+  const [appliedCode, setAppliedCode] = useState<string | null>(null);
+  const [voucherError, setVoucherError] = useState("");
+  const appliedVoucher = appliedCode ? findVoucher(appliedCode) : undefined;
+  const voucherValid =
+    !!appliedVoucher && subtotal >= appliedVoucher.minSubtotal;
+  const discount = voucherValid ? appliedVoucher.amount : 0;
+  const total = subtotal - discount;
+
+  function applyVoucher() {
+    const v = findVoucher(voucherInput);
+    if (!v) {
+      setVoucherError("Mã giảm giá không hợp lệ");
+      return;
+    }
+    if (subtotal < v.minSubtotal) {
+      setVoucherError(
+        `Mã ${v.code} áp dụng cho đơn từ ${formatPrice(v.minSubtotal)}`,
+      );
+      return;
+    }
+    setVoucherError("");
+    setAppliedCode(v.code);
+    setVoucherInput("");
+  }
 
   function set<K extends keyof typeof values>(key: K, val: string) {
     setValues((v) => ({ ...v, [key]: val }));
@@ -77,7 +106,8 @@ export function CartCheckout({
         qty: i.qty,
         slug: i.slug,
       })),
-      total: subtotal,
+      total,
+      voucher: voucherValid ? appliedVoucher.code : undefined,
     };
     setSending(true);
     try {
@@ -389,11 +419,78 @@ export function CartCheckout({
       <aside className="h-fit rounded-2xl border border-line bg-white p-5 lg:sticky lg:top-6">
         <h2 className="text-[15px] font-bold text-ink">Tóm tắt đơn hàng</h2>
 
+        {/* Mã giảm giá */}
+        <div className="mt-4">
+          {appliedVoucher ? (
+            <div
+              className={`flex items-center justify-between gap-2 rounded-xl px-3.5 py-2.5 text-[13px] ${
+                voucherValid
+                  ? "bg-green-soft text-green-d"
+                  : "bg-[#FFF7E6] text-[#92400E]"
+              }`}
+            >
+              <span className="min-w-0">
+                <b className="font-bold">{appliedVoucher.code}</b>
+                {voucherValid ? (
+                  <> — giảm {formatPrice(appliedVoucher.amount)}</>
+                ) : (
+                  <>
+                    {" "}
+                    cần đơn từ {formatPrice(appliedVoucher.minSubtotal)} — chưa
+                    đủ điều kiện
+                  </>
+                )}
+              </span>
+              <button
+                type="button"
+                onClick={() => setAppliedCode(null)}
+                aria-label="Bỏ mã giảm giá"
+                className="shrink-0 font-semibold underline"
+              >
+                Bỏ mã
+              </button>
+            </div>
+          ) : (
+            <>
+              <div className="flex gap-2">
+                <input
+                  value={voucherInput}
+                  onChange={(e) => {
+                    setVoucherInput(e.target.value);
+                    setVoucherError("");
+                  }}
+                  onKeyDown={(e) => e.key === "Enter" && applyVoucher()}
+                  placeholder="Mã giảm giá (VD: CN100K)"
+                  className="h-10 w-full rounded-xl border border-line bg-white px-3 text-sm uppercase text-ink outline-none transition placeholder:normal-case focus:border-green"
+                />
+                <button
+                  type="button"
+                  onClick={applyVoucher}
+                  className="h-10 shrink-0 rounded-xl bg-ink px-4 text-[13px] font-semibold text-white transition hover:bg-black"
+                >
+                  Áp dụng
+                </button>
+              </div>
+              {voucherError && (
+                <p className="mt-1.5 text-[12px] text-sale">{voucherError}</p>
+              )}
+            </>
+          )}
+        </div>
+
         <div className="mt-4 flex flex-col gap-2.5 border-b border-line pb-4">
           <div className="flex justify-between text-[13.5px] text-ink-2">
             <span>Tạm tính ({totalItems} sản phẩm)</span>
             <span className="font-semibold text-ink">{formatPrice(subtotal)}</span>
           </div>
+          {discount > 0 && appliedVoucher && (
+            <div className="flex justify-between text-[13.5px] text-ink-2">
+              <span>Giảm giá ({appliedVoucher.code})</span>
+              <span className="font-semibold text-green-d">
+                -{formatPrice(discount)}
+              </span>
+            </div>
+          )}
           <div className="flex justify-between text-[13.5px] text-ink-2">
             <span>Phí vận chuyển</span>
             <span className="font-medium text-green-d">Miễn phí</span>
@@ -403,7 +500,7 @@ export function CartCheckout({
         <div className="flex items-center justify-between py-4">
           <span className="text-[15px] font-bold text-ink">Tổng cộng</span>
           <span className="text-[22px] font-extrabold text-sale">
-            {formatPrice(subtotal)}
+            {formatPrice(total)}
           </span>
         </div>
 

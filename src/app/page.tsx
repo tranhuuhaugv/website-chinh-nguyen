@@ -2,6 +2,7 @@ import { BlogSection } from "@/components/BlogSection";
 import { CategoryGrid } from "@/components/CategoryGrid";
 import { CategoryNav } from "@/components/CategoryNav";
 import { CustomerGallery } from "@/components/CustomerGallery";
+import { VoucherStrip } from "@/components/VoucherStrip";
 import { FeaturedProducts } from "@/components/FeaturedProducts";
 import { FlashSale } from "@/components/FlashSale";
 import { FloatButtons } from "@/components/FloatButtons";
@@ -76,6 +77,7 @@ export default async function HomePage() {
     heroBanners,
     sideBanners,
     flashSetting,
+    voucherSetting,
   ] = await Promise.all([
     getFlashSaleProducts(),
     getFeaturedProducts(),
@@ -85,8 +87,10 @@ export default async function HomePage() {
     getHeroBanners(),
     getSideBanners(),
     getSetting("flashSaleEnabled"),
+    getSetting("vouchersEnabled"),
   ]);
   const flashOn = flashSetting === "true" && flashProducts.length > 0;
+  const vouchersOn = voucherSetting === "true";
 
   return (
     <CompareProvider>
@@ -103,6 +107,7 @@ export default async function HomePage() {
       <main>
         <CategoryNav />
         <HeroSlider slides={HERO_SLIDES} imageSlides={heroBanners} />
+        {vouchersOn && <VoucherStrip />}
         {flashOn && <FlashSale products={flashProducts} />}
         <CategoryGrid categories={categories} />
         <FeaturedProducts products={featured} tabs={FEATURED_BRAND_TABS} />

@@ -10,6 +10,11 @@ const OPTIONS: { key: string; title: string; desc: string }[] = [
     title: "Khối Flash Sale",
     desc: "Bật/tắt hiển thị khối Flash Sale trên trang chủ.",
   },
+  {
+    key: "vouchersEnabled",
+    title: "Khối mã giảm giá",
+    desc: "Bật/tắt dải voucher 100K - 200K - 500K trên trang chủ (khách sao chép mã, nhập ở giỏ hàng).",
+  },
 ];
 
 export default async function AdminSettingsPage() {

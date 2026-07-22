@@ -37,6 +37,8 @@ export const purchaseSchema = z.object({
     )
     .min(1),
   total: z.number(),
+  // Mã giảm giá (nếu khách áp) — server tự kiểm tra lại và tính tiền giảm.
+  voucher: z.string().optional(),
 });
 
 export const orderSchema = z.discriminatedUnion("type", [

@@ -3,6 +3,8 @@ import { orderSchema } from "@/lib/validations/order";
 import { sendOrderEmail } from "@/lib/mail";
 import { prisma } from "@/lib/prisma";
 import { getCurrentUser } from "@/lib/session";
+import { findVoucher } from "@/lib/vouchers";
+import { formatPrice } from "@/lib/format";
 
 // Nhận đơn (thu cũ / mua hàng) -> lưu vào DB + gửi email thông báo về Gmail.
 export async function POST(req: Request) {
@@ -22,6 +24,19 @@ export async function POST(req: Request) {
   }
 
   const d = parsed.data;
+
+  // Đơn mua có mã giảm giá: KIỂM TRA LẠI trên server (mã tồn tại + đơn đủ mức
+  // tối thiểu) rồi tự tính lại tổng — không tin số tiền client gửi lên.
+  if (d.type === "purchase") {
+    const itemsTotal = d.items.reduce((s, i) => s + i.price * i.qty, 0);
+    const v = d.voucher ? findVoucher(d.voucher) : undefined;
+    const discount = v && itemsTotal >= v.minSubtotal ? v.amount : 0;
+    d.total = itemsTotal - discount;
+    if (v && discount > 0) {
+      const line = `Mã giảm giá ${v.code}: -${formatPrice(discount)}`;
+      d.note = d.note ? `${d.note}\n${line}` : line;
+    }
+  }
 
   // Đơn mua: bổ sung ảnh thật của sản phẩm (lấy từ DB theo slug) để đính vào
   // email cho đẹp. Client chỉ gửi slug — ảnh lấy từ DB là nguồn tin cậy.
