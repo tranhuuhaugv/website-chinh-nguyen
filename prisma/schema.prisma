@@ -113,12 +113,14 @@ model Order {
   total     Int?
   model     String? // đơn thu cũ: mẫu máy cần thu
   upgradeTo String?
+  voucher   String? // mã giảm giá đã dùng (để đếm số lượt còn lại)
   status    String   @default("new") // new | processing | done | canceled
   userId    String? // gắn với tài khoản khách nếu đặt lúc đã đăng nhập
   createdAt DateTime @default(now())
 
   @@index([createdAt])
   @@index([userId])
+  @@index([voucher])
 }
 
 model User {

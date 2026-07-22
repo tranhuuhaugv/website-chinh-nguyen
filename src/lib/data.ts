@@ -683,3 +683,29 @@ export async function getSetting(key: string): Promise<string | null> {
   const s = await prisma.setting.findUnique({ where: { key } });
   return s?.value ?? null;
 }
+
+// --- Mã giảm giá: đếm số lượt đã dùng (theo đơn hàng đã lưu) ---
+// Trả về map code -> số đơn đã dùng mã đó. Dùng để tính số lượt còn lại.
+export async function getVoucherUsage(): Promise<Record<string, number>> {
+  if (NO_DB) return {};
+  const rows = await prisma.order.groupBy({
+    by: ["voucher"],
+    where: { voucher: { not: null } },
+    _count: { voucher: true },
+  });
+  const usage: Record<string, number> = {};
+  for (const r of rows) {
+    if (r.voucher) usage[r.voucher] = r._count.voucher;
+  }
+  return usage;
+}
+
+/** Số lượt còn lại của 1 mã (đã trừ số đơn đã dùng), không âm. */
+export async function getVoucherRemaining(
+  code: string,
+  quantity: number,
+): Promise<number> {
+  if (NO_DB) return quantity;
+  const used = await prisma.order.count({ where: { voucher: code } });
+  return Math.max(0, quantity - used);
+}

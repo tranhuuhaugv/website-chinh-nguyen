@@ -8,12 +8,15 @@ export interface Voucher {
   amount: number;
   /** Giá trị đơn tối thiểu để áp mã (VND). */
   minSubtotal: number;
+  /** Tổng số lượt được dùng. Hết lượt -> mã tự khóa. Sửa số này để tăng/giảm. */
+  quantity: number;
 }
 
+// SỬA Ở ĐÂY: đổi `quantity` để đặt số lượng mã phát hành cho mỗi mã.
 export const VOUCHERS: Voucher[] = [
-  { code: "CN100K", amount: 100_000, minSubtotal: 5_000_000 },
-  { code: "CN200K", amount: 200_000, minSubtotal: 10_000_000 },
-  { code: "CN500K", amount: 500_000, minSubtotal: 20_000_000 },
+  { code: "CN100K", amount: 100_000, minSubtotal: 5_000_000, quantity: 100 },
+  { code: "CN200K", amount: 200_000, minSubtotal: 10_000_000, quantity: 50 },
+  { code: "CN500K", amount: 500_000, minSubtotal: 20_000_000, quantity: 20 },
 ];
 
 export function normalizeVoucherCode(raw: string): string {

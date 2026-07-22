@@ -28,7 +28,8 @@ const STYLES = [
   },
 ];
 
-export function VoucherStrip() {
+// usage: map code -> số lượt đã dùng (từ server). Hết lượt -> vé chuyển "Hết mã".
+export function VoucherStrip({ usage = {} }: { usage?: Record<string, number> }) {
   const [copied, setCopied] = useState<string | null>(null);
 
   async function copy(code: string) {
@@ -47,59 +48,79 @@ export function VoucherStrip() {
         <div className="grid grid-cols-3 gap-4 max-[900px]:grid-cols-1">
           {VOUCHERS.map((v, i) => {
             const style = STYLES[i % STYLES.length];
+            const remaining = Math.max(0, v.quantity - (usage[v.code] ?? 0));
+            const soldOut = remaining <= 0;
             return (
-            <div
-              key={v.code}
-              className="relative flex overflow-hidden rounded-2xl border border-line bg-white shadow-card"
-            >
-              {/* Vế trái: mệnh giá */}
-              <div className={`flex w-[112px] shrink-0 flex-col items-center justify-center gap-0.5 bg-gradient-to-br px-2 text-white ${style.panel}`}>
-                <TagIcon className="h-4 w-4 opacity-80" />
-                <b className="text-[19px] font-extrabold leading-tight">
-                  {Math.round(v.amount / 1000)}K
-                </b>
-                <span className="text-[10.5px] uppercase tracking-wide text-white/75">
-                  Voucher
-                </span>
-              </div>
-
-              {/* Răng cưa giữa vé */}
-              <div className="relative w-0 border-l-2 border-dashed border-line">
-                <span className="absolute -left-[7px] -top-[7px] h-3.5 w-3.5 rounded-full border border-line bg-bg" />
-                <span className="absolute -bottom-[7px] -left-[7px] h-3.5 w-3.5 rounded-full border border-line bg-bg" />
-              </div>
-
-              {/* Vế phải: mã + điều kiện + nút chép */}
-              <div className="flex flex-1 items-center justify-between gap-3 px-4 py-3.5">
-                <div className="min-w-0">
-                  <b className="block text-[15.5px] font-extrabold tracking-wide text-ink">
-                    {v.code}
-                  </b>
-                  <p className="mt-0.5 text-[12px] leading-snug text-muted">
-                    Giảm {formatPrice(v.amount)} cho đơn từ{" "}
-                    {formatPrice(v.minSubtotal)}
-                  </p>
-                </div>
-                <button
-                  type="button"
-                  onClick={() => copy(v.code)}
-                  className={`flex h-9 shrink-0 items-center gap-1.5 rounded-full px-3.5 text-[12.5px] font-bold transition ${
-                    copied === v.code
-                      ? style.btnDone
-                      : `text-white ${style.btn}`
-                  }`}
+              <div
+                key={v.code}
+                className={`relative flex overflow-hidden rounded-2xl border border-line bg-white shadow-card ${
+                  soldOut ? "opacity-60" : ""
+                }`}
+              >
+                {/* Vế trái: mệnh giá */}
+                <div
+                  className={`flex w-[112px] shrink-0 flex-col items-center justify-center gap-0.5 bg-gradient-to-br px-2 text-white ${
+                    soldOut ? "grayscale" : style.panel
+                  } ${soldOut ? "bg-[#94A3B8]" : ""}`}
                 >
-                  {copied === v.code ? (
-                    <>
-                      <CheckIcon className="h-3.5 w-3.5" />
-                      Đã chép
-                    </>
-                  ) : (
-                    "Sao chép"
-                  )}
-                </button>
+                  <TagIcon className="h-4 w-4 opacity-80" />
+                  <b className="text-[19px] font-extrabold leading-tight">
+                    {Math.round(v.amount / 1000)}K
+                  </b>
+                  <span className="text-[10.5px] uppercase tracking-wide text-white/75">
+                    Voucher
+                  </span>
+                </div>
+
+                {/* Răng cưa giữa vé */}
+                <div className="relative w-0 border-l-2 border-dashed border-line">
+                  <span className="absolute -left-[7px] -top-[7px] h-3.5 w-3.5 rounded-full border border-line bg-bg" />
+                  <span className="absolute -bottom-[7px] -left-[7px] h-3.5 w-3.5 rounded-full border border-line bg-bg" />
+                </div>
+
+                {/* Vế phải: mã + điều kiện + số còn lại + nút chép */}
+                <div className="flex flex-1 items-center justify-between gap-3 px-4 py-3.5">
+                  <div className="min-w-0">
+                    <b className="block text-[15.5px] font-extrabold tracking-wide text-ink">
+                      {v.code}
+                    </b>
+                    <p className="mt-0.5 text-[12px] leading-snug text-muted">
+                      Giảm {formatPrice(v.amount)} cho đơn từ{" "}
+                      {formatPrice(v.minSubtotal)}
+                    </p>
+                    <p className="mt-1 text-[11.5px] font-semibold">
+                      {soldOut ? (
+                        <span className="text-muted">Đã hết mã</span>
+                      ) : (
+                        <span className="text-sale">Còn {remaining} mã</span>
+                      )}
+                    </p>
+                  </div>
+                  <button
+                    type="button"
+                    onClick={() => copy(v.code)}
+                    disabled={soldOut}
+                    className={`flex h-9 shrink-0 items-center gap-1.5 rounded-full px-3.5 text-[12.5px] font-bold transition ${
+                      soldOut
+                        ? "cursor-not-allowed bg-[#E5E7EB] text-muted"
+                        : copied === v.code
+                          ? style.btnDone
+                          : `text-white ${style.btn}`
+                    }`}
+                  >
+                    {soldOut ? (
+                      "Hết mã"
+                    ) : copied === v.code ? (
+                      <>
+                        <CheckIcon className="h-3.5 w-3.5" />
+                        Đã chép
+                      </>
+                    ) : (
+                      "Sao chép"
+                    )}
+                  </button>
+                </div>
               </div>
-            </div>
             );
           })}
         </div>

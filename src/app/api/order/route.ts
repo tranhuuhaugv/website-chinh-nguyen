@@ -26,15 +26,30 @@ export async function POST(req: Request) {
   const d = parsed.data;
 
   // Đơn mua có mã giảm giá: KIỂM TRA LẠI trên server (mã tồn tại + đơn đủ mức
-  // tối thiểu) rồi tự tính lại tổng — không tin số tiền client gửi lên.
+  // tối thiểu + CÒN LƯỢT) rồi tự tính lại tổng — không tin số tiền client gửi.
+  // Lưu code hợp lệ vào cột `order.voucher` để đếm số lượt đã dùng.
+  let usedVoucher: string | null = null;
   if (d.type === "purchase") {
     const itemsTotal = d.items.reduce((s, i) => s + i.price * i.qty, 0);
     const v = d.voucher ? findVoucher(d.voucher) : undefined;
-    const discount = v && itemsTotal >= v.minSubtotal ? v.amount : 0;
-    d.total = itemsTotal - discount;
-    if (v && discount > 0) {
-      const line = `Mã giảm giá ${v.code}: -${formatPrice(discount)}`;
+
+    if (v && itemsTotal >= v.minSubtotal) {
+      // Đếm số đơn đã dùng mã này; hết lượt -> từ chối để không sai tổng tiền.
+      const used = await prisma.order
+        .count({ where: { voucher: v.code } })
+        .catch(() => 0);
+      if (used >= v.quantity) {
+        return NextResponse.json(
+          { ok: false, error: "voucher_used_up" },
+          { status: 409 },
+        );
+      }
+      usedVoucher = v.code;
+      d.total = itemsTotal - v.amount;
+      const line = `Mã giảm giá ${v.code}: -${formatPrice(v.amount)}`;
       d.note = d.note ? `${d.note}\n${line}` : line;
+    } else {
+      d.total = itemsTotal;
     }
   }
 
@@ -86,6 +101,7 @@ export async function POST(req: Request) {
         total: d.type === "purchase" ? d.total : null,
         model: d.type === "tradein" ? d.model : null,
         upgradeTo: d.type === "tradein" ? (d.upgradeTo ?? null) : null,
+        voucher: usedVoucher,
         userId: user?.id ?? null,
       },
     });

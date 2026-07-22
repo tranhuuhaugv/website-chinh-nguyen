@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import Link from "next/link";
 import { useCart } from "./CartContext";
 import { ProductImage } from "@/components/ProductImage";
@@ -52,16 +52,32 @@ export function CartCheckout({
   const [voucherInput, setVoucherInput] = useState("");
   const [appliedCode, setAppliedCode] = useState<string | null>(null);
   const [voucherError, setVoucherError] = useState("");
+  // Số lượt còn lại của từng mã (lấy từ server) — chặn mã đã hết ngay ở giỏ.
+  const [remaining, setRemaining] = useState<Record<string, number> | null>(
+    null,
+  );
   const appliedVoucher = appliedCode ? findVoucher(appliedCode) : undefined;
   const voucherValid =
     !!appliedVoucher && subtotal >= appliedVoucher.minSubtotal;
   const discount = voucherValid ? appliedVoucher.amount : 0;
   const total = subtotal - discount;
 
+  // Lấy số lượt còn lại 1 lần khi mở giỏ hàng.
+  useEffect(() => {
+    fetch("/api/vouchers")
+      .then((r) => r.json())
+      .then((d) => setRemaining(d?.remaining ?? {}))
+      .catch(() => setRemaining({}));
+  }, []);
+
   function applyVoucher() {
     const v = findVoucher(voucherInput);
     if (!v) {
       setVoucherError("Mã giảm giá không hợp lệ");
+      return;
+    }
+    if (remaining && (remaining[v.code] ?? 0) <= 0) {
+      setVoucherError(`Mã ${v.code} đã hết lượt sử dụng`);
       return;
     }
     if (subtotal < v.minSubtotal) {
@@ -111,11 +127,26 @@ export function CartCheckout({
     };
     setSending(true);
     try {
-      await fetch("/api/order", {
+      const res = await fetch("/api/order", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(payload),
       });
+      // Mã vừa hết lượt giữa lúc khách bấm đặt -> báo để khách bỏ mã, không tạo đơn.
+      if (res.status === 409) {
+        const j = await res.json().catch(() => null);
+        if (j?.error === "voucher_used_up") {
+          setSending(false);
+          setAppliedCode(null);
+          setVoucherError(
+            "Mã giảm giá vừa hết lượt sử dụng. Vui lòng đặt lại đơn.",
+          );
+          setRemaining((r) =>
+            appliedVoucher ? { ...(r ?? {}), [appliedVoucher.code]: 0 } : r,
+          );
+          return;
+        }
+      }
     } catch {
       // bỏ qua lỗi mạng — vẫn xác nhận đơn cho khách
     }

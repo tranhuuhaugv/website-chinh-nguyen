@@ -27,6 +27,7 @@ import {
   getHeroBanners,
   getSetting,
   getSideBanners,
+  getVoucherUsage,
 } from "@/lib/data";
 import { SITE } from "@/lib/site";
 
@@ -91,6 +92,8 @@ export default async function HomePage() {
   ]);
   const flashOn = flashSetting === "true" && flashProducts.length > 0;
   const vouchersOn = voucherSetting === "true";
+  // Chỉ đếm số lượt voucher khi khối đang bật (tránh query thừa mỗi lần render).
+  const voucherUsage = vouchersOn ? await getVoucherUsage() : {};
 
   return (
     <CompareProvider>
@@ -107,7 +110,7 @@ export default async function HomePage() {
       <main>
         <CategoryNav />
         <HeroSlider slides={HERO_SLIDES} imageSlides={heroBanners} />
-        {vouchersOn && <VoucherStrip />}
+        {vouchersOn && <VoucherStrip usage={voucherUsage} />}
         {flashOn && <FlashSale products={flashProducts} />}
         <CategoryGrid categories={categories} />
         <FeaturedProducts products={featured} tabs={FEATURED_BRAND_TABS} />

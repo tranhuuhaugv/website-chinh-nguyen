@@ -10,7 +10,7 @@ async function requireAdmin(): Promise<boolean> {
   return token ? verifyAdminToken(token) : false;
 }
 
-const ALLOWED = new Set(["flashSaleEnabled"]);
+const ALLOWED = new Set(["flashSaleEnabled", "vouchersEnabled"]);
 
 export async function POST(req: Request) {
   if (!(await requireAdmin())) {
