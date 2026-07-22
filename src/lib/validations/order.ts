@@ -21,8 +21,8 @@ export const purchaseSchema = z.object({
   type: z.literal("purchase"),
   name: z.string().min(2, "Vui lòng nhập họ và tên"),
   phone,
-  // Email không bắt buộc — có thì gửi thư xác nhận cho khách.
-  email: z.union([z.string().email("Email không hợp lệ"), z.literal("")]).optional(),
+  // Email BẮT BUỘC — để gửi thư xác nhận đơn hàng cho khách.
+  email: z.string().min(1, "Vui lòng nhập email").email("Email không hợp lệ"),
   address: z.string().min(5, "Vui lòng nhập địa chỉ"),
   note: z.string().optional(),
   items: z

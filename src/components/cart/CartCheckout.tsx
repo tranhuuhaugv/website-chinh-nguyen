@@ -399,7 +399,7 @@ export function CartCheckout({
             {field("phone", "Số điện thoại", "0912345678")}
             {field(
               "email",
-              "Email (để nhận xác nhận đơn — không bắt buộc)",
+              "Email (nhận xác nhận đơn hàng)",
               "email@example.com",
               true,
             )}
