@@ -28,8 +28,14 @@ export interface Product {
   cpu: string;
   ram: string;
   storage: string;
+  /** Dung lượng gộp hiển thị nhanh, VD "8GB - 256GB". Trống -> tự ghép ram + storage. */
+  capacity?: string;
   /** Thông số thật (nhập từ admin / import). Trống thì trang chi tiết bỏ qua dòng đó. */
   gpu?: string;
+  /** MUX Switch: "Có" / "Không" / trống. */
+  mux?: string;
+  /** Webcam: mô tả (VD "HD 720p"). */
+  webcam?: string;
   screen?: string;
   resolution?: string;
   refresh?: string;

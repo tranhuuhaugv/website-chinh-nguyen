@@ -42,7 +42,10 @@ model Product {
   cpu         String
   ram         String
   storage     String
-  gpu         String?
+  capacity    String? // dung lượng gộp hiển thị nhanh, VD "8GB - 256GB"
+  gpu         String? // Card VGA
+  mux         String? // MUX Switch: "Có" / "Không"
+  webcam      String?
   screen      String?
   resolution  String?
   refresh     String?

@@ -34,10 +34,12 @@ export function buildSpecGroups(product: Product): SpecGroup[] {
     {
       group: "Màn hình & Đồ họa",
       rows: rows([
+        row("Card VGA", product.gpu),
+        row("MUX Switch", product.mux),
         row("Màn hình", product.screen),
         row("Độ phân giải", product.resolution),
         row("Tần số quét", product.refresh),
-        row("Card đồ họa", product.gpu),
+        row("Webcam", product.webcam),
       ]),
     },
     {

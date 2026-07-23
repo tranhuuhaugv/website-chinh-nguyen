@@ -276,6 +276,19 @@ export default async function ProductPage({
                 </div>
               </div>
 
+              {/* Dung lượng: dùng ô admin điền, để trống thì tự ghép RAM - Ổ cứng.
+                  Ẩn khi máy có biến thể cùng dòng (bộ chọn bên dưới đã là Dung lượng). */}
+              {variants.length === 0 && (
+                <div className="mt-5">
+                  <p className="mb-2 text-[12px] font-semibold uppercase tracking-wide text-muted">
+                    Dung lượng
+                  </p>
+                  <span className="inline-block rounded-xl border border-green bg-green-tint px-4 py-2 text-[13px] font-semibold text-green-d">
+                    {product.capacity || `${product.ram} - ${product.storage}`}
+                  </span>
+                </div>
+              )}
+
               {/* Chọn cấu hình khác (máy cùng dòng admin đã nối link) */}
               <ProductVariants options={variants} currentSlug={product.slug} />
 
