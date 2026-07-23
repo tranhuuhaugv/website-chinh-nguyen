@@ -29,6 +29,13 @@ export const revalidate = 3600;
 const SITE_URL =
   process.env.NEXT_PUBLIC_SITE_URL ?? "https://laptopchinhnguyen.vn";
 
+// Lấy gọn dung lượng để hiện chip "Dung lượng": "16GB DDR5 5600MHz" -> "16GB",
+// "512GB PCIe NVMe M.2 SSD Gen 4" -> "512GB". Không khớp thì giữ nguyên chuỗi.
+function shortSize(s: string): string {
+  const m = s.match(/\d+(\.\d+)?\s*(TB|GB)/i);
+  return m ? m[0].replace(/\s+/g, "") : s;
+}
+
 export async function generateStaticParams() {
   const slugs = await getAllProductSlugs();
   return slugs.map((slug) => ({ slug }));
@@ -183,18 +190,13 @@ export default async function ProductPage({
 
           <div className="mt-5 grid grid-cols-1 gap-8 lg:grid-cols-2">
             <div>
+              {/* Không gắn badge lên ảnh chi tiết để khỏi che sản phẩm —
+                  tình trạng giảm giá / máy mới đã hiển thị rõ ở ô giá bên phải. */}
               <ProductGallery
                 accent={product.accent}
                 slug={product.slug}
                 name={product.name}
                 images={product.images}
-                badge={
-                  product.isNew
-                    ? "Mới"
-                    : discount > 0
-                      ? `-${discount}%`
-                      : undefined
-                }
               />
 
               {/* Cam kết — ngay dưới ảnh (không ghim đáy để khỏi hở khoảng trên) */}
@@ -259,22 +261,8 @@ export default async function ProductPage({
                 </div>
               </div>
 
-              {/* Cấu hình */}
-              <div className="mt-5">
-                <p className="mb-2 text-[12px] font-semibold uppercase tracking-wide text-muted">
-                  Cấu hình
-                </p>
-                <div className="flex flex-wrap gap-2">
-                  {[product.cpu, product.ram, product.storage].map((s) => (
-                    <span
-                      key={s}
-                      className="rounded-xl border border-green bg-green-tint px-4 py-2 text-[13px] font-semibold text-green-d"
-                    >
-                      {s}
-                    </span>
-                  ))}
-                </div>
-              </div>
+              {/* Cấu hình chi tiết xem ở bảng "Thông số kỹ thuật" bên dưới —
+                  bên phải chỉ giữ Dung lượng cho gọn. */}
 
               {/* Dung lượng: dùng ô admin điền, để trống thì tự ghép RAM - Ổ cứng.
                   Ẩn khi máy có biến thể cùng dòng (bộ chọn bên dưới đã là Dung lượng). */}
@@ -284,7 +272,8 @@ export default async function ProductPage({
                     Dung lượng
                   </p>
                   <span className="inline-block rounded-xl border border-green bg-green-tint px-4 py-2 text-[13px] font-semibold text-green-d">
-                    {product.capacity || `${product.ram} - ${product.storage}`}
+                    {product.capacity ||
+                      `${shortSize(product.ram)} - ${shortSize(product.storage)}`}
                   </span>
                 </div>
               )}
