@@ -23,6 +23,7 @@ export default async function EditProductPage({
   return (
     <AdminForm
       title={`Sửa: ${product.name}`}
+      singleColumn
       fields={productFields(names)}
       initialValues={{
         name: product.name,

@@ -47,6 +47,7 @@ export function AdminForm({
   method = "POST",
   extra,
   redirectTo,
+  singleColumn = false,
 }: {
   title: string;
   fields: AdminField[];
@@ -60,6 +61,8 @@ export function AdminForm({
   extra?: Record<string, string>;
   /** Điều hướng sau khi lưu thành công (mặc định = backHref). */
   redirectTo?: string;
+  /** Xếp mọi field 1 cột (dễ đọc/điền cho form dài như sản phẩm). */
+  singleColumn?: boolean;
 }) {
   const router = useRouter();
   const [values, setValues] = useState<Record<string, string>>(() =>
@@ -132,15 +135,24 @@ export function AdminForm({
           </p>
         )}
 
-        {/* Màn hình rộng -> 3 cột, không thì ô nhập dài lê thê khi form tràn hết bề ngang. */}
-        <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 xl:grid-cols-3">
+        {/* singleColumn: xếp dọc 1 cột (form dài như sản phẩm dễ điền). Mặc định:
+            màn hình rộng -> 3 cột cho khỏi dài lê thê khi form tràn hết bề ngang. */}
+        <div
+          className={
+            singleColumn
+              ? "grid grid-cols-1 gap-4"
+              : "grid grid-cols-1 gap-4 sm:grid-cols-2 xl:grid-cols-3"
+          }
+        >
           {fields.map((f) => {
             // Tiêu đề mục (ngăn cách các nhóm field)
             if (f.type === "heading") {
               return (
                 <div
                   key={f.name}
-                  className="mt-2 border-b border-line pb-2 sm:col-span-2 xl:col-span-3"
+                  className={`mt-2 border-b border-line pb-2 ${
+                    singleColumn ? "" : "sm:col-span-2 xl:col-span-3"
+                  }`}
                 >
                   <h3 className="text-[14px] font-bold text-ink">{f.label}</h3>
                   {f.placeholder && (
@@ -160,14 +172,16 @@ export function AdminForm({
             <div
               key={f.name}
               className={
-                // Ô cần cả hàng (ảnh, khối mô tả, tích nhu cầu...) -> chiếm hết cột.
-                // Ô `full` (tên máy, slug...) chỉ cần rộng hơn ô thường -> 2 cột,
-                // không thì ở lưới 3 cột chúng dài lê thê gần 2 mét.
-                WIDE_TYPES.has(f.type ?? "text")
-                  ? "sm:col-span-2 xl:col-span-3"
-                  : f.full
-                    ? "sm:col-span-2"
-                    : ""
+                singleColumn
+                  ? ""
+                  : // Ô cần cả hàng (ảnh, khối mô tả, tích nhu cầu...) -> chiếm hết cột.
+                    // Ô `full` (tên máy, slug...) chỉ cần rộng hơn ô thường -> 2 cột,
+                    // không thì ở lưới 3 cột chúng dài lê thê gần 2 mét.
+                    WIDE_TYPES.has(f.type ?? "text")
+                    ? "sm:col-span-2 xl:col-span-3"
+                    : f.full
+                      ? "sm:col-span-2"
+                      : ""
               }
             >
               <label className="mb-1.5 block text-[13px] font-medium text-ink">

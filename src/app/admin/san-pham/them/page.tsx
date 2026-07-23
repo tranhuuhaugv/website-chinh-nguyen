@@ -12,6 +12,7 @@ export default async function AddProductPage() {
   return (
     <AdminForm
       title="Thêm sản phẩm"
+      singleColumn
       fields={productFields(names)}
       initialValues={{
         brand: names[0] ?? "Dell",

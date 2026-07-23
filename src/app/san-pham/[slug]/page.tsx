@@ -396,7 +396,7 @@ export default async function ProductPage({
             <h2 className="text-[20px] font-bold text-ink">
               Thông số kỹ thuật
             </h2>
-            <div className="mt-4 grid grid-cols-1 gap-x-10 gap-y-6 md:grid-cols-2">
+            <div className="mt-4 grid grid-cols-1 gap-y-6">
               {specGroups.map((group) => (
                 <div key={group.group}>
                   <h3 className="mb-2 flex items-center gap-2 text-[14px] font-bold text-green-d">
