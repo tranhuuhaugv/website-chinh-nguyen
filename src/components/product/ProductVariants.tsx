@@ -1,5 +1,6 @@
 import Link from "next/link";
 import type { VariantOption } from "@/lib/data";
+import { shortSize } from "@/lib/format";
 
 // Nút chọn cấu hình (máy cùng dòng khác RAM/ổ cứng, do admin nối link).
 // Mỗi bản là 1 sản phẩm riêng -> bấm là sang trang máy đó. Server Component:
@@ -25,7 +26,10 @@ export function ProductVariants({
       </p>
       <div className="flex flex-wrap gap-2">
         {options.map((o) => {
-          const label = `${o.ram} - ${o.storage}`;
+          // Ưu tiên ô Dung lượng admin nhập; không có thì tự ghép gọn RAM - Ổ cứng.
+          const label = o.capacity?.trim()
+            ? o.capacity
+            : `${shortSize(o.ram)} - ${shortSize(o.storage)}`;
           if (o.slug === currentSlug) {
             return (
               <span

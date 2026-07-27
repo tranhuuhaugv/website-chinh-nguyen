@@ -29,13 +29,6 @@ export const revalidate = 3600;
 const SITE_URL =
   process.env.NEXT_PUBLIC_SITE_URL ?? "https://laptopchinhnguyen.vn";
 
-// Lấy gọn dung lượng để hiện chip "Dung lượng": "16GB DDR5 5600MHz" -> "16GB",
-// "512GB PCIe NVMe M.2 SSD Gen 4" -> "512GB". Không khớp thì giữ nguyên chuỗi.
-function shortSize(s: string): string {
-  const m = s.match(/\d+(\.\d+)?\s*(TB|GB)/i);
-  return m ? m[0].replace(/\s+/g, "") : s;
-}
-
 export async function generateStaticParams() {
   const slugs = await getAllProductSlugs();
   return slugs.map((slug) => ({ slug }));
@@ -261,24 +254,9 @@ export default async function ProductPage({
                 </div>
               </div>
 
-              {/* Cấu hình chi tiết xem ở bảng "Thông số kỹ thuật" bên dưới —
-                  bên phải chỉ giữ Dung lượng cho gọn. */}
-
-              {/* Dung lượng: dùng ô admin điền, để trống thì tự ghép RAM - Ổ cứng.
-                  Ẩn khi máy có biến thể cùng dòng (bộ chọn bên dưới đã là Dung lượng). */}
-              {variants.length === 0 && (
-                <div className="mt-5">
-                  <p className="mb-2 text-[12px] font-semibold uppercase tracking-wide text-muted">
-                    Dung lượng
-                  </p>
-                  <span className="inline-block rounded-xl border border-green bg-green-tint px-4 py-2 text-[13px] font-semibold text-green-d">
-                    {product.capacity ||
-                      `${shortSize(product.ram)} - ${shortSize(product.storage)}`}
-                  </span>
-                </div>
-              )}
-
-              {/* Chọn cấu hình khác (máy cùng dòng admin đã nối link) */}
+              {/* Cấu hình chi tiết xem ở bảng "Thông số kỹ thuật" bên dưới.
+                  Khối "Dung lượng" (dùng ô admin nhập / tự ghép gọn RAM - Ổ cứng,
+                  kèm nút chọn máy cùng dòng nếu có) do ProductVariants lo. */}
               <ProductVariants options={variants} currentSlug={product.slug} />
 
               {/* Ưu đãi */}

@@ -1,7 +1,7 @@
 import Image from "next/image";
 import Link from "next/link";
 import type { Product } from "@/lib/types";
-import { formatPrice } from "@/lib/format";
+import { formatPrice, shortCpu, shortSize } from "@/lib/format";
 import { ProductImage } from "./ProductImage";
 import { AddToCartButton } from "./cart/AddToCartButton";
 import { CompareButton } from "./compare/CompareButton";
@@ -92,17 +92,19 @@ export function ProductCard({
         </Link>
 
         <div className="mb-2.5 flex flex-wrap gap-1.5 max-[459px]:hidden">
+          {/* Cấu hình rút gọn: CPU bỏ phần mô tả trong ngoặc, RAM/ổ cứng lấy gọn
+              dung lượng — thẻ sản phẩm gọn, không tràn dài. */}
           <span className="flex items-center gap-1 rounded-md bg-bg px-2 py-1 text-[11px] text-ink-2">
             <CpuIcon className="h-3 w-3 text-green" />
-            {product.cpu}
+            {shortCpu(product.cpu)}
           </span>
           <span className="flex items-center gap-1 rounded-md bg-bg px-2 py-1 text-[11px] text-ink-2">
             <RamIcon className="h-3 w-3 text-green" />
-            {product.ram}
+            {shortSize(product.ram)}
           </span>
           <span className="flex items-center gap-1 rounded-md bg-bg px-2 py-1 text-[11px] text-ink-2">
             <StorageIcon className="h-3 w-3 text-green" />
-            {product.storage}
+            {shortSize(product.storage)}
           </span>
         </div>
 

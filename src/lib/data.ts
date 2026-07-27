@@ -179,6 +179,7 @@ export interface VariantOption {
   ram: string;
   storage: string;
   price: number;
+  capacity?: string | null;
 }
 
 /** "512GB" -> 512, "1TB" -> 1024. Không đọc được -> 0 (xếp lên đầu). */
@@ -209,7 +210,13 @@ function xepNut(list: VariantOption[], slugDangXem: string): VariantOption[] {
   return [...dangXem, ...conLai];
 }
 
-const chonCot = { slug: true, ram: true, storage: true, price: true } as const;
+const chonCot = {
+  slug: true,
+  ram: true,
+  storage: true,
+  price: true,
+  capacity: true,
+} as const;
 
 /**
  * Nút chọn "Dung lượng" ở trang chi tiết.
@@ -229,6 +236,7 @@ export async function getProductVariants(
     ram: product.ram,
     storage: product.storage,
     price: product.price,
+    capacity: product.capacity ?? null,
   };
   const links = (product.variantSlugs ?? []).filter((s) => s !== product.slug);
   if (!links.length) return [banThan];
@@ -242,6 +250,7 @@ export async function getProductVariants(
           ram: p.ram,
           storage: p.storage,
           price: p.price,
+          capacity: p.capacity ?? null,
         })),
         banThan,
       ],
