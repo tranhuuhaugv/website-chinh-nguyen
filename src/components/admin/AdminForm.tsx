@@ -16,6 +16,7 @@ export interface AdminField {
   type?:
     | "text"
     | "number"
+    | "money" // ô tiền: tự chèn dấu chấm hàng nghìn (2000000 -> 2.000.000)
     | "textarea"
     | "select"
     | "image"
@@ -36,6 +37,12 @@ const WIDE_TYPES = new Set([
   "checkboxes",
   "heading",
 ]);
+
+/** Chèn dấu chấm hàng nghìn: "2000000" (hoặc "2.000.000") -> "2.000.000". */
+function formatMoney(raw: string): string {
+  const digits = (raw ?? "").replace(/\D/g, "");
+  return digits ? digits.replace(/\B(?=(\d{3})+(?!\d))/g, ".") : "";
+}
 
 export function AdminForm({
   title,
@@ -253,6 +260,15 @@ export function AdminForm({
                     </option>
                   ))}
                 </select>
+              ) : f.type === "money" ? (
+                <input
+                  type="text"
+                  inputMode="numeric"
+                  value={formatMoney(values[f.name])}
+                  onChange={(e) => set(f.name, formatMoney(e.target.value))}
+                  placeholder={f.placeholder}
+                  className={inputCls}
+                />
               ) : (
                 <input
                   type={f.type === "number" ? "number" : "text"}

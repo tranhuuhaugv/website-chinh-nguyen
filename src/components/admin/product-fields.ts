@@ -48,11 +48,11 @@ export function productFields(
         ...seriesOptions,
       ],
     },
-    { name: "price", label: "Giá bán (VNĐ) *", type: "number", placeholder: "8500000" },
+    { name: "price", label: "Giá bán (VNĐ) *", type: "money", placeholder: "8.500.000" },
     {
       name: "oldPrice",
       label: "Giá gốc gạch ngang (VNĐ)",
-      type: "number",
+      type: "money",
       placeholder: "Để trống nếu không giảm giá",
     },
 
@@ -84,18 +84,6 @@ export function productFields(
       type: "checkboxes",
       options: NEED_OPTIONS,
     },
-    { name: "gift", label: "Quà tặng kèm", placeholder: "Balo + chuột" },
-    { name: "badge", label: "Nhãn góc ảnh", placeholder: "Bán chạy" },
-    {
-      name: "accent",
-      label: "Màu ảnh minh hoạ (khi chưa có ảnh thật)",
-      type: "select",
-      options: ["dark", "blue", "red", "silver", "crimson"].map((v) => ({
-        value: v,
-        label: v,
-      })),
-    },
-    { name: "isNew", label: "Gắn nhãn 'Mới về'", type: "select", options: YES_NO },
     {
       name: "isFeatured",
       label: "Sản phẩm nổi bật (hiện ở trang chủ)",
@@ -103,12 +91,6 @@ export function productFields(
       options: YES_NO,
     },
     { name: "isFlashSale", label: "Đưa vào Flash Sale", type: "select", options: YES_NO },
-    {
-      name: "installmentPerMonth",
-      label: "Trả góp mỗi tháng (VNĐ)",
-      type: "number",
-      placeholder: "Để trống nếu không có",
-    },
     { name: "sort", label: "Thứ tự hiển thị (số nhỏ lên trước)", type: "number" },
 
     {
