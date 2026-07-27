@@ -322,6 +322,7 @@ export async function getCategories(): Promise<Category[]> {
     icon: c.icon as CategoryIconName,
     tag: c.tag ?? undefined,
     image: c.image ?? undefined,
+    group: c.group ?? undefined,
   }));
 }
 

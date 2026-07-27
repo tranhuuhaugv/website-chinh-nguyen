@@ -80,6 +80,8 @@ export interface Category {
   tag?: string;
   /** URL ảnh thật (Cloudinary / public). Bỏ trống -> hiện ô icon gradient. */
   image?: string;
+  /** Nhóm: "dong-may" (dòng máy theo hãng) ẩn khỏi lưới trang chủ. */
+  group?: string;
 }
 
 export type CategoryIconName =

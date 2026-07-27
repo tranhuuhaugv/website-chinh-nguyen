@@ -112,7 +112,11 @@ export default async function HomePage() {
         <HeroSlider slides={HERO_SLIDES} imageSlides={heroBanners} />
         {vouchersOn && <VoucherStrip usage={voucherUsage} />}
         {flashOn && <FlashSale products={flashProducts} />}
-        <CategoryGrid categories={categories} />
+        {/* Ẩn "dòng máy" (Lenovo ThinkPad...) khỏi lưới trang chủ — chúng chỉ
+            là danh mục con SEO, truy cập từ trang hãng / sản phẩm. */}
+        <CategoryGrid
+          categories={categories.filter((c) => c.group !== "dong-may")}
+        />
         <FeaturedProducts products={featured} tabs={FEATURED_BRAND_TABS} />
         <CustomerGallery photos={customerPhotos} />
         <BlogSection posts={posts} />
