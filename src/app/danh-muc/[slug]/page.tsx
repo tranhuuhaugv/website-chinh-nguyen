@@ -50,12 +50,30 @@ export default async function CategoryPage({
     getSeriesCategories(),
   ]);
   const name = category?.name ?? brand ?? "Danh mục sản phẩm";
+  const isSeriesPage = category?.group === "dong-may";
 
-  // Trên trang HÃNG: liệt kê các dòng máy của hãng đó (slug bắt đầu bằng slug hãng)
-  // -> điều hướng + liên kết nội bộ tốt cho SEO.
-  const brandSeries = brand
-    ? allSeries.filter((s) => s.slug.startsWith(`${params.slug}-`))
+  // Slug hãng để nhóm chip dòng máy: ở trang HÃNG là chính slug; ở trang DÒNG MÁY
+  // là phần đầu trước dấu "-" (vd "hp-elitebook" -> "hp"). Nhờ đó cả 2 loại trang
+  // đều hiện đủ chip các dòng của hãng để bấm qua lại (+ link nội bộ tốt cho SEO).
+  const brandSlug = brand
+    ? params.slug
+    : isSeriesPage
+      ? params.slug.split("-")[0]
+      : null;
+  const brandSeries = brandSlug
+    ? allSeries.filter((s) => s.slug.startsWith(`${brandSlug}-`))
     : [];
+  // Tên hãng: trang hãng dùng `brand`; trang dòng máy lấy từ hãng của SP trong dòng.
+  const brandName =
+    brand ??
+    (isSeriesPage
+      ? (allProducts.find((p) => p.series === params.slug)?.brand ?? null)
+      : null);
+  // Breadcrumb chèn cấp Hãng chỉ ở trang dòng máy (trang hãng đã là cấp đó rồi).
+  const brandCrumb =
+    isSeriesPage && brandName && brandSlug
+      ? { label: brandName, href: `/danh-muc/${brandSlug}` }
+      : null;
 
   // Lọc theo loại danh mục: hãng / tình trạng (mới-cũ) / nhu cầu / tất cả.
   const NEED_BY_SLUG: Record<string, string> = {
@@ -86,22 +104,51 @@ export default async function CategoryPage({
       <main className="py-6">
         <Container>
           <Breadcrumb
-            items={[{ label: "Trang chủ", href: "/" }, { label: name }]}
+            items={[
+              { label: "Trang chủ", href: "/" },
+              ...(brandCrumb ? [brandCrumb] : []),
+              { label: name },
+            ]}
           />
           <h1 className="mb-3 mt-3 text-[26px] font-bold text-ink">{name}</h1>
 
-          {/* Dòng máy của hãng — chip điều hướng + link nội bộ SEO */}
+          {/* Chip các dòng máy của hãng — hiện ở cả trang hãng lẫn trang dòng máy
+              để bấm qua lại; dòng đang xem được tô đậm. Link nội bộ tốt cho SEO. */}
           {brandSeries.length > 0 && (
             <div className="mb-5 flex flex-wrap gap-2">
-              {brandSeries.map((s) => (
+              {/* Chip "Tất cả <hãng>" quay về trang hãng */}
+              {brandSlug && (
                 <Link
-                  key={s.slug}
-                  href={`/danh-muc/${s.slug}`}
-                  className="rounded-full border border-line bg-white px-3.5 py-1.5 text-[13px] font-medium text-ink-2 transition hover:border-green hover:text-green-d"
+                  href={`/danh-muc/${brandSlug}`}
+                  className={`rounded-full border px-3.5 py-1.5 text-[13px] font-medium transition ${
+                    !isSeriesPage
+                      ? "border-green bg-green-tint text-green-d"
+                      : "border-line bg-white text-ink-2 hover:border-green hover:text-green-d"
+                  }`}
                 >
-                  {s.name}
+                  Tất cả {brandName ?? "hãng"}
                 </Link>
-              ))}
+              )}
+              {brandSeries.map((s) => {
+                const active = s.slug === params.slug;
+                return active ? (
+                  <span
+                    key={s.slug}
+                    aria-current="page"
+                    className="rounded-full border border-green bg-green-tint px-3.5 py-1.5 text-[13px] font-semibold text-green-d"
+                  >
+                    {s.name}
+                  </span>
+                ) : (
+                  <Link
+                    key={s.slug}
+                    href={`/danh-muc/${s.slug}`}
+                    className="rounded-full border border-line bg-white px-3.5 py-1.5 text-[13px] font-medium text-ink-2 transition hover:border-green hover:text-green-d"
+                  >
+                    {s.name}
+                  </Link>
+                );
+              })}
             </div>
           )}
 
