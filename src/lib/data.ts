@@ -83,6 +83,7 @@ function toProduct(p: PrismaProductWithBrand): Product {
     description: toRichHtml(p.description, "h3"),
     condition: (p.condition as ProductCondition) ?? "used",
     needs: p.needs ?? [],
+    series: p.series ?? undefined,
   };
 }
 
@@ -335,12 +336,15 @@ export interface CategorySeo {
   name: string;
   metaDescription: string | null;
   seoContent: string; // HTML đã sanitize; "" nếu chưa soạn
+  group: string | null; // "dong-may" -> trang lọc SP theo series
 }
 
 export async function getCategorySeo(slug: string): Promise<CategorySeo | null> {
   if (NO_DB) {
     const c = CATEGORIES.find((x) => x.slug === slug);
-    return c ? { name: c.name, metaDescription: null, seoContent: "" } : null;
+    return c
+      ? { name: c.name, metaDescription: null, seoContent: "", group: null }
+      : null;
   }
   const c = await prisma.category.findUnique({ where: { slug } });
   if (!c) return null;
@@ -348,7 +352,21 @@ export async function getCategorySeo(slug: string): Promise<CategorySeo | null> 
     name: c.name,
     metaDescription: c.metaDescription ?? null,
     seoContent: c.seoContent ? sanitizeRichText(c.seoContent) : "",
+    group: c.group ?? null,
   };
+}
+
+/** Danh sách dòng máy (Category group="dong-may") cho dropdown form SP + điều hướng. */
+export async function getSeriesCategories(): Promise<
+  { slug: string; name: string }[]
+> {
+  if (NO_DB) return [];
+  const rows = await prisma.category.findMany({
+    where: { group: "dong-may" },
+    orderBy: { name: "asc" },
+    select: { slug: true, name: true },
+  });
+  return rows.map((r) => ({ slug: r.slug, name: r.name }));
 }
 
 /** Lấy nguyên bản 1 danh mục cho form sửa admin (gồm cả trường SEO). */

@@ -7,7 +7,13 @@ import { FloatButtons } from "@/components/FloatButtons";
 import { ProductBrowser } from "@/components/product/ProductBrowser";
 import { CompareBar } from "@/components/compare/CompareBar";
 import { CompareProvider } from "@/components/compare/CompareContext";
-import { getAllProducts, getBrandBySlug, getCategorySeo } from "@/lib/data";
+import Link from "next/link";
+import {
+  getAllProducts,
+  getBrandBySlug,
+  getCategorySeo,
+  getSeriesCategories,
+} from "@/lib/data";
 import type { RawParams } from "@/lib/product-query";
 
 const SITE_URL =
@@ -37,12 +43,19 @@ export default async function CategoryPage({
   params: { slug: string };
   searchParams: RawParams;
 }) {
-  const [category, brand, allProducts] = await Promise.all([
+  const [category, brand, allProducts, allSeries] = await Promise.all([
     getCategorySeo(params.slug),
     getBrandBySlug(params.slug),
     getAllProducts(),
+    getSeriesCategories(),
   ]);
   const name = category?.name ?? brand ?? "Danh mục sản phẩm";
+
+  // Trên trang HÃNG: liệt kê các dòng máy của hãng đó (slug bắt đầu bằng slug hãng)
+  // -> điều hướng + liên kết nội bộ tốt cho SEO.
+  const brandSeries = brand
+    ? allSeries.filter((s) => s.slug.startsWith(`${params.slug}-`))
+    : [];
 
   // Lọc theo loại danh mục: hãng / tình trạng (mới-cũ) / nhu cầu / tất cả.
   const NEED_BY_SLUG: Record<string, string> = {
@@ -53,6 +66,9 @@ export default async function CategoryPage({
   let baseProducts = allProducts;
   if (brand) {
     baseProducts = allProducts.filter((p) => p.brand === brand);
+  } else if (category?.group === "dong-may") {
+    // Trang dòng máy (Lenovo ThinkPad, Lenovo Legion...) -> lọc theo cột series.
+    baseProducts = allProducts.filter((p) => p.series === params.slug);
   } else if (params.slug === "laptop-moi") {
     baseProducts = allProducts.filter((p) => p.condition === "new");
   } else if (params.slug === "laptop-cu") {
@@ -72,7 +88,22 @@ export default async function CategoryPage({
           <Breadcrumb
             items={[{ label: "Trang chủ", href: "/" }, { label: name }]}
           />
-          <h1 className="mb-5 mt-3 text-[26px] font-bold text-ink">{name}</h1>
+          <h1 className="mb-3 mt-3 text-[26px] font-bold text-ink">{name}</h1>
+
+          {/* Dòng máy của hãng — chip điều hướng + link nội bộ SEO */}
+          {brandSeries.length > 0 && (
+            <div className="mb-5 flex flex-wrap gap-2">
+              {brandSeries.map((s) => (
+                <Link
+                  key={s.slug}
+                  href={`/danh-muc/${s.slug}`}
+                  className="rounded-full border border-line bg-white px-3.5 py-1.5 text-[13px] font-medium text-ink-2 transition hover:border-green hover:text-green-d"
+                >
+                  {s.name}
+                </Link>
+              ))}
+            </div>
+          )}
 
           <ProductBrowser
             basePath={`/danh-muc/${params.slug}`}

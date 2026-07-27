@@ -8,7 +8,10 @@ const YES_NO = [
   { value: "co", label: "Có" },
 ];
 
-export function productFields(brandNames: string[]): AdminField[] {
+export function productFields(
+  brandNames: string[],
+  seriesOptions: { value: string; label: string }[] = [],
+): AdminField[] {
   return [
     // Ảnh để ĐẦU form: việc đầu tiên khi thêm/sửa máy là xem/thay ảnh.
     { name: "hAnh", label: "Ảnh sản phẩm", type: "heading" },
@@ -34,6 +37,15 @@ export function productFields(brandNames: string[]): AdminField[] {
       options: [
         { value: "used", label: "Máy cũ (đã qua sử dụng)" },
         { value: "new", label: "Máy mới" },
+      ],
+    },
+    {
+      name: "series",
+      label: "Dòng máy (danh mục con theo hãng — dễ SEO & quản lý)",
+      type: "select",
+      options: [
+        { value: "", label: "— Không thuộc dòng nào —" },
+        ...seriesOptions,
       ],
     },
     { name: "price", label: "Giá bán (VNĐ) *", type: "number", placeholder: "8500000" },

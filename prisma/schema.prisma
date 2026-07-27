@@ -67,6 +67,9 @@ model Product {
   flashSold           Int?
   accent              String  @default("dark")
   images              String[]
+  // Dòng máy (series) = slug danh mục con theo hãng, VD "lenovo-thinkpad".
+  // Trang /danh-muc/<series> (Category group="dong-may") lọc SP theo cột này.
+  series              String?
   needs               String[] // slug nhu cầu: van-phong, gaming, sinh-vien...
   commitments         String[]
   description         Json? // các khối nội dung (đoạn văn / ảnh)
@@ -86,6 +89,7 @@ model Product {
   @@index([brandId])
   @@index([createdAt])
   @@index([isFeatured]) // trang chủ lọc theo cờ này
+  @@index([series]) // trang dòng máy lọc theo cột này
 }
 
 model BlogPost {

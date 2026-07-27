@@ -110,6 +110,7 @@ async function buildData(body: Body, selfSlug: string) {
     ports: str(body.ports) || null,
     warranty: str(body.warranty) || null,
     condition: str(body.condition) === "new" ? "new" : "used",
+    series: str(body.series) || null,
     needs: list(body.needs),
     images: list(body.images),
     variantSlugs: variantSlugs(body.variantLinks, selfSlug),

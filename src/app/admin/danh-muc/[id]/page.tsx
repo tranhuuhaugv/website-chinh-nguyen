@@ -13,6 +13,7 @@ const GROUP_OPTIONS = [
   { value: "", label: "— Không nhóm —" },
   { value: "nhu-cau", label: "Theo nhu cầu" },
   { value: "thuong-hieu", label: "Theo thương hiệu" },
+  { value: "dong-may", label: "Dòng máy (SP gắn dòng này sẽ hiện ở đây)" },
   { value: "khac", label: "Khác" },
 ];
 

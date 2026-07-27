@@ -69,6 +69,8 @@ export interface Product {
   condition?: ProductCondition;
   /** Nhóm nhu cầu để lọc/SEO: van-phong, gaming, do-hoa... */
   needs?: string[];
+  /** Dòng máy (series) = slug danh mục con theo hãng, VD "lenovo-thinkpad". */
+  series?: string;
 }
 
 export interface Category {
