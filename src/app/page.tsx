@@ -10,7 +10,7 @@ import { Footer } from "@/components/Footer";
 import { Header } from "@/components/Header";
 import { HeroSlider } from "@/components/HeroSlider";
 import { SideBanners } from "@/components/SideBanners";
-import { TrustBar } from "@/components/TrustBar";
+import { TradeInCTA } from "@/components/TradeInCTA";
 import { CompareBar } from "@/components/compare/CompareBar";
 import { CompareProvider } from "@/components/compare/CompareContext";
 import {
@@ -119,8 +119,8 @@ export default async function HomePage() {
         />
         <FeaturedProducts products={featured} tabs={FEATURED_BRAND_TABS} />
         <CustomerGallery photos={customerPhotos} />
+        <TradeInCTA />
         <BlogSection posts={posts} />
-        <TrustBar />
       </main>
       <Footer />
       <FloatButtons />
