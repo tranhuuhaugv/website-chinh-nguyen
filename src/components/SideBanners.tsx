@@ -29,7 +29,10 @@ function SideFrame({
   return (
     <aside
       className={`fixed top-[130px] z-40 hidden w-[150px] min-[1560px]:block ${
-        side === "left" ? "left-4" : "right-4"
+        // Đặt ngay sát cột nội dung (rộng 1200px, canh giữa): 600 + 150 + 16 = 766.
+        side === "left"
+          ? "left-[calc(50%-766px)]"
+          : "right-[calc(50%-766px)]"
       }`}
     >
       <div className="relative">

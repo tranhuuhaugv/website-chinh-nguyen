@@ -43,9 +43,9 @@ export function VoucherStrip({ usage = {} }: { usage?: Record<string, number> })
   }
 
   return (
-    <section className="py-[18px]">
+    <section className="py-[18px] max-[900px]:py-2.5">
       <Container>
-        <div className="grid grid-cols-3 gap-4 max-[900px]:grid-cols-1">
+        <div className="grid grid-cols-3 gap-4 max-[900px]:grid-cols-1 max-[900px]:gap-2">
           {VOUCHERS.map((v, i) => {
             const style = STYLES[i % STYLES.length];
             const remaining = Math.max(0, v.quantity - (usage[v.code] ?? 0));
@@ -59,15 +59,15 @@ export function VoucherStrip({ usage = {} }: { usage?: Record<string, number> })
               >
                 {/* Vế trái: mệnh giá */}
                 <div
-                  className={`flex w-[112px] shrink-0 flex-col items-center justify-center gap-0.5 bg-gradient-to-br px-2 text-white ${
+                  className={`flex w-[112px] shrink-0 flex-col items-center justify-center gap-0.5 bg-gradient-to-br px-2 text-white max-[900px]:w-[86px] ${
                     soldOut ? "grayscale" : style.panel
                   } ${soldOut ? "bg-[#94A3B8]" : ""}`}
                 >
-                  <TagIcon className="h-4 w-4 opacity-80" />
-                  <b className="text-[19px] font-extrabold leading-tight">
+                  <TagIcon className="h-4 w-4 opacity-80 max-[900px]:h-3.5 max-[900px]:w-3.5" />
+                  <b className="text-[19px] font-extrabold leading-tight max-[900px]:text-[16px]">
                     {Math.round(v.amount / 1000)}K
                   </b>
-                  <span className="text-[10.5px] uppercase tracking-wide text-white/75">
+                  <span className="text-[10.5px] uppercase tracking-wide text-white/75 max-[900px]:text-[9.5px]">
                     Voucher
                   </span>
                 </div>
@@ -79,12 +79,12 @@ export function VoucherStrip({ usage = {} }: { usage?: Record<string, number> })
                 </div>
 
                 {/* Vế phải: mã + điều kiện + số còn lại + nút chép */}
-                <div className="flex flex-1 items-center justify-between gap-3 px-4 py-3.5">
+                <div className="flex flex-1 items-center justify-between gap-3 px-4 py-3.5 max-[900px]:px-3 max-[900px]:py-2.5">
                   <div className="min-w-0">
-                    <b className="block text-[15.5px] font-extrabold tracking-wide text-ink">
+                    <b className="block text-[15.5px] font-extrabold tracking-wide text-ink max-[900px]:text-[14px]">
                       {v.code}
                     </b>
-                    <p className="mt-0.5 text-[12px] leading-snug text-muted">
+                    <p className="mt-0.5 text-[12px] leading-snug text-muted max-[900px]:text-[11px]">
                       Giảm {formatPrice(v.amount)} cho đơn từ{" "}
                       {formatPrice(v.minSubtotal)}
                     </p>
@@ -100,7 +100,7 @@ export function VoucherStrip({ usage = {} }: { usage?: Record<string, number> })
                     type="button"
                     onClick={() => copy(v.code)}
                     disabled={soldOut}
-                    className={`flex h-9 shrink-0 items-center gap-1.5 rounded-full px-3.5 text-[12.5px] font-bold transition ${
+                    className={`flex h-9 shrink-0 items-center gap-1.5 rounded-full px-3.5 text-[12.5px] font-bold transition max-[900px]:h-8 max-[900px]:px-3 max-[900px]:text-[11.5px] ${
                       soldOut
                         ? "cursor-not-allowed bg-[#E5E7EB] text-muted"
                         : copied === v.code
