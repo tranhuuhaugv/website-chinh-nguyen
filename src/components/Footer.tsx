@@ -15,7 +15,6 @@ import { SITE } from "@/lib/site";
 const ABOUT_LINKS = [
   { href: "/gioi-thieu", label: "Giới thiệu" },
   { href: "/he-thong-cua-hang", label: "Hệ thống cửa hàng" },
-  { href: "/tuyen-dung", label: "Tuyển dụng" },
   { href: "/lien-he", label: "Liên hệ" },
 ];
 

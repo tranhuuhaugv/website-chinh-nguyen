@@ -525,7 +525,6 @@ export const STATIC_PAGES: StaticPageInfo[] = [
   { id: "gioi-thieu", title: "Giới thiệu", path: "/gioi-thieu" },
   { id: "lien-he", title: "Liên hệ", path: "/lien-he" },
   { id: "he-thong-cua-hang", title: "Hệ thống cửa hàng", path: "/he-thong-cua-hang" },
-  { id: "tuyen-dung", title: "Tuyển dụng", path: "/tuyen-dung" },
   { id: "thu-cu-doi-moi", title: "Thu cũ đổi mới", path: "/thu-cu-doi-moi" },
   { id: "bao-hanh", title: "Chính sách bảo hành", path: "/chinh-sach/bao-hanh" },
   { id: "doi-tra", title: "Chính sách đổi trả", path: "/chinh-sach/doi-tra" },

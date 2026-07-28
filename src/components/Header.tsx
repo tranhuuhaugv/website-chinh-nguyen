@@ -35,9 +35,6 @@ export function Header() {
             <Link href="/chinh-sach/bao-hanh" className="transition hover:text-white">
               Bảo hành
             </Link>
-            <Link href="/tuyen-dung" className="transition hover:text-white">
-              Tuyển dụng
-            </Link>
           </nav>
         </Container>
       </div>
