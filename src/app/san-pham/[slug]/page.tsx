@@ -12,8 +12,15 @@ import { ProductPurchase } from "@/components/product/ProductPurchase";
 import { ProductVariants } from "@/components/product/ProductVariants";
 import { CompareBar } from "@/components/compare/CompareBar";
 import { CompareProvider } from "@/components/compare/CompareContext";
-import { StarIcon } from "@/components/icons";
+import {
+  InstallmentIcon,
+  MapPinIcon,
+  MessengerIcon,
+  PhoneIcon,
+  StarIcon,
+} from "@/components/icons";
 import { CommitmentCards } from "@/components/product/CommitmentCards";
+import { SITE } from "@/lib/site";
 import {
   getAllProductSlugs,
   getProductBySlug,
@@ -293,6 +300,82 @@ export default async function ProductPage({
                 <div className="mt-3 border-t border-green/20 pt-3 lg:hidden">
                   <CommitmentCards condition={product.condition} />
                 </div>
+              </div>
+
+              {/* Khối bổ sung — CHỈ PC: lấp khoảng trống cột phải + thêm chi tiết
+                  hữu ích (trả góp, tư vấn, cửa hàng). Mobile ẩn để khỏi dài. */}
+              {product.installmentPerMonth ? (
+                <div className="mt-3 flex items-center gap-3 rounded-2xl border border-line bg-white p-4 max-lg:hidden">
+                  <span className="flex h-11 w-11 shrink-0 items-center justify-center rounded-xl bg-green-soft text-green-d">
+                    <InstallmentIcon className="h-5 w-5" />
+                  </span>
+                  <div className="min-w-0">
+                    <p className="text-[14px] font-bold text-ink">
+                      Trả góp 0% lãi suất
+                    </p>
+                    <p className="text-[12.5px] leading-snug text-ink-2">
+                      Chỉ từ{" "}
+                      <b className="text-sale">
+                        {formatPrice(product.installmentPerMonth)}
+                      </b>
+                      /tháng · duyệt nhanh qua thẻ tín dụng hoặc công ty tài
+                      chính.
+                    </p>
+                  </div>
+                </div>
+              ) : null}
+
+              <div className="mt-3 rounded-2xl border border-line bg-white p-4 max-lg:hidden">
+                <p className="text-[14px] font-bold text-ink">
+                  Cần tư vấn cấu hình?
+                </p>
+                <p className="mt-0.5 text-[12.5px] leading-snug text-ink-2">
+                  Chính Nguyễn giúp bạn chọn máy hợp nhu cầu &amp; túi tiền —
+                  hoàn toàn miễn phí.
+                </p>
+                <div className="mt-3 flex flex-wrap gap-2">
+                  <a
+                    href={`tel:${SITE.hotlineTel}`}
+                    className="flex items-center gap-1.5 rounded-lg bg-green-d px-3.5 py-2 text-[13px] font-semibold text-white transition hover:bg-green-dd"
+                  >
+                    <PhoneIcon className="h-4 w-4" />
+                    {SITE.hotline}
+                  </a>
+                  <a
+                    href={SITE.messenger}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="flex items-center gap-1.5 rounded-lg border border-line px-3.5 py-2 text-[13px] font-semibold text-ink transition hover:border-green hover:text-green-d"
+                  >
+                    <MessengerIcon className="h-4 w-4" />
+                    Chat Messenger
+                  </a>
+                </div>
+              </div>
+
+              <div className="mt-3 rounded-2xl border border-line bg-white p-4 max-lg:hidden">
+                <p className="flex items-center gap-2 text-[14px] font-bold text-ink">
+                  <MapPinIcon className="h-[18px] w-[18px] shrink-0 text-green" />
+                  Xem &amp; nhận máy tại cửa hàng
+                </p>
+                <ul className="mt-2.5 flex flex-col gap-2.5">
+                  {SITE.stores.map((s) => (
+                    <li
+                      key={s.address}
+                      className="flex gap-2 text-[12.5px] leading-snug text-ink-2"
+                    >
+                      <span className="mt-1 h-1.5 w-1.5 shrink-0 rounded-full bg-green" />
+                      <span>
+                        <b className="text-ink">{s.name}</b>
+                        <br />
+                        {s.address}
+                      </span>
+                    </li>
+                  ))}
+                </ul>
+                <p className="mt-2.5 border-t border-line pt-2.5 text-[12px] text-muted">
+                  Giờ mở cửa: {SITE.hours}
+                </p>
               </div>
 
               {/* Mua hàng — ghim xuống đáy cột để ngang hàng khối cam kết bên trái */}
