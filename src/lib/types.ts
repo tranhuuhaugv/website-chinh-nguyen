@@ -30,6 +30,8 @@ export interface Product {
   storage: string;
   /** Dung lượng gộp hiển thị nhanh, VD "8GB - 256GB". Trống -> tự ghép ram + storage. */
   capacity?: string;
+  /** Màu sắc máy (VD "Bạc", "Đen"). */
+  color?: string;
   /** Thông số thật (nhập từ admin / import). Trống thì trang chi tiết bỏ qua dòng đó. */
   gpu?: string;
   /** MUX Switch: "Có" / "Không" / trống. */

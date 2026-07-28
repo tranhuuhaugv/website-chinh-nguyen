@@ -56,6 +56,7 @@ function toProduct(p: PrismaProductWithBrand): Product {
     ram: p.ram,
     storage: p.storage,
     capacity: p.capacity ?? undefined,
+    color: p.color ?? undefined,
     gpu: p.gpu ?? undefined,
     mux: p.mux ?? undefined,
     webcam: p.webcam ?? undefined,

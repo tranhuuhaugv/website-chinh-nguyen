@@ -36,6 +36,7 @@ export default async function EditProductPage({
         ram: product.ram,
         storage: product.storage,
         capacity: s(product.capacity),
+        color: s(product.color),
         gpu: s(product.gpu),
         mux: s(product.mux),
         webcam: s(product.webcam),

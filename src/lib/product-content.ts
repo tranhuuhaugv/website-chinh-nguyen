@@ -44,6 +44,7 @@ export function buildSpecGroups(product: Product): SpecGroup[] {
       group: "Khác",
       rows: rows([
         row("Hệ điều hành", product.os),
+        row("Màu sắc", product.color),
         row("Pin", product.battery),
         row("Trọng lượng", product.weight),
         row("Cổng kết nối", product.ports),

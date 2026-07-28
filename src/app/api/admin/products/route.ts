@@ -100,6 +100,7 @@ async function buildData(body: Body, selfSlug: string) {
     ram: str(body.ram),
     storage: str(body.storage),
     capacity: str(body.capacity) || null,
+    color: str(body.color) || null,
     gpu: str(body.gpu) || null,
     mux: str(body.mux) || null,
     webcam: str(body.webcam) || null,
