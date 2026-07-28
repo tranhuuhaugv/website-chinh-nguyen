@@ -26,10 +26,13 @@ function productHref(slug: string) {
 export function ProductCard({
   product,
   progress,
+  showBuy = true,
 }: {
   product: Product;
   /** Thanh "đã bán" cho Flash Sale (tuỳ chọn). */
   progress?: { sold: number; total: number };
+  /** Ẩn nút "Mua ngay" (trang chủ dùng false — chỉ xem, bấm vào thẻ để mua). */
+  showBuy?: boolean;
 }) {
   const href = productHref(product.slug);
   // Ảnh thật (nếu admin đã tải lên); chưa có -> ProductImage vẽ SVG minh hoạ.
@@ -91,20 +94,20 @@ export function ProductCard({
           </h3>
         </Link>
 
-        <div className="mb-2.5 flex flex-wrap gap-1.5 max-[459px]:hidden">
-          {/* Cấu hình rút gọn: CPU bỏ phần mô tả trong ngoặc, RAM/ổ cứng lấy gọn
-              dung lượng — thẻ sản phẩm gọn, không tràn dài. */}
-          <span className="flex items-center gap-1 rounded-md bg-bg px-2 py-1 text-[11px] text-ink-2">
-            <CpuIcon className="h-3 w-3 text-green" />
-            {shortCpu(product.cpu)}
+        <div className="mb-2.5 grid grid-cols-3 gap-1.5 max-[459px]:hidden">
+          {/* Cấu hình rút gọn xếp lưới 3 cột ĐỀU NHAU (mọi thẻ đồng đều chiều
+              cao, thẳng hàng). CPU bỏ phần mô tả trong ngoặc; RAM/ổ cứng gọn. */}
+          <span className="flex min-w-0 items-center justify-center gap-1 rounded-md bg-bg px-1.5 py-1 text-[11px] text-ink-2">
+            <CpuIcon className="h-3 w-3 shrink-0 text-green" />
+            <span className="truncate">{shortCpu(product.cpu)}</span>
           </span>
-          <span className="flex items-center gap-1 rounded-md bg-bg px-2 py-1 text-[11px] text-ink-2">
-            <RamIcon className="h-3 w-3 text-green" />
-            {shortSize(product.ram)}
+          <span className="flex min-w-0 items-center justify-center gap-1 rounded-md bg-bg px-1.5 py-1 text-[11px] text-ink-2">
+            <RamIcon className="h-3 w-3 shrink-0 text-green" />
+            <span className="truncate">{shortSize(product.ram)}</span>
           </span>
-          <span className="flex items-center gap-1 rounded-md bg-bg px-2 py-1 text-[11px] text-ink-2">
-            <StorageIcon className="h-3 w-3 text-green" />
-            {shortSize(product.storage)}
+          <span className="flex min-w-0 items-center justify-center gap-1 rounded-md bg-bg px-1.5 py-1 text-[11px] text-ink-2">
+            <StorageIcon className="h-3 w-3 shrink-0 text-green" />
+            <span className="truncate">{shortSize(product.storage)}</span>
           </span>
         </div>
 
@@ -150,20 +153,22 @@ export function ProductCard({
           </div>
         )}
 
-        <AddToCartButton
-          item={{
-            id: product.id,
-            slug: product.slug,
-            name: product.name,
-            price: product.price,
-            accent: product.accent,
-          }}
-          redirectTo="/gio-hang"
-          className="mt-3 flex w-full items-center justify-center gap-2 rounded-xl bg-gradient-to-r from-green-d to-green py-2.5 text-sm font-semibold text-white shadow-[0_4px_12px_rgba(11,94,44,.25)] transition hover:shadow-[0_6px_16px_rgba(11,94,44,.38)]"
-        >
-          <CartIcon className="h-4 w-4" />
-          Mua ngay
-        </AddToCartButton>
+        {showBuy && (
+          <AddToCartButton
+            item={{
+              id: product.id,
+              slug: product.slug,
+              name: product.name,
+              price: product.price,
+              accent: product.accent,
+            }}
+            redirectTo="/gio-hang"
+            className="mt-3 flex w-full items-center justify-center gap-2 rounded-xl bg-gradient-to-r from-green-d to-green py-2.5 text-sm font-semibold text-white shadow-[0_4px_12px_rgba(11,94,44,.25)] transition hover:shadow-[0_6px_16px_rgba(11,94,44,.38)]"
+          >
+            <CartIcon className="h-4 w-4" />
+            Mua ngay
+          </AddToCartButton>
+        )}
 
         <CompareButton
           product={{

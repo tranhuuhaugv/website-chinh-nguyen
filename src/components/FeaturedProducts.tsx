@@ -69,7 +69,7 @@ export function FeaturedProducts({
 
         <div className="grid grid-cols-4 gap-4 max-[900px]:grid-cols-2 max-[460px]:gap-2.5">
           {shown.map((product) => (
-            <ProductCard key={product.id} product={product} />
+            <ProductCard key={product.id} product={product} showBuy={false} />
           ))}
         </div>
 

@@ -36,6 +36,7 @@ export function FlashSale({ products }: { products: Product[] }) {
                 key={product.id}
                 product={product}
                 progress={{ sold: FLASH_SOLD[i % FLASH_SOLD.length], total: 50 }}
+                showBuy={false}
               />
             ))}
           </div>
