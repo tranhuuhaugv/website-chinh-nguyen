@@ -99,12 +99,10 @@ export function ProductCard({
               alt={product.name}
               fill
               sizes="(max-width: 640px) 45vw, 240px"
-              className="object-contain transition-transform duration-500 ease-out group-hover:scale-110"
+              className="object-contain"
             />
           ) : (
-            <span className="block h-full w-full transition-transform duration-500 ease-out group-hover:scale-110">
-              <ProductImage accent={product.accent} uid={product.slug} />
-            </span>
+            <ProductImage accent={product.accent} uid={product.slug} />
           )}
         </Link>
       </div>
