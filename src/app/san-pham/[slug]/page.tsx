@@ -12,7 +12,7 @@ import { ProductPurchase } from "@/components/product/ProductPurchase";
 import { ProductVariants } from "@/components/product/ProductVariants";
 import { CompareBar } from "@/components/compare/CompareBar";
 import { CompareProvider } from "@/components/compare/CompareContext";
-import { InstallmentIcon, MapPinIcon, StarIcon } from "@/components/icons";
+import { MapPinIcon, StarIcon } from "@/components/icons";
 import { CommitmentCards } from "@/components/product/CommitmentCards";
 import { SITE } from "@/lib/site";
 import {
@@ -296,29 +296,7 @@ export default async function ProductPage({
                 </div>
               </div>
 
-              {/* Khối bổ sung — CHỈ PC: lấp khoảng trống cột phải + thêm chi tiết
-                  hữu ích (trả góp, tư vấn, cửa hàng). Mobile ẩn để khỏi dài. */}
-              {product.installmentPerMonth ? (
-                <div className="mt-3 flex items-center gap-3 rounded-2xl border border-line bg-white p-4 max-lg:hidden">
-                  <span className="flex h-11 w-11 shrink-0 items-center justify-center rounded-xl bg-green-soft text-green-d">
-                    <InstallmentIcon className="h-5 w-5" />
-                  </span>
-                  <div className="min-w-0">
-                    <p className="text-[14px] font-bold text-ink">
-                      Trả góp 0% lãi suất
-                    </p>
-                    <p className="text-[12.5px] leading-snug text-ink-2">
-                      Chỉ từ{" "}
-                      <b className="text-sale">
-                        {formatPrice(product.installmentPerMonth)}
-                      </b>
-                      /tháng · duyệt nhanh qua thẻ tín dụng hoặc công ty tài
-                      chính.
-                    </p>
-                  </div>
-                </div>
-              ) : null}
-
+              {/* Khối bổ sung — CHỈ PC: lấp khoảng trống cột phải. Mobile ẩn. */}
               <div className="mt-3 rounded-2xl border border-line bg-white p-4 max-lg:hidden">
                 <p className="flex items-center gap-2 text-[14px] font-bold text-ink">
                   <MapPinIcon className="h-[18px] w-[18px] shrink-0 text-green" />
