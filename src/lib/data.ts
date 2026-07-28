@@ -390,11 +390,12 @@ export async function getBrandSeriesOptions(): Promise<
       select: { slug: true, name: true },
     }),
   ]);
+  // Hãng = "- Dell" (chọn được = cả hãng); dòng máy thụt vào = "-- Dell XPS".
   const opts: { value: string; label: string }[] = [];
   for (const b of brands) {
-    opts.push({ value: `${b.name}||`, label: `${b.name} (tất cả)` });
+    opts.push({ value: `${b.name}||`, label: `- ${b.name}` });
     for (const s of series.filter((x) => x.slug.startsWith(`${b.slug}-`))) {
-      opts.push({ value: `${b.name}||${s.slug}`, label: `— ${s.name}` });
+      opts.push({ value: `${b.name}||${s.slug}`, label: `-- ${s.name}` });
     }
   }
   return opts;
