@@ -14,7 +14,8 @@
     "db:import-laptops": "tsx prisma/import-laptops.ts",
     "db:sync-posts": "tsx prisma/sync-posts.ts",
     "db:sync-series": "tsx prisma/sync-series.ts",
-    "db:fill-discounts": "tsx prisma/fill-discounts.ts"
+    "db:fill-discounts": "tsx prisma/fill-discounts.ts",
+    "db:products-no-image": "tsx prisma/products-no-image.ts"
   },
   "prisma": {
     "seed": "tsx prisma/seed.ts"
