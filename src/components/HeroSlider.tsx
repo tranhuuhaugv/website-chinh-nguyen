@@ -39,7 +39,7 @@ export function HeroSlider({
           Laptop Chính Nguyễn — Laptop chính hãng giá tốt tại Đà Nẵng
         </h1>
 
-        <div className="group relative aspect-[1200/380] w-full overflow-hidden rounded-2xl shadow-[0_16px_40px_rgba(11,94,44,0.18)] ring-1 ring-black/5 max-[900px]:aspect-video">
+        <div className="group relative aspect-[1200/380] w-full overflow-hidden rounded-2xl shadow-[0_16px_40px_rgba(11,94,44,0.18)] ring-1 ring-black/5 max-[900px]:aspect-[16/7]">
           {/* Track trượt ngang */}
           <div
             className="flex h-full w-full transition-transform duration-500 ease-out"

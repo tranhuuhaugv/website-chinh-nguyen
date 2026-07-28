@@ -91,8 +91,9 @@ export function BannerManager({
           Banner chính (slide trang chủ)
         </h2>
         <p className="mb-5 text-[13px] text-muted">
-          Tỉ lệ khuyến nghị: ngang ~1200×380. Slot có ảnh sẽ thay hình minh hoạ
-          mặc định; để trống hết thì trang chủ dùng banner mặc định.
+          Tỉ lệ khuyến nghị: ngang ~1200×380. Đặt chữ/logo quan trọng vào GIỮA
+          ảnh — trên điện thoại 2 mép sẽ bị cắt nhẹ. Slot có ảnh sẽ thay hình
+          minh hoạ mặc định; để trống hết thì trang chủ dùng banner mặc định.
         </p>
         <div className="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3">
           {hero.map((slot, i) => (
