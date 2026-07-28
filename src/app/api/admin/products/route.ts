@@ -87,7 +87,9 @@ async function brandIdFor(name: string): Promise<string | null> {
 
 /** Dựng data chung cho create/update từ body form. `selfSlug` để không tự nối vào mình. */
 async function buildData(body: Body, selfSlug: string) {
-  const brandId = await brandIdFor(str(body.brand));
+  // Ô gộp "Hãng / Dòng máy": giá trị "TênHãng||slug-dòng" (slug rỗng = chỉ hãng).
+  const [brandName, seriesSlug = ""] = str(body.brandSeries).split("||");
+  const brandId = await brandIdFor(brandName);
   if (!brandId) return null;
   return {
     name: str(body.name),
@@ -108,9 +110,8 @@ async function buildData(body: Body, selfSlug: string) {
     battery: str(body.battery) || null,
     weight: str(body.weight) || null,
     ports: str(body.ports) || null,
-    warranty: str(body.warranty) || null,
     condition: str(body.condition) === "new" ? "new" : "used",
-    series: str(body.series) || null,
+    series: seriesSlug || null,
     needs: list(body.needs),
     images: list(body.images),
     variantSlugs: variantSlugs(body.variantLinks, selfSlug),

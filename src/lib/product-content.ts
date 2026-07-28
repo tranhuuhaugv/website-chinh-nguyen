@@ -47,7 +47,6 @@ export function buildSpecGroups(product: Product): SpecGroup[] {
         row("Pin", product.battery),
         row("Trọng lượng", product.weight),
         row("Cổng kết nối", product.ports),
-        row("Bảo hành", product.warranty),
       ]),
     },
   ];

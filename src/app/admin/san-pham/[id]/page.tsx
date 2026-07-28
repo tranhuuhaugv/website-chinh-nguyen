@@ -1,11 +1,7 @@
 import { notFound } from "next/navigation";
 import { AdminForm } from "@/components/admin/AdminForm";
 import { productFields } from "@/components/admin/product-fields";
-import {
-  getAdminBrands,
-  getAdminProductById,
-  getSeriesCategories,
-} from "@/lib/data";
+import { getAdminProductById, getBrandSeriesOptions } from "@/lib/data";
 
 export const metadata = { title: "Sửa sản phẩm" };
 export const dynamic = "force-dynamic";
@@ -15,27 +11,25 @@ export default async function EditProductPage({
 }: {
   params: { id: string };
 }) {
-  const [product, brands, series] = await Promise.all([
+  const [product, brandSeries] = await Promise.all([
     getAdminProductById(params.id),
-    getAdminBrands(),
-    getSeriesCategories(),
+    getBrandSeriesOptions(),
   ]);
   if (!product) notFound();
 
-  const names = brands.map((b) => b.name);
-  const seriesOptions = series.map((x) => ({ value: x.slug, label: x.name }));
   const s = (v: unknown) => (v == null ? "" : String(v));
+  // Giá trị ô gộp = "TênHãng||slug-dòng" (khớp option đã dựng).
+  const brandSeriesValue = `${product.brandName}||${s(product.series)}`;
 
   return (
     <AdminForm
       title={`Sửa: ${product.name}`}
       singleColumn
-      fields={productFields(names, seriesOptions)}
+      fields={productFields(brandSeries)}
       initialValues={{
         name: product.name,
-        brand: product.brandName,
+        brandSeries: brandSeriesValue,
         condition: product.condition === "new" ? "new" : "used",
-        series: s(product.series),
         price: s(product.price),
         oldPrice: s(product.oldPrice),
         cpu: product.cpu,

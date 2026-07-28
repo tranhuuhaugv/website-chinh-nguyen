@@ -370,6 +370,36 @@ export async function getSeriesCategories(): Promise<
   return rows.map((r) => ({ slug: r.slug, name: r.name }));
 }
 
+/**
+ * Dropdown GỘP "Hãng / Dòng máy" cho form sản phẩm (1 ô thay vì 2). Mỗi option
+ * lưu cả hãng lẫn dòng máy dưới dạng "TênHãng||slug-dòng" (slug rỗng = cả hãng).
+ * Dòng máy được gom dưới hãng của nó (slug dòng bắt đầu bằng slug hãng).
+ */
+export async function getBrandSeriesOptions(): Promise<
+  { value: string; label: string }[]
+> {
+  if (NO_DB) return [];
+  const [brands, series] = await Promise.all([
+    prisma.brand.findMany({
+      orderBy: { name: "asc" },
+      select: { name: true, slug: true },
+    }),
+    prisma.category.findMany({
+      where: { group: "dong-may" },
+      orderBy: { name: "asc" },
+      select: { slug: true, name: true },
+    }),
+  ]);
+  const opts: { value: string; label: string }[] = [];
+  for (const b of brands) {
+    opts.push({ value: `${b.name}||`, label: `${b.name} (tất cả)` });
+    for (const s of series.filter((x) => x.slug.startsWith(`${b.slug}-`))) {
+      opts.push({ value: `${b.name}||${s.slug}`, label: `— ${s.name}` });
+    }
+  }
+  return opts;
+}
+
 /** Lấy nguyên bản 1 danh mục cho form sửa admin (gồm cả trường SEO). */
 export async function getCategoryEdit(slug: string) {
   if (NO_DB) return null;

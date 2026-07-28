@@ -9,8 +9,7 @@ const YES_NO = [
 ];
 
 export function productFields(
-  brandNames: string[],
-  seriesOptions: { value: string; label: string }[] = [],
+  brandSeriesOptions: { value: string; label: string }[] = [],
 ): AdminField[] {
   return [
     // Ảnh để ĐẦU form: việc đầu tiên khi thêm/sửa máy là xem/thay ảnh.
@@ -25,10 +24,10 @@ export function productFields(
       placeholder: "VD: Dell Precision 5540 RAM 16GB SSD 512GB T1000 FHD+ (CŨ)",
     },
     {
-      name: "brand",
-      label: "Thương hiệu *",
+      name: "brandSeries",
+      label: "Hãng / Dòng máy * (chọn dòng cụ thể để dễ SEO)",
       type: "select",
-      options: brandNames.map((b) => ({ value: b, label: b })),
+      options: brandSeriesOptions,
     },
     {
       name: "condition",
@@ -37,15 +36,6 @@ export function productFields(
       options: [
         { value: "used", label: "Máy cũ (đã qua sử dụng)" },
         { value: "new", label: "Máy mới" },
-      ],
-    },
-    {
-      name: "series",
-      label: "Dòng máy (danh mục con theo hãng — dễ SEO & quản lý)",
-      type: "select",
-      options: [
-        { value: "", label: "— Không thuộc dòng nào —" },
-        ...seriesOptions,
       ],
     },
     { name: "price", label: "Giá bán (VNĐ) *", type: "money", placeholder: "8.500.000" },
@@ -81,7 +71,6 @@ export function productFields(
         { value: "Windows 10", label: "Windows 10" },
       ],
     },
-    { name: "warranty", label: "Bảo hành", placeholder: "Bảo hành shop" },
 
     { name: "h3", label: "Phân loại & hiển thị", type: "heading" },
     {
