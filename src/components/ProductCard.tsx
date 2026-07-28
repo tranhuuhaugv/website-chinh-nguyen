@@ -58,9 +58,9 @@ export function ProductCard({
   );
 
   return (
-    <article className="group relative flex flex-col overflow-hidden rounded-2xl border border-line bg-white shadow-card transition duration-200 hover:-translate-y-1 hover:border-[#C9E4D2] hover:shadow-card-hover">
-      {/* Ảnh trên panel nền dịu (gradient nhẹ cho có chiều sâu) */}
-      <div className="relative m-2 rounded-xl bg-gradient-to-b from-white to-[#EAEEEA] p-3">
+    <article className="group relative flex flex-col overflow-hidden rounded-2xl border border-line bg-white shadow-product transition duration-200 hover:-translate-y-1.5 hover:shadow-product-hover">
+      {/* Ảnh sản phẩm trên nền trắng sạch (bỏ panel xám để ảnh nổi rõ). */}
+      <div className="relative m-2 rounded-xl bg-white p-3">
         {product.isNew ? (
           <span className="absolute left-2.5 top-2.5 z-[2] rounded-full bg-green px-2.5 py-1 text-[11px] font-bold text-white shadow-[0_2px_6px_rgba(11,94,44,.35)]">
             Mới

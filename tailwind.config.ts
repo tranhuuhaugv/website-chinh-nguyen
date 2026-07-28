@@ -36,6 +36,10 @@ const config: Config = {
         "card-hover":
           "0 10px 30px rgba(11,94,44,.16), 0 3px 8px rgba(16,24,20,.06)",
         pop: "0 12px 32px rgba(16,24,20,.14)",
+        // Bóng riêng cho THẺ SẢN PHẨM: trung tính, sâu, làm thẻ nổi khỏi nền.
+        product: "0 2px 6px rgba(16,24,20,.05), 0 14px 34px -12px rgba(16,24,20,.22)",
+        "product-hover":
+          "0 6px 12px rgba(16,24,20,.08), 0 26px 50px -14px rgba(16,24,20,.30)",
       },
       fontFamily: {
         sans: ["var(--font-inter)", "Inter", "Helvetica", "Arial", "sans-serif"],
