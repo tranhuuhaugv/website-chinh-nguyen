@@ -12,13 +12,7 @@ import { ProductPurchase } from "@/components/product/ProductPurchase";
 import { ProductVariants } from "@/components/product/ProductVariants";
 import { CompareBar } from "@/components/compare/CompareBar";
 import { CompareProvider } from "@/components/compare/CompareContext";
-import {
-  InstallmentIcon,
-  MapPinIcon,
-  MessengerIcon,
-  PhoneIcon,
-  StarIcon,
-} from "@/components/icons";
+import { InstallmentIcon, MapPinIcon, StarIcon } from "@/components/icons";
 import { CommitmentCards } from "@/components/product/CommitmentCards";
 import { SITE } from "@/lib/site";
 import {
@@ -324,34 +318,6 @@ export default async function ProductPage({
                   </div>
                 </div>
               ) : null}
-
-              <div className="mt-3 rounded-2xl border border-line bg-white p-4 max-lg:hidden">
-                <p className="text-[14px] font-bold text-ink">
-                  Cần tư vấn cấu hình?
-                </p>
-                <p className="mt-0.5 text-[12.5px] leading-snug text-ink-2">
-                  Chính Nguyễn giúp bạn chọn máy hợp nhu cầu &amp; túi tiền —
-                  hoàn toàn miễn phí.
-                </p>
-                <div className="mt-3 flex flex-wrap gap-2">
-                  <a
-                    href={`tel:${SITE.hotlineTel}`}
-                    className="flex items-center gap-1.5 rounded-lg bg-green-d px-3.5 py-2 text-[13px] font-semibold text-white transition hover:bg-green-dd"
-                  >
-                    <PhoneIcon className="h-4 w-4" />
-                    {SITE.hotline}
-                  </a>
-                  <a
-                    href={SITE.messenger}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="flex items-center gap-1.5 rounded-lg border border-line px-3.5 py-2 text-[13px] font-semibold text-ink transition hover:border-green hover:text-green-d"
-                  >
-                    <MessengerIcon className="h-4 w-4" />
-                    Chat Messenger
-                  </a>
-                </div>
-              </div>
 
               <div className="mt-3 rounded-2xl border border-line bg-white p-4 max-lg:hidden">
                 <p className="flex items-center gap-2 text-[14px] font-bold text-ink">
