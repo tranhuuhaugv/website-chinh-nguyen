@@ -1,8 +1,9 @@
-import Image from "next/image";
 import Link from "next/link";
 
-// Logo thương hiệu Chính Nguyễn — bản trắng nền trong suốt (sinh từ logo_V1.png)
-// đặt trực tiếp lên header xanh lá đậm.
+// Logo thương hiệu Chính Nguyễn — bản ĐỎ có hiệu ứng ánh sáng quét (đặt trên
+// header nền trắng). Tô màu bằng CSS mask từ logo_white.png (xem .logo-red
+// trong globals.css) nên không cần tạo file ảnh đỏ riêng. Link có aria-label
+// nên span logo để aria-hidden.
 export function Logo() {
   return (
     <Link
@@ -10,14 +11,7 @@ export function Logo() {
       aria-label="Laptop Chính Nguyễn - Trang chủ"
       className="flex shrink-0 items-center"
     >
-      <Image
-        src="/logo_white.png"
-        alt="Laptop Chính Nguyễn"
-        width={228}
-        height={40}
-        priority
-        className="h-9 w-auto object-contain"
-      />
+      <span className="logo-red" aria-hidden="true" />
     </Link>
   );
 }

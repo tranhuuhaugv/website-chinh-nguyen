@@ -14,6 +14,40 @@ body {
   -webkit-font-smoothing: antialiased;
 }
 
+/* Logo đỏ + hiệu ứng ánh sáng quét ngang (dùng CSS mask từ logo_white.png:
+   alpha của ảnh = hình logo; nền gradient đỏ + 1 lớp sáng chạy qua). */
+.logo-red {
+  display: inline-block;
+  height: 36px;
+  width: 205px; /* giữ tỉ lệ gốc 228×40 khi cao 36px */
+  -webkit-mask: url(/logo_white.png) left center / contain no-repeat;
+  mask: url(/logo_white.png) left center / contain no-repeat;
+  background:
+    linear-gradient(
+        115deg,
+        transparent 38%,
+        rgba(255, 255, 255, 0.85) 50%,
+        transparent 62%
+      )
+      0 0 / 260% 100% no-repeat,
+    linear-gradient(180deg, #ff3b46, #a30f18);
+  animation: logo-sweep 3s linear infinite;
+}
+@keyframes logo-sweep {
+  0%,
+  15% {
+    background-position: 210% 0, 0 0;
+  }
+  100% {
+    background-position: -60% 0, 0 0;
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  .logo-red {
+    animation: none;
+  }
+}
+
 /* Dải ảnh chạy ngang liên tục (marquee) — dùng cho ảnh khách hàng */
 @keyframes cn-marquee {
   from {

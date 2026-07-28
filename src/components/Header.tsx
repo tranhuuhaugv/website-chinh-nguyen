@@ -43,7 +43,7 @@ export function Header() {
       </div>
 
       {/* Thanh chính */}
-      <div className="bg-gradient-to-r from-green-dd via-green-d to-green-d text-white">
+      <div className="border-b border-line bg-white text-ink shadow-[0_1px_0_rgba(16,24,20,0.04)]">
         <Container className="flex h-[70px] items-center gap-[22px]">
           <Logo />
 
@@ -52,14 +52,14 @@ export function Header() {
           {/* Hotline CSKH */}
           <a
             href={`tel:${SITE.hotlineTel}`}
-            className="ml-auto flex items-center gap-2.5 rounded-full bg-white/[0.12] py-1.5 pl-1.5 pr-4 ring-1 ring-white/25 transition hover:bg-white/20 max-[1100px]:hidden"
+            className="ml-auto flex items-center gap-2.5 rounded-full bg-green-soft py-1.5 pl-1.5 pr-4 ring-1 ring-green/15 transition hover:bg-green-tint max-[1100px]:hidden"
           >
-            <span className="flex h-9 w-9 items-center justify-center rounded-full bg-white text-green-d shadow-sm">
+            <span className="flex h-9 w-9 items-center justify-center rounded-full bg-green-d text-white shadow-sm">
               <PhoneIcon className="h-[18px] w-[18px]" />
             </span>
             <span className="leading-tight">
-              <span className="block text-[11px] text-white/85">Hotline CSKH</span>
-              <span className="block text-[15px] font-bold text-white">
+              <span className="block text-[11px] text-ink-2">Hotline CSKH</span>
+              <span className="block text-[15px] font-bold text-green-d">
                 {SITE.hotline}
               </span>
             </span>

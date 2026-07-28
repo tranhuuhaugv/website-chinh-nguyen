@@ -42,7 +42,7 @@ export function AccountMenu() {
     return (
       <Link
         href="/dang-nhap"
-        className="flex items-center gap-2 rounded-lg px-3 py-2 text-[13.5px] font-medium text-white transition hover:bg-white/[0.14]"
+        className="flex items-center gap-2 rounded-lg px-3 py-2 text-[13.5px] font-medium text-ink transition hover:bg-bg"
       >
         <UserIcon className="h-5 w-5" />
         <span className="max-[900px]:hidden">Tài khoản</span>
@@ -65,9 +65,9 @@ export function AccountMenu() {
       <button
         type="button"
         onClick={() => setOpen((o) => !o)}
-        className="flex items-center gap-2 rounded-lg px-3 py-2 text-[13.5px] font-medium text-white transition hover:bg-white/[0.14]"
+        className="flex items-center gap-2 rounded-lg px-3 py-2 text-[13.5px] font-medium text-ink transition hover:bg-bg"
       >
-        <span className="flex h-7 w-7 items-center justify-center rounded-full bg-white/20 text-[13px] font-bold uppercase">
+        <span className="flex h-7 w-7 items-center justify-center rounded-full bg-green-soft text-[13px] font-bold uppercase text-green-d">
           {firstName.charAt(0)}
         </span>
         <span className="max-[900px]:hidden">{firstName}</span>
