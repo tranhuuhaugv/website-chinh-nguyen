@@ -90,7 +90,6 @@ export default async function ProductPage({
   const discount = product.oldPrice
     ? Math.round((1 - product.price / product.oldPrice) * 100)
     : 0;
-  const savings = product.oldPrice ? product.oldPrice - product.price : 0;
   // Song song: 2 truy vấn độc lập nhau, không cộng dồn độ trễ.
   const [related, variants] = await Promise.all([
     getRelatedProducts(product),
@@ -238,7 +237,7 @@ export default async function ProductPage({
                     </div>
                     {discount > 0 && (
                       <span className="mt-1.5 inline-block rounded-full bg-sale px-2.5 py-0.5 text-[12px] font-bold text-white">
-                        Giảm {discount}% · tiết kiệm {formatPrice(savings)}
+                        Giảm {discount}%
                       </span>
                     )}
                   </div>

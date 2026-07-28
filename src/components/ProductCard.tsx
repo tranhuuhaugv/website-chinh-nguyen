@@ -43,7 +43,6 @@ export function ProductCard({
   const discount = product.oldPrice
     ? Math.round((1 - product.price / product.oldPrice) * 100)
     : 0;
-  const savings = product.oldPrice ? product.oldPrice - product.price : 0;
 
   return (
     <article className="group relative flex flex-col overflow-hidden rounded-2xl border border-line bg-white shadow-card transition duration-200 hover:-translate-y-1 hover:border-[#C9E4D2] hover:shadow-card-hover">
@@ -132,11 +131,6 @@ export function ProductCard({
               </span>
             )}
           </div>
-          {savings > 0 && (
-            <span className="mt-1 inline-block rounded-md bg-sale/10 px-1.5 py-0.5 text-[11px] font-bold text-sale max-[459px]:hidden">
-              Tiết kiệm {formatPrice(savings)}
-            </span>
-          )}
         </div>
 
         {progress && (
