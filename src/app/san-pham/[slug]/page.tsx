@@ -48,7 +48,7 @@ export async function generateMetadata({
     product.price,
   )} tại Laptop Chính Nguyễn (Đà Nẵng). ${
     used
-      ? "Máy đã qua sử dụng, kiểm tra kỹ, bảo hành tại shop, đổi trả 7 ngày."
+      ? "Máy đã qua sử dụng, kiểm tra kỹ, bảo hành tại shop, dùng thử 15 ngày, 1 đổi 1 trong 30 ngày."
       : "Máy mới nguyên seal, bảo hành chính hãng, giao nhanh toàn quốc."
   }`;
   const url = `${SITE_URL}/san-pham/${product.slug}`;
@@ -285,8 +285,8 @@ export default async function ProductPage({
                     )}
                   </Bullet>
                   <Bullet>
-                    Đổi trả trong <b className="text-ink">7 ngày</b> · miễn phí cài
-                    đặt phần mềm.
+                    <b className="text-ink">Dùng thử 15 ngày</b> · 1 đổi 1 trong 30
+                    ngày nếu lỗi · miễn phí cài đặt phần mềm.
                   </Bullet>
                 </ul>
 

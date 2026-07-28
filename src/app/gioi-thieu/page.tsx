@@ -31,7 +31,7 @@ const VALUES = [
   {
     icon: WarrantyIcon,
     title: "Hậu mãi uy tín",
-    desc: "Bảo hành 24 tháng, 1 đổi 1 trong 30 ngày, hỗ trợ trọn đời.",
+    desc: "Dùng thử 15 ngày, 1 đổi 1 trong 30 ngày, bảo hành 24 tháng.",
   },
   {
     icon: InstallmentIcon,

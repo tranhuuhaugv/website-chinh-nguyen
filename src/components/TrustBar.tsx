@@ -16,7 +16,7 @@ const ITEMS: { icon: IconType; title: string; desc: string }[] = [
   { icon: TruckIcon, title: "Giao nhanh 2h", desc: "Nội thành miễn phí" },
   {
     icon: WarrantyIcon,
-    title: "Bảo hành 24 tháng",
+    title: "Dùng thử 15 ngày",
     desc: "1 đổi 1 trong 30 ngày",
   },
   { icon: InstallmentIcon, title: "Trả góp 0%", desc: "Duyệt trong 15 phút" },

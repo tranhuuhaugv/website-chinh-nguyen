@@ -16,7 +16,7 @@ const NEW = [
   {
     icon: WarrantyIcon,
     title: "Bảo hành 24 tháng",
-    desc: "1 đổi 1 trong 30 ngày nếu lỗi nhà sản xuất",
+    desc: "Dùng thử 15 ngày · 1 đổi 1 trong 30 ngày",
   },
   {
     icon: TruckIcon,
@@ -39,7 +39,7 @@ const USED = [
   {
     icon: WarrantyIcon,
     title: "Bảo hành tại shop",
-    desc: "Hỗ trợ kỹ thuật tận nơi, đổi trả trong 7 ngày",
+    desc: "Dùng thử 15 ngày · 1 đổi 1 trong 30 ngày",
   },
   {
     icon: TruckIcon,

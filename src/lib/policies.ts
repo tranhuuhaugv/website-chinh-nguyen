@@ -104,7 +104,7 @@ export const POLICIES: Record<string, Policy> = {
 
   "doi-tra": {
     title: "Chính sách đổi trả & hoàn tiền",
-    lead: "Đổi trả dễ dàng, hoàn tiền minh bạch trong 7 ngày — đặt sự hài lòng của khách hàng lên hàng đầu.",
+    lead: "Cho dùng thử 15 ngày, 1 đổi 1 trong 30 ngày nếu lỗi kỹ thuật — đặt sự hài lòng của khách hàng lên hàng đầu.",
     intro: [
       "Laptop Chính Nguyễn luôn mong muốn khách hàng hoàn toàn hài lòng với sản phẩm của mình. Trong trường hợp sản phẩm không đúng như mô tả, phát sinh lỗi kỹ thuật hoặc chưa phù hợp với nhu cầu, chúng tôi hỗ trợ đổi trả và hoàn tiền theo các quy định rõ ràng dưới đây.",
     ],
@@ -120,7 +120,7 @@ export const POLICIES: Record<string, Policy> = {
       {
         heading: "2. Thời gian & điều kiện đổi trả",
         paragraphs: [
-          "Khách hàng được đổi trả trong vòng 7 ngày kể từ ngày nhận hàng, với điều kiện:",
+          "Khách hàng được dùng thử và đổi trả trong vòng 15 ngày kể từ ngày nhận hàng; riêng lỗi kỹ thuật do nhà sản xuất được 1 đổi 1 trong vòng 30 ngày. Điều kiện áp dụng:",
         ],
         items: [
           "Sản phẩm còn nguyên vẹn, đầy đủ hộp, phụ kiện, quà tặng kèm và giấy tờ.",

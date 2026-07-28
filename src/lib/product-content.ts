@@ -118,7 +118,7 @@ export function buildDescription(product: Product): DescSection[] {
     heading: `Mua ${product.name} ở đâu?`,
     paragraphs: [
       used
-        ? `${product.name} đang có sẵn tại Laptop Chính Nguyễn — máy đã kiểm tra kỹ, bảo hành tại shop, hỗ trợ kỹ thuật tận nơi và đổi trả trong 7 ngày nếu phát sinh lỗi kỹ thuật. Quý khách vui lòng liên hệ để được tư vấn tình trạng máy cụ thể.`
+        ? `${product.name} đang có sẵn tại Laptop Chính Nguyễn — máy đã kiểm tra kỹ, bảo hành tại shop, hỗ trợ kỹ thuật tận nơi, cho dùng thử 15 ngày và 1 đổi 1 trong 30 ngày nếu phát sinh lỗi kỹ thuật. Quý khách vui lòng liên hệ để được tư vấn tình trạng máy cụ thể.`
         : `${product.name} đang có sẵn tại Laptop Chính Nguyễn với giá tốt, bảo hành chính hãng, giao nhanh toàn quốc và hỗ trợ kiểm tra máy khi nhận.`,
     ],
   });
