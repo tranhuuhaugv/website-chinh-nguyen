@@ -15,6 +15,7 @@ export function AddToCartButton({
   children,
   redirectTo,
   onAdded,
+  ariaLabel,
 }: {
   item: Omit<CartItem, "qty">;
   qty?: number;
@@ -22,6 +23,8 @@ export function AddToCartButton({
   children: ReactNode;
   redirectTo?: string;
   onAdded?: () => void;
+  /** Nhãn trợ năng khi nút chỉ có icon (không có chữ). */
+  ariaLabel?: string;
 }) {
   const { addItem } = useCart();
   const router = useRouter();
@@ -30,6 +33,7 @@ export function AddToCartButton({
     <button
       type="button"
       className={className}
+      aria-label={ariaLabel}
       onClick={() => {
         addItem(item, qty);
         onAdded?.();

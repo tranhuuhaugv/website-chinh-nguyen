@@ -8,7 +8,8 @@ import { CompareButton } from "./compare/CompareButton";
 import {
   CartIcon,
   CpuIcon,
-  HeartIcon,
+  GpuIcon,
+  MonitorIcon,
   RamIcon,
   StarIcon,
   StorageIcon,
@@ -44,6 +45,18 @@ export function ProductCard({
     ? Math.round((1 - product.price / product.oldPrice) * 100)
     : 0;
 
+  // Thông số hiển thị trên thẻ (xếp dọc): CPU / RAM / SSD / Card / Màn hình.
+  // Bỏ trường trống — máy không có GPU rời hoặc chưa nhập màn hình thì ẩn dòng đó.
+  const specs = [
+    { Icon: CpuIcon, value: shortCpu(product.cpu) },
+    { Icon: RamIcon, value: `RAM ${shortSize(product.ram)}` },
+    { Icon: StorageIcon, value: `SSD ${shortSize(product.storage)}` },
+    { Icon: GpuIcon, value: product.gpu },
+    { Icon: MonitorIcon, value: product.screen },
+  ].filter((s): s is { Icon: typeof CpuIcon; value: string } =>
+    Boolean(s.value && s.value.trim()),
+  );
+
   return (
     <article className="group relative flex flex-col overflow-hidden rounded-2xl border border-line bg-white shadow-card transition duration-200 hover:-translate-y-1 hover:border-[#C9E4D2] hover:shadow-card-hover">
       {/* Ảnh trên panel nền dịu (gradient nhẹ cho có chiều sâu) */}
@@ -61,13 +74,21 @@ export function ProductCard({
             {product.badge}
           </span>
         ) : null}
-        <button
-          type="button"
-          aria-label="Thêm vào yêu thích"
-          className="absolute right-2.5 top-2.5 z-[2] flex h-8 w-8 items-center justify-center rounded-full border border-line bg-white/90 text-muted backdrop-blur transition hover:border-sale hover:text-sale"
+        {/* Nút thêm nhanh vào giỏ (thay nút yêu thích cũ). Không điều hướng —
+            thêm tại chỗ; hiện rõ hơn khi rê chuột vào thẻ. */}
+        <AddToCartButton
+          item={{
+            id: product.id,
+            slug: product.slug,
+            name: product.name,
+            price: product.price,
+            accent: product.accent,
+          }}
+          className="absolute right-2.5 top-2.5 z-[2] flex h-9 w-9 items-center justify-center rounded-full border border-line bg-white/95 text-green-d shadow-sm backdrop-blur transition hover:-translate-y-0.5 hover:border-green-d hover:bg-green-d hover:text-white hover:shadow-md"
+          ariaLabel={`Thêm ${product.name} vào giỏ`}
         >
-          <HeartIcon className="h-4 w-4" />
-        </button>
+          <CartIcon className="h-[18px] w-[18px]" />
+        </AddToCartButton>
         <Link
           href={href}
           className="relative block aspect-square overflow-hidden rounded-lg"
@@ -78,10 +99,12 @@ export function ProductCard({
               alt={product.name}
               fill
               sizes="(max-width: 640px) 45vw, 240px"
-              className="object-contain"
+              className="object-contain transition-transform duration-500 ease-out group-hover:scale-110"
             />
           ) : (
-            <ProductImage accent={product.accent} uid={product.slug} />
+            <span className="block h-full w-full transition-transform duration-500 ease-out group-hover:scale-110">
+              <ProductImage accent={product.accent} uid={product.slug} />
+            </span>
           )}
         </Link>
       </div>
@@ -93,22 +116,21 @@ export function ProductCard({
           </h3>
         </Link>
 
-        <div className="mb-2.5 grid grid-cols-3 gap-1.5 max-[459px]:hidden">
-          {/* Cấu hình rút gọn xếp lưới 3 cột ĐỀU NHAU (mọi thẻ đồng đều chiều
-              cao, thẳng hàng). CPU bỏ phần mô tả trong ngoặc; RAM/ổ cứng gọn. */}
-          <span className="flex min-w-0 items-center justify-center gap-1 rounded-md bg-bg px-1.5 py-1 text-[11px] text-ink-2">
-            <CpuIcon className="h-3 w-3 shrink-0 text-green" />
-            <span className="truncate">{shortCpu(product.cpu)}</span>
-          </span>
-          <span className="flex min-w-0 items-center justify-center gap-1 rounded-md bg-bg px-1.5 py-1 text-[11px] text-ink-2">
-            <RamIcon className="h-3 w-3 shrink-0 text-green" />
-            <span className="truncate">{shortSize(product.ram)}</span>
-          </span>
-          <span className="flex min-w-0 items-center justify-center gap-1 rounded-md bg-bg px-1.5 py-1 text-[11px] text-ink-2">
-            <StorageIcon className="h-3 w-3 shrink-0 text-green" />
-            <span className="truncate">{shortSize(product.storage)}</span>
-          </span>
-        </div>
+        {/* Cấu hình xếp DỌC: CPU / RAM / SSD / Card / Màn hình (lấy từ thông số).
+            Mỗi dòng 1 icon tròn nền xanh nhạt cho gọn gàng, dễ đọc. */}
+        <ul className="mb-3 flex flex-col gap-1.5 rounded-xl bg-bg/70 p-2.5 max-[459px]:gap-1 max-[459px]:p-2">
+          {specs.map(({ Icon, value }, i) => (
+            <li
+              key={i}
+              className="flex items-center gap-2 text-[12px] leading-tight text-ink-2 max-[459px]:text-[11px]"
+            >
+              <span className="flex h-5 w-5 shrink-0 items-center justify-center rounded-md bg-green-soft text-green">
+                <Icon className="h-3 w-3" />
+              </span>
+              <span className="truncate">{value}</span>
+            </li>
+          ))}
+        </ul>
 
         <div className="mb-3 flex items-center gap-1.5 text-[12px] max-[459px]:hidden">
           <span className="flex gap-px text-amber">

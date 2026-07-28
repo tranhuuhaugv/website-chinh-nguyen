@@ -111,6 +111,21 @@ export const StorageIcon = (p: IconProps) => (
   </Stroke>
 );
 
+export const GpuIcon = (p: IconProps) => (
+  <Stroke strokeWidth={1.6} {...p}>
+    <rect x="2" y="6" width="20" height="12" rx="1.5" />
+    <circle cx="8" cy="12" r="2.6" />
+    <path d="M14 10h5M14 13h5M6 18v2M12 18v2" />
+  </Stroke>
+);
+
+export const MonitorIcon = (p: IconProps) => (
+  <Stroke strokeWidth={1.6} {...p}>
+    <rect x="3" y="4" width="18" height="12" rx="1.5" />
+    <path d="M9 20h6M12 16v4" />
+  </Stroke>
+);
+
 export const InstallmentIcon = (p: IconProps) => (
   <Stroke {...p}>
     <rect x="2" y="5" width="20" height="14" rx="2" />
