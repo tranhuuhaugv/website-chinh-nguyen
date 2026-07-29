@@ -36,6 +36,7 @@ const PRICE_MATCHERS: Record<string, (price: number) => boolean> = {
 
 export interface ProductQuery {
   brands: string[];
+  series: string[]; // slug dòng máy (VD "lenovo-legion")
   prices: string[];
   needs: string[];
   sort: string;
@@ -54,6 +55,9 @@ export function queryProducts(all: Product[], q: ProductQuery): QueryResult {
 
   if (q.brands.length) {
     list = list.filter((p) => q.brands.includes(p.brand));
+  }
+  if (q.series.length) {
+    list = list.filter((p) => p.series != null && q.series.includes(p.series));
   }
   if (q.prices.length) {
     list = list.filter((p) =>
@@ -100,6 +104,7 @@ export function toArray(v: string | string[] | undefined): string[] {
 export function parseQuery(sp: RawParams): ProductQuery {
   return {
     brands: toArray(sp.hang),
+    series: toArray(sp.dong),
     prices: toArray(sp.gia),
     needs: toArray(sp.nhucau),
     sort: typeof sp.sapxep === "string" ? sp.sapxep : "moi",

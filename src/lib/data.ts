@@ -358,11 +358,28 @@ export async function getCategorySeo(slug: string): Promise<CategorySeo | null> 
   };
 }
 
+// Dòng máy mẫu cho chế độ NO_DB (xem giao diện local khi chưa có DB thật).
+const MOCK_SERIES: { slug: string; name: string }[] = [
+  { slug: "lenovo-legion", name: "Lenovo Legion" },
+  { slug: "lenovo-thinkpad", name: "Lenovo ThinkPad" },
+  { slug: "lenovo-ideapad", name: "Lenovo IdeaPad" },
+  { slug: "dell-xps", name: "Dell XPS" },
+  { slug: "dell-latitude", name: "Dell Latitude" },
+  { slug: "dell-inspiron", name: "Dell Inspiron" },
+  { slug: "asus-rog", name: "Asus ROG" },
+  { slug: "asus-tuf", name: "Asus TUF Gaming" },
+  { slug: "asus-zenbook", name: "Asus Zenbook" },
+  { slug: "hp-pavilion", name: "HP Pavilion" },
+  { slug: "hp-victus", name: "HP Victus" },
+  { slug: "acer-nitro", name: "Acer Nitro" },
+  { slug: "acer-aspire", name: "Acer Aspire" },
+];
+
 /** Danh sách dòng máy (Category group="dong-may") cho dropdown form SP + điều hướng. */
 export async function getSeriesCategories(): Promise<
   { slug: string; name: string }[]
 > {
-  if (NO_DB) return [];
+  if (NO_DB) return MOCK_SERIES;
   const rows = await prisma.category.findMany({
     where: { group: "dong-may" },
     orderBy: { name: "asc" },

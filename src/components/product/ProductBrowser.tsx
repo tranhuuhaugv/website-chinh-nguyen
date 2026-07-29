@@ -17,23 +17,27 @@ import { Pagination } from "@/components/Pagination";
 // Khối duyệt sản phẩm: bộ lọc dạng nút ở trên cùng + lưới sản phẩm full-width.
 // Server Component; lọc/sắp xếp/phân trang qua URL (SEO-friendly).
 
-// Chip lọc hiện đại: chọn = xanh đặc; chưa chọn = nền dịu, hover xanh nhạt.
+// Chip lọc: chọn = gradient xanh + bóng; chưa chọn = nền trắng viền dịu, hover xanh nhạt.
 function Chip({
   href,
   active,
+  size = "md",
   children,
 }: {
   href: string;
   active: boolean;
+  size?: "md" | "sm";
   children: ReactNode;
 }) {
+  const pad =
+    size === "sm" ? "px-3 py-[5px] text-[12.5px]" : "px-4 py-[7px] text-[13px]";
   return (
     <Link
       href={href}
-      className={`shrink-0 whitespace-nowrap rounded-full px-3.5 py-1.5 text-[13px] font-medium transition ${
+      className={`shrink-0 whitespace-nowrap rounded-full font-medium transition ${pad} ${
         active
-          ? "bg-green text-white shadow-[0_2px_8px_rgba(11,94,44,.28)]"
-          : "bg-bg text-ink-2 hover:bg-green-tint hover:text-green-d"
+          ? "bg-gradient-to-r from-green-d to-green text-white shadow-[0_3px_10px_rgba(11,94,44,.28)]"
+          : "border border-line bg-white text-ink-2 hover:border-green/45 hover:bg-green-tint/50 hover:text-green-d"
       }`}
     >
       {children}
@@ -41,14 +45,32 @@ function Chip({
   );
 }
 
-// 1 hàng lọc: nhãn nhỏ in hoa + dải chip cuộn ngang.
-function FilterRow({ label, children }: { label: string; children: ReactNode }) {
+// 1 hàng lọc: nhãn nhỏ in hoa bên trái + dải chip cuộn ngang.
+// sub = hàng con (dòng máy) -> nền xanh nhạt, thụt vào cho thấy quan hệ với hãng.
+function FilterRow({
+  label,
+  sub = false,
+  children,
+}: {
+  label: string;
+  sub?: boolean;
+  children: ReactNode;
+}) {
   return (
-    <div className="flex items-center gap-3 px-4 py-2.5">
-      <span className="w-16 shrink-0 text-[11.5px] font-bold uppercase tracking-wide text-muted">
+    <div
+      className={`flex items-center gap-3 px-4 py-3 max-[520px]:flex-col max-[520px]:items-start max-[520px]:gap-2 ${
+        sub ? "bg-green-tint/40" : ""
+      }`}
+    >
+      <span
+        className={`flex w-[74px] shrink-0 items-center gap-1 text-[11.5px] font-bold uppercase tracking-wide ${
+          sub ? "pl-3 text-green-d" : "text-muted"
+        }`}
+      >
+        {sub && <span aria-hidden className="text-green">↳</span>}
         {label}
       </span>
-      <div className="flex flex-1 gap-2 overflow-x-auto [scrollbar-width:none] [&::-webkit-scrollbar]:hidden">
+      <div className="flex w-full flex-1 gap-2 overflow-x-auto [scrollbar-width:none] [&::-webkit-scrollbar]:hidden">
         {children}
       </div>
     </div>
@@ -60,21 +82,33 @@ export function ProductBrowser({
   searchParams,
   products,
   brands,
+  series = [],
 }: {
   basePath: string;
   searchParams: RawParams;
   products: Product[];
   brands: string[];
+  /** Dòng máy (group="dong-may"): slug bắt đầu bằng slug hãng, VD "lenovo-legion". */
+  series?: { slug: string; name: string }[];
   /** Giữ để tương thích; các bộ lọc link đã tự giữ mọi param hiện có. */
   preserve?: Record<string, string>;
 }) {
   const query = parseQuery(searchParams);
   const { items, total, page, totalPages } = queryProducts(products, query);
 
-  // Hãng / Giá / Nhu cầu: CHỌN 1. Bấm lại mục đang chọn -> bỏ (về "Tất cả").
+  // Hãng / Giá / Nhu cầu / Dòng máy: CHỌN 1. Bấm lại mục đang chọn -> bỏ.
   const activeBrand = query.brands[0];
   const activePrice = query.prices[0];
   const activeNeed = query.needs[0];
+  const activeSeries = query.series[0];
+
+  // Dòng máy của HÃNG đang chọn (slug dòng bắt đầu bằng slug hãng).
+  const brandSlug = activeBrand
+    ? activeBrand.toLowerCase().replace(/[^a-z0-9]+/g, "-")
+    : "";
+  const brandSeries = activeBrand
+    ? series.filter((s) => s.slug.startsWith(`${brandSlug}-`))
+    : [];
 
   return (
     <div>
@@ -84,7 +118,14 @@ export function ProductBrowser({
           {brands.length > 1 && (
             <FilterRow label="Hãng">
               <Chip
-                href={basePath + setParam(searchParams, "hang", undefined)}
+                href={
+                  basePath +
+                  mergeParams(searchParams, {
+                    hang: undefined,
+                    dong: undefined,
+                    trang: undefined,
+                  })
+                }
                 active={!activeBrand}
               >
                 Tất cả
@@ -94,15 +135,46 @@ export function ProductBrowser({
                   key={brand}
                   href={
                     basePath +
-                    setParam(
-                      searchParams,
-                      "hang",
-                      activeBrand === brand ? undefined : brand,
-                    )
+                    mergeParams(searchParams, {
+                      // Đổi hãng -> xoá dòng máy cũ (dòng máy phụ thuộc hãng).
+                      hang: activeBrand === brand ? undefined : brand,
+                      dong: undefined,
+                      trang: undefined,
+                    })
                   }
                   active={activeBrand === brand}
                 >
                   {brand}
+                </Chip>
+              ))}
+            </FilterRow>
+          )}
+
+          {/* Dòng máy — chỉ hiện khi hãng đang chọn có dòng máy */}
+          {brandSeries.length > 0 && (
+            <FilterRow label="Dòng máy" sub>
+              <Chip
+                href={basePath + setParam(searchParams, "dong", undefined)}
+                active={!activeSeries}
+                size="sm"
+              >
+                Tất cả
+              </Chip>
+              {brandSeries.map((s) => (
+                <Chip
+                  key={s.slug}
+                  href={
+                    basePath +
+                    setParam(
+                      searchParams,
+                      "dong",
+                      activeSeries === s.slug ? undefined : s.slug,
+                    )
+                  }
+                  active={activeSeries === s.slug}
+                  size="sm"
+                >
+                  {s.name}
                 </Chip>
               ))}
             </FilterRow>
