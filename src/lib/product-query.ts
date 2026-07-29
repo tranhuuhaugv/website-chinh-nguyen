@@ -3,7 +3,7 @@ import type { Product } from "./types";
 // Lọc + sắp xếp + phân trang cho các trang danh sách (danh mục, tìm kiếm).
 // Chạy phía server dựa trên URL searchParams -> thân thiện SEO, không cần JS.
 
-export const PER_PAGE = 12;
+export const PER_PAGE = 15;
 
 export const PRICE_OPTIONS: { value: string; label: string }[] = [
   { value: "duoi-15", label: "Dưới 15 triệu" },
