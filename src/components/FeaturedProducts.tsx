@@ -1,16 +1,17 @@
 "use client";
 
 import { useMemo, useState } from "react";
+import Link from "next/link";
 import type { Product } from "@/lib/types";
 import { Container } from "./Container";
 import { ProductCard } from "./ProductCard";
 import { SectionHead } from "./SectionHead";
 
-// Khối "Sản phẩm nổi bật": tab lọc theo hãng + nút xem thêm.
-// Client Component vì cần state cho tab đang chọn và số sản phẩm hiển thị.
+// Khối "Sản phẩm nổi bật": tab lọc theo hãng. Hiển thị tối đa PAGE_SIZE máy;
+// nút "Xem thêm" dẫn sang trang tất cả sản phẩm (không tải thêm tại chỗ).
+// Client Component vì cần state cho tab đang chọn.
 
-const PAGE_SIZE = 10;
-const STEP = 5;
+const PAGE_SIZE = 15;
 
 export function FeaturedProducts({
   products,
@@ -20,7 +21,6 @@ export function FeaturedProducts({
   tabs: readonly string[];
 }) {
   const [activeTab, setActiveTab] = useState<string>(tabs[0]);
-  const [visible, setVisible] = useState(PAGE_SIZE);
 
   const filtered = useMemo(
     () =>
@@ -30,12 +30,10 @@ export function FeaturedProducts({
     [activeTab, products, tabs],
   );
 
-  const shown = filtered.slice(0, visible);
-  const hasMore = visible < filtered.length;
+  const shown = filtered.slice(0, PAGE_SIZE);
 
   function selectTab(tab: string) {
     setActiveTab(tab);
-    setVisible(PAGE_SIZE);
   }
 
   return (
@@ -73,17 +71,14 @@ export function FeaturedProducts({
           ))}
         </div>
 
-        {hasMore && (
-          <div className="mt-5 flex justify-center">
-            <button
-              type="button"
-              onClick={() => setVisible((v) => v + STEP)}
-              className="rounded-lg border border-green bg-white px-8 py-[11px] text-sm font-semibold text-green-d transition hover:bg-green hover:text-white"
-            >
-              Xem thêm sản phẩm
-            </button>
-          </div>
-        )}
+        <div className="mt-5 flex justify-center">
+          <Link
+            href="/san-pham"
+            className="rounded-lg border border-green bg-white px-8 py-[11px] text-sm font-semibold text-green-d transition hover:bg-green hover:text-white"
+          >
+            Xem thêm sản phẩm
+          </Link>
+        </div>
       </Container>
     </section>
   );
