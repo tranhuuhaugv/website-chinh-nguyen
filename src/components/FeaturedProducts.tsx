@@ -9,8 +9,8 @@ import { SectionHead } from "./SectionHead";
 // Khối "Sản phẩm nổi bật": tab lọc theo hãng + nút xem thêm.
 // Client Component vì cần state cho tab đang chọn và số sản phẩm hiển thị.
 
-const PAGE_SIZE = 8;
-const STEP = 4;
+const PAGE_SIZE = 10;
+const STEP = 5;
 
 export function FeaturedProducts({
   products,
@@ -67,7 +67,7 @@ export function FeaturedProducts({
           })}
         </div>
 
-        <div className="grid grid-cols-4 gap-4 max-[900px]:grid-cols-2 max-[460px]:gap-2.5">
+        <div className="grid grid-cols-5 gap-4 max-[1100px]:grid-cols-4 max-[900px]:grid-cols-2 max-[460px]:gap-2.5">
           {shown.map((product) => (
             <ProductCard key={product.id} product={product} showBuy={false} />
           ))}
