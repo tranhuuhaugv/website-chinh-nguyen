@@ -31,19 +31,23 @@ export function CountdownTimer() {
   const ss = left === null ? "--" : pad(left % 60);
 
   const Box = ({ children }: { children: string }) => (
-    <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-white text-[14px] font-bold text-green-dd">
+    <div className="flex h-9 min-w-[36px] items-center justify-center rounded-md bg-black px-1 text-[18px] font-extrabold tabular-nums text-white ring-1 ring-white/10">
       {children}
     </div>
   );
 
   return (
-    <div className="flex items-center gap-1.5">
-      <span className="mr-1 text-[12.5px] text-[#DFF3E6]">Kết thúc sau</span>
-      <Box>{hh}</Box>
-      <span className="font-bold text-white">:</span>
-      <Box>{mm}</Box>
-      <span className="font-bold text-white">:</span>
-      <Box>{ss}</Box>
+    <div className="flex items-center gap-2.5">
+      <span className="text-[12px] font-bold uppercase tracking-wide text-white">
+        Kết thúc trong
+      </span>
+      <div className="flex items-center gap-1.5">
+        <Box>{hh}</Box>
+        <span className="font-extrabold text-white">:</span>
+        <Box>{mm}</Box>
+        <span className="font-extrabold text-white">:</span>
+        <Box>{ss}</Box>
+      </div>
     </div>
   );
 }

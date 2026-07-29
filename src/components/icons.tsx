@@ -78,6 +78,12 @@ export const BoltIcon = (p: IconProps) => (
   </Fill>
 );
 
+export const FlameIcon = (p: IconProps) => (
+  <Fill {...p}>
+    <path d="M12 2c.9 2.8-1.4 4.3-1.4 6.7 0 1.3 1 2.4 2 2.4 1.2 0 1.9-1.1 1.7-2.6 1.6 1 2.9 3 2.9 5.3A5.8 5.8 0 1 1 6 13.7c0-3.6 2.7-5.1 3.7-8C10.6 3.9 11.4 3 12 2z" />
+  </Fill>
+);
+
 export const StarIcon = (p: IconProps) => (
   <Fill {...p}>
     <path d="M12 2l3 6.3 6.9 1-5 4.9 1.2 6.8L12 17.8 5.9 21l1.2-6.8-5-4.9 6.9-1z" />
