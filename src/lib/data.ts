@@ -169,6 +169,31 @@ export async function getFeaturedProducts(): Promise<Product[]> {
   return duPhong.map((r) => toProduct(r as PrismaProductWithBrand));
 }
 
+/**
+ * "Sản phẩm mới về" (tab trong ô Flash Sale): ưu tiên máy tích "Mới", nếu chưa
+ * tích máy nào thì lấy máy mới thêm gần đây nhất.
+ */
+const NEW_LIMIT = 12;
+
+export async function getNewProducts(): Promise<Product[]> {
+  if (NO_DB) return FEATURED_PRODUCTS;
+  const rows = await prisma.product.findMany({
+    where: { isNew: true },
+    ...withBrand,
+    orderBy: { createdAt: "desc" },
+    take: NEW_LIMIT,
+  });
+  if (rows.length) {
+    return rows.map((r) => toProduct(r as PrismaProductWithBrand));
+  }
+  const recent = await prisma.product.findMany({
+    ...withBrand,
+    orderBy: { createdAt: "desc" },
+    take: NEW_LIMIT,
+  });
+  return recent.map((r) => toProduct(r as PrismaProductWithBrand));
+}
+
 export async function getProductBySlug(slug: string): Promise<Product | null> {
   if (NO_DB) return MOCK_PRODUCTS.find((p) => p.slug === slug) ?? null;
   const row = await prisma.product.findUnique({ where: { slug }, ...withBrand });

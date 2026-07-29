@@ -24,6 +24,7 @@ import {
   getCustomerPhotos,
   getFeaturedProducts,
   getFlashSaleProducts,
+  getNewProducts,
   getHeroBanners,
   getSetting,
   getSideBanners,
@@ -71,6 +72,7 @@ const jsonLd = {
 export default async function HomePage() {
   const [
     flashProducts,
+    newProducts,
     featured,
     categories,
     posts,
@@ -81,6 +83,7 @@ export default async function HomePage() {
     voucherSetting,
   ] = await Promise.all([
     getFlashSaleProducts(),
+    getNewProducts(),
     getFeaturedProducts(),
     getCategories(),
     getBlogPosts(),
@@ -111,7 +114,9 @@ export default async function HomePage() {
         <CategoryNav />
         <HeroSlider slides={HERO_SLIDES} imageSlides={heroBanners} />
         {vouchersOn && <VoucherStrip usage={voucherUsage} />}
-        {flashOn && <FlashSale products={flashProducts} />}
+        {flashOn && (
+          <FlashSale flashProducts={flashProducts} newProducts={newProducts} />
+        )}
         {/* Ẩn "dòng máy" (Lenovo ThinkPad...) khỏi lưới trang chủ — chúng chỉ
             là danh mục con SEO, truy cập từ trang hãng / sản phẩm. */}
         <CategoryGrid

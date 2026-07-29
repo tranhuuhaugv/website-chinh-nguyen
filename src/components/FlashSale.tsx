@@ -1,3 +1,6 @@
+"use client";
+
+import { useState } from "react";
 import Image from "next/image";
 import Link from "next/link";
 import type { Product } from "@/lib/types";
@@ -8,9 +11,10 @@ import { ProductImage } from "./ProductImage";
 import { BoltIcon, FlameIcon } from "./icons";
 import { formatPrice } from "@/lib/format";
 
-// Khối Flash Sale kiểu "sàn TMĐT": nền tối, chữ FLASH SALE vàng + tia sét,
-// đồng hồ đếm ngược, tab khung giờ, thẻ sản phẩm nền tối + thanh "flame" còn hàng.
-// Server Component; chỉ CountdownTimer là Client.
+// Ô "Flash Sale" nền tối kiểu sàn TMĐT, có 2 tab:
+//  - "Đang diễn ra": sản phẩm flash sale + thanh flame "Còn X/Y" + đồng hồ.
+//  - "Sản phẩm mới về": sản phẩm mới, tiêu đề đổi thành "SẢN PHẨM MỚI VỀ".
+// Client Component vì cần state chuyển tab.
 
 // Số suất còn / tổng cho thanh flame (minh hoạ — dữ liệu thật cần cột kho riêng).
 const STOCK = [
@@ -22,7 +26,15 @@ const STOCK = [
   { remaining: 3, total: 3 },
 ];
 
-function FlashCard({ product, stock }: { product: Product; stock: { remaining: number; total: number } }) {
+function FlashCard({
+  product,
+  mode,
+  stock,
+}: {
+  product: Product;
+  mode: "flash" | "new";
+  stock: { remaining: number; total: number };
+}) {
   const cover = product.images?.[0];
   const discount = product.oldPrice
     ? Math.round((1 - product.price / product.oldPrice) * 100)
@@ -36,6 +48,11 @@ function FlashCard({ product, stock }: { product: Product; stock: { remaining: n
     >
       {/* Ảnh trên nền trắng (ảnh sản phẩm chụp nền trắng) */}
       <div className="relative m-2 mb-0 aspect-square overflow-hidden rounded-lg bg-white p-2.5">
+        {mode === "new" && (
+          <span className="absolute left-1.5 top-1.5 z-[2] rounded-md bg-green px-1.5 py-0.5 text-[10.5px] font-bold text-white shadow">
+            MỚI VỀ
+          </span>
+        )}
         {cover ? (
           <Image
             src={cover}
@@ -69,62 +86,114 @@ function FlashCard({ product, stock }: { product: Product; stock: { remaining: n
           </div>
         )}
 
-        {/* Thanh flame: còn hàng / tổng */}
-        <div className="relative mt-2.5 h-[18px] overflow-hidden rounded-full bg-[#4a4a4e]">
-          <div
-            className="h-full rounded-full bg-gradient-to-r from-[#FDBA2D] to-[#F97316]"
-            style={{ width: `${pct}%` }}
-          />
-          <span className="absolute inset-0 flex items-center gap-1 px-2 text-[11px] font-bold text-[#5a2c00]">
-            <FlameIcon className="h-3 w-3 text-[#C2410C]" />
-            Còn {stock.remaining}/{stock.total}
-          </span>
-        </div>
+        {mode === "flash" ? (
+          // Thanh flame: còn hàng / tổng
+          <div className="relative mt-2.5 h-[18px] overflow-hidden rounded-full bg-[#4a4a4e]">
+            <div
+              className="h-full rounded-full bg-gradient-to-r from-[#FDBA2D] to-[#F97316]"
+              style={{ width: `${pct}%` }}
+            />
+            <span className="absolute inset-0 flex items-center gap-1 px-2 text-[11px] font-bold text-[#5a2c00]">
+              <FlameIcon className="h-3 w-3 text-[#C2410C]" />
+              Còn {stock.remaining}/{stock.total}
+            </span>
+          </div>
+        ) : (
+          <div className="mt-2.5 flex items-center gap-1.5 text-[11px] font-semibold text-[#7EE0A0]">
+            <span className="h-1.5 w-1.5 rounded-full bg-[#22C55E]" />
+            Vừa lên kệ
+          </div>
+        )}
       </div>
     </Link>
   );
 }
 
-export function FlashSale({ products }: { products: Product[] }) {
+export function FlashSale({
+  flashProducts,
+  newProducts,
+}: {
+  flashProducts: Product[];
+  newProducts: Product[];
+}) {
+  const [tab, setTab] = useState<"flash" | "new">("flash");
+  const hasNew = newProducts.length > 0;
+  const isFlash = tab === "flash" || !hasNew;
+  const products = isFlash ? flashProducts : newProducts;
+  const title = isFlash ? "FLASH SALE" : "SẢN PHẨM MỚI VỀ";
+
+  const Tab = ({
+    active,
+    onClick,
+    label,
+    sub,
+  }: {
+    active: boolean;
+    onClick: () => void;
+    label: string;
+    sub: string;
+  }) => (
+    <button type="button" onClick={onClick} className="text-center">
+      <p
+        className={`text-[13px] font-bold ${active ? "text-white" : "text-white/70"}`}
+      >
+        {label}
+      </p>
+      <p
+        className={`mx-auto mt-0.5 w-max pb-0.5 text-[13px] font-bold ${
+          active
+            ? "border-b-2 border-[#3B82F6] text-[#60A5FA]"
+            : "text-white/55"
+        }`}
+      >
+        {sub}
+      </p>
+    </button>
+  );
+
   return (
     <section className="py-[18px]">
       <Container>
         <div className="overflow-hidden rounded-2xl bg-[#1c1c1e] p-4 shadow-product max-[640px]:p-3">
-          {/* Header: logo FLASH SALE + đồng hồ + tab khung giờ */}
+          {/* Header: logo (tiêu đề đổi theo tab) + đồng hồ + tab */}
           <div className="mb-4 flex flex-wrap items-center gap-x-6 gap-y-3">
             <div className="flex items-center gap-1 max-[640px]:gap-0.5">
               <BoltIcon className="h-6 w-6 -rotate-6 text-[#FFCF33]" />
-              <span className="bg-gradient-to-b from-[#FFE259] to-[#FDBA2D] bg-clip-text text-[26px] font-black italic tracking-tight text-transparent drop-shadow-sm max-[640px]:text-[21px]">
-                FLASH SALE
+              <span className="bg-gradient-to-b from-[#FFE259] to-[#FDBA2D] bg-clip-text text-[26px] font-black italic tracking-tight text-transparent drop-shadow-sm max-[640px]:text-[19px]">
+                {title}
               </span>
               <BoltIcon className="h-6 w-6 rotate-6 text-[#FFCF33]" />
             </div>
 
-            <CountdownTimer />
+            {isFlash && <CountdownTimer />}
 
-            {/* Tab khung giờ */}
+            {/* Tab: Đang diễn ra / Sản phẩm mới về */}
             <div className="ml-auto flex items-center gap-5 max-[900px]:ml-0">
-              <div className="text-center">
-                <p className="text-[13px] font-bold text-white">Đang diễn ra</p>
-                <p className="mx-auto mt-0.5 w-max border-b-2 border-[#3B82F6] pb-0.5 text-[13px] font-bold text-[#60A5FA]">
-                  09:00 – 23:59
-                </p>
-              </div>
-              <div className="text-center opacity-70">
-                <p className="text-[13px] font-medium text-white/70">Ngày mai</p>
-                <p className="mt-0.5 text-[13px] font-medium text-white/60">
-                  09:00 – 23:59
-                </p>
-              </div>
+              <Tab
+                active={isFlash}
+                onClick={() => setTab("flash")}
+                label="Đang diễn ra"
+                sub="09:00 – 23:59"
+              />
+              {hasNew && (
+                <Tab
+                  active={!isFlash}
+                  onClick={() => setTab("new")}
+                  label="Sản phẩm mới về"
+                  sub="Vừa cập nhật"
+                />
+              )}
             </div>
           </div>
 
-          {/* Sản phẩm — 1 hàng cuộn ngang, có nút ‹ › + kéo chuột */}
-          <FlashSlider>
+          {/* Sản phẩm — 1 hàng cuộn ngang, có nút ‹ › + kéo chuột.
+              key={tab} để cuộn về đầu khi đổi tab. */}
+          <FlashSlider key={tab}>
             {products.map((product, i) => (
               <FlashCard
                 key={product.id}
                 product={product}
+                mode={isFlash ? "flash" : "new"}
                 stock={STOCK[i % STOCK.length]}
               />
             ))}
