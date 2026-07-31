@@ -358,6 +358,43 @@ export async function getCategoryName(slug: string): Promise<string | null> {
   return c?.name ?? null;
 }
 
+/**
+ * Số sản phẩm mỗi danh mục (cho cây danh mục admin). Đếm ĐÚNG như trang danh
+ * mục ngoài web lọc: dòng máy theo cột `series`; hãng theo `brand`; loại máy
+ * theo `condition`; nhu cầu theo `needs`.
+ */
+export async function getCategoryCounts(): Promise<Record<string, number>> {
+  const [cats, products] = await Promise.all([
+    getCategories(),
+    getAllProducts(),
+  ]);
+  const brandSlug = (b: string) => b.toLowerCase().replace(/[^a-z0-9]+/g, "-");
+  const NEED_BY_SLUG: Record<string, string> = {
+    "laptop-gaming": "gaming",
+    "laptop-do-hoa": "do-hoa",
+    "laptop-van-phong": "van-phong",
+  };
+  const counts: Record<string, number> = {};
+  for (const c of cats) {
+    let n = 0;
+    if (c.group === "dong-may") {
+      n = products.filter((p) => p.series === c.slug).length;
+    } else if (products.some((p) => brandSlug(p.brand) === c.slug)) {
+      n = products.filter((p) => brandSlug(p.brand) === c.slug).length;
+    } else if (c.slug === "laptop-moi") {
+      n = products.filter((p) => p.condition === "new").length;
+    } else if (c.slug === "laptop-cu") {
+      n = products.filter((p) => (p.condition ?? "used") === "used").length;
+    } else if (NEED_BY_SLUG[c.slug]) {
+      n = products.filter((p) =>
+        (p.needs ?? []).includes(NEED_BY_SLUG[c.slug]),
+      ).length;
+    }
+    counts[c.slug] = n;
+  }
+  return counts;
+}
+
 /** Thông tin SEO của 1 danh mục cho trang khách. `seoContent` đã lọc XSS sẵn. */
 export interface CategorySeo {
   name: string;

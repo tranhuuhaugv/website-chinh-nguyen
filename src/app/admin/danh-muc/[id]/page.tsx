@@ -37,11 +37,18 @@ const FIELDS: AdminField[] = [
 
 export default async function AdminCategoryFormPage({
   params,
+  searchParams,
 }: {
   params: { id: string };
+  searchParams: { parent?: string; brand?: string; icon?: string };
 }) {
   const isNew = params.id === "them";
   const category = isNew ? null : await getCategoryEdit(params.id);
+
+  // "Thêm dòng máy con" từ cây danh mục: prefill nhóm = dòng máy, tên có sẵn
+  // tiền tố hãng (slug tự thành "dell-xps"...), icon theo hãng.
+  const addingChild = isNew && !!searchParams.parent;
+  const brandName = searchParams.brand?.trim();
 
   const initialValues: Record<string, string> = category
     ? {
@@ -54,11 +61,23 @@ export default async function AdminCategoryFormPage({
         metaDescription: category.metaDescription ?? "",
         seoContent: category.seoContent ?? "",
       }
-    : {};
+    : addingChild
+      ? {
+          name: brandName ? `${brandName} ` : "",
+          group: "dong-may",
+          icon: searchParams.icon ?? "office",
+        }
+      : {};
 
   return (
     <AdminForm
-      title={isNew ? "Thêm danh mục" : "Sửa danh mục"}
+      title={
+        addingChild
+          ? `Thêm dòng máy${brandName ? ` cho ${brandName}` : ""}`
+          : isNew
+            ? "Thêm danh mục"
+            : "Sửa danh mục"
+      }
       fields={FIELDS}
       initialValues={initialValues}
       submitLabel={isNew ? "Tạo danh mục" : "Lưu thay đổi"}
