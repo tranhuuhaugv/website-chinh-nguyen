@@ -159,7 +159,7 @@ export function FlashSale({
           <div className="mb-4 flex flex-wrap items-center gap-x-6 gap-y-3">
             <div className="flex items-center gap-1 max-[640px]:gap-0.5">
               <BoltIcon className="h-6 w-6 -rotate-6 text-[#FFCF33]" />
-              <span className="bg-gradient-to-b from-[#FFE259] to-[#FDBA2D] bg-clip-text text-[26px] font-black italic tracking-tight text-transparent drop-shadow-sm max-[640px]:text-[19px]">
+              <span className="inline-block bg-gradient-to-b from-[#FFE259] to-[#FDBA2D] bg-clip-text py-1 pr-1.5 text-[26px] font-black italic leading-[1.3] text-transparent max-[640px]:text-[19px]">
                 {title}
               </span>
               <BoltIcon className="h-6 w-6 rotate-6 text-[#FFCF33]" />
