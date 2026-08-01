@@ -10,7 +10,14 @@ async function requireAdmin(): Promise<boolean> {
   return token ? verifyAdminToken(token) : false;
 }
 
-const ALLOWED = new Set(["flashSaleEnabled", "vouchersEnabled"]);
+const ALLOWED = new Set([
+  "flashSaleEnabled",
+  "vouchersEnabled",
+  // Link 3 nút liên hệ nổi (gọi / Messenger / Zalo)
+  "floatPhone",
+  "floatMessenger",
+  "floatZalo",
+]);
 
 export async function POST(req: Request) {
   if (!(await requireAdmin())) {
@@ -32,8 +39,9 @@ export async function POST(req: Request) {
     create: { key, value },
   });
 
-  // Trang chủ dùng ISR -> làm mới ngay để thay đổi hiển thị liền.
-  revalidatePath("/");
+  // Nút liên hệ nổi có trên MỌI trang -> làm mới toàn bộ (revalidate layout);
+  // các cờ hiển thị khác cũng được làm mới ngay.
+  revalidatePath("/", "layout");
 
   return NextResponse.json({ ok: true });
 }
