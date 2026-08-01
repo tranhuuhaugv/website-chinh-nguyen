@@ -6,6 +6,7 @@ import { useRouter } from "next/navigation";
 import { ImageUpload } from "./ImageUpload";
 import { MultiImageUpload } from "./MultiImageUpload";
 import { RichTextEditorLoader } from "./RichTextEditorLoader";
+import { slugify } from "@/lib/slug";
 
 // Form generic dùng chung cho các CRUD admin. Sinh input từ cấu hình `fields`.
 // Có `endpoint` -> lưu thật vào DB qua API; không có -> chế độ demo (chỉ báo).
@@ -27,6 +28,8 @@ export interface AdminField {
   options?: { value: string; label: string }[];
   placeholder?: string;
   full?: boolean; // chiếm cả 2 cột
+  /** Ô text có nút "Tạo" -> sinh slug từ field nguồn (VD "name"). */
+  generateFrom?: string;
 }
 
 const WIDE_TYPES = new Set([
@@ -269,6 +272,26 @@ export function AdminForm({
                   placeholder={f.placeholder}
                   className={inputCls}
                 />
+              ) : f.generateFrom ? (
+                // Ô text kèm nút "Tạo" -> sinh slug từ field nguồn (VD tên máy).
+                <div className="flex gap-2">
+                  <input
+                    type="text"
+                    value={values[f.name]}
+                    onChange={(e) => set(f.name, e.target.value)}
+                    placeholder={f.placeholder}
+                    className={`${inputCls} flex-1`}
+                  />
+                  <button
+                    type="button"
+                    onClick={() =>
+                      set(f.name, slugify(values[f.generateFrom as string] ?? ""))
+                    }
+                    className="h-11 shrink-0 rounded-xl border border-green bg-white px-4 text-[13px] font-semibold text-green-d transition hover:bg-green-tint"
+                  >
+                    Tạo
+                  </button>
+                </div>
               ) : (
                 <input
                   type={f.type === "number" ? "number" : "text"}

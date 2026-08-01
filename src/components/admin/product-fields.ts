@@ -69,7 +69,12 @@ export function productFields(
     { name: "screen", label: "Màn hình", placeholder: "15.6 inch FHD 144Hz IPS" },
     { name: "webcam", label: "Webcam", placeholder: "HD 720p" },
     { name: "color", label: "Màu sắc", placeholder: "Bạc / Đen / Xám..." },
-    { name: "ports", label: "Cổng kết nối", placeholder: "USB-C, HDMI, jack 3.5mm" },
+    {
+      name: "ports",
+      label: "Cổng kết nối (mỗi cổng 1 dòng — hiện dọc ở trang chi tiết)",
+      type: "textarea",
+      placeholder: "Cổng HDMI\nJack tai nghe 3.5mm\n2 x USB-C\nUSB 3.2",
+    },
     { name: "weight", label: "Trọng lượng", placeholder: "1.8 kg" },
     { name: "battery", label: "Pin", placeholder: "56Wh" },
     {
@@ -126,7 +131,13 @@ export function productFields(
     },
 
     { name: "h4", label: "SEO (để trống sẽ tự lấy theo tên)", type: "heading" },
-    { name: "slug", label: "Slug (đường dẫn)", full: true, placeholder: "tu-dong-tao-tu-ten" },
+    {
+      name: "slug",
+      label: "Slug (đường dẫn)",
+      full: true,
+      placeholder: "tu-dong-tao-tu-ten",
+      generateFrom: "name",
+    },
     { name: "metaTitle", label: "Meta title", full: true },
     { name: "metaDescription", label: "Meta description", type: "textarea" },
   ];

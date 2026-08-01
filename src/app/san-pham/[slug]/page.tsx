@@ -406,7 +406,9 @@ export default async function ProductPage({
                           <td className="w-[42%] py-2.5 pr-3 align-top text-ink-2">
                             {k}
                           </td>
-                          <td className="py-2.5 font-medium text-ink">{v}</td>
+                          <td className="whitespace-pre-line py-2.5 font-medium text-ink">
+                            {v}
+                          </td>
                         </tr>
                       ))}
                     </tbody>

@@ -20,7 +20,12 @@ const GROUP_OPTIONS = [
 const FIELDS: AdminField[] = [
   { name: "image", label: "Ảnh danh mục (tuỳ chọn)", type: "image" },
   { name: "name", label: "Tên danh mục", placeholder: "VD: Laptop Gaming" },
-  { name: "slug", label: "Slug (URL) — để trống sẽ tự tạo", placeholder: "laptop-gaming" },
+  {
+    name: "slug",
+    label: "Slug (URL) — để trống sẽ tự tạo",
+    placeholder: "laptop-gaming",
+    generateFrom: "name",
+  },
   { name: "icon", label: "Icon", type: "select", options: ICON_OPTIONS },
   { name: "group", label: "Nhóm (mega-menu)", type: "select", options: GROUP_OPTIONS },
   { name: "tag", label: "Nhãn (tuỳ chọn)", placeholder: "Hot / Giá tốt" },
