@@ -17,6 +17,8 @@ const ALLOWED = new Set([
   "floatPhone",
   "floatMessenger",
   "floatZalo",
+  // Danh sách nhu cầu sử dụng (JSON) — admin tự sửa
+  "needs",
 ]);
 
 export async function POST(req: Request) {

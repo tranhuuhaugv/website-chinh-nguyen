@@ -1,6 +1,7 @@
 import { SettingToggle } from "@/components/admin/SettingToggle";
 import { SettingInput } from "@/components/admin/SettingInput";
-import { getSetting } from "@/lib/data";
+import { NeedsManager } from "@/components/admin/NeedsManager";
+import { getNeeds, getSetting } from "@/lib/data";
 import { SITE } from "@/lib/site";
 
 export const metadata = { title: "Cài đặt" };
@@ -47,9 +48,10 @@ const CONTACTS: {
 ];
 
 export default async function AdminSettingsPage() {
-  const [toggleValues, contactValues] = await Promise.all([
+  const [toggleValues, contactValues, needs] = await Promise.all([
     Promise.all(OPTIONS.map((o) => getSetting(o.key))),
     Promise.all(CONTACTS.map((c) => getSetting(c.key))),
+    getNeeds(),
   ]);
 
   return (
@@ -92,6 +94,20 @@ export default async function AdminSettingsPage() {
               />
             </div>
           ))}
+        </section>
+      </div>
+
+      {/* Nhu cầu sử dụng — admin tự thêm/sửa; form thêm SP + bộ lọc web dùng theo */}
+      <div>
+        <h2 className="mb-1 text-[15px] font-bold text-ink">
+          Nhu cầu sử dụng
+        </h2>
+        <p className="mb-3 text-[13px] text-muted">
+          Danh sách nhu cầu để tick khi thêm sản phẩm và làm bộ lọc ngoài web
+          (Gaming, Văn phòng…). Đổi tên / thêm / xoá rồi bấm “Lưu danh sách”.
+        </p>
+        <section className="rounded-2xl border border-line bg-white p-5">
+          <NeedsManager initial={needs} />
         </section>
       </div>
 

@@ -1,18 +1,21 @@
 import { AdminForm } from "@/components/admin/AdminForm";
 import { productFields } from "@/components/admin/product-fields";
-import { getBrandSeriesOptions } from "@/lib/data";
+import { getBrandSeriesOptions, getNeeds } from "@/lib/data";
 
 export const metadata = { title: "Thêm sản phẩm" };
 export const dynamic = "force-dynamic";
 
 export default async function AddProductPage() {
-  const brandSeries = await getBrandSeriesOptions();
+  const [brandSeries, needs] = await Promise.all([
+    getBrandSeriesOptions(),
+    getNeeds(),
+  ]);
 
   return (
     <AdminForm
       title="Thêm sản phẩm"
       singleColumn
-      fields={productFields(brandSeries)}
+      fields={productFields(brandSeries, needs)}
       initialValues={{
         brandSeries: brandSeries[0]?.value ?? "",
         condition: "used",

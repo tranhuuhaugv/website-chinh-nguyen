@@ -12,6 +12,7 @@ import type {
   ProductCondition,
 } from "./types";
 import { sanitizeRichText, toRichHtml } from "./rich-text";
+import { NEED_OPTIONS } from "./product-query";
 import type { Policy, Section } from "./policies";
 import {
   ALL_PRODUCTS,
@@ -568,6 +569,7 @@ export async function getAdminProducts() {
     cpu: p.cpu,
     ram: p.ram,
     storage: p.storage,
+    series: p.series ?? "", // slug dòng máy để lọc trong admin
   }));
 }
 
@@ -824,6 +826,36 @@ export async function getSetting(key: string): Promise<string | null> {
     return ["flashSaleEnabled", "vouchersEnabled"].includes(key) ? "true" : null;
   const s = await prisma.setting.findUnique({ where: { key } });
   return s?.value ?? null;
+}
+
+/**
+ * Danh sách "nhu cầu sử dụng" — admin tự sửa (lưu Setting "needs" dạng JSON
+ * [{value,label}]). Chưa cấu hình -> dùng danh sách mặc định NEED_OPTIONS.
+ * Dùng cho: ô tick nhu cầu ở form sản phẩm + bộ lọc nhu cầu ngoài web.
+ */
+export async function getNeeds(): Promise<{ value: string; label: string }[]> {
+  const raw = await getSetting("needs");
+  if (raw) {
+    try {
+      const parsed = JSON.parse(raw);
+      if (Array.isArray(parsed)) {
+        const clean = parsed
+          .filter(
+            (x): x is { value: string; label: string } =>
+              x &&
+              typeof x.value === "string" &&
+              typeof x.label === "string" &&
+              x.value.trim() !== "" &&
+              x.label.trim() !== "",
+          )
+          .map((x) => ({ value: x.value.trim(), label: x.label.trim() }));
+        if (clean.length) return clean;
+      }
+    } catch {
+      /* JSON hỏng -> dùng mặc định */
+    }
+  }
+  return [...NEED_OPTIONS];
 }
 
 // --- Mã giảm giá: đếm số lượt đã dùng (theo đơn hàng đã lưu) ---

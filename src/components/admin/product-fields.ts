@@ -10,6 +10,7 @@ const YES_NO = [
 
 export function productFields(
   brandSeriesOptions: { value: string; label: string }[] = [],
+  needs: { value: string; label: string }[] = NEED_OPTIONS,
 ): AdminField[] {
   return [
     // Ảnh để ĐẦU form: việc đầu tiên khi thêm/sửa máy là xem/thay ảnh.
@@ -86,7 +87,7 @@ export function productFields(
       name: "needs",
       label: "Nhu cầu sử dụng (lọc + SEO)",
       type: "checkboxes",
-      options: NEED_OPTIONS,
+      options: needs,
     },
     {
       name: "isFeatured",

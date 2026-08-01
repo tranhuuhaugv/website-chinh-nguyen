@@ -83,6 +83,7 @@ export function ProductBrowser({
   products,
   brands,
   series = [],
+  needs = NEED_OPTIONS,
 }: {
   basePath: string;
   searchParams: RawParams;
@@ -90,6 +91,8 @@ export function ProductBrowser({
   brands: string[];
   /** Dòng máy (group="dong-may"): slug bắt đầu bằng slug hãng, VD "lenovo-legion". */
   series?: { slug: string; name: string }[];
+  /** Nhu cầu (admin tự sửa). Không truyền -> dùng danh sách mặc định. */
+  needs?: { value: string; label: string }[];
   /** Giữ để tương thích; các bộ lọc link đã tự giữ mọi param hiện có. */
   preserve?: Record<string, string>;
 }) {
@@ -187,7 +190,7 @@ export function ProductBrowser({
             >
               Tất cả
             </Chip>
-            {NEED_OPTIONS.map((opt) => (
+            {needs.map((opt) => (
               <Chip
                 key={opt.value}
                 href={

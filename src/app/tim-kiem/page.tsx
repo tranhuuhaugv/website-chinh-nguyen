@@ -7,7 +7,7 @@ import { FloatButtons } from "@/components/FloatButtons";
 import { ProductBrowser } from "@/components/product/ProductBrowser";
 import { CompareBar } from "@/components/compare/CompareBar";
 import { CompareProvider } from "@/components/compare/CompareContext";
-import { getAllProducts } from "@/lib/data";
+import { getAllProducts, getNeeds } from "@/lib/data";
 import type { RawParams } from "@/lib/product-query";
 
 function getKeyword(sp: RawParams): string {
@@ -35,7 +35,7 @@ export default async function SearchPage({
   const q = getKeyword(searchParams);
   const keyword = q.toLowerCase();
 
-  const all = await getAllProducts();
+  const [all, needs] = await Promise.all([getAllProducts(), getNeeds()]);
   const results = keyword
     ? all.filter((p) => p.name.toLowerCase().includes(keyword))
     : all;
@@ -68,6 +68,7 @@ export default async function SearchPage({
             searchParams={searchParams}
             products={results}
             brands={brands}
+            needs={needs}
             preserve={q ? { q } : {}}
           />
         </Container>

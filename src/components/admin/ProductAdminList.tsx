@@ -18,15 +18,23 @@ export interface AdminProduct {
   cpu: string;
   ram: string;
   storage: string;
+  series: string;
 }
 
 const PER_PAGE = 20;
 
-export function ProductAdminList({ products }: { products: AdminProduct[] }) {
+export function ProductAdminList({
+  products,
+  seriesList = [],
+}: {
+  products: AdminProduct[];
+  seriesList?: { slug: string; name: string }[];
+}) {
   const router = useRouter();
   const [rows, setRows] = useState(products);
   const [q, setQ] = useState("");
   const [brand, setBrand] = useState("Tất cả");
+  const [series, setSeries] = useState("Tất cả");
   const [cond, setCond] = useState("Tất cả");
   const [page, setPage] = useState(1);
   const [busy, setBusy] = useState<string | null>(null);
@@ -36,16 +44,24 @@ export function ProductAdminList({ products }: { products: AdminProduct[] }) {
     [rows],
   );
 
+  // Dòng máy của hãng đang chọn (slug bắt đầu bằng slug hãng).
+  const brandSeries = useMemo(() => {
+    if (brand === "Tất cả") return [];
+    const bslug = brand.toLowerCase().replace(/[^a-z0-9]+/g, "-");
+    return seriesList.filter((s) => s.slug.startsWith(`${bslug}-`));
+  }, [brand, seriesList]);
+
   const filtered = useMemo(() => {
     const kw = q.trim().toLowerCase();
     return rows.filter(
       (p) =>
         (brand === "Tất cả" || p.brand === brand) &&
+        (series === "Tất cả" || p.series === series) &&
         (cond === "Tất cả" ||
           (cond === "Cũ" ? p.condition !== "new" : p.condition === "new")) &&
         (!kw || `${p.name} ${p.brand} ${p.cpu}`.toLowerCase().includes(kw)),
     );
-  }, [rows, q, brand, cond]);
+  }, [rows, q, brand, series, cond]);
 
   const totalPages = Math.max(1, Math.ceil(filtered.length / PER_PAGE));
   const cur = Math.min(page, totalPages);
@@ -112,6 +128,7 @@ export function ProductAdminList({ products }: { products: AdminProduct[] }) {
               type="button"
               onClick={() => {
                 setBrand(b);
+                setSeries("Tất cả"); // đổi hãng -> bỏ lọc dòng máy cũ
                 setPage(1);
               }}
               className={chip(brand === b)}
@@ -134,6 +151,34 @@ export function ProductAdminList({ products }: { products: AdminProduct[] }) {
             </button>
           ))}
         </div>
+
+        {/* Lọc theo DÒNG MÁY — hiện khi đã chọn 1 hãng có dòng máy */}
+        {brandSeries.length > 0 && (
+          <div className="flex items-center gap-2 overflow-x-auto border-t border-line pt-2.5 [scrollbar-width:none] [&::-webkit-scrollbar]:hidden">
+            <span className="shrink-0 text-[11.5px] font-semibold uppercase tracking-wide text-muted">
+              Dòng máy
+            </span>
+            {["Tất cả", ...brandSeries.map((s) => s.slug)].map((slug) => {
+              const label =
+                slug === "Tất cả"
+                  ? "Tất cả"
+                  : (brandSeries.find((s) => s.slug === slug)?.name ?? slug);
+              return (
+                <button
+                  key={slug}
+                  type="button"
+                  onClick={() => {
+                    setSeries(slug);
+                    setPage(1);
+                  }}
+                  className={chip(series === slug)}
+                >
+                  {label}
+                </button>
+              );
+            })}
+          </div>
+        )}
       </div>
 
       <div className="overflow-x-auto rounded-2xl border border-line bg-white shadow-sm">

@@ -12,6 +12,7 @@ import {
   getAllProducts,
   getBrandBySlug,
   getCategorySeo,
+  getNeeds,
   getSeriesCategories,
 } from "@/lib/data";
 import type { RawParams } from "@/lib/product-query";
@@ -43,11 +44,12 @@ export default async function CategoryPage({
   params: { slug: string };
   searchParams: RawParams;
 }) {
-  const [category, brand, allProducts, allSeries] = await Promise.all([
+  const [category, brand, allProducts, allSeries, needs] = await Promise.all([
     getCategorySeo(params.slug),
     getBrandBySlug(params.slug),
     getAllProducts(),
     getSeriesCategories(),
+    getNeeds(),
   ]);
   const name = category?.name ?? brand ?? "Danh mục sản phẩm";
   const isSeriesPage = category?.group === "dong-may";
@@ -157,6 +159,7 @@ export default async function CategoryPage({
             searchParams={searchParams}
             products={baseProducts}
             brands={brands}
+            needs={needs}
           />
 
           {/* Bài viết SEO (admin tự soạn) — đặt DƯỚI danh sách sản phẩm để
