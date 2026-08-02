@@ -95,6 +95,12 @@ export function productFields(
       options: needs,
     },
     {
+      name: "isNew",
+      label: 'Sản phẩm mới về (hiện ở khối "Mới về" trang chủ)',
+      type: "select",
+      options: YES_NO,
+    },
+    {
       name: "isFeatured",
       label: "Sản phẩm nổi bật (hiện ở trang chủ)",
       type: "select",
