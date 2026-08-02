@@ -1,6 +1,5 @@
 import { BlogSection } from "@/components/BlogSection";
 import { CategoryGrid } from "@/components/CategoryGrid";
-import { CategoryNav } from "@/components/CategoryNav";
 import { CustomerGallery } from "@/components/CustomerGallery";
 import { VoucherStrip } from "@/components/VoucherStrip";
 import { FeaturedProducts } from "@/components/FeaturedProducts";
@@ -111,7 +110,6 @@ export default async function HomePage() {
         images={sideBanners}
       />
       <main>
-        <CategoryNav />
         <HeroSlider slides={HERO_SLIDES} imageSlides={heroBanners} />
         {vouchersOn && <VoucherStrip usage={voucherUsage} />}
         {flashOn && (
