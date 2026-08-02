@@ -5,6 +5,8 @@ import { Container } from "@/components/Container";
 import { Footer } from "@/components/Footer";
 import { Header } from "@/components/Header";
 import { FloatButtons } from "@/components/FloatButtons";
+import { MobileBuyBar } from "@/components/product/MobileBuyBar";
+import { RecentlyViewed } from "@/components/product/RecentlyViewed";
 import { ProductCard } from "@/components/ProductCard";
 import { SectionHead } from "@/components/SectionHead";
 import { ProductGallery } from "@/components/product/ProductGallery";
@@ -168,7 +170,7 @@ export default async function ProductPage({
         dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
       />
       <Header />
-      <main className="py-6">
+      <main className="py-6 max-lg:pb-24">
         <Container>
           <Breadcrumb
             items={[
@@ -429,10 +431,24 @@ export default async function ProductPage({
               </div>
             </section>
           )}
+
+          <RecentlyViewed
+            current={{
+              slug: product.slug,
+              name: product.name,
+              price: product.price,
+              image: product.images?.[0],
+            }}
+          />
         </Container>
       </main>
       <Footer />
       <FloatButtons />
+      <MobileBuyBar
+        item={item}
+        price={product.price}
+        oldPrice={product.oldPrice}
+      />
       <CompareBar />
     </CompareProvider>
   );

@@ -1,6 +1,7 @@
 import Link from "next/link";
 import { Container } from "./Container";
 import { Logo } from "./Logo";
+import { MegaMenu } from "./MegaMenu";
 import { CartButton } from "./cart/CartButton";
 import { SearchBox } from "./SearchBox";
 import { AccountMenu } from "./account/AccountMenu";
@@ -43,6 +44,8 @@ export function Header() {
       <div className="border-b border-line bg-white text-ink shadow-[0_1px_0_rgba(16,24,20,0.04)]">
         <Container className="flex h-[70px] items-center gap-[22px]">
           <Logo />
+
+          <MegaMenu />
 
           <SearchBox className="h-11 max-w-[560px] flex-1 max-[900px]:hidden" />
 

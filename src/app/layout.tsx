@@ -4,6 +4,7 @@ import "./globals.css";
 import { CartProvider } from "@/components/cart/CartContext";
 import { SiteSettingsProvider } from "@/components/SiteSettingsContext";
 import { VisitorTracker } from "@/components/VisitorTracker";
+import { MobileBottomNav } from "@/components/MobileBottomNav";
 
 const inter = Inter({
   subsets: ["latin", "vietnamese"],
@@ -55,9 +56,12 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="vi" className={inter.variable}>
-      <body className="font-sans antialiased">
+      <body className="font-sans antialiased pb-[54px] lg:pb-0">
         <SiteSettingsProvider>
-          <CartProvider>{children}</CartProvider>
+          <CartProvider>
+            {children}
+            <MobileBottomNav />
+          </CartProvider>
         </SiteSettingsProvider>
         <VisitorTracker />
       </body>

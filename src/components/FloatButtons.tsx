@@ -22,7 +22,7 @@ export async function FloatButtons() {
   const zaloHref = (zalo || `https://zalo.me/${SITE.hotlineTel}`).trim();
 
   return (
-    <div className="fixed bottom-5 right-4 z-[60] flex flex-col gap-2.5">
+    <div className="fixed right-4 bottom-[66px] z-[60] flex flex-col gap-2.5 lg:bottom-5">
       <a
         href={phoneHref}
         aria-label="Gọi điện thoại"

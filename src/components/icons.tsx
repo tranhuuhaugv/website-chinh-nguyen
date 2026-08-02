@@ -78,6 +78,14 @@ export const BoltIcon = (p: IconProps) => (
   </Fill>
 );
 
+export const HomeIcon = (p: IconProps) => (
+  <Stroke {...p}>
+    <path d="M3 10.5 12 3l9 7.5" />
+    <path d="M5 9.5V21h14V9.5" />
+    <path d="M9.5 21v-6h5v6" />
+  </Stroke>
+);
+
 export const FlameIcon = (p: IconProps) => (
   <Fill {...p}>
     <path d="M12 2c.9 2.8-1.4 4.3-1.4 6.7 0 1.3 1 2.4 2 2.4 1.2 0 1.9-1.1 1.7-2.6 1.6 1 2.9 3 2.9 5.3A5.8 5.8 0 1 1 6 13.7c0-3.6 2.7-5.1 3.7-8C10.6 3.9 11.4 3 12 2z" />

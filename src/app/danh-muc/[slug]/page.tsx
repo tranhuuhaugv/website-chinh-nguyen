@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import Image from "next/image";
 import { Breadcrumb } from "@/components/Breadcrumb";
 import { Container } from "@/components/Container";
 import { Footer } from "@/components/Footer";
@@ -112,6 +113,18 @@ export default async function CategoryPage({
               { label: name },
             ]}
           />
+          {category?.image && (
+            <div className="relative mt-4 aspect-[1200/260] w-full overflow-hidden rounded-2xl ring-1 ring-black/5 max-[640px]:aspect-[1200/440]">
+              <Image
+                src={category.image}
+                alt={name}
+                fill
+                sizes="(max-width: 1200px) 100vw, 1200px"
+                className="object-cover"
+                priority
+              />
+            </div>
+          )}
           <h1 className="mb-3 mt-3 text-[26px] font-bold text-ink">{name}</h1>
 
           {/* Chip các dòng máy của hãng — hiện ở cả trang hãng lẫn trang dòng máy

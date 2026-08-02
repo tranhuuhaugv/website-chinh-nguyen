@@ -402,13 +402,20 @@ export interface CategorySeo {
   metaDescription: string | null;
   seoContent: string; // HTML đã sanitize; "" nếu chưa soạn
   group: string | null; // "dong-may" -> trang lọc SP theo series
+  image: string | null; // ảnh bìa (admin tải lên) -> hero trang danh mục
 }
 
 export async function getCategorySeo(slug: string): Promise<CategorySeo | null> {
   if (NO_DB) {
     const c = CATEGORIES.find((x) => x.slug === slug);
     return c
-      ? { name: c.name, metaDescription: null, seoContent: "", group: null }
+      ? {
+          name: c.name,
+          metaDescription: null,
+          seoContent: "",
+          group: null,
+          image: c.image ?? null,
+        }
       : null;
   }
   const c = await prisma.category.findUnique({ where: { slug } });
@@ -418,6 +425,7 @@ export async function getCategorySeo(slug: string): Promise<CategorySeo | null> 
     metaDescription: c.metaDescription ?? null,
     seoContent: c.seoContent ? sanitizeRichText(c.seoContent) : "",
     group: c.group ?? null,
+    image: c.image ?? null,
   };
 }
 
