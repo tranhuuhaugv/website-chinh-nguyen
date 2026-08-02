@@ -19,6 +19,8 @@ const ALLOWED = new Set([
   "floatZalo",
   // Danh sách nhu cầu sử dụng (JSON) — admin tự sửa
   "needs",
+  // Danh sách mã giảm giá (JSON) — admin tự sửa
+  "vouchers",
 ]);
 
 export async function POST(req: Request) {

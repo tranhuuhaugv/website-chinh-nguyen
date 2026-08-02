@@ -1,7 +1,8 @@
 import { SettingToggle } from "@/components/admin/SettingToggle";
 import { SettingInput } from "@/components/admin/SettingInput";
 import { NeedsManager } from "@/components/admin/NeedsManager";
-import { getNeeds, getSetting } from "@/lib/data";
+import { VouchersManager } from "@/components/admin/VouchersManager";
+import { getNeeds, getSetting, getVouchers } from "@/lib/data";
 import { SITE } from "@/lib/site";
 
 export const metadata = { title: "Cài đặt" };
@@ -48,10 +49,11 @@ const CONTACTS: {
 ];
 
 export default async function AdminSettingsPage() {
-  const [toggleValues, contactValues, needs] = await Promise.all([
+  const [toggleValues, contactValues, needs, vouchers] = await Promise.all([
     Promise.all(OPTIONS.map((o) => getSetting(o.key))),
     Promise.all(CONTACTS.map((c) => getSetting(c.key))),
     getNeeds(),
+    getVouchers(),
   ]);
 
   return (
@@ -94,6 +96,20 @@ export default async function AdminSettingsPage() {
               />
             </div>
           ))}
+        </section>
+      </div>
+
+      {/* Mã giảm giá — admin tự thêm/sửa; khối trang chủ + giỏ hàng dùng theo */}
+      <div>
+        <h2 className="mb-1 text-[15px] font-bold text-ink">
+          Danh sách mã giảm giá
+        </h2>
+        <p className="mb-3 text-[13px] text-muted">
+          Sửa mã / số tiền giảm / đơn tối thiểu / số lượt phát hành. Bật/tắt hiển
+          thị khối này ở công tắc “Khối mã giảm giá” phía trên.
+        </p>
+        <section className="rounded-2xl border border-line bg-white p-5">
+          <VouchersManager initial={vouchers} />
         </section>
       </div>
 

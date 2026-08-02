@@ -1,18 +1,24 @@
 import { NextResponse } from "next/server";
-import { getVoucherUsage } from "@/lib/data";
-import { VOUCHERS } from "@/lib/vouchers";
+import { getVoucherUsage, getVouchers } from "@/lib/data";
 
-// Số lượt còn lại của từng mã giảm giá (công khai) — giỏ hàng gọi để chặn mã đã hết.
-// force-dynamic: luôn tính theo số đơn thật, không cache.
+// Danh sách mã giảm giá công khai + số lượt còn lại — giỏ hàng gọi để nhập/kiểm
+// tra mã. force-dynamic: luôn tính theo số đơn thật + cài đặt mới nhất.
 export const dynamic = "force-dynamic";
 
 export async function GET() {
-  const usage = await getVoucherUsage().catch(
-    (): Record<string, number> => ({}),
-  );
+  const [list, usage] = await Promise.all([
+    getVouchers(),
+    getVoucherUsage().catch((): Record<string, number> => ({})),
+  ]);
   const remaining: Record<string, number> = {};
-  for (const v of VOUCHERS) {
+  for (const v of list) {
     remaining[v.code] = Math.max(0, v.quantity - (usage[v.code] ?? 0));
   }
-  return NextResponse.json({ remaining });
+  // Chỉ trả trường công khai (không lộ quantity gốc).
+  const vouchers = list.map((v) => ({
+    code: v.code,
+    amount: v.amount,
+    minSubtotal: v.minSubtotal,
+  }));
+  return NextResponse.json({ vouchers, remaining });
 }

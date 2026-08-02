@@ -13,6 +13,7 @@ import type {
 } from "./types";
 import { sanitizeRichText, toRichHtml } from "./rich-text";
 import { NEED_OPTIONS } from "./product-query";
+import { VOUCHERS, type Voucher } from "./vouchers";
 import type { Policy, Section } from "./policies";
 import {
   ALL_PRODUCTS,
@@ -864,6 +865,34 @@ export async function getNeeds(): Promise<{ value: string; label: string }[]> {
     }
   }
   return [...NEED_OPTIONS];
+}
+
+/**
+ * Danh sách MÃ GIẢM GIÁ — admin tự sửa (lưu Setting "vouchers" dạng JSON
+ * [{code,amount,minSubtotal,quantity}]). Chưa cấu hình -> dùng mặc định VOUCHERS.
+ * Dùng cho: khối voucher trang chủ + ô nhập mã ở giỏ + kiểm tra khi đặt hàng.
+ */
+export async function getVouchers(): Promise<Voucher[]> {
+  const raw = await getSetting("vouchers");
+  if (raw) {
+    try {
+      const parsed = JSON.parse(raw);
+      if (Array.isArray(parsed)) {
+        const clean = parsed
+          .map((x) => ({
+            code: String(x?.code ?? "").trim().toUpperCase(),
+            amount: Math.max(0, Math.round(Number(x?.amount) || 0)),
+            minSubtotal: Math.max(0, Math.round(Number(x?.minSubtotal) || 0)),
+            quantity: Math.max(0, Math.round(Number(x?.quantity) || 0)),
+          }))
+          .filter((v) => v.code && v.amount > 0);
+        if (clean.length) return clean;
+      }
+    } catch {
+      /* JSON hỏng -> dùng mặc định */
+    }
+  }
+  return VOUCHERS.map((v) => ({ ...v }));
 }
 
 // --- Mã giảm giá: đếm số lượt đã dùng (theo đơn hàng đã lưu) ---

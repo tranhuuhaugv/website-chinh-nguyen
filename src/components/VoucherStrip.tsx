@@ -4,7 +4,7 @@ import { useState } from "react";
 import { Container } from "./Container";
 import { CheckIcon, TagIcon } from "./icons";
 import { formatPrice } from "@/lib/format";
-import { VOUCHERS } from "@/lib/vouchers";
+import { VOUCHERS, type Voucher } from "@/lib/vouchers";
 
 // Dải mã giảm giá trên trang chủ (hiện khi bật Setting "vouchersEnabled").
 // Khách bấm "Sao chép" rồi dán vào ô mã giảm giá ở giỏ hàng.
@@ -29,7 +29,13 @@ const STYLES = [
 ];
 
 // usage: map code -> số lượt đã dùng (từ server). Hết lượt -> vé chuyển "Hết mã".
-export function VoucherStrip({ usage = {} }: { usage?: Record<string, number> }) {
+export function VoucherStrip({
+  usage = {},
+  vouchers = VOUCHERS,
+}: {
+  usage?: Record<string, number>;
+  vouchers?: Voucher[];
+}) {
   const [copied, setCopied] = useState<string | null>(null);
 
   async function copy(code: string) {
@@ -46,7 +52,7 @@ export function VoucherStrip({ usage = {} }: { usage?: Record<string, number> })
     <section className="py-3 max-[900px]:py-2">
       <Container>
         <div className="grid grid-cols-3 gap-3 max-[900px]:grid-cols-1 max-[900px]:gap-1.5">
-          {VOUCHERS.map((v, i) => {
+          {vouchers.map((v, i) => {
             const style = STYLES[i % STYLES.length];
             const remaining = Math.max(0, v.quantity - (usage[v.code] ?? 0));
             const soldOut = remaining <= 0;

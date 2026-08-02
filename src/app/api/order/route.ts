@@ -3,7 +3,8 @@ import { orderSchema } from "@/lib/validations/order";
 import { sendOrderEmail } from "@/lib/mail";
 import { prisma } from "@/lib/prisma";
 import { getCurrentUser } from "@/lib/session";
-import { findVoucher } from "@/lib/vouchers";
+import { getVouchers } from "@/lib/data";
+import { normalizeVoucherCode } from "@/lib/vouchers";
 import { formatPrice } from "@/lib/format";
 
 // Nhận đơn (thu cũ / mua hàng) -> lưu vào DB + gửi email thông báo về Gmail.
@@ -31,7 +32,11 @@ export async function POST(req: Request) {
   let usedVoucher: string | null = null;
   if (d.type === "purchase") {
     const itemsTotal = d.items.reduce((s, i) => s + i.price * i.qty, 0);
-    const v = d.voucher ? findVoucher(d.voucher) : undefined;
+    // Lấy danh sách mã hiện hành (admin có thể đã sửa) rồi tìm theo code.
+    const code = d.voucher ? normalizeVoucherCode(d.voucher) : "";
+    const v = code
+      ? (await getVouchers()).find((x) => x.code === code)
+      : undefined;
 
     if (v && itemsTotal >= v.minSubtotal) {
       // Đếm số đơn đã dùng mã này; hết lượt -> từ chối để không sai tổng tiền.

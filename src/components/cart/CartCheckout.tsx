@@ -16,7 +16,7 @@ import {
 } from "@/components/icons";
 import { formatPrice } from "@/lib/format";
 import { checkoutSchema } from "@/lib/validations/checkout";
-import { findVoucher } from "@/lib/vouchers";
+import { normalizeVoucherCode } from "@/lib/vouchers";
 import { SITE } from "@/lib/site";
 
 // Giỏ hàng + thanh toán COD trên cùng 1 trang. Client Component.
@@ -56,22 +56,33 @@ export function CartCheckout({
   const [remaining, setRemaining] = useState<Record<string, number> | null>(
     null,
   );
-  const appliedVoucher = appliedCode ? findVoucher(appliedCode) : undefined;
+  // Danh sách mã hiện hành (admin sửa được) — lấy từ /api/vouchers.
+  const [vouchers, setVouchers] = useState<
+    { code: string; amount: number; minSubtotal: number }[]
+  >([]);
+  const findV = (code: string) => {
+    const c = normalizeVoucherCode(code);
+    return vouchers.find((v) => v.code === c);
+  };
+  const appliedVoucher = appliedCode ? findV(appliedCode) : undefined;
   const voucherValid =
     !!appliedVoucher && subtotal >= appliedVoucher.minSubtotal;
   const discount = voucherValid ? appliedVoucher.amount : 0;
   const total = subtotal - discount;
 
-  // Lấy số lượt còn lại 1 lần khi mở giỏ hàng.
+  // Lấy danh sách mã + số lượt còn lại 1 lần khi mở giỏ hàng.
   useEffect(() => {
     fetch("/api/vouchers")
       .then((r) => r.json())
-      .then((d) => setRemaining(d?.remaining ?? {}))
+      .then((d) => {
+        setVouchers(Array.isArray(d?.vouchers) ? d.vouchers : []);
+        setRemaining(d?.remaining ?? {});
+      })
       .catch(() => setRemaining({}));
   }, []);
 
   function applyVoucher() {
-    const v = findVoucher(voucherInput);
+    const v = findV(voucherInput);
     if (!v) {
       setVoucherError("Mã giảm giá không hợp lệ");
       return;

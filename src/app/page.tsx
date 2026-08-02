@@ -24,6 +24,7 @@ import {
   getFeaturedProducts,
   getFlashSaleProducts,
   getNewProducts,
+  getVouchers,
   getHeroBanners,
   getSetting,
   getSideBanners,
@@ -94,8 +95,10 @@ export default async function HomePage() {
   ]);
   const flashOn = flashSetting === "true" && flashProducts.length > 0;
   const vouchersOn = voucherSetting === "true";
-  // Chỉ đếm số lượt voucher khi khối đang bật (tránh query thừa mỗi lần render).
-  const voucherUsage = vouchersOn ? await getVoucherUsage() : {};
+  // Chỉ đếm số lượt + lấy danh sách mã khi khối đang bật (tránh query thừa).
+  const [voucherUsage, vouchers] = vouchersOn
+    ? await Promise.all([getVoucherUsage(), getVouchers()])
+    : [{} as Record<string, number>, []];
 
   return (
     <CompareProvider>
@@ -111,7 +114,9 @@ export default async function HomePage() {
       />
       <main>
         <HeroSlider slides={HERO_SLIDES} imageSlides={heroBanners} />
-        {vouchersOn && <VoucherStrip usage={voucherUsage} />}
+        {vouchersOn && (
+          <VoucherStrip usage={voucherUsage} vouchers={vouchers} />
+        )}
         {flashOn && (
           <FlashSale flashProducts={flashProducts} newProducts={newProducts} />
         )}
