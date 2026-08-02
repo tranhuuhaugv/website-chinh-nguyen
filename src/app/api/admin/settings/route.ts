@@ -21,6 +21,8 @@ const ALLOWED = new Set([
   "needs",
   // Danh sách mã giảm giá (JSON) — admin tự sửa
   "vouchers",
+  // Danh sách cửa hàng (JSON [{name,address,city}]) — admin tự sửa
+  "stores",
 ]);
 
 export async function POST(req: Request) {

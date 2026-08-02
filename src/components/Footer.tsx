@@ -9,6 +9,7 @@ import {
   PhoneIcon,
 } from "./icons";
 import { SITE } from "@/lib/site";
+import { getStores } from "@/lib/data";
 
 // Footer dùng chung toàn site. Server Component.
 
@@ -51,7 +52,8 @@ function FooterList({
   );
 }
 
-export function Footer() {
+export async function Footer() {
+  const stores = await getStores();
   return (
     <footer className="mt-12 bg-ink pb-6 text-[#AEB7B1]">
       {/* Dải CTA hotline (gradient) — gối lên đầu footer cho hiện đại */}
@@ -133,7 +135,7 @@ export function Footer() {
               Liên hệ
             </h4>
             <ul className="space-y-2.5 text-[13.5px]">
-              {SITE.stores.map((s) => (
+              {stores.map((s) => (
                 <li key={s.address} className="flex items-start gap-2.5">
                   <MapPinIcon className="mt-0.5 h-4 w-4 shrink-0 text-[#7EE0A0]" />
                   <span className="leading-[1.5]">{s.address}</span>

@@ -10,7 +10,9 @@ import type {
   Product,
   ProductAccent,
   ProductCondition,
+  Store,
 } from "./types";
+import { SITE } from "./site";
 import { sanitizeRichText, toRichHtml } from "./rich-text";
 import { NEED_OPTIONS } from "./product-query";
 import { VOUCHERS, type Voucher } from "./vouchers";
@@ -835,6 +837,43 @@ export async function getSetting(key: string): Promise<string | null> {
     return ["flashSaleEnabled", "vouchersEnabled"].includes(key) ? "true" : null;
   const s = await prisma.setting.findUnique({ where: { key } });
   return s?.value ?? null;
+}
+
+/**
+ * Danh sách cửa hàng — admin tự thêm/sửa (lưu Setting "stores" dạng JSON
+ * [{name,address,city}]). Chưa cấu hình -> dùng danh sách mặc định SITE.stores.
+ * Dùng cho: Footer, trang Hệ thống cửa hàng, Liên hệ, schema trang chủ, chi tiết SP.
+ */
+export async function getStores(): Promise<Store[]> {
+  const raw = await getSetting("stores");
+  if (raw) {
+    try {
+      const parsed = JSON.parse(raw);
+      if (Array.isArray(parsed)) {
+        const clean = parsed
+          .filter(
+            (x): x is { name: string; address: string; city?: unknown } =>
+              x &&
+              typeof x.name === "string" &&
+              typeof x.address === "string" &&
+              x.name.trim() !== "" &&
+              x.address.trim() !== "",
+          )
+          .map((x) => ({
+            name: x.name.trim(),
+            address: x.address.trim(),
+            city:
+              typeof x.city === "string" && x.city.trim()
+                ? x.city.trim()
+                : "Đà Nẵng",
+          }));
+        if (clean.length) return clean;
+      }
+    } catch {
+      // JSON hỏng -> rơi xuống mặc định
+    }
+  }
+  return SITE.stores.map((s) => ({ ...s }));
 }
 
 /**

@@ -3,6 +3,7 @@ import { StaticPage } from "@/components/StaticPage";
 import { Band, SectionIntro } from "@/components/static/Band";
 import { ContactForm } from "@/components/ContactForm";
 import { SITE } from "@/lib/site";
+import { getStores } from "@/lib/data";
 import { ClockIcon, MailIcon, MapPinIcon, PhoneIcon } from "@/components/icons";
 
 export const metadata: Metadata = {
@@ -31,7 +32,8 @@ const SOCIALS = [
   { label: "TikTok", href: "https://tiktok.com", color: "bg-[#111]" },
 ];
 
-export default function ContactPage() {
+export default async function ContactPage() {
+  const stores = await getStores();
   return (
     <StaticPage
       title="Kết nối với Chính Nguyễn"
@@ -89,7 +91,7 @@ export default function ContactPage() {
           title="Hệ thống cửa hàng"
         />
         <div className="mt-10 grid grid-cols-1 gap-6 sm:grid-cols-2">
-          {SITE.stores.map((s) => (
+          {stores.map((s) => (
             <div key={s.address} className="flex items-start gap-4">
               <span className="flex h-12 w-12 shrink-0 items-center justify-center rounded-xl bg-gradient-to-br from-green to-green-dd text-white shadow-[0_6px_14px_rgba(11,94,44,0.24)]">
                 <MapPinIcon className="h-6 w-6" />

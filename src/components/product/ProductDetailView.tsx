@@ -22,6 +22,7 @@ import {
   getProductBySlug,
   getProductVariants,
   getRelatedProducts,
+  getStores,
 } from "@/lib/data";
 import type { Product } from "@/lib/types";
 import { buildDescription, buildSpecGroups } from "@/lib/product-content";
@@ -74,9 +75,10 @@ export async function ProductDetailView({ slug }: { slug: string }) {
   const discount = product.oldPrice
     ? Math.round((1 - product.price / product.oldPrice) * 100)
     : 0;
-  const [related, variants] = await Promise.all([
+  const [related, variants, stores] = await Promise.all([
     getRelatedProducts(product, 12),
     getProductVariants(product),
+    getStores(),
   ]);
 
   const url = `${SITE_URL}/${product.slug}`;
@@ -271,7 +273,7 @@ export async function ProductDetailView({ slug }: { slug: string }) {
                   Xem &amp; nhận máy tại cửa hàng
                 </p>
                 <ul className="mt-2.5 flex flex-col gap-2.5">
-                  {SITE.stores.map((s) => (
+                  {stores.map((s) => (
                     <li
                       key={s.address}
                       className="flex gap-2 text-[12.5px] leading-snug text-ink-2"

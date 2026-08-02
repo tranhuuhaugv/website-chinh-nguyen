@@ -28,6 +28,7 @@ import {
   getHeroBanners,
   getSetting,
   getSideBanners,
+  getStores,
   getVoucherUsage,
 } from "@/lib/data";
 import { SITE } from "@/lib/site";
@@ -40,34 +41,38 @@ const SITE_URL =
   process.env.NEXT_PUBLIC_SITE_URL ?? "https://laptopchinhnguyen.vn";
 
 // Structured data cho trang chủ (Organization + WebSite có ô tìm kiếm).
-const jsonLd = {
-  "@context": "https://schema.org",
-  "@graph": [
-    {
-      "@type": "Organization",
-      name: "Laptop Chính Nguyễn",
-      url: SITE_URL,
-      areaServed: ["Đà Nẵng", "Hội An"],
-      telephone: SITE.hotline,
-      address: SITE.stores.map((s) => ({
-        "@type": "PostalAddress",
-        streetAddress: s.address,
-        addressLocality: s.city,
-        addressCountry: "VN",
-      })),
-    },
-    {
-      "@type": "WebSite",
-      name: "Laptop Chính Nguyễn",
-      url: SITE_URL,
-      potentialAction: {
-        "@type": "SearchAction",
-        target: `${SITE_URL}/tim-kiem?q={search_term_string}`,
-        "query-input": "required name=search_term_string",
+// Địa chỉ lấy từ danh sách cửa hàng thật (admin sửa được) -> luôn khớp SEO.
+function buildJsonLd(stores: { address: string; city: string }[]) {
+  const cities = Array.from(new Set(stores.map((s) => s.city)));
+  return {
+    "@context": "https://schema.org",
+    "@graph": [
+      {
+        "@type": "Organization",
+        name: "Laptop Chính Nguyễn",
+        url: SITE_URL,
+        areaServed: cities.length ? cities : ["Đà Nẵng"],
+        telephone: SITE.hotline,
+        address: stores.map((s) => ({
+          "@type": "PostalAddress",
+          streetAddress: s.address,
+          addressLocality: s.city,
+          addressCountry: "VN",
+        })),
       },
-    },
-  ],
-};
+      {
+        "@type": "WebSite",
+        name: "Laptop Chính Nguyễn",
+        url: SITE_URL,
+        potentialAction: {
+          "@type": "SearchAction",
+          target: `${SITE_URL}/tim-kiem?q={search_term_string}`,
+          "query-input": "required name=search_term_string",
+        },
+      },
+    ],
+  };
+}
 
 export default async function HomePage() {
   const [
@@ -81,6 +86,7 @@ export default async function HomePage() {
     sideBanners,
     flashSetting,
     voucherSetting,
+    stores,
   ] = await Promise.all([
     getFlashSaleProducts(),
     getNewProducts(),
@@ -92,7 +98,9 @@ export default async function HomePage() {
     getSideBanners(),
     getSetting("flashSaleEnabled"),
     getSetting("vouchersEnabled"),
+    getStores(),
   ]);
+  const jsonLd = buildJsonLd(stores);
   const flashOn = flashSetting === "true" && flashProducts.length > 0;
   const vouchersOn = voucherSetting === "true";
   // Chỉ đếm số lượt + lấy danh sách mã khi khối đang bật (tránh query thừa).

@@ -153,6 +153,14 @@ export interface CustomerPhoto {
   image?: string;
 }
 
+/** Cửa hàng trong hệ thống (admin thêm/sửa; lưu Setting "stores" dạng JSON). */
+export interface Store {
+  name: string;
+  address: string;
+  /** Thành phố -> dùng cho schema.org addressLocality (Đà Nẵng / Hội An…). */
+  city: string;
+}
+
 export type BlogAccent = "green" | "blue" | "purple";
 
 /**

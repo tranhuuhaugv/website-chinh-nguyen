@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import { StaticPage } from "@/components/StaticPage";
 import { Band, SectionIntro } from "@/components/static/Band";
 import { SITE } from "@/lib/site";
+import { getStores } from "@/lib/data";
 import { CheckIcon, ClockIcon, MapPinIcon, PhoneIcon } from "@/components/icons";
 
 export const metadata: Metadata = {
@@ -19,7 +20,8 @@ const SERVICES = [
   "Thu cũ đổi mới, trợ giá hấp dẫn.",
 ];
 
-export default function StoresPage() {
+export default async function StoresPage() {
+  const stores = await getStores();
   return (
     <StaticPage
       title="Hệ thống cửa hàng tại Đà Nẵng & Hội An"
@@ -31,7 +33,7 @@ export default function StoresPage() {
       hero={
         <div className="rounded-2xl border border-line bg-white p-5 text-center shadow-card">
           <p className="text-[34px] font-extrabold text-green">
-            {SITE.stores.length}
+            {stores.length}
           </p>
           <p className="text-[12.5px] text-muted">cơ sở tại Đà Nẵng &amp; Hội An</p>
         </div>
@@ -65,7 +67,7 @@ export default function StoresPage() {
       <Band tone="tint">
         <SectionIntro center eyebrow="Địa chỉ" title="Các cửa hàng của chúng tôi" />
         <div className="mt-10 grid grid-cols-1 gap-6 md:grid-cols-2">
-          {SITE.stores.map((store) => (
+          {stores.map((store) => (
             <div
               key={store.name}
               className="overflow-hidden rounded-2xl border border-line bg-white shadow-card"
