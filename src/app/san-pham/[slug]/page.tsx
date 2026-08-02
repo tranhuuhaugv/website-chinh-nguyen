@@ -7,6 +7,7 @@ import { Header } from "@/components/Header";
 import { FloatButtons } from "@/components/FloatButtons";
 import { MobileBuyBar } from "@/components/product/MobileBuyBar";
 import { RecentlyViewed } from "@/components/product/RecentlyViewed";
+import { FlashSlider } from "@/components/FlashSlider";
 import { ProductCard } from "@/components/ProductCard";
 import { SectionHead } from "@/components/SectionHead";
 import { ProductGallery } from "@/components/product/ProductGallery";
@@ -95,7 +96,7 @@ export default async function ProductPage({
     : 0;
   // Song song: 2 truy vấn độc lập nhau, không cộng dồn độ trễ.
   const [related, variants] = await Promise.all([
-    getRelatedProducts(product),
+    getRelatedProducts(product, 12), // nhiều hơn để có cái mà trượt slide
     getProductVariants(product),
   ]);
 
@@ -424,11 +425,16 @@ export default async function ProductPage({
           {related.length > 0 && (
             <section id="tuong-tu" className="mt-10 scroll-mt-20">
               <SectionHead title="Sản phẩm tương tự" moreHref="/san-pham" />
-              <div className="grid grid-cols-4 gap-4 max-[900px]:grid-cols-2 max-[460px]:gap-2.5">
+              <FlashSlider>
                 {related.map((p) => (
-                  <ProductCard key={p.id} product={p} />
+                  <div
+                    key={p.id}
+                    className="w-[240px] shrink-0 max-[640px]:w-[170px]"
+                  >
+                    <ProductCard product={p} />
+                  </div>
                 ))}
-              </div>
+              </FlashSlider>
             </section>
           )}
 

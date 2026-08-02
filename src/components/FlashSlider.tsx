@@ -77,7 +77,7 @@ export function FlashSlider({ children }: { children: ReactNode }) {
         onMouseEnter={onEnter}
         onMouseLeave={onLeave}
         onClickCapture={onClickCapture}
-        className="flex select-none gap-3 overflow-x-auto pb-1 [scrollbar-width:thin] [&::-webkit-scrollbar]:h-1.5 [&::-webkit-scrollbar-thumb]:rounded-full [&::-webkit-scrollbar-thumb]:bg-white/20"
+        className="flex select-none gap-3 overflow-x-auto px-0.5 py-2 [scrollbar-width:thin] [&::-webkit-scrollbar]:h-1.5 [&::-webkit-scrollbar-thumb]:rounded-full [&::-webkit-scrollbar-thumb]:bg-white/20"
       >
         {children}
       </div>
