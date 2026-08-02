@@ -3,8 +3,8 @@
 import { useRouter } from "next/navigation";
 
 // Chọn tháng để lọc số liệu dashboard. Đổi tháng -> cập nhật ?thang=YYYY-MM.
-// `value` là tháng đang xem (từ server) -> để input LUÔN khớp URL (controlled),
-// tránh trường hợp hiển thị 1 tháng nhưng số liệu là tháng khác.
+// `key={value}` khiến input remount theo tháng đang xem (từ server) nên LUÔN
+// khớp URL, kể cả khi bấm back/forward — tránh hiện 1 tháng mà số liệu tháng khác.
 export function MonthPicker({ value }: { value: string }) {
   const router = useRouter();
   return (
@@ -19,10 +19,11 @@ export function MonthPicker({ value }: { value: string }) {
         onChange={(e) => {
           const v = e.target.value;
           if (!v) return;
-          router.push(`/admin?thang=${v}`);
-          // Ép lấy lại dữ liệu từ server (bỏ mọi bản cache phía client) để
-          // biểu đồ đồng bộ ngay với tháng vừa chọn.
-          router.refresh();
+          // scroll:false -> đổi tháng KHÔNG nhảy lên đầu trang. Bỏ router.refresh
+          // (ép tải lại toàn bộ) -> back/forward là điều hướng mềm, Next tự khôi
+          // phục vị trí cuộn, không reload cả trang. Trang /admin đã force-dynamic
+          // nên mỗi URL tháng vẫn tự lấy số liệu mới từ server.
+          router.push(`/admin?thang=${v}`, { scroll: false });
         }}
         className="h-9 rounded-lg border border-line bg-white px-2.5 text-[13px] text-ink outline-none focus:border-green"
       />

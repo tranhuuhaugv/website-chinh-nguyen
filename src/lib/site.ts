@@ -12,11 +12,23 @@ export const SITE = {
   stores: [
     {
       name: "Chính Nguyễn - Đỗ Quang",
-      address: "175/8 Đỗ Quang, Thanh Khê, TP. Đà Nẵng",
+      address: "175/8 Đỗ Quang - TP. Đà Nẵng",
+      city: "Đà Nẵng",
     },
     {
       name: "Chính Nguyễn - Trần Cao Vân",
-      address: "605 Trần Cao Vân, Thanh Khê, TP. Đà Nẵng",
+      address: "605 Trần Cao Vân - TP. Đà Nẵng",
+      city: "Đà Nẵng",
+    },
+    {
+      name: "Chính Nguyễn - Nguyễn Hoàng",
+      address: "306/14 Nguyễn Hoàng - TP. Đà Nẵng",
+      city: "Đà Nẵng",
+    },
+    {
+      name: "Chính Nguyễn - Hùng Vương (Hội An)",
+      address: "139/2 Hùng Vương, TP. Hội An",
+      city: "Hội An",
     },
   ],
 } as const;

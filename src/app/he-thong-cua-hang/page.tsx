@@ -7,7 +7,7 @@ import { CheckIcon, ClockIcon, MapPinIcon, PhoneIcon } from "@/components/icons"
 export const metadata: Metadata = {
   title: "Hệ thống cửa hàng",
   description:
-    "Hệ thống cửa hàng Laptop Chính Nguyễn tại Đà Nẵng. Địa chỉ, giờ mở cửa, dịch vụ và hotline hỗ trợ.",
+    "Hệ thống cửa hàng Laptop Chính Nguyễn tại Đà Nẵng & Hội An. Địa chỉ, giờ mở cửa, dịch vụ và hotline hỗ trợ.",
 };
 
 const SERVICES = [
@@ -22,7 +22,7 @@ const SERVICES = [
 export default function StoresPage() {
   return (
     <StaticPage
-      title="Hệ thống cửa hàng tại Đà Nẵng"
+      title="Hệ thống cửa hàng tại Đà Nẵng & Hội An"
       lead="Ghé thăm Chính Nguyễn để được tư vấn tận tình và trải nghiệm sản phẩm trực tiếp trước khi quyết định."
       breadcrumb={[
         { label: "Trang chủ", href: "/" },
@@ -33,7 +33,7 @@ export default function StoresPage() {
           <p className="text-[34px] font-extrabold text-green">
             {SITE.stores.length}
           </p>
-          <p className="text-[12.5px] text-muted">cơ sở tại Đà Nẵng</p>
+          <p className="text-[12.5px] text-muted">cơ sở tại Đà Nẵng &amp; Hội An</p>
         </div>
       }
     >
@@ -46,8 +46,9 @@ export default function StoresPage() {
           />
           <div className="flex flex-col gap-4 text-[15px] leading-[1.75] text-ink-2">
             <p>
-              Chính Nguyễn có mặt tại nhiều quận trung tâm Đà Nẵng, giúp bạn dễ
-              dàng ghé thăm, trải nghiệm sản phẩm và nhận hỗ trợ nhanh chóng. Mỗi
+              Chính Nguyễn có mặt tại nhiều quận trung tâm Đà Nẵng và Hội An,
+              giúp bạn dễ dàng ghé thăm, trải nghiệm sản phẩm và nhận hỗ trợ
+              nhanh chóng. Mỗi
               cửa hàng đều được đầu tư không gian hiện đại và đội ngũ chuyên
               nghiệp.
             </p>

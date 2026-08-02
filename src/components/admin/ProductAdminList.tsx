@@ -1,8 +1,8 @@
 "use client";
 
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import Link from "next/link";
-import { useRouter } from "next/navigation";
+import { usePathname, useRouter, useSearchParams } from "next/navigation";
 import { EditIcon, PlusIcon, TrashIcon } from "@/components/icons";
 import { formatPrice } from "@/lib/format";
 
@@ -31,13 +31,35 @@ export function ProductAdminList({
   seriesList?: { slug: string; name: string }[];
 }) {
   const router = useRouter();
+  const pathname = usePathname();
+  const searchParams = useSearchParams();
   const [rows, setRows] = useState(products);
-  const [q, setQ] = useState("");
-  const [brand, setBrand] = useState("Tất cả");
-  const [series, setSeries] = useState("Tất cả");
-  const [cond, setCond] = useState("Tất cả");
-  const [page, setPage] = useState(1);
+  // Khởi tạo bộ lọc/trang TỪ URL -> mở 1 sản phẩm rồi bấm back sẽ về đúng
+  // bộ lọc + trang trước đó (thay vì reset về đầu).
+  const [q, setQ] = useState(() => searchParams.get("q") ?? "");
+  const [brand, setBrand] = useState(() => searchParams.get("brand") ?? "Tất cả");
+  const [series, setSeries] = useState(
+    () => searchParams.get("series") ?? "Tất cả",
+  );
+  const [cond, setCond] = useState(() => searchParams.get("cond") ?? "Tất cả");
+  const [page, setPage] = useState(() => Number(searchParams.get("page")) || 1);
   const [busy, setBusy] = useState<string | null>(null);
+
+  // Ghi bộ lọc/trang hiện tại vào URL (?q&brand&series&cond&page) bằng replace
+  // (không tạo lịch sử thừa, không cuộn trang). Nhờ vậy khi mở 1 sản phẩm rồi
+  // bấm back, danh sách trở lại đúng bộ lọc + trang + vị trí cuộn trước đó.
+  useEffect(() => {
+    const sp = new URLSearchParams();
+    if (q.trim()) sp.set("q", q.trim());
+    if (brand !== "Tất cả") sp.set("brand", brand);
+    if (series !== "Tất cả") sp.set("series", series);
+    if (cond !== "Tất cả") sp.set("cond", cond);
+    if (page > 1) sp.set("page", String(page));
+    const qs = sp.toString();
+    if (qs !== searchParams.toString()) {
+      router.replace(qs ? `${pathname}?${qs}` : pathname, { scroll: false });
+    }
+  }, [q, brand, series, cond, page, pathname, router, searchParams]);
 
   const brands = useMemo(
     () => Array.from(new Set(rows.map((p) => p.brand))).sort(),

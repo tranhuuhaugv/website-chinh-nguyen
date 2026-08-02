@@ -7,7 +7,7 @@ import { ClockIcon, MailIcon, MapPinIcon, PhoneIcon } from "@/components/icons";
 
 export const metadata: Metadata = {
   title: "Liên hệ",
-  description: `Liên hệ Laptop Chính Nguyễn — hotline ${SITE.hotline}, 2 cơ sở tại Đà Nẵng. Hỗ trợ tư vấn, bảo hành và hợp tác.`,
+  description: `Liên hệ Laptop Chính Nguyễn — hotline ${SITE.hotline}, ${SITE.stores.length} cơ sở tại Đà Nẵng & Hội An. Hỗ trợ tư vấn, bảo hành và hợp tác.`,
 };
 
 const INFO = [
