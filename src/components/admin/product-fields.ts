@@ -115,7 +115,7 @@ export function productFields(
       type: "textarea",
       full: true,
       placeholder:
-        "https://laptopchinhnguyen.com.vn/san-pham/dell-xps-13-9370-ram-16gb-ssd-256gb",
+        "https://laptopchinhnguyen.com.vn/dell-xps-13-9370-ram-16gb-ssd-256gb",
     },
 
     {

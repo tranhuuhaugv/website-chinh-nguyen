@@ -34,7 +34,7 @@ export const HERO_SLIDES: HeroSlide[] = [
   },
   {
     id: "gaming-week",
-    href: "/danh-muc/laptop-gaming",
+    href: "/laptop-gaming",
     badge: "GAMING WEEK",
     title1: "Laptop Gaming RTX",
     title2: "giảm đến 20%",
@@ -44,7 +44,7 @@ export const HERO_SLIDES: HeroSlide[] = [
   },
   {
     id: "apple-days",
-    href: "/danh-muc/macbook",
+    href: "/macbook",
     badge: "APPLE DAYS",
     title1: "MacBook chính hãng",
     title2: "trả góp 0%",
@@ -405,7 +405,7 @@ export const BLOG_POSTS: BlogPost[] = [
       `<ul><li><strong>Balo laptop</strong> — đựng máy và tài liệu gọn gàng tới giảng đường.</li><li><strong>Túi chống sốc</strong> — bảo vệ máy an toàn khi di chuyển.</li><li><strong>Mũ bảo hiểm Chính Nguyễn</strong> — đồng hành trên mọi cung đường đến trường.</li></ul>`,
       `<h2>Tư vấn 1-1: chọn máy đúng ngành, không lo mua dư cấu hình</h2>`,
       `<p>Mỗi ngành học cần một cấu hình khác nhau: kinh tế — ngoại ngữ chỉ cần máy văn phòng pin tốt, CNTT — kỹ thuật cần CPU mạnh và RAM 16GB, thiết kế — dựng phim cần card đồ họa rời. Đội ngũ Chính Nguyễn tư vấn <strong>1-1 miễn phí</strong> để bạn chọn đúng máy, đúng ngành, đúng ngân sách — gọi <strong>0938.122.144</strong> trước khi đến để được chuẩn bị sẵn máy trải nghiệm.</p>`,
-      `<p>Tham khảo thêm: <a href="/blog/chon-laptop-cho-sinh-vien-2026-ngan-sach-15-trieu">Laptop cho sinh viên 2026: ngân sách 15 triệu nên mua gì?</a> hoặc xem <a href="/san-pham">toàn bộ laptop đang bán tại Chính Nguyễn</a>. Ngân sách eo hẹp? <a href="/danh-muc/laptop-cu">Laptop cũ đã kiểm định</a> cũng được áp dụng ưu đãi Back To School.</p>`,
+      `<p>Tham khảo thêm: <a href="/blog/chon-laptop-cho-sinh-vien-2026-ngan-sach-15-trieu">Laptop cho sinh viên 2026: ngân sách 15 triệu nên mua gì?</a> hoặc xem <a href="/san-pham">toàn bộ laptop đang bán tại Chính Nguyễn</a>. Ngân sách eo hẹp? <a href="/laptop-cu">Laptop cũ đã kiểm định</a> cũng được áp dụng ưu đãi Back To School.</p>`,
       `<h2>Cách nhận ưu đãi</h2>`,
       `<ol><li>Chọn laptop phù hợp tại cửa hàng hoặc trên website, hoặc gọi hotline để được tư vấn.</li><li>Mang theo thẻ HSSV / thẻ giáo viên và giấy báo điểm thi (nếu có) khi mua máy.</li><li>Nhân viên xác nhận và trừ trực tiếp mức giảm vào giá máy, kèm bộ quà tặng.</li></ol>`,
       `<h2>Mua ở đâu? Liên hệ thế nào?</h2>`,
@@ -592,11 +592,11 @@ export const CATEGORY_GROUPS: { title: string; slugs: string[] }[] = [
 export const QUICK_NAV_LINKS: { label: string; href: string; hot?: boolean }[] =
   [
     { label: "Tất cả sản phẩm", href: "/san-pham" },
-    { label: "Laptop Gaming", href: "/danh-muc/laptop-gaming" },
-    { label: "Văn phòng", href: "/danh-muc/laptop-van-phong" },
-    { label: "MacBook", href: "/danh-muc/macbook" },
-    { label: "Dell", href: "/danh-muc/dell" },
-    { label: "Asus", href: "/danh-muc/asus" },
+    { label: "Laptop Gaming", href: "/laptop-gaming" },
+    { label: "Văn phòng", href: "/laptop-van-phong" },
+    { label: "MacBook", href: "/macbook" },
+    { label: "Dell", href: "/dell" },
+    { label: "Asus", href: "/asus" },
     { label: "Thu cũ đổi mới", href: "/thu-cu-doi-moi" },
     { label: "Trả góp 0%", href: "/chinh-sach/tra-gop" },
   ];

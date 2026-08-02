@@ -1,12 +1,14 @@
 "use client";
 
+import { useEffect, useState } from "react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { CartIcon, GridIcon, HomeIcon, UserIcon } from "./icons";
 import { useCart } from "./cart/CartContext";
 
-// Thanh điều hướng dưới đáy — CHỈ mobile/tablet. Ẩn ở trang chi tiết sản phẩm
-// (nơi thanh "Mua ngay" dính đáy thế chỗ).
+// Thanh điều hướng dưới đáy — CHỈ mobile/tablet. Ẩn ở khu admin và ở trang có
+// thanh "Mua ngay" dính đáy (trang chi tiết SP — nay dùng URL gốc /[slug] nên
+// không nhận diện bằng path được, phải dò sự hiện diện của thanh Mua ngay).
 
 const ITEMS = [
   { href: "/", label: "Trang chủ", Icon: HomeIcon, exact: true },
@@ -18,11 +20,13 @@ const ITEMS = [
 export function MobileBottomNav() {
   const pathname = usePathname();
   const { totalItems, ready } = useCart();
+  // Trang có thanh "Mua ngay" dính đáy (data-buybar) -> ẩn thanh điều hướng.
+  const [hasBuyBar, setHasBuyBar] = useState(false);
+  useEffect(() => {
+    setHasBuyBar(!!document.querySelector("[data-buybar]"));
+  }, [pathname]);
 
-  // Ẩn ở trang chi tiết sản phẩm (/san-pham/<slug>) và khu admin.
-  if (/^\/san-pham\/[^/]+/.test(pathname) || pathname.startsWith("/admin")) {
-    return null;
-  }
+  if (pathname.startsWith("/admin") || hasBuyBar) return null;
 
   return (
     <nav className="fixed inset-x-0 bottom-0 z-50 border-t border-line bg-white/95 backdrop-blur lg:hidden">

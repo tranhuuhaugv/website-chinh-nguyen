@@ -18,7 +18,10 @@ export function MobileBuyBar({
   oldPrice?: number;
 }) {
   return (
-    <div className="fixed inset-x-0 bottom-0 z-50 border-t border-line bg-white px-3 py-2.5 shadow-[0_-4px_16px_rgba(0,0,0,0.08)] lg:hidden">
+    <div
+      data-buybar
+      className="fixed inset-x-0 bottom-0 z-50 border-t border-line bg-white px-3 py-2.5 shadow-[0_-4px_16px_rgba(0,0,0,0.08)] lg:hidden"
+    >
       <div className="flex items-center gap-3">
         <div className="min-w-0 leading-tight">
           <div className="text-[16px] font-extrabold text-sale">

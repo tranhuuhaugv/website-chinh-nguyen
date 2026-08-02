@@ -19,34 +19,20 @@ import { MapPinIcon, StarIcon } from "@/components/icons";
 import { CommitmentCards } from "@/components/product/CommitmentCards";
 import { SITE } from "@/lib/site";
 import {
-  getAllProductSlugs,
   getProductBySlug,
   getProductVariants,
   getRelatedProducts,
 } from "@/lib/data";
+import type { Product } from "@/lib/types";
 import { buildDescription, buildSpecGroups } from "@/lib/product-content";
 import { richTextToText } from "@/lib/rich-text";
 import { formatPrice } from "@/lib/format";
 
-export const revalidate = 3600;
-
 const SITE_URL =
   process.env.NEXT_PUBLIC_SITE_URL ?? "https://laptopchinhnguyen.vn";
 
-export async function generateStaticParams() {
-  const slugs = await getAllProductSlugs();
-  return slugs.map((slug) => ({ slug }));
-}
-
-export async function generateMetadata({
-  params,
-}: {
-  params: { slug: string };
-}): Promise<Metadata> {
-  const product = await getProductBySlug(params.slug);
-  if (!product) return { title: "Không tìm thấy sản phẩm" };
-
-  // Mô tả SEO theo dữ liệu thật + đúng tình trạng máy (không hứa "chính hãng" với máy cũ).
+// Metadata trang sản phẩm (route gốc /[slug] gọi khi slug là sản phẩm).
+export function buildProductMetadata(product: Product): Metadata {
   const used = (product.condition ?? "used") === "used";
   const description = `${product.name} - ${product.cpu}, RAM ${product.ram}, ${product.storage}. Giá ${formatPrice(
     product.price,
@@ -55,8 +41,7 @@ export async function generateMetadata({
       ? "Máy đã qua sử dụng, kiểm tra kỹ, bảo hành tại shop, dùng thử 15 ngày, 1 đổi 1 trong 30 ngày."
       : "Máy mới nguyên seal, bảo hành chính hãng, giao nhanh toàn quốc."
   }`;
-  const url = `${SITE_URL}/san-pham/${product.slug}`;
-  // Ảnh thật -> URL tuyệt đối để Facebook/Zalo hiện ảnh khi share.
+  const url = `${SITE_URL}/${product.slug}`;
   const ogImages = (product.images ?? []).map((i) => `${SITE_URL}${i}`);
   return {
     title: product.name,
@@ -81,33 +66,27 @@ function Bullet({ children }: { children: React.ReactNode }) {
   );
 }
 
-export default async function ProductPage({
-  params,
-}: {
-  params: { slug: string };
-}) {
-  const product = await getProductBySlug(params.slug);
+export async function ProductDetailView({ slug }: { slug: string }) {
+  const product = await getProductBySlug(slug);
   if (!product) notFound();
 
-  // Máy cũ / máy mới -> nội dung bảo hành, cam kết khác nhau (không hứa sai).
   const isUsed = (product.condition ?? "used") === "used";
   const discount = product.oldPrice
     ? Math.round((1 - product.price / product.oldPrice) * 100)
     : 0;
-  // Song song: 2 truy vấn độc lập nhau, không cộng dồn độ trễ.
   const [related, variants] = await Promise.all([
-    getRelatedProducts(product, 12), // nhiều hơn để có cái mà trượt slide
+    getRelatedProducts(product, 12),
     getProductVariants(product),
   ]);
 
-  const url = `${SITE_URL}/san-pham/${product.slug}`;
+  const url = `${SITE_URL}/${product.slug}`;
   const specGroups = buildSpecGroups(product);
   const description = buildDescription(product);
-  // Mô tả admin tự soạn (HTML, kèm ảnh thật). Chưa soạn -> mô tả tự sinh ở trên.
   const ownDescription = product.description ?? "";
-  // Schema.org cần CHỮ THUẦN -> bỏ thẻ HTML. Chưa soạn thì lấy mô tả tự sinh.
   const ldDescription =
     richTextToText(ownDescription).slice(0, 300) || description[0].paragraphs[0];
+  const brandUrl = `${SITE_URL}/${product.brand.toLowerCase()}`;
+  const brandHref = `/${product.brand.toLowerCase()}`;
 
   const jsonLd = {
     "@context": "https://schema.org",
@@ -132,7 +111,6 @@ export default async function ProductPage({
           price: product.price,
           priceCurrency: "VND",
           availability: "https://schema.org/InStock",
-          // Khai báo đúng tình trạng máy: máy cũ KHÔNG được báo Google là hàng mới.
           itemCondition: isUsed
             ? "https://schema.org/UsedCondition"
             : "https://schema.org/NewCondition",
@@ -148,7 +126,7 @@ export default async function ProductPage({
             "@type": "ListItem",
             position: 2,
             name: product.brand,
-            item: `${SITE_URL}/danh-muc/${product.brand.toLowerCase()}`,
+            item: brandUrl,
           },
           { "@type": "ListItem", position: 3, name: product.name, item: url },
         ],
@@ -176,18 +154,13 @@ export default async function ProductPage({
           <Breadcrumb
             items={[
               { label: "Trang chủ", href: "/" },
-              {
-                label: product.brand,
-                href: `/danh-muc/${product.brand.toLowerCase()}`,
-              },
+              { label: product.brand, href: brandHref },
               { label: product.name },
             ]}
           />
 
           <div className="mt-5 grid grid-cols-1 gap-8 lg:grid-cols-2">
             <div>
-              {/* Không gắn badge lên ảnh chi tiết để khỏi che sản phẩm —
-                  tình trạng giảm giá / máy mới đã hiển thị rõ ở ô giá bên phải. */}
               <ProductGallery
                 accent={product.accent}
                 slug={product.slug}
@@ -195,7 +168,6 @@ export default async function ProductPage({
                 images={product.images}
               />
 
-              {/* Cam kết — ngay dưới ảnh (không ghim đáy để khỏi hở khoảng trên) */}
               <div className="mt-4 max-lg:hidden">
                 <CommitmentCards condition={product.condition} />
               </div>
@@ -219,7 +191,6 @@ export default async function ProductPage({
                 </span>
               </div>
 
-              {/* Box giá + tình trạng */}
               <div className="mt-4 overflow-hidden rounded-2xl border border-line bg-white shadow-card">
                 <div
                   className={`flex items-center justify-between gap-4 p-4 ${
@@ -257,12 +228,8 @@ export default async function ProductPage({
                 </div>
               </div>
 
-              {/* Cấu hình chi tiết xem ở bảng "Thông số kỹ thuật" bên dưới.
-                  Khối "Dung lượng" (dùng ô admin nhập / tự ghép gọn RAM - Ổ cứng,
-                  kèm nút chọn máy cùng dòng nếu có) do ProductVariants lo. */}
               <ProductVariants options={variants} currentSlug={product.slug} />
 
-              {/* Ưu đãi */}
               <div className="mt-5 rounded-2xl border border-green/30 bg-green-tint/50 p-4">
                 <p className="mb-2.5 text-[12px] font-bold uppercase tracking-wide text-green-d">
                   Ưu đãi tại Chính Nguyễn
@@ -293,13 +260,11 @@ export default async function ProductPage({
                   </Bullet>
                 </ul>
 
-                {/* Cam kết — chỉ hiện MOBILE (gộp vào box ưu đãi, để giá lên trên) */}
                 <div className="mt-3 border-t border-green/20 pt-3 lg:hidden">
                   <CommitmentCards condition={product.condition} />
                 </div>
               </div>
 
-              {/* Khối bổ sung — CHỈ PC: lấp khoảng trống cột phải. Mobile ẩn. */}
               <div className="mt-3 rounded-2xl border border-line bg-white p-4 max-lg:hidden">
                 <p className="flex items-center gap-2 text-[14px] font-bold text-ink">
                   <MapPinIcon className="h-[18px] w-[18px] shrink-0 text-green" />
@@ -325,14 +290,12 @@ export default async function ProductPage({
                 </p>
               </div>
 
-              {/* Mua hàng — ghim xuống đáy cột để ngang hàng khối cam kết bên trái */}
               <div className="mt-auto pt-5">
                 <ProductPurchase item={item} />
               </div>
             </div>
           </div>
 
-          {/* Thanh điều hướng nhanh trong trang */}
           <nav className="sticky top-0 z-20 mt-10 flex gap-1 overflow-x-auto border-b border-line bg-bg/90 backdrop-blur">
             {[
               { href: "#mo-ta", label: "Mô tả sản phẩm" },
@@ -349,21 +312,17 @@ export default async function ProductPage({
             ))}
           </nav>
 
-          {/* Mô tả sản phẩm (bài viết dài) */}
           <section
             id="mo-ta"
             className="mt-6 scroll-mt-20 rounded-2xl border border-line bg-white p-6 lg:p-8"
           >
             <h2 className="text-[20px] font-bold text-ink">Mô tả sản phẩm</h2>
             {ownDescription ? (
-              // Mô tả admin tự soạn (kèm ảnh thật của chính chiếc máy này).
-              // HTML đã được lọc XSS ở tầng data (toRichHtml) + lúc lưu.
               <article
                 className="rich-text mt-4 max-w-[780px]"
                 dangerouslySetInnerHTML={{ __html: ownDescription }}
               />
             ) : (
-              // Chưa soạn mô tả -> tự sinh theo thông số máy.
               <article className="mt-4 flex max-w-[780px] flex-col gap-6">
                 {description.map((sec) => (
                   <div key={sec.heading}>
@@ -384,14 +343,11 @@ export default async function ProductPage({
             )}
           </section>
 
-          {/* Thông số kỹ thuật theo nhóm */}
           <section
             id="thong-so"
             className="mt-6 scroll-mt-20 rounded-2xl border border-line bg-white p-6 lg:p-8"
           >
-            <h2 className="text-[20px] font-bold text-ink">
-              Thông số kỹ thuật
-            </h2>
+            <h2 className="text-[20px] font-bold text-ink">Thông số kỹ thuật</h2>
             <div className="mt-4 grid grid-cols-1 gap-y-6">
               {specGroups.map((group) => (
                 <div key={group.group}>
@@ -421,7 +377,6 @@ export default async function ProductPage({
             </div>
           </section>
 
-          {/* Sản phẩm tương tự */}
           {related.length > 0 && (
             <section id="tuong-tu" className="mt-10 scroll-mt-20">
               <SectionHead title="Sản phẩm tương tự" moreHref="/san-pham" />

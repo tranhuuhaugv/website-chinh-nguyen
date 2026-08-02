@@ -21,7 +21,7 @@ import {
 
 /** URL thân thiện theo slug (quy tắc SEO trong CLAUDE.md). */
 function productHref(slug: string) {
-  return `/san-pham/${slug}`;
+  return `/${slug}`;
 }
 
 export function ProductCard({

@@ -43,7 +43,7 @@ export function CategoryGrid({ categories }: { categories: Category[] }) {
             {categories.map((cat) => (
               <Link
                 key={cat.slug}
-                href={`/danh-muc/${cat.slug}`}
+                href={`/${cat.slug}`}
                 className="group relative rounded-xl px-1.5 py-3 text-center transition hover:bg-green-tint"
               >
                 {cat.tag && (

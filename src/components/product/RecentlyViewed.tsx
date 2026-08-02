@@ -47,7 +47,7 @@ export function RecentlyViewed({ current }: { current: RV }) {
         {items.map((p) => (
           <Link
             key={p.slug}
-            href={`/san-pham/${p.slug}`}
+            href={`/${p.slug}`}
             className="w-[168px] shrink-0 rounded-xl border border-line bg-white p-2 transition hover:-translate-y-0.5 hover:shadow-card-hover"
           >
             <div className="relative aspect-square overflow-hidden rounded-lg bg-white">

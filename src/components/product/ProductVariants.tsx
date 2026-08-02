@@ -44,7 +44,7 @@ export function ProductVariants({
           return (
             <Link
               key={o.slug}
-              href={`/san-pham/${o.slug}`}
+              href={`/${o.slug}`}
               className={`${base} border-line bg-white text-ink-2 hover:border-green hover:text-green-d`}
             >
               {label}

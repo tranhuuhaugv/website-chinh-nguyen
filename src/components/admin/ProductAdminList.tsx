@@ -229,7 +229,7 @@ export function ProductAdminList({
                   <td className="px-4 py-3">
                     <div className="flex items-center justify-end gap-1.5">
                       <Link
-                        href={`/san-pham/${p.slug}`}
+                        href={`/${p.slug}`}
                         target="_blank"
                         rel="noreferrer"
                         title="Xem trang sản phẩm"

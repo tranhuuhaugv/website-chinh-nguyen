@@ -5,25 +5,25 @@ import { ChevronDownIcon, GridIcon } from "./icons";
 // Nội dung cố định theo nhóm; mobile dùng thanh điều hướng đáy nên ẩn menu này.
 
 const BRANDS = [
-  { label: "Dell", href: "/danh-muc/dell" },
-  { label: "HP", href: "/danh-muc/hp" },
-  { label: "Lenovo", href: "/danh-muc/lenovo" },
-  { label: "Asus", href: "/danh-muc/asus" },
-  { label: "Acer", href: "/danh-muc/acer" },
-  { label: "MSI", href: "/danh-muc/msi" },
-  { label: "MacBook", href: "/danh-muc/macbook" },
+  { label: "Dell", href: "/dell" },
+  { label: "HP", href: "/hp" },
+  { label: "Lenovo", href: "/lenovo" },
+  { label: "Asus", href: "/asus" },
+  { label: "Acer", href: "/acer" },
+  { label: "MSI", href: "/msi" },
+  { label: "MacBook", href: "/macbook" },
 ];
 const NEEDS = [
-  { label: "Laptop Gaming", href: "/danh-muc/laptop-gaming" },
-  { label: "Máy trạm - Đồ họa", href: "/danh-muc/laptop-do-hoa" },
-  { label: "Văn phòng", href: "/danh-muc/laptop-van-phong" },
+  { label: "Laptop Gaming", href: "/laptop-gaming" },
+  { label: "Máy trạm - Đồ họa", href: "/laptop-do-hoa" },
+  { label: "Văn phòng", href: "/laptop-van-phong" },
 ];
 const OTHER = [
-  { label: "Laptop mới", href: "/danh-muc/laptop-moi" },
-  { label: "Laptop cũ", href: "/danh-muc/laptop-cu" },
-  { label: "PC đồng bộ", href: "/danh-muc/pc" },
-  { label: "Màn hình", href: "/danh-muc/man-hinh" },
-  { label: "Phụ kiện", href: "/danh-muc/phu-kien" },
+  { label: "Laptop mới", href: "/laptop-moi" },
+  { label: "Laptop cũ", href: "/laptop-cu" },
+  { label: "PC đồng bộ", href: "/pc" },
+  { label: "Màn hình", href: "/man-hinh" },
+  { label: "Phụ kiện", href: "/phu-kien" },
 ];
 
 function Col({

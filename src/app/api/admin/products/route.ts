@@ -138,8 +138,9 @@ async function buildData(body: Body, selfSlug: string) {
 function done(slug?: string, lienQuan: string[] = []) {
   revalidatePath("/");
   revalidatePath("/san-pham");
-  if (slug) revalidatePath(`/san-pham/${slug}`);
-  lienQuan.forEach((s) => revalidatePath(`/san-pham/${s}`));
+  // Trang chi tiết nay ở URL gốc /[slug].
+  if (slug) revalidatePath(`/${slug}`);
+  lienQuan.forEach((s) => revalidatePath(`/${s}`));
 }
 
 /** Các máy đang nối TỚI slug này (nút của chúng hiện thông số máy này). */
@@ -203,7 +204,7 @@ export async function PUT(req: Request) {
     // Máy khác đang nối tới máy này -> nút bên đó hiện RAM/ổ cứng của máy này,
     // sửa xong phải làm mới trang chúng.
     done(slug, await mayNoiToi(current.slug));
-    if (slug !== current.slug) revalidatePath(`/san-pham/${current.slug}`);
+    if (slug !== current.slug) revalidatePath(`/${current.slug}`);
     return NextResponse.json({ ok: true, slug });
   } catch (err) {
     console.error("Cập nhật sản phẩm lỗi:", err);

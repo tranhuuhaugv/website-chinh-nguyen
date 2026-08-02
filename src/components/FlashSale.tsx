@@ -43,7 +43,7 @@ function FlashCard({
 
   return (
     <Link
-      href={`/san-pham/${product.slug}`}
+      href={`/${product.slug}`}
       className="group flex w-[186px] shrink-0 flex-col overflow-hidden rounded-xl border border-white/10 bg-[#2a2a2e] transition hover:border-white/25 hover:bg-[#313136] max-[460px]:w-[150px]"
     >
       {/* Ảnh trên nền trắng (ảnh sản phẩm chụp nền trắng) */}

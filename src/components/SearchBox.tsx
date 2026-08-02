@@ -129,7 +129,7 @@ export function SearchBox({
                 {items.map((p) => (
                   <li key={p.slug}>
                     <Link
-                      href={`/san-pham/${p.slug}`}
+                      href={`/${p.slug}`}
                       onClick={() => setOpen(false)}
                       className="flex items-center gap-3 px-3 py-2 transition hover:bg-bg"
                     >

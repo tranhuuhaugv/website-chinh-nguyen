@@ -327,7 +327,7 @@ export function CartCheckout({
             {items.map((item) => (
               <div key={item.id} className="flex gap-4 py-3 first:pt-0 last:pb-0">
                 <Link
-                  href={`/san-pham/${item.slug}`}
+                  href={`/${item.slug}`}
                   className="h-20 w-24 shrink-0 overflow-hidden rounded-xl bg-[#F5F7F5] p-2"
                 >
                   <div className="h-full w-full overflow-hidden rounded-lg">
@@ -337,7 +337,7 @@ export function CartCheckout({
 
                 <div className="flex flex-1 flex-col">
                   <Link
-                    href={`/san-pham/${item.slug}`}
+                    href={`/${item.slug}`}
                     className="line-clamp-2 text-[14px] font-semibold text-ink hover:text-green-d"
                   >
                     {item.name}

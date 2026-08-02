@@ -9,6 +9,14 @@ const nextConfig = {
     //    -> trình duyệt lấy file .webp nhẹ trực tiếp từ nginx = nhanh nhất.
     unoptimized: true,
   },
+  async redirects() {
+    return [
+      // Rút gọn URL: bỏ tiền tố /san-pham/ và /danh-muc/ (giữ SEO qua 301).
+      // Chỉ khớp khi CÓ slug phía sau -> /san-pham (trang danh sách) không bị đụng.
+      { source: "/san-pham/:slug", destination: "/:slug", permanent: true },
+      { source: "/danh-muc/:slug", destination: "/:slug", permanent: true },
+    ];
+  },
 };
 
 export default nextConfig;

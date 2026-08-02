@@ -14,14 +14,14 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   ]);
 
   const products = productSlugs.map((slug) => ({
-    url: `${SITE_URL}/san-pham/${slug}`,
+    url: `${SITE_URL}/${slug}`,
     lastModified: now,
     changeFrequency: "daily" as const,
     priority: 0.8,
   }));
 
   const categoryUrls = categories.map((c) => ({
-    url: `${SITE_URL}/danh-muc/${c.slug}`,
+    url: `${SITE_URL}/${c.slug}`,
     lastModified: now,
     changeFrequency: "weekly" as const,
     priority: 0.7,

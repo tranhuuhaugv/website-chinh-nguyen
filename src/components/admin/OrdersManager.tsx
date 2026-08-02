@@ -54,7 +54,7 @@ function ItemThumb({ item }: { item: AdminOrderItem }) {
   );
   return item.slug ? (
     <Link
-      href={`/san-pham/${item.slug}`}
+      href={`/${item.slug}`}
       target="_blank"
       rel="noreferrer"
       title="Xem trang sản phẩm"
@@ -320,7 +320,7 @@ function OrderDetailModal({
                     <div className="min-w-0 flex-1">
                       {it.slug ? (
                         <Link
-                          href={`/san-pham/${it.slug}`}
+                          href={`/${it.slug}`}
                           target="_blank"
                           rel="noreferrer"
                           className="line-clamp-2 font-semibold text-ink transition hover:text-green-d"

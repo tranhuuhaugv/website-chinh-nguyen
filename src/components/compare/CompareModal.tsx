@@ -77,7 +77,7 @@ export function CompareModal({ onClose }: { onClose: () => void }) {
                       </div>
                     </div>
                     <Link
-                      href={`/san-pham/${p.slug}`}
+                      href={`/${p.slug}`}
                       className="line-clamp-2 text-[13px] font-semibold leading-snug text-ink hover:text-green-d"
                     >
                       {p.name}
