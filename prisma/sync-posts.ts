@@ -7,7 +7,17 @@ import { BLOG_POSTS } from "../src/lib/mock-data";
 // (deploy.yml tự chạy trước khi build để trang blog render tĩnh có bài mới).
 
 // Chỉ sync các slug liệt kê ở đây (tránh tự ý thêm lại bài admin đã xoá).
-const SYNC_SLUGS = ["back-to-school-2026-giam-gia-theo-diem-thi"];
+const SYNC_SLUGS = [
+  "back-to-school-2026-giam-gia-theo-diem-thi",
+  "mua-laptop-cu-o-dau-uy-tin-tai-da-nang",
+  "top-5-laptop-gaming-cu-gia-re-da-nang-2026",
+  "kinh-nghiem-chon-laptop-may-tram-do-hoa-render",
+  "dell-xps-13-vs-xps-15-nen-mua-ban-nao",
+  "cach-kiem-tra-laptop-cu-truoc-khi-mua-checklist",
+  "laptop-gaming-rtx-4060-tam-gia-nao-2026",
+  "co-nen-mua-laptop-tra-gop-0-tai-da-nang",
+  "laptop-render-3d-chon-may-tram-hay-gaming",
+];
 
 const prisma = new PrismaClient();
 
