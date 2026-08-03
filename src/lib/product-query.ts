@@ -5,6 +5,38 @@ import type { Product } from "./types";
 
 export const PER_PAGE = 15;
 
+/**
+ * Chuẩn hoá chuỗi để tìm kiếm "gần đúng": thường hoá + BỎ DẤU tiếng Việt
+ * (đ -> d, gộp khoảng trắng). Nhờ vậy "may tram" khớp "máy trạm", "dell xps"
+ * khớp "Dell XPS" dù gõ thiếu dấu / khác hoa thường.
+ */
+export function normalizeText(s: string): string {
+  return s
+    .toLowerCase()
+    .normalize("NFD")
+    .replace(/[̀-ͯ]/g, "") // bỏ dấu thanh + dấu mũ/móc
+    .replace(/đ/g, "d")
+    .replace(/\s+/g, " ")
+    .trim();
+}
+
+/**
+ * Sản phẩm có KHỚP từ khoá tìm kiếm không. Tách từ khoá theo khoảng trắng và
+ * khớp khi CHỨA MỌI từ (không cần đúng thứ tự / đủ cụm) trong chuỗi gộp gồm
+ * tên + hãng + cấu hình (CPU/GPU/RAM/ổ cứng) + dòng máy. VD "dell 16gb" ra
+ * đúng máy Dell RAM 16GB dù cụm này không liền nhau trong tên.
+ */
+export function matchesKeyword(p: Product, keyword: string): boolean {
+  const tokens = normalizeText(keyword).split(" ").filter(Boolean);
+  if (!tokens.length) return true;
+  const haystack = normalizeText(
+    [p.name, p.brand, p.cpu, p.gpu, p.ram, p.storage, p.series]
+      .filter(Boolean)
+      .join(" "),
+  );
+  return tokens.every((t) => haystack.includes(t));
+}
+
 export const PRICE_OPTIONS: { value: string; label: string }[] = [
   { value: "duoi-15", label: "Dưới 15 triệu" },
   { value: "15-25", label: "15 – 25 triệu" },

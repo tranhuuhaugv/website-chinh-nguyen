@@ -14,7 +14,7 @@ import type {
 } from "./types";
 import { SITE } from "./site";
 import { sanitizeRichText, toRichHtml } from "./rich-text";
-import { NEED_OPTIONS } from "./product-query";
+import { NEED_OPTIONS, matchesKeyword } from "./product-query";
 import { VOUCHERS, type Voucher } from "./vouchers";
 import type { Policy, Section } from "./policies";
 import {
@@ -327,19 +327,11 @@ export async function getAllProductSlugs(): Promise<string[]> {
 export async function searchProducts(q: string, limit = 6): Promise<Product[]> {
   const term = q.trim();
   if (!term) return [];
-  if (NO_DB) {
-    const low = term.toLowerCase();
-    return MOCK_PRODUCTS.filter((p) =>
-      p.name.toLowerCase().includes(low),
-    ).slice(0, limit);
-  }
-  const rows = await prisma.product.findMany({
-    where: { name: { contains: term, mode: "insensitive" } },
-    ...withBrand,
-    orderBy: { sort: "asc" },
-    take: limit,
-  });
-  return rows.map((r) => toProduct(r as PrismaProductWithBrand));
+  // Khớp "gần đúng" (bỏ dấu, đủ mọi từ khoá trong tên + hãng + cấu hình) —
+  // dùng chung logic với trang /tim-kiem. Kho ~vài trăm máy nên lọc trong JS
+  // trên toàn bộ sản phẩm là đủ nhanh và cho kết quả nhất quán.
+  const all = await getAllProducts();
+  return all.filter((p) => matchesKeyword(p, term)).slice(0, limit);
 }
 
 // --- Danh mục ---

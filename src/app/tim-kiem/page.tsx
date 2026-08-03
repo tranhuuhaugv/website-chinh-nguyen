@@ -8,7 +8,7 @@ import { ProductBrowser } from "@/components/product/ProductBrowser";
 import { CompareBar } from "@/components/compare/CompareBar";
 import { CompareProvider } from "@/components/compare/CompareContext";
 import { getAllProducts, getNeeds } from "@/lib/data";
-import type { RawParams } from "@/lib/product-query";
+import { matchesKeyword, type RawParams } from "@/lib/product-query";
 
 function getKeyword(sp: RawParams): string {
   return (typeof sp.q === "string" ? sp.q : "").trim();
@@ -33,12 +33,10 @@ export default async function SearchPage({
   searchParams: RawParams;
 }) {
   const q = getKeyword(searchParams);
-  const keyword = q.toLowerCase();
 
   const [all, needs] = await Promise.all([getAllProducts(), getNeeds()]);
-  const results = keyword
-    ? all.filter((p) => p.name.toLowerCase().includes(keyword))
-    : all;
+  // Khớp "gần đúng": chứa mọi từ khoá (bỏ dấu) trong tên + hãng + cấu hình.
+  const results = q ? all.filter((p) => matchesKeyword(p, q)) : all;
 
   const brands = Array.from(new Set(results.map((p) => p.brand)));
 
