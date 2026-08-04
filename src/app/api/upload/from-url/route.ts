@@ -4,8 +4,10 @@ import { isIP } from "net";
 import {
   IMAGE_EXT,
   MAX_IMAGE_BYTES,
+  MAX_IMAGE_BYTES_RAW,
   requireAdmin,
   saveImage,
+  saveImageOriginal,
 } from "@/lib/upload-server";
 
 // Tải ảnh TỪ LINK WEB về VPS (admin dán link thay vì chọn file trên máy).
@@ -112,11 +114,15 @@ export async function POST(req: Request) {
     return NextResponse.json({ ok: false }, { status: 401 });
   }
 
-  const body = (await req.json().catch(() => null)) as { url?: string } | null;
+  const body = (await req.json().catch(() => null)) as {
+    url?: string;
+    raw?: unknown;
+  } | null;
   const link = body?.url?.trim();
   if (!link) {
     return NextResponse.json({ ok: false, error: "no_url" }, { status: 400 });
   }
+  const raw = body?.raw === 1 || body?.raw === "1";
 
   let res: Response;
   try {
@@ -140,21 +146,24 @@ export async function POST(req: Request) {
     return NextResponse.json({ ok: false, error: "bad_type" }, { status: 400 });
   }
 
+  const limit = raw ? MAX_IMAGE_BYTES_RAW : MAX_IMAGE_BYTES;
   // Chặn sớm theo content-length để khỏi tải về file khổng lồ.
   const declared = Number(res.headers.get("content-length") ?? 0);
-  if (declared > MAX_IMAGE_BYTES) {
+  if (declared > limit) {
     return NextResponse.json({ ok: false, error: "too_large" }, { status: 413 });
   }
 
   const buffer = Buffer.from(await res.arrayBuffer());
   // Không phải site nào cũng khai content-length -> kiểm tra lại sau khi tải.
-  if (buffer.byteLength > MAX_IMAGE_BYTES) {
+  if (buffer.byteLength > limit) {
     return NextResponse.json({ ok: false, error: "too_large" }, { status: 413 });
   }
   if (buffer.byteLength === 0) {
     return NextResponse.json({ ok: false, error: "empty" }, { status: 400 });
   }
 
-  const url = await saveImage(buffer, ext);
+  const url = raw
+    ? await saveImageOriginal(buffer, ext)
+    : await saveImage(buffer, ext);
   return NextResponse.json({ ok: true, url });
 }

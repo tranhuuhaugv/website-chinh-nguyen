@@ -16,9 +16,12 @@ interface DangTai {
 export function MultiImageUpload({
   value = [],
   onChange,
+  raw = false,
 }: {
   value?: string[];
   onChange?: (urls: string[]) => void;
+  /** raw = giữ ảnh nguyên gốc, không nén (VD ảnh khách hàng cần nét). */
+  raw?: boolean;
 }) {
   const inputRef = useRef<HTMLInputElement>(null);
   const [images, setImages] = useState<string[]>(value);
@@ -58,7 +61,7 @@ export function MultiImageUpload({
 
     const results = await Promise.all(
       links.map((l) =>
-        uploadImageFromUrl(l)
+        uploadImageFromUrl(l, { raw })
           .then((r) => ({ url: r.url, err: "" }))
           .catch((e: Error) => ({ url: "", err: e.message })),
       ),
@@ -100,7 +103,7 @@ export function MultiImageUpload({
     await Promise.all(
       items.map(async (it) => {
         try {
-          const { url } = await uploadImage(it.file);
+          const { url } = await uploadImage(it.file, { raw });
           commit([...imagesRef.current, url]);
         } catch {
           // Lỗi -> bỏ ảnh đó, các ảnh khác vẫn tiếp tục.

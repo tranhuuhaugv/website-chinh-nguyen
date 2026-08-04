@@ -17,6 +17,8 @@ export const IMAGE_EXT: Record<string, string> = {
 };
 
 export const MAX_IMAGE_BYTES = 8 * 1024 * 1024;
+/** Ảnh "raw" (giữ nguyên gốc, không nén) cho phép nặng hơn (VD ảnh khách hàng). */
+export const MAX_IMAGE_BYTES_RAW = 25 * 1024 * 1024;
 
 /** Cạnh dài tối đa sau khi nén (px). Đủ nét cho zoom ảnh chi tiết, vẫn nhẹ. */
 const MAX_EDGE = 1600;
@@ -44,6 +46,18 @@ async function writeToUploads(buffer: Buffer, ext: string): Promise<string> {
  * hiển thị rất nhanh và ảnh tải nhẹ cho khách. GIF (ảnh động) giữ nguyên để
  * không mất animation. Sharp lỗi (ảnh hỏng...) -> lưu nguyên bản, không chặn upload.
  */
+/**
+ * Lưu ảnh GIỮ NGUYÊN GỐC — không nén, không resize, không đổi định dạng.
+ * Dùng cho ảnh cần nét tối đa (VD ảnh khách hàng admin tự chọn). Ảnh nặng hơn
+ * nhưng sắc nét; next/image (unoptimized) phục vụ thẳng file gốc.
+ */
+export async function saveImageOriginal(
+  buffer: Buffer,
+  ext: string,
+): Promise<string> {
+  return writeToUploads(buffer, ext);
+}
+
 export async function saveImage(buffer: Buffer, ext: string): Promise<string> {
   if (ext === "gif") return writeToUploads(buffer, "gif");
 

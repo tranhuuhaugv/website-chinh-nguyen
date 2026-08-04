@@ -69,11 +69,14 @@ const URL_ERRORS: Record<string, string> = {
  * Tải ảnh từ LINK WEB về VPS (server đi tải, không phải trình duyệt) rồi trả về
  * URL /uploads/... như upload thường. Ảnh không đi qua bước nén ở client.
  */
-export async function uploadImageFromUrl(url: string): Promise<UploadResult> {
+export async function uploadImageFromUrl(
+  url: string,
+  opts?: { raw?: boolean },
+): Promise<UploadResult> {
   const res = await fetch("/api/upload/from-url", {
     method: "POST",
     headers: { "Content-Type": "application/json" },
-    body: JSON.stringify({ url }),
+    body: JSON.stringify({ url, raw: opts?.raw ? 1 : undefined }),
   });
   const json = (await res.json().catch(() => null)) as
     | { url?: string; error?: string }
@@ -84,10 +87,15 @@ export async function uploadImageFromUrl(url: string): Promise<UploadResult> {
   return { url: json.url, demo: false };
 }
 
-export async function uploadImage(file: File): Promise<UploadResult> {
-  const data = await compress(file);
+export async function uploadImage(
+  file: File,
+  opts?: { raw?: boolean },
+): Promise<UploadResult> {
+  // raw = giữ nguyên gốc (không nén ở client lẫn server). Cho ảnh cần nét tối đa.
+  const data = opts?.raw ? file : await compress(file);
   const form = new FormData();
   form.append("file", data, "upload");
+  if (opts?.raw) form.append("raw", "1");
 
   const res = await fetch("/api/upload", { method: "POST", body: form });
   if (!res.ok) throw new Error("upload failed");

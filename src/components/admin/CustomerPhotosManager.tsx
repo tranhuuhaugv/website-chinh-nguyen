@@ -44,7 +44,7 @@ export function CustomerPhotosManager({ initial }: { initial: string[] }) {
           chủ hiển thị ô mẫu.
         </p>
 
-        <MultiImageUpload value={images} onChange={setImages} />
+        <MultiImageUpload raw value={images} onChange={setImages} />
 
         <div className="mt-5 flex items-center gap-3">
           <button
@@ -69,8 +69,8 @@ export function CustomerPhotosManager({ initial }: { initial: string[] }) {
       </div>
 
       <p className="rounded-xl bg-green-tint px-4 py-3 text-[12.5px] text-green-d">
-        Ảnh được lưu trực tiếp trên máy chủ (VPS). Nên chọn ảnh đã nén gọn để tải
-        nhanh; hệ thống cũng tự thu nhỏ ảnh quá lớn.
+        Ảnh khách hàng được lưu <b>GIỮ NGUYÊN GỐC, không nén</b> để nét nhất (tối
+        đa 25MB/ảnh). Ảnh càng lớn thì tải càng chậm — nên chọn ảnh vừa phải.
       </p>
     </div>
   );
