@@ -397,7 +397,7 @@ export interface CategorySeo {
   metaDescription: string | null;
   seoContent: string; // HTML đã sanitize; "" nếu chưa soạn
   group: string | null; // "dong-may" -> trang lọc SP theo series
-  image: string | null; // ảnh bìa (admin tải lên) -> hero trang danh mục
+  cover: string | null; // ảnh bìa NGANG riêng (admin tải lên) -> hero trang danh mục
 }
 
 export async function getCategorySeo(slug: string): Promise<CategorySeo | null> {
@@ -409,7 +409,7 @@ export async function getCategorySeo(slug: string): Promise<CategorySeo | null> 
           metaDescription: null,
           seoContent: "",
           group: null,
-          image: c.image ?? null,
+          cover: null,
         }
       : null;
   }
@@ -420,7 +420,7 @@ export async function getCategorySeo(slug: string): Promise<CategorySeo | null> 
     metaDescription: c.metaDescription ?? null,
     seoContent: c.seoContent ? sanitizeRichText(c.seoContent) : "",
     group: c.group ?? null,
-    image: c.image ?? null,
+    cover: c.coverImage ?? null,
   };
 }
 
@@ -573,6 +573,7 @@ export async function getAdminProducts() {
     ram: p.ram,
     storage: p.storage,
     series: p.series ?? "", // slug dòng máy để lọc trong admin
+    updatedBy: p.updatedBy ?? "", // email admin sửa cuối
   }));
 }
 

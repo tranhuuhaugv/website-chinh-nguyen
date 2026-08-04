@@ -12,6 +12,9 @@ async function requireAdmin(): Promise<boolean> {
 
 const ALLOWED = new Set([
   "flashSaleEnabled",
+  // Lịch Flash Sale (giờ VN, dạng "YYYY-MM-DDTHH:mm"). Trống = không giới hạn.
+  "flashSaleStart",
+  "flashSaleEnd",
   "vouchersEnabled",
   // Link 3 nút liên hệ nổi (gọi / Messenger / Zalo)
   "floatPhone",

@@ -87,6 +87,8 @@ export default async function HomePage() {
     flashSetting,
     voucherSetting,
     stores,
+    flashStart,
+    flashEnd,
   ] = await Promise.all([
     getFlashSaleProducts(),
     getNewProducts(),
@@ -99,9 +101,19 @@ export default async function HomePage() {
     getSetting("flashSaleEnabled"),
     getSetting("vouchersEnabled"),
     getStores(),
+    getSetting("flashSaleStart"),
+    getSetting("flashSaleEnd"),
   ]);
   const jsonLd = buildJsonLd(stores);
-  const flashOn = flashSetting === "true" && flashProducts.length > 0;
+  // Lịch Flash Sale theo giờ VN ("YYYY-MM-DDTHH:mm"). So sánh chuỗi (cùng định
+  // dạng) -> khỏi lệ thuộc timezone máy chủ. Trống = không giới hạn đầu/cuối.
+  const nowVN = new Date(Date.now() + 7 * 3600 * 1000)
+    .toISOString()
+    .slice(0, 16);
+  const trongLich =
+    (!flashStart || nowVN >= flashStart) && (!flashEnd || nowVN < flashEnd);
+  const flashOn =
+    flashSetting === "true" && trongLich && flashProducts.length > 0;
   const vouchersOn = voucherSetting === "true";
   // Chỉ đếm số lượt + lấy danh sách mã khi khối đang bật (tránh query thừa).
   const [voucherUsage, vouchers] = vouchersOn
@@ -126,7 +138,11 @@ export default async function HomePage() {
           <VoucherStrip usage={voucherUsage} vouchers={vouchers} />
         )}
         {flashOn && (
-          <FlashSale flashProducts={flashProducts} newProducts={newProducts} />
+          <FlashSale
+            flashProducts={flashProducts}
+            newProducts={newProducts}
+            endsAt={flashEnd ?? ""}
+          />
         )}
         {/* Ẩn "dòng máy" (Lenovo ThinkPad...) khỏi lưới trang chủ — chúng chỉ
             là danh mục con SEO, truy cập từ trang hãng / sản phẩm. */}

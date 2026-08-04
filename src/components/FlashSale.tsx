@@ -112,9 +112,12 @@ function FlashCard({
 export function FlashSale({
   flashProducts,
   newProducts,
+  endsAt,
 }: {
   flashProducts: Product[];
   newProducts: Product[];
+  /** Giờ kết thúc Flash Sale (giờ VN "YYYY-MM-DDTHH:mm"). Trống -> hết ngày. */
+  endsAt?: string;
 }) {
   const [tab, setTab] = useState<"flash" | "new">("flash");
   const hasNew = newProducts.length > 0;
@@ -165,7 +168,7 @@ export function FlashSale({
               <BoltIcon className="h-6 w-6 rotate-6 text-[#FFCF33]" />
             </div>
 
-            {isFlash && <CountdownTimer />}
+            {isFlash && <CountdownTimer endsAt={endsAt} />}
 
             {/* Tab: Đang diễn ra / Sản phẩm mới về */}
             <div className="ml-auto flex items-center gap-5 max-[900px]:ml-0">

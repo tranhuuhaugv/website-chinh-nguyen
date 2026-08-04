@@ -33,7 +33,7 @@ export async function POST(req: Request) {
     return NextResponse.json({ ok: false }, { status: 401 });
   }
 
-  const token = await createAdminToken();
+  const token = await createAdminToken(email);
   const res = NextResponse.json({ ok: true });
   res.cookies.set(ADMIN_COOKIE, token, {
     httpOnly: true,

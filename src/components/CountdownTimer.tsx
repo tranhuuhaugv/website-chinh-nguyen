@@ -2,29 +2,42 @@
 
 import { useEffect, useState } from "react";
 
-// Đếm ngược tới hết ngày (23:59:59). Chỉ đây mới cần Client Component;
-// phần còn lại của Flash Sale render phía server.
+// Đếm ngược tới giờ kết thúc Flash Sale. Có `endsAt` (giờ VN "YYYY-MM-DDTHH:mm")
+// -> đếm tới đúng mốc đó; không thì mặc định hết ngày (23:59:59).
+// Chỉ đây cần Client Component; phần còn lại của Flash Sale render phía server.
 
-function secondsUntilEndOfDay(): number {
-  const now = new Date();
-  const end = new Date();
-  end.setHours(23, 59, 59, 999);
-  return Math.max(0, Math.floor((end.getTime() - now.getTime()) / 1000));
+/** Đổi giờ VN "YYYY-MM-DDTHH:mm" -> mốc thời gian thật (UTC+7). null nếu sai. */
+function parseVN(endsAt?: string): number | null {
+  if (!endsAt) return null;
+  const t = Date.parse(`${endsAt}:00+07:00`);
+  return Number.isFinite(t) ? t : null;
+}
+
+function secondsUntil(target: number | null): number {
+  const end =
+    target ??
+    (() => {
+      const d = new Date();
+      d.setHours(23, 59, 59, 999);
+      return d.getTime();
+    })();
+  return Math.max(0, Math.floor((end - Date.now()) / 1000));
 }
 
 function pad(n: number): string {
   return String(n).padStart(2, "0");
 }
 
-export function CountdownTimer() {
+export function CountdownTimer({ endsAt }: { endsAt?: string }) {
   // null ở lần render đầu để server và client khớp nhau (tránh hydration mismatch).
   const [left, setLeft] = useState<number | null>(null);
 
   useEffect(() => {
-    setLeft(secondsUntilEndOfDay());
-    const id = setInterval(() => setLeft(secondsUntilEndOfDay()), 1000);
+    const target = parseVN(endsAt);
+    setLeft(secondsUntil(target));
+    const id = setInterval(() => setLeft(secondsUntil(target)), 1000);
     return () => clearInterval(id);
-  }, []);
+  }, [endsAt]);
 
   const hh = left === null ? "--" : pad(Math.floor(left / 3600));
   const mm = left === null ? "--" : pad(Math.floor((left % 3600) / 60));

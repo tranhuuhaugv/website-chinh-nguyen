@@ -1,5 +1,6 @@
 import { SettingToggle } from "@/components/admin/SettingToggle";
 import { SettingInput } from "@/components/admin/SettingInput";
+import { FlashSaleSchedule } from "@/components/admin/FlashSaleSchedule";
 import { NeedsManager } from "@/components/admin/NeedsManager";
 import { VouchersManager } from "@/components/admin/VouchersManager";
 import { getNeeds, getSetting, getVouchers } from "@/lib/data";
@@ -49,12 +50,15 @@ const CONTACTS: {
 ];
 
 export default async function AdminSettingsPage() {
-  const [toggleValues, contactValues, needs, vouchers] = await Promise.all([
-    Promise.all(OPTIONS.map((o) => getSetting(o.key))),
-    Promise.all(CONTACTS.map((c) => getSetting(c.key))),
-    getNeeds(),
-    getVouchers(),
-  ]);
+  const [toggleValues, contactValues, needs, vouchers, flashStart, flashEnd] =
+    await Promise.all([
+      Promise.all(OPTIONS.map((o) => getSetting(o.key))),
+      Promise.all(CONTACTS.map((c) => getSetting(c.key))),
+      getNeeds(),
+      getVouchers(),
+      getSetting("flashSaleStart"),
+      getSetting("flashSaleEnd"),
+    ]);
 
   return (
     <div className="flex flex-col gap-6">
@@ -74,6 +78,20 @@ export default async function AdminSettingsPage() {
           </div>
         ))}
       </section>
+
+      {/* Lịch Flash Sale: đặt ngày + giờ bắt đầu/kết thúc cho chương trình */}
+      <div>
+        <h2 className="mb-1 text-[15px] font-bold text-ink">
+          Lịch Flash Sale (ngày &amp; giờ)
+        </h2>
+        <p className="mb-3 text-[13px] text-muted">
+          Đặt khung giờ chạy Flash Sale. Khối chỉ hiện trong khoảng này (khi công
+          tắc “Khối Flash Sale” đang bật) và đồng hồ đếm ngược tới giờ kết thúc.
+        </p>
+        <section className="rounded-2xl border border-line bg-white p-5">
+          <FlashSaleSchedule start={flashStart ?? ""} end={flashEnd ?? ""} />
+        </section>
+      </div>
 
       {/* Nút liên hệ nổi — 3 ô nhập link để đổi nhanh */}
       <div>

@@ -11,8 +11,8 @@ function getSecret() {
   );
 }
 
-export async function createAdminToken(): Promise<string> {
-  return new SignJWT({ role: "admin" })
+export async function createAdminToken(email?: string): Promise<string> {
+  return new SignJWT({ role: "admin", email: email ?? "" })
     .setProtectedHeader({ alg: "HS256" })
     .setIssuedAt()
     .setExpirationTime("7d")
@@ -25,6 +25,17 @@ export async function verifyAdminToken(token: string): Promise<boolean> {
     return true;
   } catch {
     return false;
+  }
+}
+
+/** Email admin trong token (để biết ai sửa). Rỗng nếu token cũ chưa có email. */
+export async function getAdminEmail(token: string): Promise<string | null> {
+  try {
+    const { payload } = await jwtVerify(token, getSecret());
+    const email = payload.email;
+    return typeof email === "string" && email ? email : null;
+  } catch {
+    return null;
   }
 }
 

@@ -19,6 +19,7 @@ export interface AdminProduct {
   ram: string;
   storage: string;
   series: string;
+  updatedBy: string;
 }
 
 const PER_PAGE = 20;
@@ -208,16 +209,15 @@ export function ProductAdminList({
           <thead>
             <tr className="border-b border-line bg-bg text-[12.5px] uppercase tracking-wide text-muted">
               <th className="px-4 py-3 font-semibold">Tên sản phẩm</th>
-              <th className="px-4 py-3 font-semibold">Hãng</th>
-              <th className="px-4 py-3 font-semibold">Tình trạng</th>
               <th className="px-4 py-3 font-semibold">Giá</th>
+              <th className="px-4 py-3 font-semibold">Người sửa</th>
               <th className="px-4 py-3 text-right font-semibold">Thao tác</th>
             </tr>
           </thead>
           <tbody>
             {shown.length === 0 ? (
               <tr>
-                <td colSpan={5} className="px-4 py-10 text-center text-muted">
+                <td colSpan={4} className="px-4 py-10 text-center text-muted">
                   Không có sản phẩm phù hợp.
                 </td>
               </tr>
@@ -233,20 +233,11 @@ export function ProductAdminList({
                       {[p.cpu, p.ram, p.storage].filter(Boolean).join(" · ")}
                     </div>
                   </td>
-                  <td className="px-4 py-3 text-ink-2">{p.brand}</td>
-                  <td className="px-4 py-3">
-                    <span
-                      className={`rounded-full px-2.5 py-1 text-[11.5px] font-semibold ${
-                        p.condition === "new"
-                          ? "bg-green-soft text-green-d"
-                          : "bg-amber/15 text-[#B8860B]"
-                      }`}
-                    >
-                      {p.condition === "new" ? "Mới" : "Cũ"}
-                    </span>
-                  </td>
                   <td className="px-4 py-3 font-semibold text-sale">
                     {formatPrice(p.price)}
+                  </td>
+                  <td className="px-4 py-3 text-[12.5px] text-ink-2">
+                    {p.updatedBy || <span className="text-muted">—</span>}
                   </td>
                   <td className="px-4 py-3">
                     <div className="flex items-center justify-end gap-1.5">

@@ -18,7 +18,16 @@ const GROUP_OPTIONS = [
 ];
 
 const FIELDS: AdminField[] = [
-  { name: "image", label: "Ảnh danh mục (tuỳ chọn)", type: "image" },
+  {
+    name: "image",
+    label: "Ảnh đại diện (thẻ danh mục ở trang chủ / menu — tuỳ chọn)",
+    type: "image",
+  },
+  {
+    name: "coverImage",
+    label: "Ảnh bìa trang danh mục (ảnh NGANG, hiện ở đầu trang — tuỳ chọn)",
+    type: "image",
+  },
   { name: "name", label: "Tên danh mục", placeholder: "VD: Laptop Gaming" },
   {
     name: "slug",
@@ -63,6 +72,7 @@ export default async function AdminCategoryFormPage({
         group: category.group ?? "",
         tag: category.tag ?? "",
         image: category.image ?? "",
+        coverImage: category.coverImage ?? "",
         metaDescription: category.metaDescription ?? "",
         seoContent: category.seoContent ?? "",
       }

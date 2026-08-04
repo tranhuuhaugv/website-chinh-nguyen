@@ -2,7 +2,11 @@ import { NextResponse } from "next/server";
 import { cookies } from "next/headers";
 import { revalidatePath } from "next/cache";
 import { prisma } from "@/lib/prisma";
-import { ADMIN_COOKIE, verifyAdminToken } from "@/lib/admin-auth";
+import {
+  ADMIN_COOKIE,
+  getAdminEmail,
+  verifyAdminToken,
+} from "@/lib/admin-auth";
 import { slugify } from "@/lib/slug";
 import { richTextRong, sanitizeRichText } from "@/lib/rich-text";
 
@@ -11,6 +15,12 @@ import { richTextRong, sanitizeRichText } from "@/lib/rich-text";
 async function requireAdmin(): Promise<boolean> {
   const token = cookies().get(ADMIN_COOKIE)?.value;
   return token ? verifyAdminToken(token) : false;
+}
+
+/** Email admin đang đăng nhập (để ghi "người sửa cuối"). Rỗng -> null. */
+async function currentAdminEmail(): Promise<string | null> {
+  const token = cookies().get(ADMIN_COOKIE)?.value;
+  return token ? getAdminEmail(token) : null;
 }
 
 type Body = Record<string, unknown>;
@@ -169,7 +179,8 @@ export async function POST(req: Request) {
     return NextResponse.json({ ok: false, error: "missing_brand" }, { status: 400 });
   }
   try {
-    await prisma.product.create({ data: { ...data, slug } });
+    const updatedBy = await currentAdminEmail();
+    await prisma.product.create({ data: { ...data, slug, updatedBy } });
     done(slug);
     return NextResponse.json({ ok: true, slug });
   } catch (err) {
@@ -200,7 +211,11 @@ export async function PUT(req: Request) {
     return NextResponse.json({ ok: false, error: "missing_brand" }, { status: 400 });
   }
   try {
-    await prisma.product.update({ where: { id }, data: { ...data, slug } });
+    const updatedBy = await currentAdminEmail();
+    await prisma.product.update({
+      where: { id },
+      data: { ...data, slug, updatedBy },
+    });
     // Máy khác đang nối tới máy này -> nút bên đó hiện RAM/ổ cứng của máy này,
     // sửa xong phải làm mới trang chúng.
     done(slug, await mayNoiToi(current.slug));

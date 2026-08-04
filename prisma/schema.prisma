@@ -23,7 +23,8 @@ model Category {
   slug  String  @unique
   icon  String
   tag   String?
-  image String?
+  image String? // ảnh đại diện (thẻ danh mục ở trang chủ / mega-menu)
+  coverImage String? // ảnh bìa NGANG riêng cho đầu trang danh mục (hero)
   group String? // nhóm cho mega-menu: nhu-cau | thuong-hieu | khac
   sort  Int     @default(0)
   metaDescription String? // thẻ meta description riêng cho trang danh mục (SEO)
@@ -85,6 +86,8 @@ model Product {
   sort      Int      @default(0)
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
+  // Email tài khoản admin sửa/tạo sản phẩm này lần cuối (hiện ở bảng quản trị).
+  updatedBy String?
 
   @@index([price])
   @@index([brandId])

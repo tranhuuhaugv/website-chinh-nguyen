@@ -101,10 +101,10 @@ export async function CategoryView({
               { label: name },
             ]}
           />
-          {category?.image && (
+          {category?.cover && (
             <div className="relative mt-4 aspect-[1200/260] w-full overflow-hidden rounded-2xl ring-1 ring-black/5 max-[640px]:aspect-[1200/440]">
               <Image
-                src={category.image}
+                src={category.cover}
                 alt={name}
                 fill
                 sizes="(max-width: 1200px) 100vw, 1200px"
