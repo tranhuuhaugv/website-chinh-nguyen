@@ -229,9 +229,6 @@ export function ProductAdminList({
                 >
                   <td className="px-4 py-3">
                     <div className="font-medium text-ink">{p.name}</div>
-                    <div className="text-[12px] text-muted">
-                      {[p.cpu, p.ram, p.storage].filter(Boolean).join(" · ")}
-                    </div>
                   </td>
                   <td className="px-4 py-3 font-semibold text-sale">
                     {formatPrice(p.price)}

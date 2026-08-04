@@ -141,6 +141,7 @@ export default async function HomePage() {
           <FlashSale
             flashProducts={flashProducts}
             newProducts={newProducts}
+            startsAt={flashStart ?? ""}
             endsAt={flashEnd ?? ""}
           />
         )}

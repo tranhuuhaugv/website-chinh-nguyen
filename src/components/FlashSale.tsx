@@ -109,13 +109,43 @@ function FlashCard({
   );
 }
 
+/** "YYYY-MM-DDTHH:mm" -> { gio: "HH:mm", ngay: "dd/MM" }. */
+function tachGioNgay(s: string): { gio: string; ngay: string } {
+  const [d, t = ""] = s.split("T");
+  const [, mo = "", day = ""] = d.split("-");
+  return { gio: t.slice(0, 5), ngay: `${day}/${mo}` };
+}
+
+/** Nhãn khung giờ Flash Sale theo lịch admin đặt (đồng bộ với đồng hồ). */
+function khungGioLabel(start?: string, end?: string): string {
+  if (start && end) {
+    const a = tachGioNgay(start);
+    const b = tachGioNgay(end);
+    return a.ngay === b.ngay
+      ? `${a.gio} – ${b.gio} · ${a.ngay}`
+      : `${a.gio} ${a.ngay} – ${b.gio} ${b.ngay}`;
+  }
+  if (end) {
+    const b = tachGioNgay(end);
+    return `Đến ${b.gio} · ${b.ngay}`;
+  }
+  if (start) {
+    const a = tachGioNgay(start);
+    return `Từ ${a.gio} · ${a.ngay}`;
+  }
+  return "Trong hôm nay";
+}
+
 export function FlashSale({
   flashProducts,
   newProducts,
+  startsAt,
   endsAt,
 }: {
   flashProducts: Product[];
   newProducts: Product[];
+  /** Giờ bắt đầu Flash Sale (giờ VN "YYYY-MM-DDTHH:mm"). Trống -> không giới hạn. */
+  startsAt?: string;
   /** Giờ kết thúc Flash Sale (giờ VN "YYYY-MM-DDTHH:mm"). Trống -> hết ngày. */
   endsAt?: string;
 }) {
@@ -176,7 +206,7 @@ export function FlashSale({
                 active={isFlash}
                 onClick={() => setTab("flash")}
                 label="Đang diễn ra"
-                sub="09:00 – 23:59"
+                sub={khungGioLabel(startsAt, endsAt)}
               />
               {hasNew && (
                 <Tab
