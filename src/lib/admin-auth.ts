@@ -11,8 +11,11 @@ function getSecret() {
   );
 }
 
-export async function createAdminToken(email?: string): Promise<string> {
-  return new SignJWT({ role: "admin", email: email ?? "" })
+export async function createAdminToken(
+  email?: string,
+  name?: string,
+): Promise<string> {
+  return new SignJWT({ role: "admin", email: email ?? "", name: name ?? "" })
     .setProtectedHeader({ alg: "HS256" })
     .setIssuedAt()
     .setExpirationTime("7d")
@@ -34,6 +37,26 @@ export async function getAdminEmail(token: string): Promise<string | null> {
     const { payload } = await jwtVerify(token, getSecret());
     const email = payload.email;
     return typeof email === "string" && email ? email : null;
+  } catch {
+    return null;
+  }
+}
+
+/**
+ * TÊN admin để hiển thị "người thêm/sửa": ưu tiên `name` trong token; không có
+ * thì lấy phần trước @ của email (khỏi lộ nguyên địa chỉ gmail). Null nếu token
+ * cũ chưa có gì.
+ */
+export async function getAdminName(token: string): Promise<string | null> {
+  try {
+    const { payload } = await jwtVerify(token, getSecret());
+    const name = payload.name;
+    if (typeof name === "string" && name.trim()) return name.trim();
+    const email = payload.email;
+    if (typeof email === "string" && email.includes("@")) {
+      return email.split("@")[0];
+    }
+    return null;
   } catch {
     return null;
   }

@@ -22,18 +22,19 @@ export async function POST(req: Request) {
   let ok = checkAdminCredentials(email, password);
 
   // 2) Admin lưu trong database (role = admin)
-  if (!ok && email) {
-    const user = await prisma.user.findUnique({ where: { email } });
-    if (user && user.role === "admin" && user.passwordHash) {
-      ok = await bcrypt.compare(password, user.passwordHash);
-    }
+  const user = email ? await prisma.user.findUnique({ where: { email } }) : null;
+  if (!ok && user && user.role === "admin" && user.passwordHash) {
+    ok = await bcrypt.compare(password, user.passwordHash);
   }
 
   if (!ok) {
     return NextResponse.json({ ok: false }, { status: 401 });
   }
 
-  const token = await createAdminToken(email);
+  // Tên hiển thị "người thêm/sửa": tên tài khoản (nếu có) hoặc phần trước @.
+  const displayName =
+    user?.name?.trim() || email.split("@")[0] || "Quản trị viên";
+  const token = await createAdminToken(email, displayName);
   const res = NextResponse.json({ ok: true });
   res.cookies.set(ADMIN_COOKIE, token, {
     httpOnly: true,

@@ -4,7 +4,7 @@ import { revalidatePath } from "next/cache";
 import { prisma } from "@/lib/prisma";
 import {
   ADMIN_COOKIE,
-  getAdminEmail,
+  getAdminName,
   verifyAdminToken,
 } from "@/lib/admin-auth";
 import { slugify } from "@/lib/slug";
@@ -17,10 +17,10 @@ async function requireAdmin(): Promise<boolean> {
   return token ? verifyAdminToken(token) : false;
 }
 
-/** Email admin đang đăng nhập (để ghi "người sửa cuối"). Rỗng -> null. */
-async function currentAdminEmail(): Promise<string | null> {
+/** Tên admin đang đăng nhập (để ghi "người thêm/sửa"). Rỗng -> null. */
+async function currentAdminName(): Promise<string | null> {
   const token = cookies().get(ADMIN_COOKIE)?.value;
-  return token ? getAdminEmail(token) : null;
+  return token ? getAdminName(token) : null;
 }
 
 type Body = Record<string, unknown>;
@@ -180,7 +180,7 @@ export async function POST(req: Request) {
   }
   try {
     // Thêm mới: ghi người thêm vào updatedBy; ai sửa sau sẽ ghi đè thành họ.
-    const updatedBy = await currentAdminEmail();
+    const updatedBy = await currentAdminName();
     await prisma.product.create({ data: { ...data, slug, updatedBy } });
     done(slug);
     return NextResponse.json({ ok: true, slug });
@@ -212,7 +212,7 @@ export async function PUT(req: Request) {
     return NextResponse.json({ ok: false, error: "missing_brand" }, { status: 400 });
   }
   try {
-    const updatedBy = await currentAdminEmail();
+    const updatedBy = await currentAdminName();
     await prisma.product.update({
       where: { id },
       data: { ...data, slug, updatedBy },
