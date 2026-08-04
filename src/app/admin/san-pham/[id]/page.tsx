@@ -6,6 +6,7 @@ import {
   getBrandSeriesOptions,
   getNeeds,
 } from "@/lib/data";
+import { toRichHtml } from "@/lib/rich-text";
 
 export const metadata = { title: "Sửa sản phẩm" };
 export const dynamic = "force-dynamic";
@@ -59,9 +60,9 @@ export default async function EditProductPage({
         variantLinks: (product.variantSlugs ?? [])
           .map((s) => `/san-pham/${s}`)
           .join("\n"),
-        description: Array.isArray(product.description)
-          ? JSON.stringify(product.description)
-          : "",
+        // Mô tả nay lưu dạng HTML (CKEditor). Đổi cả dữ liệu cũ (mảng khối) lẫn
+        // mới (chuỗi HTML) về HTML để editor hiện lại đúng nội dung + ảnh đã đăng.
+        description: toRichHtml(product.description, "h3"),
         gift: s(product.gift),
         badge: s(product.badge),
         accent: s(product.accent) || "dark",
