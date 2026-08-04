@@ -86,7 +86,7 @@ model Product {
   sort      Int      @default(0)
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
-  // Email tài khoản admin sửa/tạo sản phẩm này lần cuối (hiện ở bảng quản trị).
+  // Email admin THÊM/SỬA sản phẩm này lần gần nhất (hiện ở bảng quản trị).
   updatedBy String?
 
   @@index([price])

@@ -179,6 +179,7 @@ export async function POST(req: Request) {
     return NextResponse.json({ ok: false, error: "missing_brand" }, { status: 400 });
   }
   try {
+    // Thêm mới: ghi người thêm vào updatedBy; ai sửa sau sẽ ghi đè thành họ.
     const updatedBy = await currentAdminEmail();
     await prisma.product.create({ data: { ...data, slug, updatedBy } });
     done(slug);

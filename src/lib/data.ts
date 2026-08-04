@@ -573,7 +573,7 @@ export async function getAdminProducts() {
     ram: p.ram,
     storage: p.storage,
     series: p.series ?? "", // slug dòng máy để lọc trong admin
-    updatedBy: p.updatedBy ?? "", // email admin sửa cuối
+    updatedBy: p.updatedBy ?? "", // email admin thêm/sửa gần nhất
   }));
 }
 

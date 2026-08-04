@@ -210,7 +210,7 @@ export function ProductAdminList({
             <tr className="border-b border-line bg-bg text-[12.5px] uppercase tracking-wide text-muted">
               <th className="px-4 py-3 font-semibold">Tên sản phẩm</th>
               <th className="px-4 py-3 font-semibold">Giá</th>
-              <th className="px-4 py-3 font-semibold">Người sửa</th>
+              <th className="px-4 py-3 font-semibold">Người thêm / sửa</th>
               <th className="px-4 py-3 text-right font-semibold">Thao tác</th>
             </tr>
           </thead>
