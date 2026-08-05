@@ -1,6 +1,7 @@
 import Link from "next/link";
 import { Container } from "./Container";
 import { FooterBadges } from "./FooterBadges";
+import { StorePhotoMarquee } from "./StorePhotoMarquee";
 import {
   ClockIcon,
   MailIcon,
@@ -9,7 +10,7 @@ import {
   PhoneIcon,
 } from "./icons";
 import { SITE } from "@/lib/site";
-import { getStores } from "@/lib/data";
+import { getCustomerPhotos, getStores } from "@/lib/data";
 
 // Footer dùng chung toàn site. Server Component.
 
@@ -53,9 +54,15 @@ function FooterList({
 }
 
 export async function Footer() {
-  const stores = await getStores();
+  const [stores, customerPhotos] = await Promise.all([
+    getStores(),
+    getCustomerPhotos(),
+  ]);
   return (
     <footer className="mt-12 bg-ink pb-6 text-[#AEB7B1]">
+      {/* Dải ảnh không gian & hoạt động cửa hàng (chạy ngang) — hiện mọi trang */}
+      <StorePhotoMarquee photos={customerPhotos} />
+
       {/* Dải CTA hotline (gradient) — gối lên đầu footer cho hiện đại */}
       <Container>
         <div className="flex flex-wrap items-center justify-between gap-5 rounded-2xl bg-gradient-to-r from-green-d via-green to-green-d px-7 py-6 shadow-[0_16px_40px_rgba(11,94,44,0.28)] max-[720px]:px-5">
