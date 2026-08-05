@@ -73,7 +73,9 @@ export async function CategoryView({
     "laptop-do-hoa": "do-hoa",
     "laptop-van-phong": "van-phong",
   };
-  let baseProducts = allProducts;
+  // Mặc định RỖNG: danh mục chưa có quy tắc gắn sản phẩm (VD PC, màn hình, phụ
+  // kiện) thì hiện rỗng, KHÔNG rơi vào "hiện tất cả sản phẩm" như trước.
+  let baseProducts: typeof allProducts = [];
   if (brand) {
     baseProducts = allProducts.filter((p) => p.brand === brand);
   } else if (category?.group === "dong-may") {
