@@ -321,7 +321,7 @@ export async function ProductDetailView({ slug }: { slug: string }) {
             <h2 className="text-[20px] font-bold text-ink">Mô tả sản phẩm</h2>
             {ownDescription ? (
               <article
-                className="rich-text mt-4 max-w-[780px]"
+                className="rich-text mt-4"
                 dangerouslySetInnerHTML={{ __html: ownDescription }}
               />
             ) : (
