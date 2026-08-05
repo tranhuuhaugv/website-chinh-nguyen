@@ -11,6 +11,11 @@ export const dynamic = "force-dynamic";
 
 const OPTIONS: { key: string; title: string; desc: string }[] = [
   {
+    key: "comingSoon",
+    title: 'Website đang hoàn thiện ("Coming soon")',
+    desc: 'Bật để trang chủ hiện trang "Website đang hoàn thiện" thay cho nội dung. Nhớ TẮT khi đưa vào vận hành lại.',
+  },
+  {
     key: "flashSaleEnabled",
     title: "Khối Flash Sale",
     desc: "Bật/tắt hiển thị khối Flash Sale trên trang chủ.",

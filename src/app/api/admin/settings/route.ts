@@ -11,6 +11,8 @@ async function requireAdmin(): Promise<boolean> {
 }
 
 const ALLOWED = new Set([
+  // Bật trang "Website đang hoàn thiện" thay cho trang chủ.
+  "comingSoon",
   "flashSaleEnabled",
   // Lịch Flash Sale (giờ VN, dạng "YYYY-MM-DDTHH:mm"). Trống = không giới hạn.
   "flashSaleStart",

@@ -1,4 +1,5 @@
 import { BlogSection } from "@/components/BlogSection";
+import { ComingSoon } from "@/components/ComingSoon";
 import { CategoryGrid } from "@/components/CategoryGrid";
 import { CustomerGallery } from "@/components/CustomerGallery";
 import { VoucherStrip } from "@/components/VoucherStrip";
@@ -75,6 +76,12 @@ function buildJsonLd(stores: { address: string; city: string }[]) {
 }
 
 export default async function HomePage() {
+  // Chế độ "Website đang hoàn thiện" (bật/tắt ở admin > Cài đặt). Bật -> hiện
+  // trang chờ thay cho toàn bộ nội dung; tắt -> trang chủ bình thường.
+  if ((await getSetting("comingSoon")) === "true") {
+    return <ComingSoon />;
+  }
+
   const [
     flashProducts,
     newProducts,
