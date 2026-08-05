@@ -14,6 +14,10 @@ import { getCustomerPhotos, getStores } from "@/lib/data";
 
 // Footer dùng chung toàn site. Server Component.
 
+// Dòng bản quyền cuối footer. Đang ẨN chờ Bộ Công Thương duyệt web.
+// -> Khi được duyệt, đổi thành `true` để hiện lại.
+const SHOW_COPYRIGHT = false;
+
 const ABOUT_LINKS = [
   { href: "/gioi-thieu", label: "Giới thiệu" },
   { href: "/he-thong-cua-hang", label: "Hệ thống cửa hàng" },
@@ -168,10 +172,14 @@ export async function Footer() {
 
         <FooterBadges />
 
-        <div className="flex flex-wrap justify-between gap-2 pt-5 text-[12.5px] text-[#78827C]">
-          <span>© 2026 Laptop Chính Nguyễn — Đà Nẵng.</span>
-          <span>Điều khoản · Bảo mật</span>
-        </div>
+        {/* Dòng bản quyền TẠM ẨN theo yêu cầu — khi Bộ Công Thương duyệt web
+            xong thì bỏ comment quanh khối dưới để hiện lại. */}
+        {SHOW_COPYRIGHT && (
+          <div className="flex flex-wrap justify-between gap-2 pt-5 text-[12.5px] text-[#78827C]">
+            <span>© 2026 Laptop Chính Nguyễn — Đà Nẵng.</span>
+            <span>Điều khoản · Bảo mật</span>
+          </div>
+        )}
       </Container>
     </footer>
   );

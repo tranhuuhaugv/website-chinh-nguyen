@@ -1,13 +1,14 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import Image from "next/image";
 import Link from "next/link";
 import type { BannerAccent, BannerItem, SideBanner } from "@/lib/types";
 import { CloseIcon } from "./icons";
 
 // Banner treo dọc 2 bên trang. Chỉ hiện khi màn hình đủ rộng (>=1560px) để không
-// đè lên nội dung (khung giữa 1200px). Có nút đóng. Client Component vì cần state đóng.
+// đè lên nội dung (khung giữa 1200px). Có nút đóng + TỰ MỜ ẨN khi cuộn tới footer
+// (không đè dải ảnh/footer). Client Component vì cần state đóng + theo dõi cuộn.
 
 const GRADIENT: Record<BannerAccent, string> = {
   green: "bg-[linear-gradient(160deg,#0B5E2C,#063619)]",
@@ -19,21 +20,24 @@ function SideFrame({
   side,
   href,
   onClose,
+  dim,
   children,
 }: {
   side: "left" | "right";
   href: string;
   onClose: () => void;
+  /** Mờ + tắt tương tác khi cuộn tới footer (tránh đè nội dung). */
+  dim: boolean;
   children: React.ReactNode;
 }) {
   return (
     <aside
-      className={`fixed top-[130px] z-40 hidden w-[150px] min-[1560px]:block ${
+      className={`fixed top-[130px] z-40 hidden w-[150px] transition-opacity duration-300 min-[1560px]:block ${
         // Đặt ngay sát cột nội dung (rộng 1200px, canh giữa): 600 + 150 + 16 = 766.
         side === "left"
           ? "left-[calc(50%-766px)]"
           : "right-[calc(50%-766px)]"
-      }`}
+      } ${dim ? "pointer-events-none opacity-0" : "opacity-100"}`}
     >
       <div className="relative">
         <button
@@ -86,6 +90,24 @@ export function SideBanners({
   images?: BannerItem[];
 }) {
   const [hidden, setHidden] = useState({ left: false, right: false });
+  // Tự ẩn khi footer chạm tới vùng banner (banner cao ~560px tính từ đỉnh).
+  const [nearFooter, setNearFooter] = useState(false);
+
+  useEffect(() => {
+    const footer = document.querySelector("footer");
+    if (!footer) return;
+    // Ẩn khi đỉnh footer lên tới vùng banner (banner cao ~560px tính từ đỉnh).
+    const onScroll = () => {
+      setNearFooter(footer.getBoundingClientRect().top < 580);
+    };
+    onScroll();
+    window.addEventListener("scroll", onScroll, { passive: true });
+    window.addEventListener("resize", onScroll);
+    return () => {
+      window.removeEventListener("scroll", onScroll);
+      window.removeEventListener("resize", onScroll);
+    };
+  }, []);
 
   const sides: {
     key: "left" | "right";
@@ -136,6 +158,7 @@ export function SideBanners({
             key={s.key}
             side={s.key}
             href={s.href}
+            dim={nearFooter}
             onClose={() => setHidden((h) => ({ ...h, [s.key]: true }))}
           >
             {s.body}
