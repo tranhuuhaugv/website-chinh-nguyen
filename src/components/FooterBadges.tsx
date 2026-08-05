@@ -40,43 +40,14 @@ const PAYMENTS: ReactNode[] = [
 
 export function FooterBadges() {
   return (
-    <div className="grid grid-cols-1 gap-6 border-b border-[#2A332D] py-7 md:grid-cols-[1.6fr_1fr]">
-      <div>
-        <h4 className="mb-3 text-[13.5px] font-semibold text-white">
-          Phương thức thanh toán
-        </h4>
-        <div className="flex flex-wrap gap-2">
-          {PAYMENTS.map((node, i) => (
-            <Tile key={i}>{node}</Tile>
-          ))}
-        </div>
-      </div>
-
-      <div>
-        <h4 className="mb-3 text-[13.5px] font-semibold text-white">
-          Chứng nhận
-        </h4>
-        <div className="flex flex-wrap items-center gap-2">
-          <a
-            href="http://online.gov.vn/"
-            target="_blank"
-            rel="noopener noreferrer"
-            className="flex items-center gap-2 rounded-md bg-white px-2.5 py-1.5"
-          >
-            <span className="flex h-7 w-7 items-center justify-center rounded-full bg-[#C4161C] text-[8px] font-bold text-white">
-              BCT
-            </span>
-            <span className="text-[9.5px] font-semibold leading-tight text-[#333]">
-              ĐÃ THÔNG BÁO
-              <br />
-              BỘ CÔNG THƯƠNG
-            </span>
-          </a>
-          <span className="flex items-center gap-1 rounded-md bg-white px-2.5 py-2 text-[10px] font-bold">
-            <span className="text-[#111]">DMCA</span>
-            <span className="text-[#2e9e44]">PROTECTED</span>
-          </span>
-        </div>
+    <div className="border-b border-[#2A332D] py-7">
+      <h4 className="mb-3 text-[13.5px] font-semibold text-white">
+        Phương thức thanh toán
+      </h4>
+      <div className="flex flex-wrap gap-2">
+        {PAYMENTS.map((node, i) => (
+          <Tile key={i}>{node}</Tile>
+        ))}
       </div>
     </div>
   );
