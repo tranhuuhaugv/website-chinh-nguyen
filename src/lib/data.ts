@@ -834,7 +834,8 @@ export async function getSetting(key: string): Promise<string | null> {
 
 /**
  * Danh sách cửa hàng — admin tự thêm/sửa (lưu Setting "stores" dạng JSON
- * [{name,address,city}]). Chưa cấu hình -> dùng danh sách mặc định SITE.stores.
+ * [{name,address,city}]). CHƯA từng cấu hình -> mặc định SITE.stores; đã lưu
+ * (kể cả mảng rỗng khi admin xoá hết) -> theo đúng admin.
  * Dùng cho: Footer, trang Hệ thống cửa hàng, Liên hệ, schema trang chủ, chi tiết SP.
  */
 export async function getStores(): Promise<Store[]> {
@@ -860,7 +861,9 @@ export async function getStores(): Promise<Store[]> {
                 ? x.city.trim()
                 : "Đà Nẵng",
           }));
-        if (clean.length) return clean;
+        // Đã lưu 1 mảng hợp lệ -> theo đúng admin, KỂ CẢ rỗng (admin xoá hết
+        // thì hiện rỗng, không tự đổ lại 4 địa chỉ mặc định như trước).
+        return clean;
       }
     } catch {
       // JSON hỏng -> rơi xuống mặc định
