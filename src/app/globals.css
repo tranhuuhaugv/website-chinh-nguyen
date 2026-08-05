@@ -69,6 +69,52 @@ body {
   }
 }
 
+/* Tiêu đề Flash Sale / Sản phẩm mới về: chữ vàng ánh kim có vệt sáng chạy qua */
+.sale-shimmer {
+  background: linear-gradient(
+    100deg,
+    #f5a623 0%,
+    #ffe259 28%,
+    #fffdf2 47%,
+    #ffe259 66%,
+    #f5a623 100%
+  );
+  background-size: 220% 100%;
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+  animation: sale-shimmer 3.2s linear infinite;
+}
+@keyframes sale-shimmer {
+  from {
+    background-position: 180% 0;
+  }
+  to {
+    background-position: -80% 0;
+  }
+}
+/* Tia sét 2 bên: phát sáng nhấp nháy (chỉ đổi filter/opacity -> giữ nguyên xoay) */
+.sale-bolt {
+  animation: sale-bolt 1.5s ease-in-out infinite;
+}
+@keyframes sale-bolt {
+  0%,
+  100% {
+    filter: drop-shadow(0 0 1px rgba(255, 207, 51, 0.35));
+    opacity: 0.85;
+  }
+  50% {
+    filter: drop-shadow(0 0 7px rgba(255, 207, 51, 0.95));
+    opacity: 1;
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  .sale-shimmer,
+  .sale-bolt {
+    animation: none;
+  }
+}
+
 /* ─── Nội dung soạn bằng CKEditor (mô tả SP + bài viết) ───────────────────
    Tailwind preflight xoá sạch định dạng mặc định của ul/ol/h2/blockquote...
    -> KHÔNG có phần này thì danh sách mất dấu chấm, tiêu đề bằng cỡ chữ thường.

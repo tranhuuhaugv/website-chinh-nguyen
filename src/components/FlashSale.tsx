@@ -191,11 +191,11 @@ export function FlashSale({
           {/* Header: logo (tiêu đề đổi theo tab) + đồng hồ + tab */}
           <div className="mb-4 flex flex-wrap items-center gap-x-6 gap-y-3">
             <div className="flex items-center gap-1 max-[640px]:gap-0.5">
-              <BoltIcon className="h-6 w-6 -rotate-6 text-[#FFCF33]" />
-              <span className="inline-block bg-gradient-to-b from-[#FFE259] to-[#FDBA2D] bg-clip-text py-1 pr-1.5 text-[26px] font-black italic leading-[1.3] text-transparent max-[640px]:text-[19px]">
+              <BoltIcon className="sale-bolt h-6 w-6 -rotate-6 text-[#FFCF33]" />
+              <span className="sale-shimmer inline-block py-1 pr-1.5 text-[26px] font-black italic leading-[1.3] max-[640px]:text-[19px]">
                 {title}
               </span>
-              <BoltIcon className="h-6 w-6 rotate-6 text-[#FFCF33]" />
+              <BoltIcon className="sale-bolt h-6 w-6 rotate-6 text-[#FFCF33]" />
             </div>
 
             {isFlash && <CountdownTimer endsAt={endsAt} />}
