@@ -1,6 +1,6 @@
 import { notFound } from "next/navigation";
 import { PolicyEditor } from "@/components/admin/PolicyEditor";
-import { POLICIES } from "@/lib/policies";
+import { EDITABLE_PAGES, pagePublicPath } from "@/lib/policies";
 import { getPolicyOverride } from "@/lib/data";
 
 export const metadata = { title: "Sửa trang nội dung" };
@@ -11,7 +11,7 @@ export default async function EditStaticPage({
 }: {
   params: { id: string };
 }) {
-  const base = POLICIES[params.id];
+  const base = EDITABLE_PAGES[params.id];
   if (!base) notFound();
 
   // Ưu tiên bản đã lưu DB, chưa có thì lấy bản mặc định.
@@ -21,7 +21,7 @@ export default async function EditStaticPage({
     <PolicyEditor
       id={params.id}
       policy={policy}
-      path={`/chinh-sach/${params.id}`}
+      path={pagePublicPath(params.id)}
     />
   );
 }

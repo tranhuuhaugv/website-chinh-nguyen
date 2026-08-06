@@ -1,15 +1,21 @@
 import type { Metadata } from "next";
 import { StaticPage } from "@/components/StaticPage";
 import { Band, SectionIntro } from "@/components/static/Band";
+import { PageArticle } from "@/components/static/PageArticle";
 import { ContactForm } from "@/components/ContactForm";
 import { SITE } from "@/lib/site";
-import { getStores } from "@/lib/data";
+import { getPolicyOverride, getStores } from "@/lib/data";
+import { INFO_PAGES } from "@/lib/policies";
 import { ClockIcon, MailIcon, MapPinIcon, PhoneIcon } from "@/components/icons";
 
-export const metadata: Metadata = {
-  title: "Liên hệ",
-  description: `Liên hệ Laptop Chính Nguyễn — hotline ${SITE.hotline}, ${SITE.stores.length} cơ sở tại Đà Nẵng & Hội An. Hỗ trợ tư vấn, bảo hành và hợp tác.`,
-};
+// Tiêu đề / mô tả / đoạn văn đầu trang sửa được ở admin (Trang nội dung -> Liên
+// hệ). Các kênh liên hệ + cửa hàng tự đồng bộ từ cài đặt & danh sách cửa hàng.
+export const revalidate = 3600;
+
+export async function generateMetadata(): Promise<Metadata> {
+  const p = (await getPolicyOverride("lien-he")) ?? INFO_PAGES["lien-he"];
+  return { title: p.title, description: p.lead };
+}
 
 const INFO = [
   { icon: PhoneIcon, label: "Hotline bán hàng", value: SITE.hotline },
@@ -33,11 +39,16 @@ const SOCIALS = [
 ];
 
 export default async function ContactPage() {
-  const stores = await getStores();
+  const [stores, override] = await Promise.all([
+    getStores(),
+    getPolicyOverride("lien-he"),
+  ]);
+  const page = override ?? INFO_PAGES["lien-he"];
+  const hasArticle = page.intro.length > 0 || page.sections.length > 0;
   return (
     <StaticPage
-      title="Kết nối với Chính Nguyễn"
-      lead="Cần tư vấn chọn máy, hỗ trợ bảo hành hay hợp tác kinh doanh? Đội ngũ của chúng tôi luôn sẵn sàng lắng nghe bạn."
+      title={page.title}
+      lead={page.lead}
       breadcrumb={[{ label: "Trang chủ", href: "/" }, { label: "Liên hệ" }]}
       hero={
         <a
@@ -56,6 +67,12 @@ export default async function ContactPage() {
         </a>
       }
     >
+      {hasArticle && (
+        <Band tone="white">
+          <PageArticle intro={page.intro} sections={page.sections} />
+        </Band>
+      )}
+
       {/* Kênh liên hệ + form */}
       <Band tone="white">
         <div className="grid gap-10 lg:grid-cols-[1fr_1.05fr]">

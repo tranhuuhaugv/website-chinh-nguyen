@@ -1,23 +1,31 @@
 import Link from "next/link";
 import { EditIcon } from "@/components/icons";
-import { POLICIES } from "@/lib/policies";
+import { INFO_PAGES, POLICIES } from "@/lib/policies";
 
 export const metadata = { title: "Trang nội dung" };
 
 export default function AdminStaticPagesPage() {
-  const pages = Object.entries(POLICIES).map(([slug, p]) => ({
-    slug,
-    title: p.title,
-    path: `/chinh-sach/${slug}`,
-  }));
+  const pages = [
+    // Giới thiệu / Liên hệ lên đầu cho dễ tìm.
+    ...Object.entries(INFO_PAGES).map(([slug, p]) => ({
+      slug,
+      title: p.title,
+      path: `/${slug}`,
+    })),
+    ...Object.entries(POLICIES).map(([slug, p]) => ({
+      slug,
+      title: p.title,
+      path: `/chinh-sach/${slug}`,
+    })),
+  ];
 
   return (
     <div className="flex flex-col gap-4">
       <div>
         <h1 className="text-[20px] font-bold text-ink">Trang nội dung</h1>
         <p className="mt-1 text-[13.5px] text-muted">
-          Sửa nội dung các trang Chính sách. Các trang khác (Giới thiệu, Liên hệ,
-          Hệ thống cửa hàng…) có bố cục riêng nên chỉnh trực tiếp trong mã nguồn.
+          Sửa nội dung trang Giới thiệu, Liên hệ và các trang Chính sách. Sửa
+          xong bấm Lưu là web cập nhật ngay.
         </p>
       </div>
 

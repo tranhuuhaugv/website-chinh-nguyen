@@ -340,3 +340,51 @@ export const POLICY_NAV = [
 
 /** Danh sách slug chính sách (để admin liệt kê). */
 export const POLICY_SLUGS = Object.keys(POLICIES);
+
+// --- Trang nội dung khác (Giới thiệu / Liên hệ) — cùng cấu trúc Policy để admin
+// sửa được qua DB. Nội dung mặc định dưới đây, admin sửa sẽ ghi đè. ---
+export const INFO_PAGES: Record<string, Policy> = {
+  "gioi-thieu": {
+    title: "Giới thiệu Laptop Chính Nguyễn",
+    lead: "Cửa hàng laptop chính hãng & laptop cũ uy tín tại Đà Nẵng — giá tốt, bảo hành minh bạch, dịch vụ tận tâm.",
+    intro: [
+      "Laptop Chính Nguyễn là địa chỉ mua laptop tin cậy tại Đà Nẵng: chuyên laptop nhập khẩu từ USA/Japan, laptop cũ đã kiểm định kỹ và laptop mới chính hãng.",
+      "Chúng tôi đặt sự hài lòng của khách hàng lên hàng đầu — tư vấn trung thực theo đúng nhu cầu và ngân sách, không chạy theo doanh số.",
+    ],
+    sections: [
+      {
+        heading: "Cam kết của chúng tôi",
+        items: [
+          "Máy được kiểm tra kỹ pin, màn hình, linh kiện trước khi bán.",
+          "Bảo hành minh bạch, hỗ trợ đổi trả theo chính sách.",
+          "Trả góp 0%, giao nhanh, cài đặt phần mềm miễn phí.",
+        ],
+      },
+      {
+        heading: "Vì sao chọn Chính Nguyễn",
+        paragraphs: [
+          "Nhiều năm kinh nghiệm, đội ngũ am hiểu sản phẩm, hệ thống cửa hàng tại Đà Nẵng và Hội An để bạn dễ dàng ghé thăm và trải nghiệm máy trực tiếp trước khi mua.",
+        ],
+      },
+    ],
+  },
+  "lien-he": {
+    title: "Kết nối với Chính Nguyễn",
+    lead: "Cần tư vấn chọn máy, hỗ trợ bảo hành hay hợp tác kinh doanh? Đội ngũ của chúng tôi luôn sẵn sàng lắng nghe bạn.",
+    // Đoạn văn đầu trang (tuỳ chọn). Để trống -> trang chỉ hiện kênh liên hệ +
+    // cửa hàng như hiện tại. Admin thêm đoạn -> hiện phía trên.
+    intro: [],
+    sections: [],
+  },
+};
+
+/** Base để sửa (chính sách + giới thiệu/liên hệ). */
+export const EDITABLE_PAGES: Record<string, Policy> = {
+  ...POLICIES,
+  ...INFO_PAGES,
+};
+
+/** Đường dẫn trang khách của 1 trang sửa được. */
+export function pagePublicPath(id: string): string {
+  return POLICIES[id] ? `/chinh-sach/${id}` : `/${id}`;
+}

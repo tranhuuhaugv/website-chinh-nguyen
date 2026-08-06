@@ -3,9 +3,9 @@ import { cookies } from "next/headers";
 import { revalidatePath } from "next/cache";
 import { prisma } from "@/lib/prisma";
 import { ADMIN_COOKIE, verifyAdminToken } from "@/lib/admin-auth";
-import { POLICIES } from "@/lib/policies";
+import { EDITABLE_PAGES, pagePublicPath } from "@/lib/policies";
 
-// Lưu nội dung trang chính sách (/chinh-sach/[slug]) vào DB. Chỉ admin.
+// Lưu nội dung trang nội dung (chính sách + giới thiệu/liên hệ) vào DB. Chỉ admin.
 
 async function requireAdmin(): Promise<boolean> {
   const token = cookies().get(ADMIN_COOKIE)?.value;
@@ -36,12 +36,12 @@ export async function PUT(req: Request) {
   }
 
   const id = String(body.id ?? "").trim();
-  // Chỉ cho sửa các slug chính sách hợp lệ.
-  if (!id || !POLICIES[id]) {
+  // Chỉ cho sửa các trang nội dung hợp lệ (chính sách + giới thiệu/liên hệ).
+  if (!id || !EDITABLE_PAGES[id]) {
     return NextResponse.json({ ok: false, error: "invalid_page" }, { status: 400 });
   }
 
-  const title = String(body.title ?? "").trim() || POLICIES[id].title;
+  const title = String(body.title ?? "").trim() || EDITABLE_PAGES[id].title;
   const lead = String(body.lead ?? "").trim();
   const intro = strArray(body.intro);
   const sections = Array.isArray(body.sections)
@@ -67,7 +67,7 @@ export async function PUT(req: Request) {
       update: { title, lead, content: { intro, sections } },
       create: { id, title, lead, content: { intro, sections } },
     });
-    revalidatePath(`/chinh-sach/${id}`);
+    revalidatePath(pagePublicPath(id));
     return NextResponse.json({ ok: true });
   } catch (err) {
     console.error("Lưu trang chính sách lỗi:", err);
