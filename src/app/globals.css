@@ -115,6 +115,26 @@ body {
   }
 }
 
+/* Toast "Đã thêm vào giỏ" — hiện lên rồi tự mờ đi trong ~2.4s */
+@keyframes cart-toast {
+  0% {
+    opacity: 0;
+    transform: translateY(14px);
+  }
+  7%,
+  86% {
+    opacity: 1;
+    transform: translateY(0);
+  }
+  100% {
+    opacity: 0;
+    transform: translateY(14px);
+  }
+}
+.cart-toast {
+  animation: cart-toast 2.4s ease forwards;
+}
+
 /* ─── Nội dung soạn bằng CKEditor (mô tả SP + bài viết) ───────────────────
    Tailwind preflight xoá sạch định dạng mặc định của ul/ol/h2/blockquote...
    -> KHÔNG có phần này thì danh sách mất dấu chấm, tiêu đề bằng cỡ chữ thường.
