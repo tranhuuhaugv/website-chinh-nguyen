@@ -18,6 +18,14 @@ function cleanSeo(v: unknown): string | null {
   return richTextRong(html) ? null : html;
 }
 
+/** STT (thứ tự) admin nhập; rỗng/không hợp lệ -> giữ giá trị fallback. */
+function toSort(v: unknown, fallback: number): number {
+  const s = String(v ?? "").trim();
+  if (s === "") return fallback;
+  const n = Number(s);
+  return Number.isFinite(n) ? Math.trunc(n) : fallback;
+}
+
 async function uniqueSlug(base: string, exclude?: string): Promise<string> {
   let slug = base || "danh-muc";
   let i = 2;
@@ -59,7 +67,7 @@ export async function POST(req: Request) {
       group: String(body?.group ?? "").trim() || null,
       metaDescription: String(body?.metaDescription ?? "").trim() || null,
       seoContent: cleanSeo(body?.seoContent),
-      sort: (last?.sort ?? 0) + 1,
+      sort: toSort(body?.sort, (last?.sort ?? 0) + 1),
     },
   });
   done();
@@ -102,6 +110,7 @@ export async function PUT(req: Request) {
       group: String(body?.group ?? "").trim() || current.group,
       metaDescription: String(body?.metaDescription ?? "").trim() || null,
       seoContent: cleanSeo(body?.seoContent),
+      sort: toSort(body?.sort, current.sort),
     },
   });
   done();

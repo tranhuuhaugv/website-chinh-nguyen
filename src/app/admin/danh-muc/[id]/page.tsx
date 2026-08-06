@@ -38,6 +38,12 @@ const FIELDS: AdminField[] = [
   { name: "icon", label: "Icon", type: "select", options: ICON_OPTIONS },
   { name: "group", label: "Nhóm (mega-menu)", type: "select", options: GROUP_OPTIONS },
   { name: "tag", label: "Nhãn (tuỳ chọn)", placeholder: "Hot / Giá tốt" },
+  {
+    name: "sort",
+    label: "STT — thứ tự hiển thị ngoài trang chủ (số nhỏ lên trước)",
+    type: "number",
+    placeholder: "VD: 1, 2, 3...",
+  },
 
   { name: "hSeo", label: "Nội dung SEO (hiện dưới danh sách sản phẩm)", type: "heading" },
   { name: "metaDescription", label: "Meta description (mô tả ngắn cho Google)", type: "textarea" },
@@ -73,6 +79,7 @@ export default async function AdminCategoryFormPage({
         tag: category.tag ?? "",
         image: category.image ?? "",
         coverImage: category.coverImage ?? "",
+        sort: String(category.sort ?? ""),
         metaDescription: category.metaDescription ?? "",
         seoContent: category.seoContent ?? "",
       }
