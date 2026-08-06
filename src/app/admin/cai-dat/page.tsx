@@ -1,5 +1,6 @@
 import { SettingToggle } from "@/components/admin/SettingToggle";
 import { SettingInput } from "@/components/admin/SettingInput";
+import { SettingImage } from "@/components/admin/SettingImage";
 import { FlashSaleSchedule } from "@/components/admin/FlashSaleSchedule";
 import { NeedsManager } from "@/components/admin/NeedsManager";
 import { VouchersManager } from "@/components/admin/VouchersManager";
@@ -28,7 +29,7 @@ const OPTIONS: { key: string; title: string; desc: string }[] = [
   {
     key: "bctEnabled",
     title: "Badge Bộ Công Thương (footer)",
-    desc: "Bật khi đã được duyệt + đã dán link online.gov.vn ở ô bên dưới.",
+    desc: "Bật khi đã được duyệt + đã dán link online.gov.vn ở ô bên dưới. Nếu đã tải ảnh logo BCT (bên dưới) thì footer hiện đúng ảnh đó, chưa có ảnh thì hiện badge chữ mặc định.",
   },
   {
     key: "dmcaEnabled",
@@ -95,6 +96,7 @@ export default async function AdminSettingsPage() {
     vouchers,
     flashStart,
     flashEnd,
+    bctImg,
   ] = await Promise.all([
       Promise.all(OPTIONS.map((o) => getSetting(o.key))),
       Promise.all(CONTACTS.map((c) => getSetting(c.key))),
@@ -103,6 +105,7 @@ export default async function AdminSettingsPage() {
       getVouchers(),
       getSetting("flashSaleStart"),
       getSetting("flashSaleEnd"),
+      getSetting("bctImg"),
     ]);
 
   return (
@@ -183,6 +186,22 @@ export default async function AdminSettingsPage() {
               />
             </div>
           ))}
+
+          {/* Ảnh logo Bộ Công Thương — Bộ gửi sau khi duyệt, tải lên tại đây */}
+          <div className="border-t border-line pt-5">
+            <b className="text-[14px] text-ink">Logo Bộ Công Thương (ảnh)</b>
+            <p className="mb-2 mt-0.5 text-[12.5px] text-muted">
+              Tải ảnh logo do Bộ Công Thương cấp sau khi duyệt (thường là logo đỏ
+              “Đã thông báo Bộ Công Thương”). Có ảnh thì footer hiện đúng ảnh này;
+              chưa có thì dùng badge chữ mặc định. Nhớ bật công tắc “Badge Bộ Công
+              Thương” và dán link online.gov.vn ở trên.
+            </p>
+            <SettingImage
+              settingKey="bctImg"
+              initial={bctImg ?? ""}
+              ratio="aspect-[5/2]"
+            />
+          </div>
         </section>
       </div>
 
