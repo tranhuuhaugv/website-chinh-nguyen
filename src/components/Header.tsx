@@ -30,11 +30,17 @@ export function Header() {
             </span>
           </div>
           <nav className="flex items-center gap-[18px]">
+            <Link href="/gioi-thieu" className="transition hover:text-white">
+              Giới thiệu
+            </Link>
             <Link href="/he-thong-cua-hang" className="transition hover:text-white">
               Hệ thống cửa hàng
             </Link>
             <Link href="/chinh-sach/bao-hanh" className="transition hover:text-white">
               Bảo hành
+            </Link>
+            <Link href="/lien-he" className="transition hover:text-white">
+              Liên hệ
             </Link>
           </nav>
         </Container>
