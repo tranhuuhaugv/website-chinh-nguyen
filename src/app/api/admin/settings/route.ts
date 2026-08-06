@@ -28,6 +28,11 @@ const ALLOWED = new Set([
   "vouchers",
   // Danh sách cửa hàng (JSON [{name,address,city}]) — admin tự sửa
   "stores",
+  // Badge chứng nhận ở footer: bật/tắt + link (BCT online.gov.vn / DMCA)
+  "bctEnabled",
+  "bctUrl",
+  "dmcaEnabled",
+  "dmcaUrl",
 ]);
 
 export async function POST(req: Request) {

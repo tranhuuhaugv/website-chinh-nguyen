@@ -38,17 +38,89 @@ const PAYMENTS: ReactNode[] = [
   </span>,
 ];
 
-export function FooterBadges() {
+// Bọc badge: có link -> thẻ <a> mở tab mới; chưa có link -> thẻ tĩnh <span>.
+function BadgeWrap({
+  url,
+  className,
+  children,
+}: {
+  url?: string;
+  className: string;
+  children: React.ReactNode;
+}) {
+  return url ? (
+    <a href={url} target="_blank" rel="noopener noreferrer" className={className}>
+      {children}
+    </a>
+  ) : (
+    <span className={className}>{children}</span>
+  );
+}
+
+export interface Cert {
+  on: boolean;
+  url: string;
+}
+
+export function FooterBadges({
+  bct,
+  dmca,
+}: {
+  bct: Cert;
+  dmca: Cert;
+}) {
+  const showCert = bct.on || dmca.on;
+
   return (
-    <div className="border-b border-[#2A332D] py-7">
-      <h4 className="mb-3 text-[13.5px] font-semibold text-white">
-        Phương thức thanh toán
-      </h4>
-      <div className="flex flex-wrap gap-2">
-        {PAYMENTS.map((node, i) => (
-          <Tile key={i}>{node}</Tile>
-        ))}
+    <div
+      className={`grid grid-cols-1 gap-6 border-b border-[#2A332D] py-7 ${
+        showCert ? "md:grid-cols-[1.6fr_1fr]" : ""
+      }`}
+    >
+      <div>
+        <h4 className="mb-3 text-[13.5px] font-semibold text-white">
+          Phương thức thanh toán
+        </h4>
+        <div className="flex flex-wrap gap-2">
+          {PAYMENTS.map((node, i) => (
+            <Tile key={i}>{node}</Tile>
+          ))}
+        </div>
       </div>
+
+      {showCert && (
+        <div>
+          <h4 className="mb-3 text-[13.5px] font-semibold text-white">
+            Chứng nhận
+          </h4>
+          <div className="flex flex-wrap items-center gap-2">
+            {bct.on && (
+              <BadgeWrap
+                url={bct.url}
+                className="flex items-center gap-2 rounded-md bg-white px-2.5 py-1.5"
+              >
+                <span className="flex h-7 w-7 items-center justify-center rounded-full bg-[#C4161C] text-[8px] font-bold text-white">
+                  BCT
+                </span>
+                <span className="text-[9.5px] font-semibold leading-tight text-[#333]">
+                  ĐÃ THÔNG BÁO
+                  <br />
+                  BỘ CÔNG THƯƠNG
+                </span>
+              </BadgeWrap>
+            )}
+            {dmca.on && (
+              <BadgeWrap
+                url={dmca.url}
+                className="flex items-center gap-1 rounded-md bg-white px-2.5 py-2 text-[10px] font-bold"
+              >
+                <span className="text-[#111]">DMCA</span>
+                <span className="text-[#2e9e44]">PROTECTED</span>
+              </BadgeWrap>
+            )}
+          </div>
+        </div>
+      )}
     </div>
   );
 }

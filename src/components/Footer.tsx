@@ -10,7 +10,7 @@ import {
   PhoneIcon,
 } from "./icons";
 import { SITE } from "@/lib/site";
-import { getCustomerPhotos, getStores } from "@/lib/data";
+import { getCustomerPhotos, getSetting, getStores } from "@/lib/data";
 
 // Footer dùng chung toàn site. Server Component.
 
@@ -58,10 +58,15 @@ function FooterList({
 }
 
 export async function Footer() {
-  const [stores, customerPhotos] = await Promise.all([
-    getStores(),
-    getCustomerPhotos(),
-  ]);
+  const [stores, customerPhotos, bctOn, bctUrl, dmcaOn, dmcaUrl] =
+    await Promise.all([
+      getStores(),
+      getCustomerPhotos(),
+      getSetting("bctEnabled"),
+      getSetting("bctUrl"),
+      getSetting("dmcaEnabled"),
+      getSetting("dmcaUrl"),
+    ]);
   return (
     <footer className="mt-12 bg-ink pb-6 text-[#AEB7B1]">
       {/* Dải ảnh không gian & hoạt động cửa hàng (chạy ngang) — hiện mọi trang */}
@@ -170,7 +175,10 @@ export async function Footer() {
           </div>
         </div>
 
-        <FooterBadges />
+        <FooterBadges
+          bct={{ on: bctOn === "true", url: bctUrl ?? "" }}
+          dmca={{ on: dmcaOn === "true", url: dmcaUrl ?? "" }}
+        />
 
         {/* Dòng bản quyền TẠM ẨN theo yêu cầu — khi Bộ Công Thương duyệt web
             xong thì bỏ comment quanh khối dưới để hiện lại. */}

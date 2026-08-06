@@ -25,7 +25,34 @@ const OPTIONS: { key: string; title: string; desc: string }[] = [
     title: "Khối mã giảm giá",
     desc: "Bật/tắt dải voucher 100K - 200K - 500K trên trang chủ (khách sao chép mã, nhập ở giỏ hàng).",
   },
+  {
+    key: "bctEnabled",
+    title: "Badge Bộ Công Thương (footer)",
+    desc: "Bật khi đã được duyệt + đã dán link online.gov.vn ở ô bên dưới.",
+  },
+  {
+    key: "dmcaEnabled",
+    title: "Badge DMCA Protected (footer)",
+    desc: "Bật khi đã có link bảo hộ DMCA ở ô bên dưới.",
+  },
 ];
+
+// Link cho 2 badge chứng nhận ở footer (BCT online.gov.vn / DMCA).
+const CERTS: { key: string; title: string; desc: string; placeholder: string }[] =
+  [
+    {
+      key: "bctUrl",
+      title: "Link Bộ Công Thương",
+      desc: "Dán link trang xác nhận của web bạn trên online.gov.vn (lấy khi được duyệt).",
+      placeholder: "https://online.gov.vn/...",
+    },
+    {
+      key: "dmcaUrl",
+      title: "Link DMCA",
+      desc: "Dán link trang bảo hộ DMCA (VD https://www.dmca.com/Protection/Status.aspx?ID=...).",
+      placeholder: "https://www.dmca.com/...",
+    },
+  ];
 
 // 3 nút liên hệ nổi (góc phải dưới): gọi điện / Messenger / Zalo.
 const CONTACTS: {
@@ -55,10 +82,18 @@ const CONTACTS: {
 ];
 
 export default async function AdminSettingsPage() {
-  const [toggleValues, contactValues, needs, vouchers, flashStart, flashEnd] =
-    await Promise.all([
+  const [
+    toggleValues,
+    contactValues,
+    certValues,
+    needs,
+    vouchers,
+    flashStart,
+    flashEnd,
+  ] = await Promise.all([
       Promise.all(OPTIONS.map((o) => getSetting(o.key))),
       Promise.all(CONTACTS.map((c) => getSetting(c.key))),
+      Promise.all(CERTS.map((c) => getSetting(c.key))),
       getNeeds(),
       getVouchers(),
       getSetting("flashSaleStart"),
@@ -115,6 +150,30 @@ export default async function AdminSettingsPage() {
               <SettingInput
                 settingKey={c.key}
                 initial={contactValues[i] ?? ""}
+                placeholder={c.placeholder}
+              />
+            </div>
+          ))}
+        </section>
+      </div>
+
+      {/* Link badge chứng nhận (BCT / DMCA) — bật/tắt ở công tắc phía trên */}
+      <div>
+        <h2 className="mb-1 text-[15px] font-bold text-ink">
+          Chứng nhận footer (Bộ Công Thương / DMCA)
+        </h2>
+        <p className="mb-3 text-[13px] text-muted">
+          Dán link vào ô dưới, rồi bật công tắc tương ứng ở phần trên để badge
+          hiện ở footer. Chưa duyệt thì cứ để tắt.
+        </p>
+        <section className="flex flex-col gap-5 rounded-2xl border border-line bg-white p-5">
+          {CERTS.map((c, i) => (
+            <div key={c.key}>
+              <b className="text-[14px] text-ink">{c.title}</b>
+              <p className="mb-2 mt-0.5 text-[12.5px] text-muted">{c.desc}</p>
+              <SettingInput
+                settingKey={c.key}
+                initial={certValues[i] ?? ""}
                 placeholder={c.placeholder}
               />
             </div>
