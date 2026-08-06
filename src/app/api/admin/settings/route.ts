@@ -37,6 +37,8 @@ const ALLOWED = new Set([
   "dmcaUrl",
   // Dòng bản quyền cuối footer (bật khi BCT duyệt xong)
   "copyrightEnabled",
+  // Ảnh không gian cửa hàng (JSON mảng URL) — hiện ở trang Giới thiệu
+  "aboutPhotos",
 ]);
 
 export async function POST(req: Request) {

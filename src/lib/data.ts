@@ -849,6 +849,20 @@ export async function getSetting(key: string): Promise<string | null> {
   return s?.value ?? null;
 }
 
+/** Ảnh không gian cửa hàng (admin upload, Setting "aboutPhotos") -> mảng URL. */
+export async function getAboutPhotos(): Promise<string[]> {
+  const raw = await getSetting("aboutPhotos");
+  if (!raw) return [];
+  try {
+    const parsed = JSON.parse(raw);
+    return Array.isArray(parsed)
+      ? parsed.filter((x): x is string => typeof x === "string" && x.trim() !== "")
+      : [];
+  } catch {
+    return [];
+  }
+}
+
 /**
  * Danh sách cửa hàng — admin tự thêm/sửa (lưu Setting "stores" dạng JSON
  * [{name,address,city}]). CHƯA từng cấu hình -> mặc định SITE.stores; đã lưu

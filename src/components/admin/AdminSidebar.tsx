@@ -24,6 +24,7 @@ const NAV = [
   { href: "/admin/blog", label: "Blog", icon: FileTextIcon },
   { href: "/admin/banner", label: "Banner", icon: ImageIcon },
   { href: "/admin/anh-khach-hang", label: "Ảnh khách hàng", icon: ImageIcon },
+  { href: "/admin/anh-cua-hang", label: "Ảnh cửa hàng", icon: ImageIcon },
   { href: "/admin/cua-hang", label: "Cửa hàng", icon: MapPinIcon },
   { href: "/admin/trang-tinh", label: "Trang nội dung", icon: LayoutIcon },
   { href: "/admin/don-hang", label: "Đơn hàng", icon: CartIcon },

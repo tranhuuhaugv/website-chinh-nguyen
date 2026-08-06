@@ -1,10 +1,11 @@
 import type { Metadata } from "next";
 import Link from "next/link";
+import Image from "next/image";
 import { StaticPage } from "@/components/StaticPage";
-import { Band } from "@/components/static/Band";
+import { Band, SectionIntro } from "@/components/static/Band";
 import { PageArticle } from "@/components/static/PageArticle";
 import { INFO_PAGES } from "@/lib/policies";
-import { getPolicyOverride } from "@/lib/data";
+import { getAboutPhotos, getPolicyOverride } from "@/lib/data";
 import { SITE } from "@/lib/site";
 
 // Nội dung sửa được ở admin (Trang nội dung -> Giới thiệu). Ưu tiên bản DB,
@@ -17,8 +18,11 @@ export async function generateMetadata(): Promise<Metadata> {
 }
 
 export default async function AboutPage() {
-  const page =
-    (await getPolicyOverride("gioi-thieu")) ?? INFO_PAGES["gioi-thieu"];
+  const [override, photos] = await Promise.all([
+    getPolicyOverride("gioi-thieu"),
+    getAboutPhotos(),
+  ]);
+  const page = override ?? INFO_PAGES["gioi-thieu"];
 
   return (
     <StaticPage
@@ -41,6 +45,32 @@ export default async function AboutPage() {
           .
         </div>
       </Band>
+
+      {photos.length > 0 && (
+        <Band tone="tint">
+          <SectionIntro
+            center
+            eyebrow="Tại cửa hàng"
+            title="Không gian & hoạt động tại cửa hàng"
+          />
+          <div className="mt-10 grid grid-cols-2 gap-4 md:grid-cols-3 max-[520px]:gap-2.5">
+            {photos.map((src, i) => (
+              <figure
+                key={`${src}-${i}`}
+                className="group relative aspect-[4/3] overflow-hidden rounded-xl border border-line bg-white shadow-card"
+              >
+                <Image
+                  src={src}
+                  alt={`Không gian cửa hàng Chính Nguyễn ${i + 1}`}
+                  fill
+                  sizes="(max-width: 768px) 50vw, 380px"
+                  className="object-cover transition-transform duration-500 ease-out group-hover:scale-[1.06]"
+                />
+              </figure>
+            ))}
+          </div>
+        </Band>
+      )}
     </StaticPage>
   );
 }
