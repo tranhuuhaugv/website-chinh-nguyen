@@ -1,4 +1,5 @@
 import type { ReactNode } from "react";
+import Image from "next/image";
 
 // Badge phương thức thanh toán + chứng nhận cho footer.
 // Dựng bằng SVG/CSS (không dùng ảnh ngoài) để nhẹ và không phát sinh request.
@@ -60,6 +61,8 @@ function BadgeWrap({
 export interface Cert {
   on: boolean;
   url: string;
+  /** Ảnh logo tự host (VD logo BCT do Bộ cấp). Có ảnh -> hiện ảnh thay badge chữ. */
+  img?: string;
 }
 
 export function FooterBadges({
@@ -94,21 +97,37 @@ export function FooterBadges({
             Chứng nhận
           </h4>
           <div className="flex flex-wrap items-center gap-2">
-            {bct.on && (
-              <BadgeWrap
-                url={bct.url}
-                className="flex items-center gap-2 rounded-md bg-white px-2.5 py-1.5"
-              >
-                <span className="flex h-7 w-7 items-center justify-center rounded-full bg-[#C4161C] text-[8px] font-bold text-white">
-                  BCT
-                </span>
-                <span className="text-[9.5px] font-semibold leading-tight text-[#333]">
-                  ĐÃ THÔNG BÁO
-                  <br />
-                  BỘ CÔNG THƯƠNG
-                </span>
-              </BadgeWrap>
-            )}
+            {bct.on &&
+              (bct.img ? (
+                // Ảnh logo do Bộ Công Thương cấp (tự host /uploads).
+                <BadgeWrap
+                  url={bct.url}
+                  className="flex items-center rounded-md bg-white px-2 py-1.5"
+                >
+                  <Image
+                    src={bct.img}
+                    alt="Đã thông báo Bộ Công Thương"
+                    width={150}
+                    height={57}
+                    sizes="150px"
+                    className="h-[42px] w-auto"
+                  />
+                </BadgeWrap>
+              ) : (
+                <BadgeWrap
+                  url={bct.url}
+                  className="flex items-center gap-2 rounded-md bg-white px-2.5 py-1.5"
+                >
+                  <span className="flex h-7 w-7 items-center justify-center rounded-full bg-[#C4161C] text-[8px] font-bold text-white">
+                    BCT
+                  </span>
+                  <span className="text-[9.5px] font-semibold leading-tight text-[#333]">
+                    ĐÃ THÔNG BÁO
+                    <br />
+                    BỘ CÔNG THƯƠNG
+                  </span>
+                </BadgeWrap>
+              ))}
             {dmca.on && (
               <BadgeWrap
                 url={dmca.url}
