@@ -1,5 +1,6 @@
 import { SettingToggle } from "@/components/admin/SettingToggle";
 import { SettingInput } from "@/components/admin/SettingInput";
+import { SettingImage } from "@/components/admin/SettingImage";
 import { FlashSaleSchedule } from "@/components/admin/FlashSaleSchedule";
 import { NeedsManager } from "@/components/admin/NeedsManager";
 import { VouchersManager } from "@/components/admin/VouchersManager";
@@ -91,6 +92,7 @@ export default async function AdminSettingsPage() {
     toggleValues,
     contactValues,
     certValues,
+    bctImg,
     needs,
     vouchers,
     flashStart,
@@ -99,6 +101,7 @@ export default async function AdminSettingsPage() {
       Promise.all(OPTIONS.map((o) => getSetting(o.key))),
       Promise.all(CONTACTS.map((c) => getSetting(c.key))),
       Promise.all(CERTS.map((c) => getSetting(c.key))),
+      getSetting("bctImage"),
       getNeeds(),
       getVouchers(),
       getSetting("flashSaleStart"),
@@ -172,6 +175,17 @@ export default async function AdminSettingsPage() {
           hiện ở footer. Chưa duyệt thì cứ để tắt.
         </p>
         <section className="flex flex-col gap-5 rounded-2xl border border-line bg-white p-5">
+          <div>
+            <b className="text-[14px] text-ink">
+              Ảnh logo Bộ Công Thương (họ gửi về khi duyệt)
+            </b>
+            <p className="mb-2 mt-0.5 text-[12.5px] text-muted">
+              Tải ảnh logo BCT gửi về để hiện ở footer (thay badge mặc định).
+              Vẫn phải dán link + bật công tắc “Badge Bộ Công Thương”.
+            </p>
+            <SettingImage settingKey="bctImage" initial={bctImg ?? ""} />
+          </div>
+
           {CERTS.map((c, i) => (
             <div key={c.key}>
               <b className="text-[14px] text-ink">{c.title}</b>

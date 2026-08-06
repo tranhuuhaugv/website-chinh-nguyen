@@ -53,11 +53,12 @@ function FooterList({
 }
 
 export async function Footer() {
-  const [stores, bctOn, bctUrl, dmcaOn, dmcaUrl, copyrightOn] =
+  const [stores, bctOn, bctUrl, bctImage, dmcaOn, dmcaUrl, copyrightOn] =
     await Promise.all([
       getStores(),
       getSetting("bctEnabled"),
       getSetting("bctUrl"),
+      getSetting("bctImage"),
       getSetting("dmcaEnabled"),
       getSetting("dmcaUrl"),
       getSetting("copyrightEnabled"),
@@ -168,7 +169,7 @@ export async function Footer() {
         </div>
 
         <FooterBadges
-          bct={{ on: bctOn === "true", url: bctUrl ?? "" }}
+          bct={{ on: bctOn === "true", url: bctUrl ?? "", image: bctImage ?? "" }}
           dmca={{ on: dmcaOn === "true", url: dmcaUrl ?? "" }}
         />
 

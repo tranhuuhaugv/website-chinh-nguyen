@@ -31,6 +31,8 @@ const ALLOWED = new Set([
   // Badge chứng nhận ở footer: bật/tắt + link (BCT online.gov.vn / DMCA)
   "bctEnabled",
   "bctUrl",
+  // Ảnh logo BCT (họ gửi về khi duyệt) -> hiện thay badge mặc định
+  "bctImage",
   "dmcaEnabled",
   "dmcaUrl",
   // Dòng bản quyền cuối footer (bật khi BCT duyệt xong)
