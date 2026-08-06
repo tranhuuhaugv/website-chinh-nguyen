@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useRef, useState } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { ImageUpload } from "./ImageUpload";
@@ -81,6 +81,9 @@ export function AdminForm({
   const [done, setDone] = useState(false);
   const [busy, setBusy] = useState(false);
   const [error, setError] = useState("");
+  // Chặn gửi lặp (bấm Lưu 2 lần nhanh / Enter + click) -> tránh tạo 2 bản.
+  // Dùng ref vì state `busy` cập nhật không kịp giữa 2 lần bấm liền nhau.
+  const submitting = useRef(false);
 
   const set = (name: string, val: string) =>
     setValues((v) => ({ ...v, [name]: val }));
@@ -90,6 +93,8 @@ export function AdminForm({
       setDone(true);
       return;
     }
+    if (submitting.current) return; // đang gửi -> bỏ qua lần bấm thừa
+    submitting.current = true;
     setBusy(true);
     setError("");
     try {
@@ -101,12 +106,14 @@ export function AdminForm({
       if (res.ok) {
         router.push(redirectTo ?? backHref);
         router.refresh();
-      } else {
-        setError("Lưu thất bại. Kiểm tra lại thông tin và thử lại.");
+        return; // giữ nút khoá cho tới khi chuyển trang (không mở lại để bấm nữa)
       }
+      setError("Lưu thất bại. Kiểm tra lại thông tin và thử lại.");
+      submitting.current = false;
+      setBusy(false);
     } catch {
       setError("Lỗi kết nối máy chủ.");
-    } finally {
+      submitting.current = false;
       setBusy(false);
     }
   }
