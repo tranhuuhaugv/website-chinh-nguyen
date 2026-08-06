@@ -97,6 +97,17 @@ export async function ProductDetailView({ slug }: { slug: string }) {
   const stock = STOCK[product.stockStatus ?? "con_hang"] ?? STOCK.con_hang;
   // Chỉ CÒN HÀNG mới cho mua; hết hàng / sắp về -> khoá nút mua.
   const available = (product.stockStatus ?? "con_hang") === "con_hang";
+
+  // Tùy chọn cấu hình: nếu admin có nhập option -> đưa CẤU HÌNH GỐC (giá gốc)
+  // lên làm ô ĐẦU TIÊN (chọn sẵn), rồi các option admin ở dưới. Không có option
+  // admin -> danh sách rỗng (hiện 1 giá như thường).
+  const capLabel =
+    product.capacity?.trim() ||
+    [product.ram, product.storage].filter(Boolean).join(" - ").trim();
+  const configOptions =
+    product.options && product.options.length > 0
+      ? [{ label: capLabel || "Mặc định", price: product.price }, ...product.options]
+      : [];
   const [related, variants, stores] = await Promise.all([
     getRelatedProducts(product, 12),
     getProductVariants(product),
@@ -168,10 +179,7 @@ export async function ProductDetailView({ slug }: { slug: string }) {
 
   return (
     <CompareProvider>
-      <ProductOptionProvider
-        options={product.options ?? []}
-        basePrice={product.price}
-      >
+      <ProductOptionProvider options={configOptions} basePrice={product.price}>
       <script
         type="application/ld+json"
         dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
