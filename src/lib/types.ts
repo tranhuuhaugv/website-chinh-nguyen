@@ -69,6 +69,10 @@ export interface Product {
   description?: string;
   /** Tình trạng: "new" máy mới | "used" máy cũ (mặc định used cho shop máy cũ). */
   condition?: ProductCondition;
+  /** Tình trạng hàng: "con_hang" | "het_hang" | "sap_ve" (mặc định còn hàng). */
+  stockStatus?: string;
+  /** Tùy chọn cấu hình + giá — bấm ở trang SP để đổi giá. Trống = không có. */
+  options?: { label: string; price: number }[];
   /** Nhóm nhu cầu để lọc/SEO: van-phong, gaming, do-hoa... */
   needs?: string[];
   /** Dòng máy (series) = slug danh mục con theo hãng, VD "lenovo-thinkpad". */

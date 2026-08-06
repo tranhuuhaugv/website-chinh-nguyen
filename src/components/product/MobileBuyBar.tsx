@@ -2,6 +2,7 @@
 
 import type { CartItem } from "@/lib/types";
 import { AddToCartButton } from "@/components/cart/AddToCartButton";
+import { useProductOption } from "@/components/product/ProductOptions";
 import { CartIcon } from "@/components/icons";
 import { formatPrice } from "@/lib/format";
 
@@ -17,6 +18,18 @@ export function MobileBuyBar({
   price: number;
   oldPrice?: number;
 }) {
+  const opt = useProductOption();
+  // Theo cấu hình đang chọn (nếu có).
+  const shownPrice = opt?.label ? opt.price : price;
+  const shownOld = opt?.label ? undefined : oldPrice;
+  const buyItem: Omit<CartItem, "qty"> = opt?.label
+    ? {
+        ...item,
+        id: `${item.id}::${opt.label}`,
+        name: `${item.name} (${opt.label})`,
+        price: opt.price,
+      }
+    : item;
   return (
     <div
       data-buybar
@@ -25,16 +38,16 @@ export function MobileBuyBar({
       <div className="flex items-center gap-3">
         <div className="min-w-0 leading-tight">
           <div className="text-[16px] font-extrabold text-sale">
-            {formatPrice(price)}
+            {formatPrice(shownPrice)}
           </div>
-          {oldPrice ? (
+          {shownOld ? (
             <div className="text-[11px] text-muted line-through">
-              {formatPrice(oldPrice)}
+              {formatPrice(shownOld)}
             </div>
           ) : null}
         </div>
         <AddToCartButton
-          item={item}
+          item={buyItem}
           redirectTo="/gio-hang"
           className="ml-auto flex max-w-[230px] flex-1 items-center justify-center gap-2 rounded-xl bg-gradient-to-r from-green-d to-green py-3 text-sm font-bold text-white shadow-[0_4px_12px_rgba(11,94,44,.28)]"
         >

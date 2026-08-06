@@ -41,6 +41,21 @@ const list = (v: unknown) =>
     .filter(Boolean);
 
 /**
+ * Tùy chọn cấu hình: textarea mỗi dòng "Nhãn | Giá" -> [{label, price}].
+ * Giá bỏ dấu chấm/phẩy; bỏ dòng thiếu nhãn hoặc giá <= 0.
+ */
+function parseOptions(v: unknown): { label: string; price: number }[] {
+  return str(v)
+    .split("\n")
+    .map((line) => {
+      const [label, priceRaw] = line.split("|");
+      const price = Number(String(priceRaw ?? "").replace(/[.,\s]/g, ""));
+      return { label: (label ?? "").trim(), price: Number.isFinite(price) ? price : 0 };
+    })
+    .filter((o) => o.label && o.price > 0);
+}
+
+/**
  * Link máy cùng dòng -> mảng slug. Admin dán kiểu gì cũng nhận:
  * link đầy đủ (https://.../san-pham/abc), đường dẫn (/san-pham/abc) hay slug trần.
  * Cách nhau bằng dấu phẩy / xuống dòng / dấu cách.
@@ -122,6 +137,10 @@ async function buildData(body: Body, selfSlug: string) {
     weight: str(body.weight) || null,
     ports: str(body.ports) || null,
     condition: str(body.condition) === "new" ? "new" : "used",
+    stockStatus: ["con_hang", "het_hang", "sap_ve"].includes(str(body.stockStatus))
+      ? str(body.stockStatus)
+      : "con_hang",
+    options: parseOptions(body.options),
     series: seriesSlug || null,
     needs: list(body.needs),
     images: list(body.images),

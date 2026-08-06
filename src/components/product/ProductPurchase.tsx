@@ -5,6 +5,7 @@ import Link from "next/link";
 import { useRouter } from "next/navigation";
 import type { CartItem } from "@/lib/types";
 import { useCart } from "@/components/cart/CartContext";
+import { useProductOption } from "@/components/product/ProductOptions";
 import { CartIcon, MessengerIcon, MinusIcon, PlusIcon } from "@/components/icons";
 import { SITE } from "@/lib/site";
 
@@ -12,9 +13,20 @@ import { SITE } from "@/lib/site";
 
 export function ProductPurchase({ item }: { item: Omit<CartItem, "qty"> }) {
   const { addItem } = useCart();
+  const opt = useProductOption();
   const router = useRouter();
   const [qty, setQty] = useState(1);
   const [added, setAdded] = useState(false);
+
+  // Áp giá + nhãn cấu hình đang chọn. Mỗi cấu hình = 1 dòng giỏ riêng (id gắn nhãn).
+  const buyItem: Omit<CartItem, "qty"> = opt?.label
+    ? {
+        ...item,
+        id: `${item.id}::${opt.label}`,
+        name: `${item.name} (${opt.label})`,
+        price: opt.price,
+      }
+    : item;
 
   return (
     <div className="flex flex-col gap-4">
@@ -56,7 +68,7 @@ export function ProductPurchase({ item }: { item: Omit<CartItem, "qty"> }) {
         <button
           type="button"
           onClick={() => {
-            addItem(item, qty);
+            addItem(buyItem, qty);
             router.push("/gio-hang");
           }}
           className="flex h-14 flex-col items-center justify-center rounded-2xl bg-green leading-tight text-white transition hover:bg-green-d"
@@ -69,7 +81,7 @@ export function ProductPurchase({ item }: { item: Omit<CartItem, "qty"> }) {
         <button
           type="button"
           onClick={() => {
-            addItem(item, qty);
+            addItem(buyItem, qty);
             setAdded(true);
           }}
           className="flex h-14 items-center justify-center gap-2 rounded-2xl bg-ink text-[14px] font-semibold text-white transition hover:bg-black"

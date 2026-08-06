@@ -48,6 +48,21 @@ type PrismaProductWithBrand = Awaited<
   ReturnType<typeof prisma.product.findFirst>
 > & { brand: { name: string } };
 
+/** Chuẩn hoá cột Json "options" -> [{label, price}] (bỏ dòng thiếu/không hợp lệ). */
+function parseOptions(raw: unknown): { label: string; price: number }[] {
+  if (!Array.isArray(raw)) return [];
+  return raw
+    .filter(
+      (x): x is { label: unknown; price: unknown } =>
+        !!x && typeof x === "object",
+    )
+    .map((x) => ({
+      label: String((x as { label?: unknown }).label ?? "").trim(),
+      price: Math.max(0, Math.round(Number((x as { price?: unknown }).price)) || 0),
+    }))
+    .filter((o) => o.label && o.price > 0);
+}
+
 function toProduct(p: PrismaProductWithBrand): Product {
   return {
     id: p.id,
@@ -87,6 +102,8 @@ function toProduct(p: PrismaProductWithBrand): Product {
     // "h3": trang SP đã có h1 (tên máy) + h2 ("Mô tả sản phẩm") ở trên.
     description: toRichHtml(p.description, "h3"),
     condition: (p.condition as ProductCondition) ?? "used",
+    stockStatus: p.stockStatus ?? "con_hang",
+    options: parseOptions(p.options),
     needs: p.needs ?? [],
     series: p.series ?? undefined,
   };

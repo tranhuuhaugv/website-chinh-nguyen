@@ -8,6 +8,12 @@ const YES_NO = [
   { value: "co", label: "Có" },
 ];
 
+const STOCK_OPTIONS = [
+  { value: "con_hang", label: "Còn hàng" },
+  { value: "het_hang", label: "Hết hàng" },
+  { value: "sap_ve", label: "Sắp về hàng" },
+];
+
 export function productFields(
   brandSeriesOptions: { value: string; label: string }[] = [],
   needs: { value: string; label: string }[] = NEED_OPTIONS,
@@ -39,12 +45,26 @@ export function productFields(
         { value: "new", label: "Máy mới" },
       ],
     },
+    {
+      name: "stockStatus",
+      label: "Tình trạng hàng",
+      type: "select",
+      options: STOCK_OPTIONS,
+    },
     { name: "price", label: "Giá bán (VNĐ) *", type: "money", placeholder: "8.500.000" },
     {
       name: "oldPrice",
       label: "Giá gốc gạch ngang (VNĐ)",
       type: "money",
       placeholder: "Để trống nếu không giảm giá",
+    },
+    {
+      name: "options",
+      label:
+        "Tùy chọn cấu hình & giá — mỗi dòng: Nhãn | Giá (khách bấm chọn sẽ đổi giá). Để trống nếu không có.",
+      type: "textarea",
+      full: true,
+      placeholder: "16GB - 256GB | 10000000\n16GB - 512GB | 11500000\n32GB - 1TB | 14000000",
     },
 
     { name: "h2", label: "Cấu hình", type: "heading" },

@@ -13,6 +13,11 @@ import { SectionHead } from "@/components/SectionHead";
 import { ProductGallery } from "@/components/product/ProductGallery";
 import { ProductPurchase } from "@/components/product/ProductPurchase";
 import { ProductVariants } from "@/components/product/ProductVariants";
+import {
+  ProductOptionProvider,
+  ProductPrice,
+  ProductOptionPicker,
+} from "@/components/product/ProductOptions";
 import { CompareBar } from "@/components/compare/CompareBar";
 import { CompareProvider } from "@/components/compare/CompareContext";
 import { MapPinIcon, StarIcon } from "@/components/icons";
@@ -75,6 +80,21 @@ export async function ProductDetailView({ slug }: { slug: string }) {
   const discount = product.oldPrice
     ? Math.round((1 - product.price / product.oldPrice) * 100)
     : 0;
+  // Tình trạng hàng -> nhãn + màu badge.
+  const STOCK: Record<string, { label: string; cls: string; dot: string }> = {
+    con_hang: {
+      label: "Còn hàng",
+      cls: "bg-green-soft text-green-d",
+      dot: "bg-green",
+    },
+    het_hang: { label: "Hết hàng", cls: "bg-sale/10 text-sale", dot: "bg-sale" },
+    sap_ve: {
+      label: "Sắp về hàng",
+      cls: "bg-amber/15 text-[#B8860B]",
+      dot: "bg-amber",
+    },
+  };
+  const stock = STOCK[product.stockStatus ?? "con_hang"] ?? STOCK.con_hang;
   const [related, variants, stores] = await Promise.all([
     getRelatedProducts(product, 12),
     getProductVariants(product),
@@ -146,6 +166,10 @@ export async function ProductDetailView({ slug }: { slug: string }) {
 
   return (
     <CompareProvider>
+      <ProductOptionProvider
+        options={product.options ?? []}
+        basePrice={product.price}
+      >
       <script
         type="application/ld+json"
         dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
@@ -193,6 +217,13 @@ export async function ProductDetailView({ slug }: { slug: string }) {
                 </span>
               </div>
 
+              <span
+                className={`mt-2.5 inline-flex w-fit items-center gap-1.5 rounded-full px-3 py-1 text-[12.5px] font-semibold ${stock.cls}`}
+              >
+                <span className={`h-2 w-2 rounded-full ${stock.dot}`} />
+                {stock.label}
+              </span>
+
               <div className="mt-4 overflow-hidden rounded-2xl border border-line bg-white shadow-card">
                 <div
                   className={`flex items-center justify-between gap-4 p-4 ${
@@ -201,23 +232,7 @@ export async function ProductDetailView({ slug }: { slug: string }) {
                       : "bg-white"
                   }`}
                 >
-                  <div>
-                    <div className="flex flex-wrap items-baseline gap-2">
-                      <span className="text-[28px] font-extrabold text-sale">
-                        {formatPrice(product.price)}
-                      </span>
-                      {product.oldPrice && (
-                        <span className="text-[15px] text-muted line-through">
-                          {formatPrice(product.oldPrice)}
-                        </span>
-                      )}
-                    </div>
-                    {discount > 0 && (
-                      <span className="mt-1.5 inline-block rounded-full bg-sale px-2.5 py-0.5 text-[12px] font-bold text-white">
-                        Giảm {discount}%
-                      </span>
-                    )}
-                  </div>
+                  <ProductPrice oldPrice={product.oldPrice} discount={discount} />
                   <div className="shrink-0 text-right">
                     <p className="text-[11px] font-semibold uppercase tracking-wide text-muted">
                       Tình trạng
@@ -229,6 +244,8 @@ export async function ProductDetailView({ slug }: { slug: string }) {
                   </div>
                 </div>
               </div>
+
+              <ProductOptionPicker />
 
               <ProductVariants options={variants} currentSlug={product.slug} />
 
@@ -413,6 +430,7 @@ export async function ProductDetailView({ slug }: { slug: string }) {
         oldPrice={product.oldPrice}
       />
       <CompareBar />
+      </ProductOptionProvider>
     </CompareProvider>
   );
 }

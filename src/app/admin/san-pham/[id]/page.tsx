@@ -36,6 +36,13 @@ export default async function EditProductPage({
         name: product.name,
         brandSeries: brandSeriesValue,
         condition: product.condition === "new" ? "new" : "used",
+        stockStatus: product.stockStatus ?? "con_hang",
+        // options (Json) -> textarea "Nhãn | Giá" mỗi dòng để sửa lại.
+        options: Array.isArray(product.options)
+          ? (product.options as { label?: unknown; price?: unknown }[])
+              .map((o) => `${s(o?.label)} | ${s(o?.price)}`)
+              .join("\n")
+          : "",
         price: s(product.price),
         oldPrice: s(product.oldPrice),
         cpu: product.cpu,
