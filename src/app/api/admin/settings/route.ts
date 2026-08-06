@@ -33,6 +33,8 @@ const ALLOWED = new Set([
   "bctUrl",
   "dmcaEnabled",
   "dmcaUrl",
+  // Dòng bản quyền cuối footer (bật khi BCT duyệt xong)
+  "copyrightEnabled",
 ]);
 
 export async function POST(req: Request) {

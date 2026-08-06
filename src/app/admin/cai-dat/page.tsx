@@ -35,6 +35,11 @@ const OPTIONS: { key: string; title: string; desc: string }[] = [
     title: "Badge DMCA Protected (footer)",
     desc: "Bật khi đã có link bảo hộ DMCA ở ô bên dưới.",
   },
+  {
+    key: "copyrightEnabled",
+    title: "Dòng bản quyền (cuối footer)",
+    desc: "Bật để hiện dòng “© ... Laptop Chính Nguyễn” + Điều khoản · Bảo mật ở cuối trang. Đang tắt chờ Bộ Công Thương duyệt.",
+  },
 ];
 
 // Link cho 2 badge chứng nhận ở footer (BCT online.gov.vn / DMCA).

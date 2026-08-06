@@ -13,10 +13,6 @@ import { getSetting, getStores } from "@/lib/data";
 
 // Footer dùng chung toàn site. Server Component.
 
-// Dòng bản quyền cuối footer. Đang ẨN chờ Bộ Công Thương duyệt web.
-// -> Khi được duyệt, đổi thành `true` để hiện lại.
-const SHOW_COPYRIGHT = false;
-
 const ABOUT_LINKS = [
   { href: "/gioi-thieu", label: "Giới thiệu" },
   { href: "/he-thong-cua-hang", label: "Hệ thống cửa hàng" },
@@ -57,13 +53,15 @@ function FooterList({
 }
 
 export async function Footer() {
-  const [stores, bctOn, bctUrl, dmcaOn, dmcaUrl] = await Promise.all([
-    getStores(),
-    getSetting("bctEnabled"),
-    getSetting("bctUrl"),
-    getSetting("dmcaEnabled"),
-    getSetting("dmcaUrl"),
-  ]);
+  const [stores, bctOn, bctUrl, dmcaOn, dmcaUrl, copyrightOn] =
+    await Promise.all([
+      getStores(),
+      getSetting("bctEnabled"),
+      getSetting("bctUrl"),
+      getSetting("dmcaEnabled"),
+      getSetting("dmcaUrl"),
+      getSetting("copyrightEnabled"),
+    ]);
   return (
     <footer className="mt-12 bg-ink pb-6 text-[#AEB7B1]">
       {/* Dải CTA hotline (gradient) — gối lên đầu footer cho hiện đại */}
@@ -176,7 +174,7 @@ export async function Footer() {
 
         {/* Dòng bản quyền TẠM ẨN theo yêu cầu — khi Bộ Công Thương duyệt web
             xong thì bỏ comment quanh khối dưới để hiện lại. */}
-        {SHOW_COPYRIGHT && (
+        {copyrightOn === "true" && (
           <div className="flex flex-wrap justify-between gap-2 pt-5 text-[12.5px] text-[#78827C]">
             <span>© 2026 Laptop Chính Nguyễn — Đà Nẵng.</span>
             <span>Điều khoản · Bảo mật</span>
