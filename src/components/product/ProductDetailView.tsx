@@ -95,6 +95,8 @@ export async function ProductDetailView({ slug }: { slug: string }) {
     },
   };
   const stock = STOCK[product.stockStatus ?? "con_hang"] ?? STOCK.con_hang;
+  // Chỉ CÒN HÀNG mới cho mua; hết hàng / sắp về -> khoá nút mua.
+  const available = (product.stockStatus ?? "con_hang") === "con_hang";
   const [related, variants, stores] = await Promise.all([
     getRelatedProducts(product, 12),
     getProductVariants(product),
@@ -217,13 +219,6 @@ export async function ProductDetailView({ slug }: { slug: string }) {
                 </span>
               </div>
 
-              <span
-                className={`mt-2.5 inline-flex w-fit items-center gap-1.5 rounded-full px-3 py-1 text-[12.5px] font-semibold ${stock.cls}`}
-              >
-                <span className={`h-2 w-2 rounded-full ${stock.dot}`} />
-                {stock.label}
-              </span>
-
               <div className="mt-4 overflow-hidden rounded-2xl border border-line bg-white shadow-card">
                 <div
                   className={`flex items-center justify-between gap-4 p-4 ${
@@ -237,9 +232,11 @@ export async function ProductDetailView({ slug }: { slug: string }) {
                     <p className="text-[11px] font-semibold uppercase tracking-wide text-muted">
                       Tình trạng
                     </p>
-                    <p className="mt-1 inline-flex items-center gap-1.5 rounded-full bg-green-soft px-2.5 py-1 text-[12px] font-semibold text-green-d">
-                      <span className="h-1.5 w-1.5 rounded-full bg-green" />
-                      Còn hàng
+                    <p
+                      className={`mt-1 inline-flex items-center gap-1.5 rounded-full px-2.5 py-1 text-[12px] font-semibold ${stock.cls}`}
+                    >
+                      <span className={`h-1.5 w-1.5 rounded-full ${stock.dot}`} />
+                      {stock.label}
                     </p>
                   </div>
                 </div>
@@ -310,7 +307,11 @@ export async function ProductDetailView({ slug }: { slug: string }) {
               </div>
 
               <div className="mt-auto pt-5">
-                <ProductPurchase item={item} />
+                <ProductPurchase
+                  item={item}
+                  available={available}
+                  unavailableLabel={stock.label}
+                />
               </div>
             </div>
           </div>
@@ -428,6 +429,8 @@ export async function ProductDetailView({ slug }: { slug: string }) {
         item={item}
         price={product.price}
         oldPrice={product.oldPrice}
+        available={available}
+        unavailableLabel={stock.label}
       />
       <CompareBar />
       </ProductOptionProvider>

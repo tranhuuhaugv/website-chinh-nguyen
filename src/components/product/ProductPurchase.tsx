@@ -11,7 +11,17 @@ import { SITE } from "@/lib/site";
 
 // Panel mua hàng: số lượng + Mua ngay / Thêm giỏ + kênh chat. Client Component.
 
-export function ProductPurchase({ item }: { item: Omit<CartItem, "qty"> }) {
+export function ProductPurchase({
+  item,
+  available = true,
+  unavailableLabel = "Hết hàng",
+}: {
+  item: Omit<CartItem, "qty">;
+  /** Còn hàng mới cho mua; hết/sắp về -> khoá nút. */
+  available?: boolean;
+  /** Nhãn hiện trên nút khi không mua được (VD "Hết hàng" / "Sắp về hàng"). */
+  unavailableLabel?: string;
+}) {
   const { addItem } = useCart();
   const opt = useProductOption();
   const router = useRouter();
@@ -30,6 +40,8 @@ export function ProductPurchase({ item }: { item: Omit<CartItem, "qty"> }) {
 
   return (
     <div className="flex flex-col gap-4">
+      {available ? (
+        <>
       <div className="flex items-center gap-3">
         <span className="text-[13px] font-medium text-ink-2">Số lượng</span>
         <div className="flex items-center rounded-xl border border-line">
@@ -90,6 +102,18 @@ export function ProductPurchase({ item }: { item: Omit<CartItem, "qty"> }) {
           Thêm vào giỏ
         </button>
       </div>
+        </>
+      ) : (
+        <div className="rounded-2xl bg-[#F1F3F1] px-4 py-4 text-center">
+          <p className="flex items-center justify-center gap-2 text-[15px] font-bold text-ink-2">
+            <span className="h-2.5 w-2.5 rounded-full bg-sale" />
+            {unavailableLabel}
+          </p>
+          <p className="mt-1 text-[12.5px] text-muted">
+            Liên hệ shop để được báo khi có hàng hoặc đặt trước.
+          </p>
+        </div>
+      )}
 
       <div className="grid grid-cols-2 gap-3">
         <a
