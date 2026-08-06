@@ -1,15 +1,18 @@
 import type { Metadata } from "next";
-import { Inter } from "next/font/google";
+import localFont from "next/font/local";
 import "./globals.css";
 import { CartProvider } from "@/components/cart/CartContext";
 import { SiteSettingsProvider } from "@/components/SiteSettingsContext";
 import { VisitorTracker } from "@/components/VisitorTracker";
 import { MobileBottomNav } from "@/components/MobileBottomNav";
 
-const inter = Inter({
-  subsets: ["latin", "vietnamese"],
+// Font Inter TỰ HOST (không tải từ Google lúc build) -> deploy không phụ thuộc
+// mạng Google Fonts. Dùng font variable (1 file, đủ weight + subset vietnamese).
+const inter = localFont({
+  src: "./fonts/InterVariable.woff2",
   variable: "--font-inter",
   display: "swap",
+  weight: "100 900",
 });
 
 const SITE_NAME = "Laptop Chính Nguyễn";
