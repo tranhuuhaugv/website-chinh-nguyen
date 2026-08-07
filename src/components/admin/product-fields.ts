@@ -113,6 +113,12 @@ export function productFields(
 
     { name: "h3", label: "Phân loại & hiển thị", type: "heading" },
     {
+      name: "isPc",
+      label: "Là PC / máy bộ? (hiện ở danh mục PC đồng bộ)",
+      type: "select",
+      options: YES_NO,
+    },
+    {
       name: "needs",
       label: "Nhu cầu sử dụng (lọc + SEO)",
       type: "checkboxes",

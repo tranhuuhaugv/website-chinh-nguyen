@@ -62,6 +62,7 @@ export default async function EditProductPage({
         ports: s(product.ports),
         warranty: s(product.warranty),
         needs: (product.needs ?? []).join(","),
+        isPc: (product.needs ?? []).includes("pc") ? "co" : "khong",
         images: (product.images ?? []).join(","),
         // Hiện lại dạng link cho dễ đọc/sửa (lưu trong DB là slug).
         variantLinks: (product.variantSlugs ?? [])

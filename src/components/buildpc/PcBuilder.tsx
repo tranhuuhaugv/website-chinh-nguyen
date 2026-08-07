@@ -10,6 +10,16 @@ import {
   type PcPart,
 } from "@/lib/pc-parts";
 import { CartIcon, CheckIcon, TrashIcon } from "@/components/icons";
+import { SITE } from "@/lib/site";
+
+// Chặn HTML injection khi in (tên linh kiện do admin nhập).
+function esc(s: string): string {
+  return s
+    .replace(/&/g, "&amp;")
+    .replace(/</g, "&lt;")
+    .replace(/>/g, "&gt;")
+    .replace(/"/g, "&quot;");
+}
 
 // Bộ cấu hình PC: khách chọn 1 linh kiện cho mỗi nhóm -> tổng tiền tự cộng,
 // thêm cả cấu hình vào giỏ (mỗi linh kiện = 1 dòng) để thanh toán COD như thường.
@@ -77,6 +87,107 @@ export function PcBuilder({ parts }: { parts: PcPart[] }) {
     }
     setAdded(true);
     router.push("/gio-hang");
+  }
+
+  // In BẢNG BÁO GIÁ gọn (chỉ cấu hình + tổng tiền) trong cửa sổ riêng —
+  // không in cả trang web.
+  function printQuote() {
+    if (!chosen.length) return;
+    const w = window.open("", "_blank", "width=820,height=920");
+    if (!w) {
+      alert("Trình duyệt đang chặn cửa sổ in. Cho phép popup rồi thử lại.");
+      return;
+    }
+    const d = new Date();
+    const p2 = (n: number) => String(n).padStart(2, "0");
+    const dateStr = `${p2(d.getDate())}-${p2(d.getMonth() + 1)}-${d.getFullYear()}, ${p2(d.getHours())}:${p2(d.getMinutes())}`;
+
+    const rows = chosen
+      .map(
+        ({ type, part }, i) => `
+      <tr>
+        <td class="c">${i + 1}</td>
+        <td>${esc(pcPartTypeShort(type.key))}: ${esc(part.name)}${
+          part.brand ? ` <span class="mut">(${esc(part.brand)})</span>` : ""
+        }</td>
+        <td class="c">1</td>
+        <td class="r">${formatPrice(part.price)}</td>
+        <td class="r">${formatPrice(part.price)}</td>
+      </tr>`,
+      )
+      .join("");
+
+    const stores = SITE.stores
+      .map((s) => `<div>${esc(s.name)}: ${esc(s.address)}</div>`)
+      .join("");
+
+    w.document.write(`<!doctype html><html lang="vi"><head><meta charset="utf-8" />
+<title>Báo giá cấu hình PC - ${esc(SITE.name)}</title>
+<style>
+  * { box-sizing: border-box; }
+  body { font-family: Arial, "Segoe UI", sans-serif; color: #17201A; margin: 0; padding: 28px; font-size: 13px; }
+  .head { display: flex; justify-content: space-between; gap: 20px; border-bottom: 3px solid #0A5C2A; padding-bottom: 14px; }
+  .brand { font-size: 22px; font-weight: 800; color: #0A5C2A; }
+  .brand small { display: block; font-size: 11px; font-weight: 600; color: #7A857E; letter-spacing: .5px; margin-top: 2px; }
+  .info { text-align: right; font-size: 11.5px; line-height: 1.7; color: #3E4A42; }
+  .info b { color: #17201A; }
+  h1 { text-align: center; font-size: 18px; margin: 22px 0 6px; letter-spacing: .5px; }
+  .meta { display: flex; justify-content: space-between; font-size: 11.5px; color: #7A857E; margin-bottom: 10px; }
+  table { width: 100%; border-collapse: collapse; }
+  th, td { border: 1px solid #CBD5CF; padding: 8px 10px; vertical-align: top; }
+  th { background: #EAF5EE; color: #0A5C2A; font-size: 12px; text-transform: uppercase; }
+  td.c { text-align: center; }
+  td.r { text-align: right; white-space: nowrap; }
+  .mut { color: #7A857E; font-size: 11.5px; }
+  tfoot td { font-weight: 800; background: #F2F5F2; }
+  .total { color: #E23A34; font-size: 15px; }
+  .note { margin-top: 16px; font-size: 11.5px; color: #7A857E; line-height: 1.7; }
+  @media print { body { padding: 0; } }
+</style></head>
+<body>
+  <div class="head">
+    <div>
+      <div class="brand">${esc(SITE.name)}<small>HỆ THỐNG LAPTOP - PC - LINH KIỆN</small></div>
+    </div>
+    <div class="info">
+      ${stores}
+      <div>Hotline: <b>${esc(SITE.hotline)}</b> · ${esc(SITE.email)}</div>
+    </div>
+  </div>
+
+  <h1>BẢNG BÁO GIÁ CẤU HÌNH PC</h1>
+  <div class="meta">
+    <span>Ngày báo giá: ${dateStr}</span>
+    <span>Đơn vị tính: VNĐ</span>
+  </div>
+
+  <table>
+    <thead>
+      <tr>
+        <th style="width:44px">STT</th>
+        <th>Tên sản phẩm</th>
+        <th style="width:70px">Số lượng</th>
+        <th style="width:130px">Đơn giá</th>
+        <th style="width:130px">Thành tiền</th>
+      </tr>
+    </thead>
+    <tbody>${rows}</tbody>
+    <tfoot>
+      <tr>
+        <td colspan="4" class="r">Tổng tiền đơn hàng</td>
+        <td class="r total">${formatPrice(total)}</td>
+      </tr>
+    </tfoot>
+  </table>
+
+  <div class="note">
+    Báo giá có giá trị tham khảo tại thời điểm in, chưa gồm phí lắp ráp (nếu có).
+    Vui lòng liên hệ ${esc(SITE.hotline)} để được tư vấn và chốt cấu hình chính xác.
+  </div>
+</body></html>`);
+    w.document.close();
+    w.focus();
+    w.print();
   }
 
   const selectCls =
@@ -214,11 +325,11 @@ export function PcBuilder({ parts }: { parts: PcPart[] }) {
           </button>
           <button
             type="button"
-            onClick={() => window.print()}
+            onClick={printQuote}
             disabled={chosen.length === 0}
             className="flex h-10 items-center justify-center rounded-xl border border-line text-[13px] font-semibold text-ink-2 transition hover:border-green hover:text-green-d disabled:opacity-40"
           >
-            In / Lưu PDF
+            In báo giá
           </button>
         </div>
 

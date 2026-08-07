@@ -73,6 +73,8 @@ export async function CategoryView({
     "laptop-gaming": "gaming",
     "laptop-do-hoa": "do-hoa",
     "laptop-van-phong": "van-phong",
+    // Máy bộ PC: sản phẩm tích "Là PC/máy bộ" (needs mang tag "pc").
+    pc: "pc",
   };
   // Mặc định RỖNG: danh mục chưa có quy tắc gắn sản phẩm (VD PC, màn hình, phụ
   // kiện) thì hiện rỗng, KHÔNG rơi vào "hiện tất cả sản phẩm" như trước.

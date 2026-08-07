@@ -52,6 +52,17 @@ const list = (v: unknown) =>
     .filter(Boolean);
 
 /**
+ * Gắn/bỏ tag "pc" trong needs theo ô "Là PC/máy bộ?".
+ * needs mang tag "pc" -> sản phẩm hiện ở danh mục PC (/pc). isPc là nguồn quyết
+ * định (không phụ thuộc checkbox nhu cầu tuỳ biến).
+ */
+function needsWithPc(rawNeeds: unknown, isPc: unknown): string[] {
+  const arr = list(rawNeeds).filter((n) => n !== "pc");
+  if (str(isPc) === "co") arr.push("pc");
+  return arr;
+}
+
+/**
  * Tùy chọn cấu hình: textarea mỗi dòng "Nhãn | Giá" -> [{label, price}].
  * Giá bỏ dấu chấm/phẩy; bỏ dòng thiếu nhãn hoặc giá <= 0.
  */
@@ -153,7 +164,7 @@ async function buildData(body: Body, selfSlug: string) {
       : "con_hang",
     options: parseOptions(body.options),
     series: seriesSlug || null,
-    needs: list(body.needs),
+    needs: needsWithPc(body.needs, body.isPc),
     images: list(body.images),
     variantSlugs: variantSlugs(body.variantLinks, selfSlug),
     description: richText(body.description),

@@ -20,6 +20,7 @@ export default async function AddProductPage() {
         brandSeries: brandSeries[0]?.value ?? "",
         condition: "used",
         accent: "dark",
+        isPc: "khong",
         isNew: "khong",
         isFlashSale: "khong",
         sort: "0",
