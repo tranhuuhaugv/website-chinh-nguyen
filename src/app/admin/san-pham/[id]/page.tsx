@@ -5,7 +5,6 @@ import {
   getAdminProductById,
   getBrandSeriesOptions,
   getNeeds,
-  getProductCategoryOptions,
 } from "@/lib/data";
 import { toRichHtml } from "@/lib/rich-text";
 
@@ -17,23 +16,25 @@ export default async function EditProductPage({
 }: {
   params: { id: string };
 }) {
-  const [product, brandSeries, needs, productCategories] = await Promise.all([
+  const [product, brandSeries, needs] = await Promise.all([
     getAdminProductById(params.id),
     getBrandSeriesOptions(),
     getNeeds(),
-    getProductCategoryOptions(),
   ]);
   if (!product) notFound();
 
   const s = (v: unknown) => (v == null ? "" : String(v));
-  // Giá trị ô gộp = "TênHãng||slug-dòng" (khớp option đã dựng).
-  const brandSeriesValue = `${product.brandName}||${s(product.series)}`;
+  // Giá trị ô gộp: sản phẩm gán danh mục khác -> "__cat:<slug>"; còn lại theo
+  // hãng/dòng "TênHãng||slug-dòng".
+  const brandSeriesValue = product.category
+    ? `__cat:${product.category}`
+    : `${product.brandName}||${s(product.series)}`;
 
   return (
     <AdminForm
       title={`Sửa: ${product.name}`}
       singleColumn
-      fields={productFields(brandSeries, needs, productCategories)}
+      fields={productFields(brandSeries, needs)}
       initialValues={{
         name: product.name,
         brandSeries: brandSeriesValue,
@@ -64,7 +65,6 @@ export default async function EditProductPage({
         ports: s(product.ports),
         warranty: s(product.warranty),
         needs: (product.needs ?? []).join(","),
-        category: s(product.category),
         images: (product.images ?? []).join(","),
         // Hiện lại dạng link cho dễ đọc/sửa (lưu trong DB là slug).
         variantLinks: (product.variantSlugs ?? [])

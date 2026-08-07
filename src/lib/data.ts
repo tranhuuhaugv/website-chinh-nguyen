@@ -530,7 +530,13 @@ export async function getSeriesCategories(): Promise<
 export async function getBrandSeriesOptions(): Promise<
   { value: string; label: string }[]
 > {
-  if (NO_DB) return [];
+  // Danh mục "đứng riêng" (PC đồng bộ, Màn hình, admin tự thêm...) cũng chọn
+  // ngay trong ô này. Value "__cat:<slug>" -> lưu vào cột category của sản phẩm.
+  const catOpts = (await getProductCategoryOptions()).map((c) => ({
+    value: `__cat:${c.value}`,
+    label: `◆ ${c.label}`,
+  }));
+  if (NO_DB) return catOpts;
   const [brands, series] = await Promise.all([
     prisma.brand.findMany({
       orderBy: { name: "asc" },
@@ -550,7 +556,8 @@ export async function getBrandSeriesOptions(): Promise<
       opts.push({ value: `${b.name}||${s.slug}`, label: `-- ${s.name}` });
     }
   }
-  return opts;
+  // Danh mục khác xếp cuối để không lẫn với hãng laptop.
+  return [...opts, ...catOpts];
 }
 
 /** Lấy nguyên bản 1 danh mục cho form sửa admin (gồm cả trường SEO). */

@@ -17,7 +17,6 @@ const STOCK_OPTIONS = [
 export function productFields(
   brandSeriesOptions: { value: string; label: string }[] = [],
   needs: { value: string; label: string }[] = NEED_OPTIONS,
-  productCategories: { value: string; label: string }[] = [],
 ): AdminField[] {
   return [
     // Ảnh để ĐẦU form: việc đầu tiên khi thêm/sửa máy là xem/thay ảnh.
@@ -33,7 +32,8 @@ export function productFields(
     },
     {
       name: "brandSeries",
-      label: "Hãng / Dòng máy * (chọn dòng cụ thể để dễ SEO)",
+      label:
+        "Hãng / Dòng máy / Danh mục * (laptop chọn hãng; PC đồng bộ / Màn hình chọn dòng ◆ ở cuối)",
       type: "select",
       options: brandSeriesOptions,
     },
@@ -113,13 +113,6 @@ export function productFields(
     },
 
     { name: "h3", label: "Phân loại & hiển thị", type: "heading" },
-    {
-      name: "category",
-      label: "Danh mục (chọn PC/Màn hình… nếu không phải laptop)",
-      type: "select",
-      placeholder: "Laptop (mặc định)",
-      options: productCategories,
-    },
     {
       name: "needs",
       label: "Nhu cầu sử dụng (lọc + SEO)",

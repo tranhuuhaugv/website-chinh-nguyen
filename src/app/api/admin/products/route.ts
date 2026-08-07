@@ -124,8 +124,26 @@ async function brandIdFor(name: string): Promise<string | null> {
 
 /** Dựng data chung cho create/update từ body form. `selfSlug` để không tự nối vào mình. */
 async function buildData(body: Body, selfSlug: string) {
-  // Ô gộp "Hãng / Dòng máy": giá trị "TênHãng||slug-dòng" (slug rỗng = chỉ hãng).
-  const [brandName, seriesSlug = ""] = str(body.brandSeries).split("||");
+  // Ô gộp "Hãng / Dòng máy / Danh mục":
+  //  - "TênHãng||slug-dòng"  -> laptop theo hãng/dòng (slug rỗng = chỉ hãng)
+  //  - "__cat:<slug>"        -> danh mục khác (PC đồng bộ, Màn hình...). Sản
+  //    phẩm gán vào cột `category`; hãng lấy TÊN danh mục cho khỏi trống.
+  const bsRaw = str(body.brandSeries);
+  let brandName = "";
+  let seriesSlug = "";
+  let category: string | null = null;
+  if (bsRaw.startsWith("__cat:")) {
+    category = bsRaw.slice(6).trim() || null;
+    if (category) {
+      const cat = await prisma.category.findUnique({
+        where: { slug: category },
+        select: { name: true },
+      });
+      brandName = cat?.name ?? category;
+    }
+  } else {
+    [brandName, seriesSlug = ""] = bsRaw.split("||");
+  }
   const brandId = await brandIdFor(brandName);
   if (!brandId) return null;
   return {
@@ -154,7 +172,7 @@ async function buildData(body: Body, selfSlug: string) {
       : "con_hang",
     options: parseOptions(body.options),
     series: seriesSlug || null,
-    category: str(body.category) || null,
+    category,
     needs: list(body.needs),
     images: list(body.images),
     variantSlugs: variantSlugs(body.variantLinks, selfSlug),

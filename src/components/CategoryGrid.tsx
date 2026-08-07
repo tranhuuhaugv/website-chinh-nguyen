@@ -65,7 +65,9 @@ export function CategoryGrid({ categories }: { categories: Category[] }) {
                   </span>
                 ) : (
                   <span
-                    className={`mx-auto mb-2.5 flex h-[72px] w-[72px] items-center justify-center rounded-2xl bg-gradient-to-br text-white shadow-[0_6px_14px_rgba(0,0,0,0.12)] transition group-hover:-translate-y-[3px] max-[520px]:h-[60px] max-[520px]:w-[60px] ${CAT_COLOR[cat.icon]}`}
+                    className={`mx-auto mb-2.5 flex h-[72px] w-[72px] items-center justify-center rounded-2xl bg-gradient-to-br text-white shadow-[0_6px_14px_rgba(0,0,0,0.12)] transition group-hover:-translate-y-[3px] max-[520px]:h-[60px] max-[520px]:w-[60px] ${
+                      CAT_COLOR[cat.icon] ?? "from-[#0F766E] to-[#115E59]"
+                    }`}
                   >
                     <CategoryIcon name={cat.icon} className="h-8 w-8" />
                   </span>
