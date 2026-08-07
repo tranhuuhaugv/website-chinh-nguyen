@@ -67,7 +67,7 @@ export const SIDE_BANNERS: SideBanner[] = [
     id: "thu-cu-doi-moi",
     href: "/thu-cu-doi-moi",
     title: "Thu cũ đổi mới",
-    subtitle: "Trợ giá đến 3 triệu",
+    subtitle: "Trợ giá tốt",
     accent: "blue",
   },
 ];

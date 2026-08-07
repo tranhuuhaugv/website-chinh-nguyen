@@ -33,6 +33,17 @@ function num(v: unknown): number | null {
   const n = Number(s);
   return Number.isFinite(n) ? n : null;
 }
+/**
+ * Trọng lượng: admin chỉ cần nhập SỐ (VD "1.8") -> tự thêm " kg".
+ * Nếu đã có chữ (kg/g...) thì giữ nguyên; rỗng -> null.
+ */
+function weightStr(v: unknown): string | null {
+  const s = str(v);
+  if (!s) return null;
+  // Đã có ký tự chữ (đơn vị) rồi -> tôn trọng nguyên văn.
+  if (/[a-zA-Z]/.test(s)) return s;
+  return `${s} kg`;
+}
 /** Chuỗi "a,b,c" -> ["a","b","c"] */
 const list = (v: unknown) =>
   str(v)
@@ -134,7 +145,7 @@ async function buildData(body: Body, selfSlug: string) {
     refresh: str(body.refresh) || null,
     os: str(body.os) || null,
     battery: str(body.battery) || null,
-    weight: str(body.weight) || null,
+    weight: weightStr(body.weight),
     ports: str(body.ports) || null,
     condition: str(body.condition) === "new" ? "new" : "used",
     stockStatus: ["con_hang", "het_hang", "sap_ve"].includes(str(body.stockStatus))

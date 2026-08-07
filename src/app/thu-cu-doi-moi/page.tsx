@@ -13,7 +13,7 @@ import {
 export const metadata: Metadata = {
   title: "Thu cũ đổi mới",
   description:
-    "Chương trình thu cũ đổi mới tại Laptop Chính Nguyễn — trợ giá đến 3.000.000₫, định giá minh bạch, thủ tục nhanh gọn.",
+    "Chương trình thu cũ đổi mới tại Laptop Chính Nguyễn — trợ giá tốt, định giá minh bạch, thủ tục nhanh gọn.",
 };
 
 const STEPS = [
@@ -38,7 +38,7 @@ const STEPS = [
 const BENEFITS = [
   {
     icon: InstallmentIcon,
-    title: "Trợ giá đến 3 triệu",
+    title: "Trợ giá tốt",
     desc: "Định giá cao, hỗ trợ thêm khi bạn lên đời máy mới.",
   },
   {
@@ -70,8 +70,8 @@ export default function TradeInPage() {
       ]}
       hero={
         <div className="rounded-2xl border border-line bg-white p-5 text-center shadow-card">
-          <p className="text-[30px] font-extrabold text-green">3.000.000₫</p>
-          <p className="text-[12.5px] text-muted">trợ giá tối đa khi lên đời</p>
+          <p className="text-[26px] font-extrabold text-green">Trợ giá tốt</p>
+          <p className="text-[12.5px] text-muted">định giá cao khi lên đời máy mới</p>
         </div>
       }
     >

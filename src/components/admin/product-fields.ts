@@ -95,7 +95,11 @@ export function productFields(
       type: "textarea",
       placeholder: "Cổng HDMI\nJack tai nghe 3.5mm\n2 x USB-C\nUSB 3.2",
     },
-    { name: "weight", label: "Trọng lượng", placeholder: "1.8 kg" },
+    {
+      name: "weight",
+      label: "Trọng lượng (kg — chỉ cần nhập số, tự thêm 'kg')",
+      placeholder: "1.8",
+    },
     { name: "battery", label: "Pin", placeholder: "56Wh" },
     {
       name: "os",

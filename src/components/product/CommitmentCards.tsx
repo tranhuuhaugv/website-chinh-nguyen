@@ -49,7 +49,7 @@ const USED = [
   {
     icon: InstallmentIcon,
     title: "Trả góp 0% · thu cũ",
-    desc: "Thu cũ đổi mới lên đời, trợ giá đến 3.000.000₫",
+    desc: "Thu cũ đổi mới lên đời, trợ giá tốt",
   },
 ];
 

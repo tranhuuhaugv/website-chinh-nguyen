@@ -10,13 +10,13 @@ import {
 import { SITE } from "@/lib/site";
 
 // Khối kêu gọi THU CŨ ĐỔI MỚI ở trang chủ — kéo khách sang trang định giá.
-// Nội dung bám đúng chính sách thật ở /thu-cu-doi-moi (trợ giá 3 triệu, định
+// Nội dung bám đúng chính sách thật ở /thu-cu-doi-moi (trợ giá tốt, định
 // giá minh bạch, thu mọi hãng) — KHÔNG bịa số liệu.
 
 const PERKS = [
   {
     Icon: InstallmentIcon,
-    title: "Trợ giá đến 3 triệu",
+    title: "Trợ giá tốt",
     desc: "Bù thêm chút là lên đời máy mới",
   },
   {
@@ -46,7 +46,7 @@ export function TradeInCTA() {
                 Thu cũ đổi mới
               </span>
               <h2 className="mt-3 text-[26px] font-extrabold leading-tight tracking-tight max-[640px]:text-[21px]">
-                Lên đời laptop — trợ giá đến 3 triệu
+                Lên đời laptop — trợ giá tốt
               </h2>
               <p className="mt-2 text-[14.5px] leading-relaxed text-white/85 max-[640px]:text-[13.5px]">
                 Mang máy cũ tới, định giá minh bạch tại chỗ và trừ thẳng vào giá
