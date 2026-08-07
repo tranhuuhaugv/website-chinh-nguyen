@@ -5,11 +5,22 @@ import { getBrandSeriesOptions, getNeeds } from "@/lib/data";
 export const metadata = { title: "Thêm sản phẩm" };
 export const dynamic = "force-dynamic";
 
-export default async function AddProductPage() {
+export default async function AddProductPage({
+  searchParams,
+}: {
+  searchParams: { brand?: string; series?: string };
+}) {
   const [brandSeries, needs] = await Promise.all([
     getBrandSeriesOptions(),
     getNeeds(),
   ]);
+
+  // Thêm từ 1 dòng máy/hãng cụ thể -> mặc định luôn vào đúng danh mục đó.
+  const brand = searchParams.brand?.trim() ?? "";
+  const series = searchParams.series?.trim() ?? "";
+  const prefillBS = brand
+    ? `${brand}||${series}`
+    : (brandSeries[0]?.value ?? "");
 
   return (
     <AdminForm
@@ -17,7 +28,7 @@ export default async function AddProductPage() {
       singleColumn
       fields={productFields(brandSeries, needs)}
       initialValues={{
-        brandSeries: brandSeries[0]?.value ?? "",
+        brandSeries: prefillBS,
         condition: "used",
         accent: "dark",
         isNew: "khong",

@@ -8,6 +8,7 @@ import {
   ChevronDownIcon,
   ChevronRightIcon,
   EditIcon,
+  EyeIcon,
   PlusIcon,
   TrashIcon,
 } from "@/components/icons";
@@ -99,6 +100,12 @@ export function CategoryAdminTable({
   const bySeries = useMemo(() => {
     const m: Record<string, AdminProduct[]> = {};
     for (const p of prods) if (p.series) (m[p.series] ??= []).push(p);
+    return m;
+  }, [prods]);
+  // Máy CHƯA gán dòng máy con -> gom theo tên hãng để hiện dưới "danh mục lớn".
+  const noSeriesByBrand = useMemo(() => {
+    const m: Record<string, AdminProduct[]> = {};
+    for (const p of prods) if (!p.series) (m[p.brand] ??= []).push(p);
     return m;
   }, [prods]);
 
@@ -207,6 +214,8 @@ export function CategoryAdminTable({
   function ParentRow({ p, isBrand }: { p: Category; isBrand: boolean }) {
     const kids = childrenOf[p.slug] ?? [];
     const hasKids = kids.length > 0;
+    // Máy của hãng này CHƯA gán dòng máy con (hiện dưới hãng để xếp sau).
+    const noSeries = isBrand ? (noSeriesByBrand[p.name] ?? []) : [];
     const opened = isOpen(p.slug);
     return (
       <li>
@@ -255,6 +264,16 @@ export function CategoryAdminTable({
               Dòng máy
             </Link>
           )}
+          {isBrand && (
+            <Link
+              href={`/admin/san-pham?brand=${encodeURIComponent(p.name)}`}
+              target="_blank"
+              title="Mở danh sách sản phẩm hãng này (trang riêng)"
+              className="flex h-8 w-8 shrink-0 items-center justify-center rounded-lg border border-line text-ink-2 transition hover:border-green hover:text-green-d"
+            >
+              <EyeIcon className="h-4 w-4" />
+            </Link>
+          )}
           <RowActions
             cat={p}
             busy={busy === p.slug}
@@ -262,7 +281,7 @@ export function CategoryAdminTable({
           />
         </div>
 
-        {isBrand && opened && hasKids && (
+        {isBrand && opened && (hasKids || noSeries.length > 0) && (
           <ul className="mb-1 ml-[30px] flex flex-col border-l border-line pl-2">
             {kids.map((k) => {
               const kProds = bySeries[k.slug] ?? [];
@@ -299,6 +318,14 @@ export function CategoryAdminTable({
                       </button>
                       <Count n={counts[k.slug] ?? 0} />
                     </span>
+                    <Link
+                      href={`/admin/san-pham?brand=${encodeURIComponent(p.name)}&series=${encodeURIComponent(k.slug)}`}
+                      target="_blank"
+                      title="Mở danh sách dòng này (trang riêng)"
+                      className="flex h-7 w-7 shrink-0 items-center justify-center rounded-lg border border-line text-ink-2 transition hover:border-green hover:text-green-d"
+                    >
+                      <EyeIcon className="h-3.5 w-3.5" />
+                    </Link>
                     <RowActions
                       cat={k}
                       busy={busy === k.slug}
@@ -316,6 +343,47 @@ export function CategoryAdminTable({
                 </li>
               );
             })}
+
+            {/* Máy CHƯA gán dòng máy con -> hiện ngay dưới hãng để dễ xếp sau. */}
+            {noSeries.length > 0 &&
+              (() => {
+                const nsKey = `__ns__${p.slug}`;
+                const nsOpen = open[nsKey] === true;
+                return (
+                  <li key={nsKey}>
+                    <div className="group flex items-center gap-2 rounded-lg px-2 py-1.5 hover:bg-bg">
+                      <button
+                        type="button"
+                        onClick={() =>
+                          setOpen((prev) => ({ ...prev, [nsKey]: !nsOpen }))
+                        }
+                        className="flex h-5 w-5 shrink-0 items-center justify-center rounded text-ink-2 hover:bg-line"
+                      >
+                        {nsOpen ? (
+                          <ChevronDownIcon className="h-3.5 w-3.5" />
+                        ) : (
+                          <ChevronRightIcon className="h-3.5 w-3.5" />
+                        )}
+                      </button>
+                      <button
+                        type="button"
+                        onClick={() =>
+                          setOpen((prev) => ({ ...prev, [nsKey]: !nsOpen }))
+                        }
+                        className="flex min-w-0 flex-1 items-center gap-2 text-left"
+                      >
+                        <span className="truncate text-[13px] font-medium italic text-muted">
+                          Chưa xếp dòng máy
+                        </span>
+                        <Count n={noSeries.length} />
+                      </button>
+                    </div>
+                    {nsOpen && (
+                      <SeriesProducts items={noSeries} brand={p.name} seriesSlug="" />
+                    )}
+                  </li>
+                );
+              })()}
           </ul>
         )}
       </li>

@@ -151,7 +151,15 @@ export function ProductAdminList({
           </p>
         </div>
         <Link
-          href="/admin/san-pham/them"
+          href={
+            brand !== "Tất cả"
+              ? `/admin/san-pham/them?brand=${encodeURIComponent(brand)}${
+                  series !== "Tất cả"
+                    ? `&series=${encodeURIComponent(series)}`
+                    : ""
+                }`
+              : "/admin/san-pham/them"
+          }
           className="flex h-9 items-center gap-1.5 rounded-lg bg-green px-3.5 text-sm font-semibold text-white transition hover:bg-green-d"
         >
           <PlusIcon className="h-4 w-4" />
