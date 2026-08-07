@@ -132,6 +132,7 @@ export function CartProvider({ children }: { children: ReactNode }) {
                   alt=""
                   fill
                   sizes="44px"
+                  loading="eager"
                   className="object-contain p-1"
                 />
               ) : (

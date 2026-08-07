@@ -339,6 +339,10 @@ export function CartCheckout({
                         alt={item.name}
                         fill
                         sizes="96px"
+                        // Giỏ render phía client (đọc localStorage) -> ảnh chèn sau
+                        // khi tải trang. iOS Safari KHÔNG tự tải ảnh loading="lazy"
+                        // đã nằm trong màn hình -> phải eager để hiện ngay.
+                        loading="eager"
                         className="object-contain"
                       />
                     ) : (
