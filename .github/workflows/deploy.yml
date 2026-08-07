@@ -39,6 +39,8 @@ jobs:
             npm run db:sync-series
             # Điền giá gốc cho SP còn thiếu để mọi máy hiện giảm giá (không đè giá admin đặt).
             npm run db:fill-discounts
+            # Dọn nhóm danh mục (gộp nhóm trùng; PC/Màn hình xếp cùng nhóm hãng).
+            npm run db:normalize-categories
             rm -rf .next
             npm run build
             pm2 restart chinhnguyen

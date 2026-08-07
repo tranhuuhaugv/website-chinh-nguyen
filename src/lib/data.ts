@@ -21,6 +21,13 @@ import { EDITABLE_PAGES } from "./policies";
 import type { PcPart } from "./pc-parts";
 import { PC_PART_TYPE_KEYS } from "./pc-parts";
 import {
+  NAV_BRAND_SLUGS,
+  isNeedCategory,
+  normGroup,
+} from "./category-groups";
+// Re-export để các file server (CategoryView) vẫn import từ @/lib/data như cũ.
+export { normGroup, isNeedCategory };
+import {
   ALL_PRODUCTS,
   BLOG_POSTS,
   CATEGORIES,
@@ -396,26 +403,25 @@ const DERIVED_CATEGORY_SLUGS = new Set([
 ]);
 
 /**
- * Danh mục có thể GÁN TRỰC TIẾP cho 1 sản phẩm qua ô "Danh mục" trong form.
- * = mọi danh mục TRỪ thương hiệu, dòng máy, và các mục laptop suy diễn sẵn.
- * -> admin thêm danh mục mới nào (Khác / Không nhóm / nhu cầu mới) đều tự hiện.
- */
-function isAssignableCategory(c: Category): boolean {
-  if (c.group === "thuong-hieu" || c.group === "dong-may") return false;
-  if (DERIVED_CATEGORY_SLUGS.has(c.slug)) return false;
-  return true;
-}
-
-/**
- * Danh mục cho ô "Danh mục" ở form sản phẩm. Sản phẩm gán slug này -> hiện ở
- * trang danh mục tương ứng (CategoryView lọc theo cột `category`).
+ * Danh mục cho ô "Danh mục" (◆) ở form sản phẩm — gán trực tiếp vào cột
+ * `category`. = mọi danh mục TRỪ: hãng suy diễn (dell/hp...), dòng máy, các mục
+ * laptop suy diễn sẵn, và danh mục NHU CẦU (gán bằng ô tick riêng).
+ *
+ * KHÔNG loại theo bảng Brand: gán 1 SP vào ◆ PC sẽ tạo "brand ảo" PC -> nếu loại
+ * theo Brand thì ◆ PC biến mất sau lần gán đầu. Dùng DERIVED (danh sách hãng
+ * thật) để loại hãng, còn PC/Màn hình/Phụ kiện luôn gán được.
  */
 export async function getProductCategoryOptions(): Promise<
   { value: string; label: string }[]
 > {
   const cats = await getCategories();
   return cats
-    .filter(isAssignableCategory)
+    .filter((c) => {
+      if (normGroup(c.group) === "dong-may") return false;
+      if (DERIVED_CATEGORY_SLUGS.has(c.slug)) return false; // hãng thật + laptop suy diễn
+      if (isNeedCategory(c)) return false; // nhu cầu -> gán bằng ô tick
+      return true;
+    })
     .map((c) => ({ value: c.slug, label: c.name }));
 }
 
@@ -438,7 +444,7 @@ export async function getCategoryCounts(): Promise<Record<string, number>> {
   const counts: Record<string, number> = {};
   for (const c of cats) {
     let n = 0;
-    if (c.group === "dong-may") {
+    if (normGroup(c.group) === "dong-may") {
       n = products.filter((p) => p.series === c.slug).length;
     } else if (products.some((p) => brandSlug(p.brand) === c.slug)) {
       n = products.filter((p) => brandSlug(p.brand) === c.slug).length;
@@ -530,9 +536,11 @@ export async function getSeriesCategories(): Promise<
 export async function getBrandSeriesOptions(): Promise<
   { value: string; label: string }[]
 > {
-  // Danh mục "đứng riêng" (PC đồng bộ, Màn hình, admin tự thêm...) cũng chọn
-  // ngay trong ô này. Value "__cat:<slug>" -> lưu vào cột category của sản phẩm.
-  const catOpts = (await getProductCategoryOptions()).map((c) => ({
+  // Danh mục "đứng riêng" (PC, Màn hình, admin tự thêm...) cũng chọn ngay trong
+  // ô này. Value "__cat:<slug>" -> lưu vào cột category của sản phẩm.
+  const catList = await getProductCategoryOptions();
+  const catSlugs = new Set(catList.map((c) => c.value));
+  const catOpts = catList.map((c) => ({
     value: `__cat:${c.value}`,
     label: `◆ ${c.label}`,
   }));
@@ -549,8 +557,10 @@ export async function getBrandSeriesOptions(): Promise<
     }),
   ]);
   // Hãng = "- Dell" (chọn được = cả hãng); dòng máy thụt vào = "-- Dell XPS".
+  // Bỏ "brand ảo" trùng danh mục ◆ (gán SP vào PC tạo brand PC) -> tránh hiện 2 lần.
   const opts: { value: string; label: string }[] = [];
   for (const b of brands) {
+    if (catSlugs.has(b.slug)) continue;
     opts.push({ value: `${b.name}||`, label: `- ${b.name}` });
     for (const s of series.filter((x) => x.slug.startsWith(`${b.slug}-`))) {
       opts.push({ value: `${b.name}||${s.slug}`, label: `-- ${s.name}` });
@@ -565,56 +575,35 @@ export async function getBrandSeriesOptions(): Promise<
  * dữ liệu thật -> link luôn khớp slug (hết 404), thêm danh mục là tự hiện.
  * Nhận diện nhóm: ưu tiên cột `group`; dữ liệu cũ chưa gán group thì đoán theo slug.
  */
-const NAV_BRAND_SLUGS = new Set([
-  "dell",
-  "hp",
-  "lenovo",
-  "asus",
-  "acer",
-  "msi",
-  "macbook",
-]);
-const NAV_NEED_SLUGS = new Set([
-  "laptop-gaming",
-  "laptop-do-hoa",
-  "laptop-van-phong",
-]);
-
-// Chuẩn hoá group: dữ liệu cũ lưu nhãn tiếng Việt ("Theo nhu cầu"), mới lưu slug
-// ("nhu-cau"). Quy về 1 mối để phân nhóm không bị lẫn.
-export function normGroup(g?: string | null): string {
-  const map: Record<string, string> = {
-    "Theo thương hiệu": "thuong-hieu",
-    "Theo nhu cầu": "nhu-cau",
-    "Loại máy": "loai-may",
-    Khác: "khac",
-    "Dòng máy": "dong-may",
-  };
-  return g ? (map[g] ?? g) : "";
-}
-
-/** Danh mục nhóm "nhu cầu" (dùng chung: menu + bộ lọc + ô tick form). */
-export function isNeedCategory(c: { group?: string | null; slug: string }): boolean {
-  const g = normGroup(c.group);
-  return g === "nhu-cau" || (!g && NAV_NEED_SLUGS.has(c.slug));
-}
-
 export async function getNavCategories(): Promise<{
   brands: { slug: string; name: string }[];
   needs: { slug: string; name: string }[];
   others: { slug: string; name: string }[];
 }> {
-  const [allCats, brands] = await Promise.all([getCategories(), getBrands()]);
+  const [allCats, brands, catList] = await Promise.all([
+    getCategories(),
+    getBrands(),
+    getProductCategoryOptions(),
+  ]);
   const cats = allCats.filter((c) => normGroup(c.group) !== "dong-may");
-  // Danh mục nào thực chất là "hãng" (để không lọt vào cột Khác) — loại ra.
   const isBrandCat = (c: Category) => {
     const g = normGroup(c.group);
     return g === "thuong-hieu" || (!g && NAV_BRAND_SLUGS.has(c.slug));
   };
   const pick = (c: Category) => ({ slug: c.slug, name: c.name });
+  // Slug danh mục đứng riêng (PC, Màn hình, Phụ kiện...) — gán SP tạo "brand ảo"
+  // cùng slug. Loại brand ảo khỏi cột hãng để không trùng cột Khác/danh mục.
+  const catSlugs = new Set(catList.map((c) => c.value));
+  // Cột "Hãng" = HÃNG THẬT (bảng Brand trừ brand ảo) + danh mục thuộc nhóm hãng
+  // chưa có trong đó (PC, Màn hình, hoặc hãng 0 sản phẩm). Phụ kiện (nhóm Khác)
+  // KHÔNG isBrandCat nên không lọt vào đây.
+  const realBrands = brands.filter((b) => !catSlugs.has(b.slug));
+  const haveSlug = new Set(realBrands.map((b) => b.slug));
+  const extraBrandCats = cats
+    .filter((c) => isBrandCat(c) && !haveSlug.has(c.slug))
+    .map(pick);
   return {
-    // Hãng LẤY TỪ BẢNG BRAND -> đồng bộ với trình quản lý thương hiệu.
-    brands,
+    brands: [...realBrands, ...extraBrandCats],
     needs: cats.filter(isNeedCategory).map(pick),
     others: cats
       .filter((c) => !isBrandCat(c) && !isNeedCategory(c))

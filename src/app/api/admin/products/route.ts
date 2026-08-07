@@ -132,6 +132,7 @@ async function buildData(body: Body, selfSlug: string) {
   let brandName = "";
   let seriesSlug = "";
   let category: string | null = null;
+  let brandId: string | null = null;
   if (bsRaw.startsWith("__cat:")) {
     category = bsRaw.slice(6).trim() || null;
     if (category) {
@@ -140,11 +141,20 @@ async function buildData(body: Body, selfSlug: string) {
         select: { name: true },
       });
       brandName = cat?.name ?? category;
+      // "Brand ảo" cho SP danh mục: DÙNG ĐÚNG slug danh mục (không slugify lại
+      // tên -> tránh mangle tiếng Việt "Màn hình" thành "m-n-h-nh"). Nhờ vậy
+      // slug brand == slug danh mục -> dedup ở dropdown/menu + lọc /man-hinh đúng.
+      const b = await prisma.brand.upsert({
+        where: { slug: category },
+        update: {},
+        create: { name: brandName, slug: category },
+      });
+      brandId = b.id;
     }
   } else {
     [brandName, seriesSlug = ""] = bsRaw.split("||");
+    brandId = await brandIdFor(brandName);
   }
-  const brandId = await brandIdFor(brandName);
   if (!brandId) return null;
   return {
     name: str(body.name),

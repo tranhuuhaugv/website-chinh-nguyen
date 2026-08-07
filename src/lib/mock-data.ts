@@ -362,8 +362,8 @@ export const CATEGORIES: Category[] = [
   { slug: "laptop-gaming", name: "Laptop Gaming", icon: "gaming" },
   { slug: "laptop-do-hoa", name: "Máy trạm - Đồ họa", icon: "graphic" },
   { slug: "laptop-van-phong", name: "Laptop văn phòng", icon: "office" },
-  { slug: "pc", name: "PC đồng bộ", icon: "pc" },
-  { slug: "man-hinh", name: "Màn hình", icon: "monitor" },
+  { slug: "pc", name: "PC", icon: "pc", group: "thuong-hieu" },
+  { slug: "man-hinh", name: "Màn hình", icon: "monitor", group: "thuong-hieu" },
   { slug: "phu-kien", name: "Sạc & Phụ kiện", icon: "accessory" },
 ];
 

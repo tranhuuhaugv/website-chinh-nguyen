@@ -1,5 +1,6 @@
 import { AdminForm, type AdminField } from "@/components/admin/AdminForm";
 import { getCategoryEdit } from "@/lib/data";
+import { normGroup } from "@/lib/category-groups";
 
 export const metadata = { title: "Danh mục" };
 export const dynamic = "force-dynamic";
@@ -75,7 +76,9 @@ export default async function AdminCategoryFormPage({
         name: category.name,
         slug: category.slug,
         icon: category.icon,
-        group: category.group ?? "",
+        // Chuẩn hoá group (dữ liệu cũ "Theo nhu cầu" -> "nhu-cau") để dropdown
+        // chọn đúng, lưu lại là canonical -> hết cảnh 2 nhóm trùng.
+        group: normGroup(category.group),
         tag: category.tag ?? "",
         image: category.image ?? "",
         coverImage: category.coverImage ?? "",

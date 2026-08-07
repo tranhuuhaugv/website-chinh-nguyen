@@ -12,6 +12,7 @@ import {
   TrashIcon,
 } from "@/components/icons";
 import type { Category } from "@/lib/types";
+import { normGroup } from "@/lib/category-groups";
 
 // Quản lý danh mục — TÁCH THEO NHÓM cho rõ:
 //  - Thương hiệu: hãng (Dell, HP…) có cây dòng máy con (Dell XPS…).
@@ -90,8 +91,8 @@ export function CategoryAdminTable({
 
   // Dựng cây + tách nhóm.
   const { sections, childrenOf, orphans, brandGroups } = useMemo(() => {
-    const parents = list.filter((c) => c.group !== "dong-may");
-    const series = list.filter((c) => c.group === "dong-may");
+    const parents = list.filter((c) => normGroup(c.group) !== "dong-may");
+    const series = list.filter((c) => normGroup(c.group) === "dong-may");
 
     // Con (dòng máy) gắn vào cha có slug là tiền tố dài nhất khớp.
     const childrenOf: Record<string, Category[]> = {};
@@ -107,10 +108,10 @@ export function CategoryAdminTable({
       else orphans.push(s);
     }
 
-    // Gom cha theo group.
+    // Gom cha theo group ĐÃ CHUẨN HOÁ -> "nhu-cau" và "Theo nhu cầu" gộp làm 1.
     const byGroup: Record<string, Category[]> = {};
     for (const p of parents) {
-      const g = p.group || "__none__";
+      const g = normGroup(p.group) || "__none__";
       (byGroup[g] ??= []).push(p);
     }
     // Nhóm "thương hiệu" = nhóm có cha chứa dòng máy con.
