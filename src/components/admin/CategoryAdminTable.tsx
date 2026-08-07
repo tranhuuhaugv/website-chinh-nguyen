@@ -187,7 +187,17 @@ export function CategoryAdminTable({
             <CategoryIcon name={p.icon} className="h-4 w-4" />
           </span>
           <span className="flex min-w-0 flex-1 items-center gap-2">
-            <b className="truncate text-[14px] text-ink">{p.name}</b>
+            {isBrand ? (
+              <Link
+                href={`/admin/san-pham?brand=${encodeURIComponent(p.name)}`}
+                title="Xem & quản lý sản phẩm hãng này"
+                className="truncate text-[14px] font-bold text-ink transition hover:text-green-d hover:underline"
+              >
+                {p.name}
+              </Link>
+            ) : (
+              <b className="truncate text-[14px] text-ink">{p.name}</b>
+            )}
             <Count n={counts[p.slug] ?? 0} />
             {isBrand && hasKids && (
               <span className="text-[11.5px] text-muted">· {kids.length} dòng</span>
@@ -218,9 +228,13 @@ export function CategoryAdminTable({
               >
                 <span className="h-1.5 w-1.5 shrink-0 rounded-full bg-line" />
                 <span className="flex min-w-0 flex-1 items-center gap-2">
-                  <span className="truncate text-[13.5px] text-ink-2">
+                  <Link
+                    href={`/admin/san-pham?brand=${encodeURIComponent(p.name)}&series=${encodeURIComponent(k.slug)}`}
+                    title="Xem & quản lý sản phẩm dòng này"
+                    className="truncate text-[13.5px] text-ink-2 transition hover:text-green-d hover:underline"
+                  >
                     {k.name}
-                  </span>
+                  </Link>
                   <Count n={counts[k.slug] ?? 0} />
                 </span>
                 <RowActions
