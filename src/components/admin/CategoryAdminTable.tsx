@@ -11,8 +11,11 @@ import {
   PlusIcon,
   TrashIcon,
 } from "@/components/icons";
+import Image from "next/image";
 import type { Category } from "@/lib/types";
 import { normGroup } from "@/lib/category-groups";
+import { formatPrice } from "@/lib/format";
+import type { AdminProduct } from "./ProductAdminList";
 
 // Quản lý danh mục — TÁCH THEO NHÓM cho rõ:
 //  - Thương hiệu: hãng (Dell, HP…) có cây dòng máy con (Dell XPS…).
@@ -79,15 +82,54 @@ function RowActions({
 export function CategoryAdminTable({
   categories,
   counts,
+  products = [],
 }: {
   categories: Category[];
   counts: Record<string, number>;
+  products?: AdminProduct[];
 }) {
   const router = useRouter();
   const [list, setList] = useState(categories);
+  const [prods, setProds] = useState(products);
   const [busy, setBusy] = useState<string | null>(null);
   const [open, setOpen] = useState<Record<string, boolean>>({});
   const [allOpen, setAllOpen] = useState(true);
+
+  // Gom sản phẩm theo slug dòng máy để mở rộng NGAY trong cây (không chuyển trang).
+  const bySeries = useMemo(() => {
+    const m: Record<string, AdminProduct[]> = {};
+    for (const p of prods) if (p.series) (m[p.series] ??= []).push(p);
+    return m;
+  }, [prods]);
+
+  // Sửa nhanh 1 field sản phẩm (Nổi bật / Hiển thị) ngay tại chỗ.
+  async function quickProduct(id: string, patch: Partial<AdminProduct>) {
+    setProds((prev) => prev.map((x) => (x.id === id ? { ...x, ...patch } : x)));
+    try {
+      const res = await fetch("/api/admin/products", {
+        method: "PATCH",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ id, ...patch }),
+      });
+      if (!res.ok) router.refresh();
+    } catch {
+      router.refresh();
+    }
+  }
+
+  async function removeProduct(p: AdminProduct) {
+    if (!confirm(`Xoá sản phẩm "${p.name}"?`)) return;
+    setBusy(`p-${p.id}`);
+    try {
+      const res = await fetch(`/api/admin/products?id=${p.id}`, {
+        method: "DELETE",
+      });
+      if (res.ok) setProds((prev) => prev.filter((x) => x.id !== p.id));
+      else alert("Xoá thất bại.");
+    } finally {
+      setBusy(null);
+    }
+  }
 
   // Dựng cây + tách nhóm.
   const { sections, childrenOf, orphans, brandGroups } = useMemo(() => {
@@ -187,14 +229,15 @@ export function CategoryAdminTable({
             <CategoryIcon name={p.icon} className="h-4 w-4" />
           </span>
           <span className="flex min-w-0 flex-1 items-center gap-2">
-            {isBrand ? (
-              <Link
-                href={`/admin/san-pham?brand=${encodeURIComponent(p.name)}`}
-                title="Xem & quản lý sản phẩm hãng này"
-                className="truncate text-[14px] font-bold text-ink transition hover:text-green-d hover:underline"
+            {isBrand && hasKids ? (
+              <button
+                type="button"
+                onClick={() => toggle(p.slug)}
+                title="Mở / thu dòng máy"
+                className="truncate text-left text-[14px] font-bold text-ink transition hover:text-green-d"
               >
                 {p.name}
-              </Link>
+              </button>
             ) : (
               <b className="truncate text-[14px] text-ink">{p.name}</b>
             )}
@@ -221,32 +264,165 @@ export function CategoryAdminTable({
 
         {isBrand && opened && hasKids && (
           <ul className="mb-1 ml-[30px] flex flex-col border-l border-line pl-2">
-            {kids.map((k) => (
+            {kids.map((k) => {
+              const kProds = bySeries[k.slug] ?? [];
+              // Dòng máy mặc định THU GỌN (không bung hết SP khi mở trang).
+              const kOpen = open[k.slug] === true;
+              const toggleK = () =>
+                kProds.length &&
+                setOpen((prev) => ({ ...prev, [k.slug]: !kOpen }));
+              return (
+                <li key={k.slug}>
+                  <div className="group flex items-center gap-2 rounded-lg px-2 py-1.5 hover:bg-bg">
+                    <button
+                      type="button"
+                      onClick={toggleK}
+                      aria-label={kOpen ? "Thu gọn" : "Xem sản phẩm"}
+                      className={`flex h-5 w-5 shrink-0 items-center justify-center rounded text-ink-2 ${
+                        kProds.length ? "hover:bg-line" : "invisible"
+                      }`}
+                    >
+                      {kOpen ? (
+                        <ChevronDownIcon className="h-3.5 w-3.5" />
+                      ) : (
+                        <ChevronRightIcon className="h-3.5 w-3.5" />
+                      )}
+                    </button>
+                    <span className="flex min-w-0 flex-1 items-center gap-2">
+                      <button
+                        type="button"
+                        onClick={toggleK}
+                        title="Xem sản phẩm dòng này"
+                        className="truncate text-left text-[13.5px] text-ink-2 transition hover:text-green-d"
+                      >
+                        {k.name}
+                      </button>
+                      <Count n={counts[k.slug] ?? 0} />
+                    </span>
+                    <RowActions
+                      cat={k}
+                      busy={busy === k.slug}
+                      onDelete={() => remove(k, false)}
+                    />
+                  </div>
+
+                  {kOpen && (
+                    <SeriesProducts
+                      items={kProds}
+                      brand={p.name}
+                      seriesSlug={k.slug}
+                    />
+                  )}
+                </li>
+              );
+            })}
+          </ul>
+        )}
+      </li>
+    );
+  }
+
+  // Danh sách sản phẩm của 1 dòng máy — hiện NGAY trong cây, quản lý tại chỗ.
+  function SeriesProducts({
+    items,
+    brand,
+    seriesSlug,
+  }: {
+    items: AdminProduct[];
+    brand: string;
+    seriesSlug: string;
+  }) {
+    return (
+      <div className="mb-1 ml-6 overflow-hidden rounded-xl border border-line bg-bg/40">
+        <div className="flex items-center justify-between gap-2 border-b border-line px-3 py-1.5 text-[11.5px] font-semibold uppercase tracking-wide text-muted">
+          <span>Nổi bật · Hiển thị · Sửa</span>
+          <Link
+            href={`/admin/san-pham/them?brand=${encodeURIComponent(brand)}&series=${encodeURIComponent(seriesSlug)}`}
+            className="flex items-center gap-1 rounded-md px-2 py-0.5 text-green-d hover:bg-green-tint"
+          >
+            <PlusIcon className="h-3.5 w-3.5" /> Thêm SP
+          </Link>
+        </div>
+        {items.length === 0 ? (
+          <p className="px-3 py-3 text-[12.5px] text-muted">
+            Chưa có sản phẩm trong dòng này.
+          </p>
+        ) : (
+          <ul className="divide-y divide-line">
+            {items.map((pr) => (
               <li
-                key={k.slug}
-                className="group flex items-center gap-2 rounded-lg px-2 py-1.5 hover:bg-bg"
+                key={pr.id}
+                className={`flex items-center gap-2.5 px-3 py-2 ${pr.active ? "" : "opacity-55"}`}
               >
-                <span className="h-1.5 w-1.5 shrink-0 rounded-full bg-line" />
-                <span className="flex min-w-0 flex-1 items-center gap-2">
-                  <Link
-                    href={`/admin/san-pham?brand=${encodeURIComponent(p.name)}&series=${encodeURIComponent(k.slug)}`}
-                    title="Xem & quản lý sản phẩm dòng này"
-                    className="truncate text-[13.5px] text-ink-2 transition hover:text-green-d hover:underline"
-                  >
-                    {k.name}
-                  </Link>
-                  <Count n={counts[k.slug] ?? 0} />
+                <div className="relative h-9 w-9 shrink-0 overflow-hidden rounded-md bg-white">
+                  {pr.image && (
+                    <Image
+                      src={pr.image}
+                      alt=""
+                      fill
+                      sizes="36px"
+                      loading="eager"
+                      className="object-contain"
+                    />
+                  )}
+                </div>
+                <span className="min-w-0 flex-1">
+                  <span className="block truncate text-[13px] font-medium text-ink">
+                    {pr.name}
+                  </span>
+                  <span className="text-[12px] font-semibold text-sale">
+                    {formatPrice(pr.price)}
+                  </span>
                 </span>
-                <RowActions
-                  cat={k}
-                  busy={busy === k.slug}
-                  onDelete={() => remove(k, false)}
-                />
+                <label
+                  className="flex shrink-0 cursor-pointer items-center gap-1 text-[11px] text-muted"
+                  title="Nổi bật"
+                >
+                  <input
+                    type="checkbox"
+                    checked={pr.isFeatured}
+                    onChange={(e) =>
+                      quickProduct(pr.id, { isFeatured: e.target.checked })
+                    }
+                    className="h-4 w-4 accent-green"
+                  />
+                  Nổi bật
+                </label>
+                <label
+                  className="flex shrink-0 cursor-pointer items-center gap-1 text-[11px] text-muted"
+                  title="Hiển thị"
+                >
+                  <input
+                    type="checkbox"
+                    checked={pr.active}
+                    onChange={(e) =>
+                      quickProduct(pr.id, { active: e.target.checked })
+                    }
+                    className="h-4 w-4 accent-green"
+                  />
+                  Hiện
+                </label>
+                <Link
+                  href={`/admin/san-pham/${pr.id}`}
+                  aria-label="Sửa"
+                  className="flex h-7 w-7 shrink-0 items-center justify-center rounded-lg border border-line text-ink-2 transition hover:border-green hover:text-green-d"
+                >
+                  <EditIcon className="h-3.5 w-3.5" />
+                </Link>
+                <button
+                  type="button"
+                  aria-label="Xoá"
+                  disabled={busy === `p-${pr.id}`}
+                  onClick={() => removeProduct(pr)}
+                  className="flex h-7 w-7 shrink-0 items-center justify-center rounded-lg border border-line text-ink-2 transition hover:border-sale hover:text-sale disabled:opacity-40"
+                >
+                  <TrashIcon className="h-3.5 w-3.5" />
+                </button>
               </li>
             ))}
           </ul>
         )}
-      </li>
+      </div>
     );
   }
 

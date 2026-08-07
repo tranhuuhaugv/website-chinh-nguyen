@@ -1,13 +1,20 @@
 import { CategoryAdminTable } from "@/components/admin/CategoryAdminTable";
-import { getCategories, getCategoryCounts } from "@/lib/data";
+import { getAdminProducts, getCategories, getCategoryCounts } from "@/lib/data";
 
 export const metadata = { title: "Danh mục" };
 export const dynamic = "force-dynamic";
 
 export default async function AdminCategoriesPage() {
-  const [categories, counts] = await Promise.all([
+  const [categories, counts, products] = await Promise.all([
     getCategories(),
     getCategoryCounts(),
+    getAdminProducts(),
   ]);
-  return <CategoryAdminTable categories={categories} counts={counts} />;
+  return (
+    <CategoryAdminTable
+      categories={categories}
+      counts={counts}
+      products={products}
+    />
+  );
 }
