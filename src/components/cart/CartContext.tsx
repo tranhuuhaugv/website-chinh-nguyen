@@ -11,6 +11,7 @@ import {
   type ReactNode,
 } from "react";
 import Link from "next/link";
+import Image from "next/image";
 import type { CartItem } from "@/lib/types";
 import { CheckIcon } from "@/components/icons";
 
@@ -39,7 +40,11 @@ export function CartProvider({ children }: { children: ReactNode }) {
   const [items, setItems] = useState<CartItem[]>([]);
   const [ready, setReady] = useState(false);
   // Thông báo nhỏ (toast) khi thêm vào giỏ.
-  const [toast, setToast] = useState<{ name: string; id: number } | null>(null);
+  const [toast, setToast] = useState<{
+    name: string;
+    image?: string;
+    id: number;
+  } | null>(null);
   const toastId = useRef(0);
 
   // Đọc giỏ từ localStorage sau khi mount (không chạy trên server).
@@ -74,7 +79,7 @@ export function CartProvider({ children }: { children: ReactNode }) {
       return [...prev, { ...item, qty: Math.min(99, qty) }];
     });
     toastId.current += 1;
-    setToast({ name: item.name, id: toastId.current });
+    setToast({ name: item.name, image: item.image, id: toastId.current });
   }, []);
 
   // Tự ẩn toast sau ~2.4s (khớp thời lượng animation).
@@ -114,21 +119,41 @@ export function CartProvider({ children }: { children: ReactNode }) {
     <CartContext.Provider value={value}>
       {children}
       {toast && (
-        <div className="pointer-events-none fixed bottom-6 left-1/2 z-[60] -translate-x-1/2 px-4">
+        <div className="pointer-events-none fixed inset-x-0 bottom-4 z-[60] flex justify-center px-4 max-lg:bottom-[76px] lg:bottom-6">
           <div
             key={toast.id}
-            className="cart-toast pointer-events-auto flex items-center gap-3 rounded-full border border-line bg-white py-2.5 pl-3 pr-4 shadow-[0_12px_32px_rgba(16,24,20,0.18)]"
+            className="cart-toast pointer-events-auto flex w-full max-w-sm items-center gap-3 rounded-2xl border border-line bg-white p-2.5 shadow-[0_16px_40px_rgba(16,24,20,0.22)]"
           >
-            <span className="flex h-7 w-7 shrink-0 items-center justify-center rounded-full bg-green text-white">
-              <CheckIcon className="h-4 w-4" />
-            </span>
-            <span className="text-[13.5px] text-ink">
-              Đã thêm{" "}
-              <b className="font-semibold">{toast.name}</b> vào giỏ
-            </span>
+            {/* Ảnh sản phẩm (nếu có) — không thì badge tích xanh */}
+            <div className="relative h-11 w-11 shrink-0 overflow-hidden rounded-xl bg-[#F5F7F5]">
+              {toast.image ? (
+                <Image
+                  src={toast.image}
+                  alt=""
+                  fill
+                  sizes="44px"
+                  className="object-contain p-1"
+                />
+              ) : (
+                <span className="flex h-full w-full items-center justify-center bg-green text-white">
+                  <CheckIcon className="h-5 w-5" />
+                </span>
+              )}
+            </div>
+
+            <div className="min-w-0 flex-1">
+              <div className="flex items-center gap-1 text-[11.5px] font-semibold text-green-d">
+                <CheckIcon className="h-3.5 w-3.5 shrink-0" />
+                Đã thêm vào giỏ
+              </div>
+              <div className="line-clamp-1 text-[13px] font-medium text-ink">
+                {toast.name}
+              </div>
+            </div>
+
             <Link
               href="/gio-hang"
-              className="ml-1 shrink-0 rounded-full bg-green-tint px-3 py-1 text-[12.5px] font-semibold text-green-d transition hover:bg-green-soft"
+              className="shrink-0 rounded-xl bg-green px-3.5 py-2 text-[12.5px] font-bold text-white transition hover:bg-green-d"
             >
               Xem giỏ
             </Link>
