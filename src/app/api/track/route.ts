@@ -38,6 +38,16 @@ export async function POST(req: Request) {
       });
     }
 
+    // Lượt xem SẢN PHẨM: path 1 đoạn "/slug" trùng 1 sản phẩm -> +1. updateMany
+    // nên trang danh mục/khác (không khớp slug SP) tự bỏ qua, không cần kiểm tra.
+    const m = /^\/([a-z0-9][a-z0-9-]*)$/.exec(path);
+    if (m) {
+      await prisma.product.updateMany({
+        where: { slug: m[1] },
+        data: { views: { increment: 1 } },
+      });
+    }
+
     // Dọn phiên cũ thỉnh thoảng (không phải mỗi request).
     if (Math.random() < 0.05) {
       await prisma.activeVisitor.deleteMany({

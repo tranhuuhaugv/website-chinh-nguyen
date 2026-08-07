@@ -2,11 +2,13 @@
 
 import { useEffect, useMemo, useState } from "react";
 import Link from "next/link";
+import Image from "next/image";
 import { usePathname, useRouter, useSearchParams } from "next/navigation";
 import { EditIcon, PlusIcon, TrashIcon } from "@/components/icons";
 import { formatPrice } from "@/lib/format";
 
 // Quản lý sản phẩm: đọc DB thật, tìm kiếm + lọc hãng/tình trạng, sửa/xoá thật.
+// Bật/tắt Nổi bật + Hiển thị, sửa STT ngay trong danh sách (không mở form).
 
 export interface AdminProduct {
   id: string;
@@ -20,6 +22,11 @@ export interface AdminProduct {
   storage: string;
   series: string;
   updatedBy: string;
+  image: string | null;
+  isFeatured: boolean;
+  active: boolean;
+  views: number;
+  sort: number;
 }
 
 const PER_PAGE = 20;
@@ -105,6 +112,25 @@ export function ProductAdminList({
       }
     } finally {
       setBusy(null);
+    }
+  }
+
+  // Sửa nhanh 1 field (Nổi bật / Hiển thị / STT) — cập nhật ngay tại chỗ.
+  async function quick(id: string, patch: Partial<AdminProduct>) {
+    setRows((prev) => prev.map((x) => (x.id === id ? { ...x, ...patch } : x)));
+    try {
+      const res = await fetch("/api/admin/products", {
+        method: "PATCH",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ id, ...patch }),
+      });
+      if (!res.ok) {
+        alert("Lưu thất bại, thử lại.");
+        router.refresh();
+      }
+    } catch {
+      alert("Lỗi kết nối máy chủ.");
+      router.refresh();
     }
   }
 
@@ -205,11 +231,16 @@ export function ProductAdminList({
       </div>
 
       <div className="overflow-x-auto rounded-2xl border border-line bg-white shadow-sm">
-        <table className="w-full min-w-[720px] text-left text-[13.5px]">
+        <table className="w-full min-w-[940px] text-left text-[13.5px]">
           <thead>
             <tr className="border-b border-line bg-bg text-[12.5px] uppercase tracking-wide text-muted">
+              <th className="w-16 px-3 py-3 text-center font-semibold">STT</th>
+              <th className="w-14 px-2 py-3 font-semibold">Hình</th>
               <th className="px-4 py-3 font-semibold">Tên sản phẩm</th>
               <th className="px-4 py-3 font-semibold">Giá</th>
+              <th className="px-3 py-3 text-center font-semibold">Nổi bật</th>
+              <th className="px-3 py-3 text-center font-semibold">Hiển thị</th>
+              <th className="px-3 py-3 text-center font-semibold">Lượt xem</th>
               <th className="px-4 py-3 font-semibold">Người thêm / sửa</th>
               <th className="px-4 py-3 text-right font-semibold">Thao tác</th>
             </tr>
@@ -217,7 +248,7 @@ export function ProductAdminList({
           <tbody>
             {shown.length === 0 ? (
               <tr>
-                <td colSpan={4} className="px-4 py-10 text-center text-muted">
+                <td colSpan={9} className="px-4 py-10 text-center text-muted">
                   Không có sản phẩm phù hợp.
                 </td>
               </tr>
@@ -225,13 +256,69 @@ export function ProductAdminList({
               shown.map((p) => (
                 <tr
                   key={p.id}
-                  className="border-b border-line last:border-0 hover:bg-bg/60"
+                  className={`border-b border-line last:border-0 hover:bg-bg/60 ${
+                    p.active ? "" : "bg-[#FBFBFA] opacity-60"
+                  }`}
                 >
+                  {/* STT sửa nhanh */}
+                  <td className="px-3 py-3 text-center">
+                    <input
+                      type="number"
+                      defaultValue={p.sort}
+                      onBlur={(e) => {
+                        const v = Number(e.target.value);
+                        if (Number.isFinite(v) && v !== p.sort)
+                          quick(p.id, { sort: v });
+                      }}
+                      className="h-8 w-14 rounded-lg border border-line px-1.5 text-center text-[13px] outline-none focus:border-green"
+                    />
+                  </td>
+                  {/* Ảnh thu nhỏ */}
+                  <td className="px-2 py-2">
+                    <div className="relative h-11 w-11 overflow-hidden rounded-lg bg-[#F5F7F5]">
+                      {p.image && (
+                        <Image
+                          src={p.image}
+                          alt=""
+                          fill
+                          sizes="44px"
+                          loading="eager"
+                          className="object-contain"
+                        />
+                      )}
+                    </div>
+                  </td>
                   <td className="px-4 py-3">
                     <div className="font-medium text-ink">{p.name}</div>
                   </td>
                   <td className="px-4 py-3 font-semibold text-sale">
                     {formatPrice(p.price)}
+                  </td>
+                  {/* Nổi bật toggle */}
+                  <td className="px-3 py-3 text-center">
+                    <input
+                      type="checkbox"
+                      checked={p.isFeatured}
+                      onChange={(e) =>
+                        quick(p.id, { isFeatured: e.target.checked })
+                      }
+                      aria-label="Nổi bật"
+                      className="h-[18px] w-[18px] cursor-pointer accent-green"
+                    />
+                  </td>
+                  {/* Hiển thị toggle */}
+                  <td className="px-3 py-3 text-center">
+                    <input
+                      type="checkbox"
+                      checked={p.active}
+                      onChange={(e) => quick(p.id, { active: e.target.checked })}
+                      aria-label="Hiển thị"
+                      className="h-[18px] w-[18px] cursor-pointer accent-green"
+                    />
+                  </td>
+                  {/* Lượt xem */}
+                  <td className="px-3 py-3 text-center tabular-nums text-ink-2">
+                    {p.views.toLocaleString("vi-VN")}
                   </td>
                   <td className="px-4 py-3 text-[12.5px] text-ink-2">
                     {p.updatedBy || <span className="text-muted">—</span>}

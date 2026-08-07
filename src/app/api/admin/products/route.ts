@@ -288,6 +288,35 @@ export async function PUT(req: Request) {
   }
 }
 
+// Sửa NHANH ngay trong danh sách: bật/tắt Nổi bật, Hiển thị, hoặc đổi STT.
+export async function PATCH(req: Request) {
+  if (!(await requireAdmin())) {
+    return NextResponse.json({ ok: false }, { status: 401 });
+  }
+  const body = (await req.json().catch(() => null)) as Record<string, unknown> | null;
+  const id = str(body?.id);
+  if (!id) return NextResponse.json({ ok: false, error: "missing_id" }, { status: 400 });
+
+  const data: { isFeatured?: boolean; active?: boolean; sort?: number } = {};
+  if (typeof body?.isFeatured === "boolean") data.isFeatured = body.isFeatured;
+  if (typeof body?.active === "boolean") data.active = body.active;
+  if (body?.sort !== undefined) {
+    const n = num(body.sort);
+    if (n !== null) data.sort = n;
+  }
+  if (!Object.keys(data).length) {
+    return NextResponse.json({ ok: false, error: "no_field" }, { status: 400 });
+  }
+  try {
+    const p = await prisma.product.update({ where: { id }, data });
+    done(p.slug);
+    return NextResponse.json({ ok: true });
+  } catch (err) {
+    console.error("Sửa nhanh sản phẩm lỗi:", err);
+    return NextResponse.json({ ok: false, error: "update_failed" }, { status: 500 });
+  }
+}
+
 export async function DELETE(req: Request) {
   if (!(await requireAdmin())) {
     return NextResponse.json({ ok: false }, { status: 401 });

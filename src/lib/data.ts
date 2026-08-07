@@ -104,6 +104,8 @@ function toProduct(p: PrismaProductWithBrand): Product {
     badge: p.badge ?? undefined,
     isNew: p.isNew,
     isFeatured: p.isFeatured,
+    active: p.active ?? true,
+    views: p.views ?? 0,
     accent: p.accent as ProductAccent,
     images: p.images ?? [],
     variantSlugs: p.variantSlugs ?? [],
@@ -150,6 +152,7 @@ const withBrand = { include: { brand: true } } as const;
 export async function getAllProducts(): Promise<Product[]> {
   if (NO_DB) return MOCK_PRODUCTS;
   const rows = await prisma.product.findMany({
+    where: { active: true }, // ẩn (active=false) -> không hiện ngoài web
     ...withBrand,
     orderBy: { sort: "asc" },
   });
@@ -162,7 +165,7 @@ const FLASH_SALE_LIMIT = 8;
 export async function getFlashSaleProducts(): Promise<Product[]> {
   if (NO_DB) return FLASH_SALE_PRODUCTS;
   const rows = await prisma.product.findMany({
-    where: { isFlashSale: true },
+    where: { isFlashSale: true, active: true },
     ...withBrand,
     orderBy: { sort: "asc" },
     take: FLASH_SALE_LIMIT,
@@ -184,7 +187,7 @@ const FEATURED_LIMIT = 24;
 export async function getFeaturedProducts(): Promise<Product[]> {
   if (NO_DB) return FEATURED_PRODUCTS;
   const rows = await prisma.product.findMany({
-    where: { isFeatured: true },
+    where: { isFeatured: true, active: true },
     ...withBrand,
     orderBy: { sort: "asc" },
     take: FEATURED_LIMIT,
@@ -194,6 +197,7 @@ export async function getFeaturedProducts(): Promise<Product[]> {
   }
 
   const duPhong = await prisma.product.findMany({
+    where: { active: true },
     ...withBrand,
     orderBy: { createdAt: "desc" },
     take: FEATURED_LIMIT,
@@ -210,7 +214,7 @@ const NEW_LIMIT = 12;
 export async function getNewProducts(): Promise<Product[]> {
   if (NO_DB) return FEATURED_PRODUCTS;
   const rows = await prisma.product.findMany({
-    where: { isNew: true },
+    where: { isNew: true, active: true },
     ...withBrand,
     orderBy: { createdAt: "desc" },
     take: NEW_LIMIT,
@@ -219,6 +223,7 @@ export async function getNewProducts(): Promise<Product[]> {
     return rows.map((r) => toProduct(r as PrismaProductWithBrand));
   }
   const recent = await prisma.product.findMany({
+    where: { active: true },
     ...withBrand,
     orderBy: { createdAt: "desc" },
     take: NEW_LIMIT,
@@ -229,7 +234,9 @@ export async function getNewProducts(): Promise<Product[]> {
 export async function getProductBySlug(slug: string): Promise<Product | null> {
   if (NO_DB) return MOCK_PRODUCTS.find((p) => p.slug === slug) ?? null;
   const row = await prisma.product.findUnique({ where: { slug }, ...withBrand });
-  return row ? toProduct(row as PrismaProductWithBrand) : null;
+  // Ẩn (active=false) -> coi như không tồn tại ngoài web (404).
+  if (!row || !row.active) return null;
+  return toProduct(row as PrismaProductWithBrand);
 }
 
 /** 1 lựa chọn cấu hình ở trang chi tiết (nút "8GB - 256GB"). */
@@ -319,7 +326,7 @@ export async function getProductVariants(
 
   // Link trỏ tới máy đã xoá -> không tìm thấy -> chỉ còn nút của máy này.
   const rows = await prisma.product.findMany({
-    where: { slug: { in: links } },
+    where: { slug: { in: links }, active: true },
     select: chonCot,
   });
 
@@ -335,7 +342,7 @@ export async function getRelatedProducts(
     ? MOCK_PRODUCTS.filter((p) => p.slug !== product.slug)
     : (
         await prisma.product.findMany({
-          where: { slug: { not: product.slug } },
+          where: { slug: { not: product.slug }, active: true },
           ...withBrand,
           orderBy: { sort: "asc" },
         })
@@ -347,7 +354,10 @@ export async function getRelatedProducts(
 
 export async function getAllProductSlugs(): Promise<string[]> {
   if (NO_DB) return MOCK_PRODUCTS.map((p) => p.slug);
-  const rows = await prisma.product.findMany({ select: { slug: true } });
+  const rows = await prisma.product.findMany({
+    where: { active: true },
+    select: { slug: true },
+  });
   return rows.map((r) => r.slug);
 }
 
@@ -721,6 +731,11 @@ export async function getAdminProducts() {
     storage: p.storage,
     series: p.series ?? "", // slug dòng máy để lọc trong admin
     updatedBy: p.updatedBy ?? "", // email admin thêm/sửa gần nhất
+    image: p.images?.[0] ?? null, // ảnh thu nhỏ cho danh sách
+    isFeatured: p.isFeatured,
+    active: p.active,
+    views: p.views,
+    sort: p.sort,
   }));
 }
 

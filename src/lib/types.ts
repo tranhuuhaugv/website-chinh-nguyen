@@ -56,6 +56,10 @@ export interface Product {
   isNew?: boolean;
   /** Admin tích -> hiện ở khối "Sản phẩm nổi bật" trang chủ. */
   isFeatured?: boolean;
+  /** "Hiển thị": false = ẩn khỏi web (không xoá). Mặc định hiện. */
+  active?: boolean;
+  /** Lượt xem trang chi tiết. */
+  views?: number;
   accent: ProductAccent;
   /** Ảnh thật do admin tải lên (/uploads/...). Trống -> hiện ProductImage (SVG). */
   images?: string[];
