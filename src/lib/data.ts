@@ -109,6 +109,7 @@ function toProduct(p: PrismaProductWithBrand): Product {
     options: parseOptions(p.options),
     needs: p.needs ?? [],
     series: p.series ?? undefined,
+    category: p.category ?? undefined,
   };
 }
 
@@ -374,6 +375,50 @@ export async function getCategoryName(slug: string): Promise<string | null> {
   return c?.name ?? null;
 }
 
+// Slug các danh mục ĐƯỢC SUY DIỄN sẵn (không gán bằng ô "Danh mục"):
+// - laptop-moi/cu: lọc theo condition
+// - laptop-gaming/do-hoa/van-phong: lọc theo needs
+// - brand slugs: lọc theo hãng (liệt kê để mock/local đúng; prod chúng có
+//   group "thuong-hieu" nên đã bị loại).
+const DERIVED_CATEGORY_SLUGS = new Set([
+  "laptop-moi",
+  "laptop-cu",
+  "laptop-gaming",
+  "laptop-do-hoa",
+  "laptop-van-phong",
+  "dell",
+  "hp",
+  "lenovo",
+  "asus",
+  "acer",
+  "msi",
+  "macbook",
+]);
+
+/**
+ * Danh mục có thể GÁN TRỰC TIẾP cho 1 sản phẩm qua ô "Danh mục" trong form.
+ * = mọi danh mục TRỪ thương hiệu, dòng máy, và các mục laptop suy diễn sẵn.
+ * -> admin thêm danh mục mới nào (Khác / Không nhóm / nhu cầu mới) đều tự hiện.
+ */
+function isAssignableCategory(c: Category): boolean {
+  if (c.group === "thuong-hieu" || c.group === "dong-may") return false;
+  if (DERIVED_CATEGORY_SLUGS.has(c.slug)) return false;
+  return true;
+}
+
+/**
+ * Danh mục cho ô "Danh mục" ở form sản phẩm. Sản phẩm gán slug này -> hiện ở
+ * trang danh mục tương ứng (CategoryView lọc theo cột `category`).
+ */
+export async function getProductCategoryOptions(): Promise<
+  { value: string; label: string }[]
+> {
+  const cats = await getCategories();
+  return cats
+    .filter(isAssignableCategory)
+    .map((c) => ({ value: c.slug, label: c.name }));
+}
+
 /**
  * Số sản phẩm mỗi danh mục (cho cây danh mục admin). Đếm ĐÚNG như trang danh
  * mục ngoài web lọc: dòng máy theo cột `series`; hãng theo `brand`; loại máy
@@ -405,6 +450,9 @@ export async function getCategoryCounts(): Promise<Record<string, number>> {
       n = products.filter((p) =>
         (p.needs ?? []).includes(NEED_BY_SLUG[c.slug]),
       ).length;
+    } else {
+      // Danh mục gán trực tiếp (PC, Màn hình, hoặc danh mục admin tự thêm).
+      n = products.filter((p) => p.category === c.slug).length;
     }
     counts[c.slug] = n;
   }

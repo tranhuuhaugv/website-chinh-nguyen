@@ -263,7 +263,7 @@ export function AdminForm({
                   onChange={(e) => set(f.name, e.target.value)}
                   className={inputCls}
                 >
-                  <option value="">-- Chọn --</option>
+                  <option value="">{f.placeholder || "-- Chọn --"}</option>
                   {f.options?.map((o) => (
                     <option key={o.value} value={o.value}>
                       {o.label}

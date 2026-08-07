@@ -73,8 +73,6 @@ export async function CategoryView({
     "laptop-gaming": "gaming",
     "laptop-do-hoa": "do-hoa",
     "laptop-van-phong": "van-phong",
-    // Máy bộ PC: sản phẩm tích "Là PC/máy bộ" (needs mang tag "pc").
-    pc: "pc",
   };
   // Mặc định RỖNG: danh mục chưa có quy tắc gắn sản phẩm (VD PC, màn hình, phụ
   // kiện) thì hiện rỗng, KHÔNG rơi vào "hiện tất cả sản phẩm" như trước.
@@ -90,6 +88,10 @@ export async function CategoryView({
   } else if (NEED_BY_SLUG[slug]) {
     const need = NEED_BY_SLUG[slug];
     baseProducts = allProducts.filter((p) => (p.needs ?? []).includes(need));
+  } else {
+    // Danh mục "đứng riêng" (PC đồng bộ, Màn hình, Phụ kiện): sản phẩm được gán
+    // trực tiếp bằng ô "Danh mục" trong admin (cột category).
+    baseProducts = allProducts.filter((p) => p.category === slug);
   }
 
   const brands = Array.from(new Set(baseProducts.map((p) => p.brand)));

@@ -5,6 +5,7 @@ import {
   getAdminProductById,
   getBrandSeriesOptions,
   getNeeds,
+  getProductCategoryOptions,
 } from "@/lib/data";
 import { toRichHtml } from "@/lib/rich-text";
 
@@ -16,10 +17,11 @@ export default async function EditProductPage({
 }: {
   params: { id: string };
 }) {
-  const [product, brandSeries, needs] = await Promise.all([
+  const [product, brandSeries, needs, productCategories] = await Promise.all([
     getAdminProductById(params.id),
     getBrandSeriesOptions(),
     getNeeds(),
+    getProductCategoryOptions(),
   ]);
   if (!product) notFound();
 
@@ -31,7 +33,7 @@ export default async function EditProductPage({
     <AdminForm
       title={`Sửa: ${product.name}`}
       singleColumn
-      fields={productFields(brandSeries, needs)}
+      fields={productFields(brandSeries, needs, productCategories)}
       initialValues={{
         name: product.name,
         brandSeries: brandSeriesValue,
@@ -62,7 +64,7 @@ export default async function EditProductPage({
         ports: s(product.ports),
         warranty: s(product.warranty),
         needs: (product.needs ?? []).join(","),
-        isPc: (product.needs ?? []).includes("pc") ? "co" : "khong",
+        category: s(product.category),
         images: (product.images ?? []).join(","),
         // Hiện lại dạng link cho dễ đọc/sửa (lưu trong DB là slug).
         variantLinks: (product.variantSlugs ?? [])

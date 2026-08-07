@@ -77,6 +77,8 @@ export interface Product {
   needs?: string[];
   /** Dòng máy (series) = slug danh mục con theo hãng, VD "lenovo-thinkpad". */
   series?: string;
+  /** Danh mục "đứng riêng" (nhóm Khác): "pc" | "man-hinh" | "phu-kien"... */
+  category?: string;
 }
 
 export interface Category {

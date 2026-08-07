@@ -76,6 +76,9 @@ model Product {
   // Dòng máy (series) = slug danh mục con theo hãng, VD "lenovo-thinkpad".
   // Trang /danh-muc/<series> (Category group="dong-may") lọc SP theo cột này.
   series              String?
+  // Danh mục "đứng riêng" (nhóm Khác): "pc" | "man-hinh" | "phu-kien"...
+  // Sản phẩm gán slug này -> hiện ở trang danh mục tương ứng (VD /pc).
+  category            String?
   needs               String[] // slug nhu cầu: van-phong, gaming, sinh-vien...
   commitments         String[]
   description         Json? // các khối nội dung (đoạn văn / ảnh)
@@ -98,6 +101,7 @@ model Product {
   @@index([createdAt])
   @@index([isFeatured]) // trang chủ lọc theo cờ này
   @@index([series]) // trang dòng máy lọc theo cột này
+  @@index([category]) // trang danh mục Khác (PC, Màn hình) lọc theo cột này
 }
 
 model BlogPost {
