@@ -3,7 +3,12 @@ import { cookies } from "next/headers";
 import { revalidatePath } from "next/cache";
 import { prisma } from "@/lib/prisma";
 import { ADMIN_COOKIE, verifyAdminToken } from "@/lib/admin-auth";
-import { EDITABLE_PAGES, pagePublicPath } from "@/lib/policies";
+import {
+  EDITABLE_PAGES,
+  isFixedPage,
+  isValidPageSlug,
+  pagePublicPath,
+} from "@/lib/policies";
 
 // Lưu nội dung trang nội dung (chính sách + giới thiệu/liên hệ) vào DB. Chỉ admin.
 
@@ -36,12 +41,14 @@ export async function PUT(req: Request) {
   }
 
   const id = String(body.id ?? "").trim();
-  // Chỉ cho sửa các trang nội dung hợp lệ (chính sách + giới thiệu/liên hệ).
-  if (!id || !EDITABLE_PAGES[id]) {
+  // Cho sửa/tạo: trang cố định (chính sách/giới thiệu/liên hệ) HOẶC slug hợp lệ
+  // (trang tuỳ chỉnh admin tự tạo -> upsert vào bảng Page).
+  if (!id || (!EDITABLE_PAGES[id] && !isValidPageSlug(id))) {
     return NextResponse.json({ ok: false, error: "invalid_page" }, { status: 400 });
   }
 
-  const title = String(body.title ?? "").trim() || EDITABLE_PAGES[id].title;
+  const title =
+    String(body.title ?? "").trim() || EDITABLE_PAGES[id]?.title || id;
   const lead = String(body.lead ?? "").trim();
   const intro = strArray(body.intro);
   const sections = Array.isArray(body.sections)
@@ -73,4 +80,22 @@ export async function PUT(req: Request) {
     console.error("Lưu trang chính sách lỗi:", err);
     return NextResponse.json({ ok: false, error: "save_failed" }, { status: 500 });
   }
+}
+
+// Xoá 1 trang TUỲ CHỈNH (không cho xoá trang cố định trong code).
+export async function DELETE(req: Request) {
+  if (!(await requireAdmin())) {
+    return NextResponse.json({ ok: false }, { status: 401 });
+  }
+  const id = new URL(req.url).searchParams.get("id") ?? "";
+  if (!id || isFixedPage(id)) {
+    return NextResponse.json({ ok: false, error: "not_deletable" }, { status: 400 });
+  }
+  try {
+    await prisma.page.delete({ where: { id } });
+  } catch {
+    // đã xoá / không tồn tại -> coi như xong
+  }
+  revalidatePath(`/trang/${id}`);
+  return NextResponse.json({ ok: true });
 }

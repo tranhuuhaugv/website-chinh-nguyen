@@ -2,6 +2,7 @@
 
 import { useEffect, useState } from "react";
 import Link from "next/link";
+import Image from "next/image";
 import { useCart } from "./CartContext";
 import { ProductImage } from "@/components/ProductImage";
 import {
@@ -132,6 +133,7 @@ export function CartCheckout({
         price: i.price,
         qty: i.qty,
         slug: i.slug,
+        image: i.image,
       })),
       total,
       voucher: voucherValid ? appliedVoucher.code : undefined,
@@ -328,10 +330,23 @@ export function CartCheckout({
               <div key={item.id} className="flex gap-4 py-3 first:pt-0 last:pb-0">
                 <Link
                   href={`/${item.slug}`}
-                  className="h-20 w-24 shrink-0 overflow-hidden rounded-xl bg-[#F5F7F5] p-2"
+                  className="relative h-20 w-24 shrink-0 overflow-hidden rounded-xl bg-[#F5F7F5] p-2"
                 >
-                  <div className="h-full w-full overflow-hidden rounded-lg">
-                    <ProductImage accent={item.accent} uid={`cart-${item.id}`} />
+                  <div className="relative h-full w-full overflow-hidden rounded-lg">
+                    {item.image ? (
+                      <Image
+                        src={item.image}
+                        alt={item.name}
+                        fill
+                        sizes="96px"
+                        className="object-contain"
+                      />
+                    ) : (
+                      <ProductImage
+                        accent={item.accent}
+                        uid={`cart-${item.id}`}
+                      />
+                    )}
                   </div>
                 </Link>
 

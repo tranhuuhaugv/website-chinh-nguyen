@@ -83,6 +83,7 @@ export function ProductCard({
             name: product.name,
             price: product.price,
             accent: product.accent,
+            image: cover,
           }}
           className="absolute right-2.5 top-2.5 z-[2] flex h-9 w-9 items-center justify-center rounded-full border border-line bg-white/95 text-green-d shadow-sm backdrop-blur transition hover:-translate-y-0.5 hover:border-green-d hover:bg-green-d hover:text-white hover:shadow-md"
           ariaLabel={`Thêm ${product.name} vào giỏ`}
@@ -191,6 +192,7 @@ export function ProductCard({
             name: product.name,
             brand: product.brand,
             accent: product.accent,
+            image: cover,
             price: product.price,
             oldPrice: product.oldPrice,
             cpu: product.cpu,

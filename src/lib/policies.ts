@@ -384,7 +384,19 @@ export const EDITABLE_PAGES: Record<string, Policy> = {
   ...INFO_PAGES,
 };
 
-/** Đường dẫn trang khách của 1 trang sửa được. */
+/** Đường dẫn trang khách của 1 trang sửa được (cố định hoặc tuỳ chỉnh). */
 export function pagePublicPath(id: string): string {
-  return POLICIES[id] ? `/chinh-sach/${id}` : `/${id}`;
+  if (POLICIES[id]) return `/chinh-sach/${id}`;
+  if (INFO_PAGES[id]) return `/${id}`;
+  return `/trang/${id}`; // trang admin tự tạo
+}
+
+/** Slug hợp lệ cho trang tuỳ chỉnh: chữ thường/số/gạch, 2–60 ký tự. */
+export function isValidPageSlug(id: string): boolean {
+  return /^[a-z0-9]+(?:-[a-z0-9]+)*$/.test(id) && id.length >= 2 && id.length <= 60;
+}
+
+/** Là trang cố định trong code (chính sách / giới thiệu / liên hệ)? */
+export function isFixedPage(id: string): boolean {
+  return !!EDITABLE_PAGES[id];
 }

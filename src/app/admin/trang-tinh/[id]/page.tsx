@@ -1,6 +1,11 @@
 import { notFound } from "next/navigation";
 import { PolicyEditor } from "@/components/admin/PolicyEditor";
-import { EDITABLE_PAGES, pagePublicPath } from "@/lib/policies";
+import {
+  EDITABLE_PAGES,
+  isFixedPage,
+  isValidPageSlug,
+  pagePublicPath,
+} from "@/lib/policies";
 import { getPolicyOverride } from "@/lib/data";
 
 export const metadata = { title: "Sửa trang nội dung" };
@@ -8,20 +13,29 @@ export const dynamic = "force-dynamic";
 
 export default async function EditStaticPage({
   params,
+  searchParams,
 }: {
   params: { id: string };
+  searchParams: { title?: string };
 }) {
-  const base = EDITABLE_PAGES[params.id];
-  if (!base) notFound();
+  const id = params.id;
+  const fixed = isFixedPage(id);
+  const override = await getPolicyOverride(id);
 
-  // Ưu tiên bản đã lưu DB, chưa có thì lấy bản mặc định.
-  const policy = (await getPolicyOverride(params.id)) ?? base;
+  // Trang mới (tuỳ chỉnh, chưa lưu) phải có slug hợp lệ.
+  if (!fixed && !override && !isValidPageSlug(id)) notFound();
+
+  const base = fixed
+    ? EDITABLE_PAGES[id]
+    : (override ?? {
+        title: searchParams.title ?? "",
+        lead: "",
+        intro: [],
+        sections: [],
+      });
+  const policy = override ?? base;
 
   return (
-    <PolicyEditor
-      id={params.id}
-      policy={policy}
-      path={pagePublicPath(params.id)}
-    />
+    <PolicyEditor id={id} policy={policy} path={pagePublicPath(id)} />
   );
 }

@@ -24,6 +24,8 @@ export interface CompareItem {
   name: string;
   brand: string;
   accent: ProductAccent;
+  /** Ảnh thật (/uploads/...) để giỏ hàng hiện đúng ảnh khi bấm "Mua ngay" từ bảng so sánh. */
+  image?: string;
   price: number;
   oldPrice?: number;
   cpu: string;

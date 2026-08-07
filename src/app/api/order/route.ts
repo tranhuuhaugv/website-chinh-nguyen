@@ -73,7 +73,8 @@ export async function POST(req: Request) {
         const imageBySlug = new Map(products.map((p) => [p.slug, p.images[0]]));
         d.items = d.items.map((i) => ({
           ...i,
-          image: i.slug ? imageBySlug.get(i.slug) : undefined,
+          // Ưu tiên ảnh trong DB (nguồn tin cậy); thiếu thì dùng ảnh client gửi kèm.
+          image: (i.slug ? imageBySlug.get(i.slug) : undefined) ?? i.image,
         }));
       } catch (err) {
         console.error("Lấy ảnh sản phẩm cho email lỗi:", err);

@@ -117,6 +117,8 @@ export interface CartItem {
   name: string;
   price: number;
   accent: ProductAccent;
+  /** Ảnh thật (/uploads/...) chụp lúc thêm vào giỏ. Trống -> hiện ProductImage (SVG). */
+  image?: string;
   qty: number;
 }
 

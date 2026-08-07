@@ -169,6 +169,7 @@ export function CompareModal({ onClose }: { onClose: () => void }) {
                         name: p.name,
                         price: p.price,
                         accent: p.accent,
+                        image: p.image,
                       }}
                       redirectTo="/gio-hang"
                       className="flex w-full items-center justify-center gap-1.5 rounded-lg bg-green py-2 text-[12.5px] font-semibold text-white transition hover:bg-green-d"

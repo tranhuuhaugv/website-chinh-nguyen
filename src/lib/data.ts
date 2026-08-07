@@ -17,6 +17,7 @@ import { sanitizeRichText, toRichHtml } from "./rich-text";
 import { NEED_OPTIONS, matchesKeyword } from "./product-query";
 import { VOUCHERS, type Voucher } from "./vouchers";
 import type { Policy, Section } from "./policies";
+import { EDITABLE_PAGES } from "./policies";
 import {
   ALL_PRODUCTS,
   BLOG_POSTS,
@@ -847,6 +848,17 @@ export async function getSetting(key: string): Promise<string | null> {
     return ["flashSaleEnabled", "vouchersEnabled"].includes(key) ? "true" : null;
   const s = await prisma.setting.findUnique({ where: { key } });
   return s?.value ?? null;
+}
+
+/** Danh sách trang tuỳ chỉnh admin tự tạo (không phải trang cố định trong code). */
+export async function getCustomPages(): Promise<
+  { slug: string; title: string }[]
+> {
+  if (NO_DB) return [];
+  const rows = await prisma.page.findMany({ select: { id: true, title: true } });
+  return rows
+    .filter((r) => !EDITABLE_PAGES[r.id]) // bỏ các bản override của trang cố định
+    .map((r) => ({ slug: r.id, title: r.title }));
 }
 
 /** Ảnh không gian cửa hàng (admin upload, Setting "aboutPhotos") -> mảng URL. */

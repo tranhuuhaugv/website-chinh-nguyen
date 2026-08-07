@@ -38,16 +38,16 @@ export function productFields(
     },
     {
       name: "condition",
-      label: "Tình trạng máy *",
+      label: "Tình trạng máy * (hiện badge ở trang chi tiết)",
       type: "select",
       options: [
-        { value: "used", label: "Máy cũ (đã qua sử dụng)" },
-        { value: "new", label: "Máy mới" },
+        { value: "used", label: "Like New (máy cũ như mới)" },
+        { value: "new", label: "New (máy mới)" },
       ],
     },
     {
       name: "stockStatus",
-      label: "Tình trạng hàng",
+      label: "Trạng thái hàng (hiện badge ở trang chi tiết)",
       type: "select",
       options: STOCK_OPTIONS,
     },

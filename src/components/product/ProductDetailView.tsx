@@ -97,6 +97,16 @@ export async function ProductDetailView({ slug }: { slug: string }) {
   const stock = STOCK[product.stockStatus ?? "con_hang"] ?? STOCK.con_hang;
   // Chỉ CÒN HÀNG mới cho mua; hết hàng / sắp về -> khoá nút mua.
   const available = (product.stockStatus ?? "con_hang") === "con_hang";
+  // Tình trạng máy -> nhãn New / Like New (value giữ nguyên new/used).
+  const COND: Record<string, { label: string; cls: string; dot: string }> = {
+    new: { label: "New", cls: "bg-green-soft text-green-d", dot: "bg-green" },
+    used: {
+      label: "Like New",
+      cls: "bg-[#EAF2FF] text-[#1D6FE0]",
+      dot: "bg-[#1D6FE0]",
+    },
+  };
+  const cond = COND[product.condition ?? "used"] ?? COND.used;
 
   // Tùy chọn cấu hình: nếu admin có nhập option -> đưa CẤU HÌNH GỐC (giá gốc)
   // lên làm ô ĐẦU TIÊN (chọn sẵn), rồi các option admin ở dưới. Không có option
@@ -175,6 +185,7 @@ export async function ProductDetailView({ slug }: { slug: string }) {
     name: product.name,
     price: product.price,
     accent: product.accent,
+    image: product.images?.[0],
   };
 
   return (
@@ -227,6 +238,32 @@ export async function ProductDetailView({ slug }: { slug: string }) {
                 </span>
               </div>
 
+              {/* Badge Tình trạng (New/Like New) + Trạng thái (còn/sắp/hết hàng) */}
+              <div className="mt-3 flex flex-wrap items-center gap-2.5">
+                <span className="inline-flex items-center gap-1.5 text-[12px]">
+                  <span className="font-semibold uppercase tracking-wide text-muted">
+                    Tình trạng
+                  </span>
+                  <span
+                    className={`inline-flex items-center gap-1.5 rounded-full px-2.5 py-1 font-semibold ${cond.cls}`}
+                  >
+                    <span className={`h-1.5 w-1.5 rounded-full ${cond.dot}`} />
+                    {cond.label}
+                  </span>
+                </span>
+                <span className="inline-flex items-center gap-1.5 text-[12px]">
+                  <span className="font-semibold uppercase tracking-wide text-muted">
+                    Trạng thái
+                  </span>
+                  <span
+                    className={`inline-flex items-center gap-1.5 rounded-full px-2.5 py-1 font-semibold ${stock.cls}`}
+                  >
+                    <span className={`h-1.5 w-1.5 rounded-full ${stock.dot}`} />
+                    {stock.label}
+                  </span>
+                </span>
+              </div>
+
               <div className="mt-4 overflow-hidden rounded-2xl border border-line bg-white shadow-card">
                 <div
                   className={`flex items-center justify-between gap-4 p-4 ${
@@ -236,17 +273,6 @@ export async function ProductDetailView({ slug }: { slug: string }) {
                   }`}
                 >
                   <ProductPrice oldPrice={product.oldPrice} discount={discount} />
-                  <div className="shrink-0 text-right">
-                    <p className="text-[11px] font-semibold uppercase tracking-wide text-muted">
-                      Tình trạng
-                    </p>
-                    <p
-                      className={`mt-1 inline-flex items-center gap-1.5 rounded-full px-2.5 py-1 text-[12px] font-semibold ${stock.cls}`}
-                    >
-                      <span className={`h-1.5 w-1.5 rounded-full ${stock.dot}`} />
-                      {stock.label}
-                    </p>
-                  </div>
                 </div>
               </div>
 
