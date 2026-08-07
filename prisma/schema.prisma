@@ -200,3 +200,18 @@ model ActiveVisitor {
 
   @@index([lastSeen])
 }
+
+// Linh kiện PC cho trang "Build PC" (khách tự chọn từng phần -> tính tổng).
+model PcPart {
+  id     String  @id @default(cuid())
+  type   String // cpu | mainboard | ram | vga | storage | psu | case | cooling
+  name   String
+  price  Int     @default(0)
+  brand  String? // hãng (Intel, ASUS, Corsair...)
+  image  String? // ảnh /uploads/...
+  note   String? // spec ngắn hiển thị dưới tên
+  active Boolean @default(true)
+  sort   Int     @default(0)
+
+  @@index([type])
+}

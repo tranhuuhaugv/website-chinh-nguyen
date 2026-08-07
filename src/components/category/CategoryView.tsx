@@ -9,6 +9,7 @@ import { FloatButtons } from "@/components/FloatButtons";
 import { ProductBrowser } from "@/components/product/ProductBrowser";
 import { CompareBar } from "@/components/compare/CompareBar";
 import { CompareProvider } from "@/components/compare/CompareContext";
+import { ArrowRightIcon, CpuIcon } from "@/components/icons";
 import {
   getAllProducts,
   getBrandBySlug,
@@ -116,6 +117,29 @@ export async function CategoryView({
             </div>
           )}
           <h1 className="mb-3 mt-3 text-[26px] font-bold text-ink">{name}</h1>
+
+          {slug === "pc" && (
+            <Link
+              href="/build-pc"
+              className="group mb-5 flex items-center gap-4 overflow-hidden rounded-2xl bg-gradient-to-br from-green-d to-green px-5 py-4 text-white shadow-product transition hover:-translate-y-0.5 hover:shadow-md"
+            >
+              <span className="flex h-12 w-12 shrink-0 items-center justify-center rounded-xl bg-white/15 ring-1 ring-white/20">
+                <CpuIcon className="h-6 w-6" />
+              </span>
+              <span className="min-w-0 flex-1">
+                <b className="block text-[16px] font-extrabold">
+                  Tự build PC theo ý bạn
+                </b>
+                <span className="block text-[13px] text-white/85">
+                  Chọn từng linh kiện — CPU, VGA, RAM… tổng tiền tự cộng ngay.
+                </span>
+              </span>
+              <span className="flex shrink-0 items-center gap-1.5 rounded-xl bg-white px-4 py-2.5 text-[13.5px] font-extrabold text-green-d transition group-hover:gap-2.5">
+                Build PC
+                <ArrowRightIcon className="h-[18px] w-[18px]" />
+              </span>
+            </Link>
+          )}
 
           {brandSeries.length > 0 && (
             <div className="mb-5 flex flex-wrap gap-2">

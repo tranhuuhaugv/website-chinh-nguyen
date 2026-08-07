@@ -18,6 +18,8 @@ import { NEED_OPTIONS, matchesKeyword } from "./product-query";
 import { VOUCHERS, type Voucher } from "./vouchers";
 import type { Policy, Section } from "./policies";
 import { EDITABLE_PAGES } from "./policies";
+import type { PcPart } from "./pc-parts";
+import { PC_PART_TYPE_KEYS } from "./pc-parts";
 import {
   ALL_PRODUCTS,
   BLOG_POSTS,
@@ -997,4 +999,70 @@ export async function getVoucherRemaining(
   if (NO_DB) return quantity;
   const used = await prisma.order.count({ where: { voucher: code } });
   return Math.max(0, quantity - used);
+}
+
+// ——— Build PC: linh kiện ———
+
+// Mock linh kiện cho chế độ NO_DB (xem/giao diện local khi chưa có DB).
+const MOCK_PC_PARTS: PcPart[] = [
+  { id: "cpu-1", type: "cpu", name: "Intel Core i5-12400F", price: 2990000, brand: "Intel", note: "6 nhân 12 luồng, 4.4GHz" },
+  { id: "cpu-2", type: "cpu", name: "Intel Core i5-13400F", price: 4290000, brand: "Intel", note: "10 nhân, 4.6GHz" },
+  { id: "cpu-3", type: "cpu", name: "AMD Ryzen 5 5600", price: 2790000, brand: "AMD", note: "6 nhân 12 luồng" },
+  { id: "main-1", type: "mainboard", name: "ASUS PRIME H610M-K", price: 1990000, brand: "ASUS", note: "LGA1700, DDR4" },
+  { id: "main-2", type: "mainboard", name: "MSI B760M-A WIFI", price: 3490000, brand: "MSI", note: "LGA1700, DDR4, WiFi" },
+  { id: "ram-1", type: "ram", name: "Corsair Vengeance 16GB (2x8) DDR4 3200", price: 990000, brand: "Corsair", note: "16GB DDR4" },
+  { id: "ram-2", type: "ram", name: "Kingston Fury 32GB (2x16) DDR4 3600", price: 1890000, brand: "Kingston", note: "32GB DDR4" },
+  { id: "vga-1", type: "vga", name: "NVIDIA RTX 4060 8GB", price: 8490000, brand: "NVIDIA", note: "8GB GDDR6" },
+  { id: "vga-2", type: "vga", name: "NVIDIA RTX 4070 12GB", price: 15990000, brand: "NVIDIA", note: "12GB GDDR6X" },
+  { id: "ssd-1", type: "storage", name: "Samsung 980 500GB NVMe", price: 890000, brand: "Samsung", note: "SSD NVMe Gen3" },
+  { id: "ssd-2", type: "storage", name: "WD Black SN770 1TB NVMe", price: 1790000, brand: "WD", note: "SSD NVMe Gen4" },
+  { id: "psu-1", type: "psu", name: "Corsair CV550 550W", price: 990000, brand: "Corsair", note: "550W 80+ Bronze" },
+  { id: "psu-2", type: "psu", name: "Cooler Master MWE 650W", price: 1490000, brand: "Cooler Master", note: "650W 80+ Bronze" },
+  { id: "case-1", type: "case", name: "Xigmatek Gaming X", price: 690000, brand: "Xigmatek", note: "ATX, kính cường lực" },
+  { id: "cool-1", type: "cooling", name: "Deepcool AK400", price: 690000, brand: "Deepcool", note: "Tản khí, 4 ống đồng" },
+];
+
+/** Linh kiện đang bật (cho trang Build PC), sắp theo type + sort + giá. */
+export async function getPcParts(): Promise<PcPart[]> {
+  if (NO_DB) return MOCK_PC_PARTS;
+  const rows = await prisma.pcPart.findMany({
+    where: { active: true },
+    orderBy: [{ type: "asc" }, { sort: "asc" }, { price: "asc" }],
+    select: {
+      id: true,
+      type: true,
+      name: true,
+      price: true,
+      brand: true,
+      image: true,
+      note: true,
+    },
+  });
+  return rows;
+}
+
+/** Toàn bộ linh kiện (kể cả tắt) cho trang admin. */
+export async function getPcPartsAdmin(): Promise<
+  (PcPart & { active: boolean; sort: number })[]
+> {
+  if (NO_DB) return MOCK_PC_PARTS.map((p) => ({ ...p, active: true, sort: 0 }));
+  return prisma.pcPart.findMany({
+    orderBy: [{ type: "asc" }, { sort: "asc" }, { price: "asc" }],
+  });
+}
+
+/** 1 linh kiện theo id (cho trang sửa trong admin). */
+export async function getPcPartById(
+  id: string,
+): Promise<(PcPart & { active: boolean; sort: number }) | null> {
+  if (NO_DB) {
+    const p = MOCK_PC_PARTS.find((x) => x.id === id);
+    return p ? { ...p, active: true, sort: 0 } : null;
+  }
+  return prisma.pcPart.findUnique({ where: { id } });
+}
+
+/** Đảm bảo type hợp lệ (dùng ở API). */
+export function validPcPartType(type: string): boolean {
+  return PC_PART_TYPE_KEYS.includes(type);
 }

@@ -43,6 +43,7 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     },
     ...[
       "/san-pham",
+      "/build-pc",
       "/blog",
       "/gioi-thieu",
       "/lien-he",

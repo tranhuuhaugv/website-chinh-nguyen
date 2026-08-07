@@ -5,6 +5,7 @@ import { usePathname } from "next/navigation";
 import {
   BoxIcon,
   CartIcon,
+  CpuIcon,
   FileTextIcon,
   GridIcon,
   ImageIcon,
@@ -19,6 +20,7 @@ import {
 const NAV = [
   { href: "/admin", label: "Tổng quan", icon: LayoutIcon, exact: true },
   { href: "/admin/san-pham", label: "Sản phẩm", icon: BoxIcon },
+  { href: "/admin/build-pc", label: "Build PC", icon: CpuIcon },
   { href: "/admin/danh-muc", label: "Danh mục", icon: GridIcon },
   { href: "/admin/thuong-hieu", label: "Thương hiệu", icon: TagIcon },
   { href: "/admin/blog", label: "Blog", icon: FileTextIcon },
