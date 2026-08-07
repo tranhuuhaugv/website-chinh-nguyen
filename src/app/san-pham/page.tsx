@@ -7,7 +7,12 @@ import { FloatButtons } from "@/components/FloatButtons";
 import { ProductBrowser } from "@/components/product/ProductBrowser";
 import { CompareBar } from "@/components/compare/CompareBar";
 import { CompareProvider } from "@/components/compare/CompareContext";
-import { getAllProducts, getNeeds, getSeriesCategories } from "@/lib/data";
+import {
+  getAllProducts,
+  getNavCategories,
+  getNeeds,
+  getSeriesCategories,
+} from "@/lib/data";
 import type { RawParams } from "@/lib/product-query";
 
 const SITE_URL =
@@ -25,10 +30,11 @@ export default async function AllProductsPage({
 }: {
   searchParams: RawParams;
 }) {
-  const [products, series, needs] = await Promise.all([
+  const [products, series, needs, nav] = await Promise.all([
     getAllProducts(),
     getSeriesCategories(),
     getNeeds(),
+    getNavCategories(),
   ]);
   const brands = Array.from(new Set(products.map((p) => p.brand)));
 
@@ -57,6 +63,7 @@ export default async function AllProductsPage({
             brands={brands}
             series={series}
             needs={needs}
+            needCategories={nav.needs}
           />
         </Container>
       </main>

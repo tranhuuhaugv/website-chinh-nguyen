@@ -560,6 +560,44 @@ export async function getBrandSeriesOptions(): Promise<
   return [...opts, ...catOpts];
 }
 
+/**
+ * Danh mục cho ĐIỀU HƯỚNG (mega-menu + bộ lọc "Nhu cầu"), gom 3 nhóm theo đúng
+ * dữ liệu thật -> link luôn khớp slug (hết 404), thêm danh mục là tự hiện.
+ * Nhận diện nhóm: ưu tiên cột `group`; dữ liệu cũ chưa gán group thì đoán theo slug.
+ */
+const NAV_BRAND_SLUGS = new Set([
+  "dell",
+  "hp",
+  "lenovo",
+  "asus",
+  "acer",
+  "msi",
+  "macbook",
+]);
+const NAV_NEED_SLUGS = new Set([
+  "laptop-gaming",
+  "laptop-do-hoa",
+  "laptop-van-phong",
+]);
+
+export async function getNavCategories(): Promise<{
+  brands: { slug: string; name: string }[];
+  needs: { slug: string; name: string }[];
+  others: { slug: string; name: string }[];
+}> {
+  const cats = (await getCategories()).filter((c) => c.group !== "dong-may");
+  const isBrand = (c: Category) =>
+    c.group === "thuong-hieu" || (!c.group && NAV_BRAND_SLUGS.has(c.slug));
+  const isNeed = (c: Category) =>
+    c.group === "nhu-cau" || (!c.group && NAV_NEED_SLUGS.has(c.slug));
+  const pick = (c: Category) => ({ slug: c.slug, name: c.name });
+  return {
+    brands: cats.filter(isBrand).map(pick),
+    needs: cats.filter(isNeed).map(pick),
+    others: cats.filter((c) => !isBrand(c) && !isNeed(c)).map(pick),
+  };
+}
+
 /** Lấy nguyên bản 1 danh mục cho form sửa admin (gồm cả trường SEO). */
 export async function getCategoryEdit(slug: string) {
   if (NO_DB) return null;

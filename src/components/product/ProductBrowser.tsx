@@ -84,6 +84,7 @@ export function ProductBrowser({
   brands,
   series = [],
   needs = NEED_OPTIONS,
+  needCategories = [],
 }: {
   basePath: string;
   searchParams: RawParams;
@@ -93,6 +94,12 @@ export function ProductBrowser({
   series?: { slug: string; name: string }[];
   /** Nhu cầu (admin tự sửa). Không truyền -> dùng danh sách mặc định. */
   needs?: { value: string; label: string }[];
+  /**
+   * Danh mục "Nhu cầu" thật (slug + tên) để hàng lọc Nhu cầu ĐIỀU HƯỚNG sang
+   * trang danh mục đó (bấm là chuyển trang), thay vì lọc tại chỗ. Rỗng -> giữ
+   * kiểu lọc tại chỗ cũ.
+   */
+  needCategories?: { slug: string; name: string }[];
   /** Giữ để tương thích; các bộ lọc link đã tự giữ mọi param hiện có. */
   preserve?: Record<string, string>;
 }) {
@@ -183,30 +190,49 @@ export function ProductBrowser({
             </FilterRow>
           )}
 
-          <FilterRow label="Nhu cầu">
-            <Chip
-              href={basePath + setParam(searchParams, "nhucau", undefined)}
-              active={!activeNeed}
-            >
-              Tất cả
-            </Chip>
-            {needs.map((opt) => (
-              <Chip
-                key={opt.value}
-                href={
-                  basePath +
-                  setParam(
-                    searchParams,
-                    "nhucau",
-                    activeNeed === opt.value ? undefined : opt.value,
-                  )
-                }
-                active={activeNeed === opt.value}
-              >
-                {opt.label}
+          {needCategories.length > 0 ? (
+            // Điều hướng: mỗi nhu cầu là 1 danh mục -> bấm là CHUYỂN TRANG sang
+            // danh mục đó (không lọc chồng trong danh mục hiện tại).
+            <FilterRow label="Nhu cầu">
+              <Chip href="/san-pham" active={basePath === "/san-pham"}>
+                Tất cả
               </Chip>
-            ))}
-          </FilterRow>
+              {needCategories.map((c) => (
+                <Chip
+                  key={c.slug}
+                  href={`/${c.slug}`}
+                  active={basePath === `/${c.slug}`}
+                >
+                  {c.name}
+                </Chip>
+              ))}
+            </FilterRow>
+          ) : (
+            <FilterRow label="Nhu cầu">
+              <Chip
+                href={basePath + setParam(searchParams, "nhucau", undefined)}
+                active={!activeNeed}
+              >
+                Tất cả
+              </Chip>
+              {needs.map((opt) => (
+                <Chip
+                  key={opt.value}
+                  href={
+                    basePath +
+                    setParam(
+                      searchParams,
+                      "nhucau",
+                      activeNeed === opt.value ? undefined : opt.value,
+                    )
+                  }
+                  active={activeNeed === opt.value}
+                >
+                  {opt.label}
+                </Chip>
+              ))}
+            </FilterRow>
+          )}
 
           <FilterRow label="Giá">
             <Chip

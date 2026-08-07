@@ -1,38 +1,19 @@
 import Link from "next/link";
 import { ChevronDownIcon, GridIcon } from "./icons";
+import { getNavCategories } from "@/lib/data";
 
-// Mega-menu "Danh mục" ở header (chỉ desktop, mở khi rê chuột — CSS thuần, không JS).
-// Nội dung cố định theo nhóm; mobile dùng thanh điều hướng đáy nên ẩn menu này.
-
-const BRANDS = [
-  { label: "Dell", href: "/dell" },
-  { label: "HP", href: "/hp" },
-  { label: "Lenovo", href: "/lenovo" },
-  { label: "Asus", href: "/asus" },
-  { label: "Acer", href: "/acer" },
-  { label: "MSI", href: "/msi" },
-  { label: "MacBook", href: "/macbook" },
-];
-const NEEDS = [
-  { label: "Laptop Gaming", href: "/laptop-gaming" },
-  { label: "Máy trạm - Đồ họa", href: "/laptop-do-hoa" },
-  { label: "Văn phòng", href: "/laptop-van-phong" },
-];
-const OTHER = [
-  { label: "Laptop mới", href: "/laptop-moi" },
-  { label: "Laptop cũ", href: "/laptop-cu" },
-  { label: "PC đồng bộ", href: "/pc" },
-  { label: "Màn hình", href: "/man-hinh" },
-  { label: "Phụ kiện", href: "/phu-kien" },
-];
+// Mega-menu "Danh mục" ở header (chỉ desktop, mở khi rê chuột — CSS thuần).
+// Nội dung LẤY ĐỘNG từ danh mục thật trong admin -> link luôn khớp slug (hết
+// 404), thêm danh mục mới là tự hiện. Mobile dùng thanh điều hướng đáy.
 
 function Col({
   title,
   items,
 }: {
   title: string;
-  items: { label: string; href: string }[];
+  items: { slug: string; name: string }[];
 }) {
+  if (items.length === 0) return null;
   return (
     <div>
       <p className="mb-2 text-[11.5px] font-bold uppercase tracking-wide text-muted">
@@ -40,12 +21,12 @@ function Col({
       </p>
       <ul className="flex flex-col gap-0.5">
         {items.map((it) => (
-          <li key={it.href}>
+          <li key={it.slug}>
             <Link
-              href={it.href}
+              href={`/${it.slug}`}
               className="block rounded-lg px-2 py-1.5 text-[13.5px] text-ink-2 transition hover:bg-green-tint hover:text-green-d"
             >
-              {it.label}
+              {it.name}
             </Link>
           </li>
         ))}
@@ -54,7 +35,9 @@ function Col({
   );
 }
 
-export function MegaMenu() {
+export async function MegaMenu() {
+  const { brands, needs, others } = await getNavCategories();
+
   return (
     <div className="group relative hidden shrink-0 lg:block">
       <button
@@ -67,9 +50,9 @@ export function MegaMenu() {
       </button>
       <div className="invisible absolute left-0 top-full z-50 w-[520px] translate-y-1 pt-2 opacity-0 transition group-hover:visible group-hover:translate-y-0 group-hover:opacity-100">
         <div className="grid grid-cols-3 gap-5 rounded-2xl border border-line bg-white p-5 shadow-pop">
-          <Col title="Thương hiệu" items={BRANDS} />
-          <Col title="Nhu cầu" items={NEEDS} />
-          <Col title="Loại máy & khác" items={OTHER} />
+          <Col title="Thương hiệu" items={brands} />
+          <Col title="Nhu cầu" items={needs} />
+          <Col title="Loại máy & khác" items={others} />
         </div>
       </div>
     </div>

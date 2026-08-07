@@ -14,6 +14,7 @@ import {
   getAllProducts,
   getBrandBySlug,
   getCategorySeo,
+  getNavCategories,
   getNeeds,
   getSeriesCategories,
   type CategorySeo,
@@ -45,13 +46,15 @@ export async function CategoryView({
   slug: string;
   searchParams: RawParams;
 }) {
-  const [category, brand, allProducts, allSeries, needs] = await Promise.all([
-    getCategorySeo(slug),
-    getBrandBySlug(slug),
-    getAllProducts(),
-    getSeriesCategories(),
-    getNeeds(),
-  ]);
+  const [category, brand, allProducts, allSeries, needs, nav] =
+    await Promise.all([
+      getCategorySeo(slug),
+      getBrandBySlug(slug),
+      getAllProducts(),
+      getSeriesCategories(),
+      getNeeds(),
+      getNavCategories(),
+    ]);
   const name = category?.name ?? brand ?? "Danh mục sản phẩm";
   const isSeriesPage = category?.group === "dong-may";
 
@@ -188,6 +191,7 @@ export async function CategoryView({
             products={baseProducts}
             brands={brands}
             needs={needs}
+            needCategories={nav.needs}
           />
 
           {category?.seoContent && (
