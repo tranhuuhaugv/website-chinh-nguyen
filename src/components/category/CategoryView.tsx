@@ -17,6 +17,8 @@ import {
   getNavCategories,
   getNeeds,
   getSeriesCategories,
+  isNeedCategory,
+  normGroup,
   type CategorySeo,
 } from "@/lib/data";
 import type { RawParams } from "@/lib/product-query";
@@ -72,25 +74,34 @@ export async function CategoryView({
       ? { label: brandName, href: `/${brandSlug}` }
       : null;
 
-  const NEED_BY_SLUG: Record<string, string> = {
+  // Tag nhu cầu CŨ (dữ liệu trước đây) theo slug danh mục -> vẫn khớp để không
+  // mất sản phẩm đã gắn.
+  const LEGACY_NEED: Record<string, string> = {
     "laptop-gaming": "gaming",
     "laptop-do-hoa": "do-hoa",
     "laptop-van-phong": "van-phong",
   };
+  const isNeed =
+    (category ? isNeedCategory({ group: category.group, slug }) : false) ||
+    !!LEGACY_NEED[slug];
   // Mặc định RỖNG: danh mục chưa có quy tắc gắn sản phẩm (VD PC, màn hình, phụ
   // kiện) thì hiện rỗng, KHÔNG rơi vào "hiện tất cả sản phẩm" như trước.
   let baseProducts: typeof allProducts = [];
   if (brand) {
     baseProducts = allProducts.filter((p) => p.brand === brand);
-  } else if (category?.group === "dong-may") {
+  } else if (normGroup(category?.group) === "dong-may") {
     baseProducts = allProducts.filter((p) => p.series === slug);
   } else if (slug === "laptop-moi") {
     baseProducts = allProducts.filter((p) => p.condition === "new");
   } else if (slug === "laptop-cu") {
     baseProducts = allProducts.filter((p) => (p.condition ?? "used") === "used");
-  } else if (NEED_BY_SLUG[slug]) {
-    const need = NEED_BY_SLUG[slug];
-    baseProducts = allProducts.filter((p) => (p.needs ?? []).includes(need));
+  } else if (isNeed) {
+    // Danh mục nhu cầu: khớp tag = slug (mới) HOẶC tag cũ HOẶC cột category.
+    const legacy = LEGACY_NEED[slug];
+    baseProducts = allProducts.filter((p) => {
+      const n = p.needs ?? [];
+      return n.includes(slug) || (legacy ? n.includes(legacy) : false) || p.category === slug;
+    });
   } else {
     // Danh mục "đứng riêng" (PC đồng bộ, Màn hình, Phụ kiện): sản phẩm được gán
     // trực tiếp bằng ô "Danh mục" trong admin (cột category).

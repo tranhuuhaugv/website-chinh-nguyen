@@ -580,21 +580,45 @@ const NAV_NEED_SLUGS = new Set([
   "laptop-van-phong",
 ]);
 
+// Chuẩn hoá group: dữ liệu cũ lưu nhãn tiếng Việt ("Theo nhu cầu"), mới lưu slug
+// ("nhu-cau"). Quy về 1 mối để phân nhóm không bị lẫn.
+export function normGroup(g?: string | null): string {
+  const map: Record<string, string> = {
+    "Theo thương hiệu": "thuong-hieu",
+    "Theo nhu cầu": "nhu-cau",
+    "Loại máy": "loai-may",
+    Khác: "khac",
+    "Dòng máy": "dong-may",
+  };
+  return g ? (map[g] ?? g) : "";
+}
+
+/** Danh mục nhóm "nhu cầu" (dùng chung: menu + bộ lọc + ô tick form). */
+export function isNeedCategory(c: { group?: string | null; slug: string }): boolean {
+  const g = normGroup(c.group);
+  return g === "nhu-cau" || (!g && NAV_NEED_SLUGS.has(c.slug));
+}
+
 export async function getNavCategories(): Promise<{
   brands: { slug: string; name: string }[];
   needs: { slug: string; name: string }[];
   others: { slug: string; name: string }[];
 }> {
-  const cats = (await getCategories()).filter((c) => c.group !== "dong-may");
-  const isBrand = (c: Category) =>
-    c.group === "thuong-hieu" || (!c.group && NAV_BRAND_SLUGS.has(c.slug));
-  const isNeed = (c: Category) =>
-    c.group === "nhu-cau" || (!c.group && NAV_NEED_SLUGS.has(c.slug));
+  const [allCats, brands] = await Promise.all([getCategories(), getBrands()]);
+  const cats = allCats.filter((c) => normGroup(c.group) !== "dong-may");
+  // Danh mục nào thực chất là "hãng" (để không lọt vào cột Khác) — loại ra.
+  const isBrandCat = (c: Category) => {
+    const g = normGroup(c.group);
+    return g === "thuong-hieu" || (!g && NAV_BRAND_SLUGS.has(c.slug));
+  };
   const pick = (c: Category) => ({ slug: c.slug, name: c.name });
   return {
-    brands: cats.filter(isBrand).map(pick),
-    needs: cats.filter(isNeed).map(pick),
-    others: cats.filter((c) => !isBrand(c) && !isNeed(c)).map(pick),
+    // Hãng LẤY TỪ BẢNG BRAND -> đồng bộ với trình quản lý thương hiệu.
+    brands,
+    needs: cats.filter(isNeedCategory).map(pick),
+    others: cats
+      .filter((c) => !isBrandCat(c) && !isNeedCategory(c))
+      .map(pick),
   };
 }
 
@@ -611,6 +635,27 @@ export async function getBrandBySlug(slug: string): Promise<string | null> {
   }
   const b = await prisma.brand.findUnique({ where: { slug } });
   return b?.name ?? null;
+}
+
+/**
+ * Toàn bộ thương hiệu THẬT (bảng Brand) — nguồn duy nhất cho mega-menu/nav, để
+ * đồng bộ với trình "Quản lý thương hiệu" (thêm hãng là tự hiện ở menu).
+ */
+export async function getBrands(): Promise<{ slug: string; name: string }[]> {
+  if (NO_DB) {
+    const names = Array.from(new Set(MOCK_PRODUCTS.map((p) => p.brand)));
+    return names
+      .sort((a, b) => a.localeCompare(b))
+      .map((n) => ({
+        slug: n.toLowerCase().replace(/[^a-z0-9]+/g, "-"),
+        name: n,
+      }));
+  }
+  const rows = await prisma.brand.findMany({
+    orderBy: { name: "asc" },
+    select: { name: true, slug: true },
+  });
+  return rows.map((r) => ({ slug: r.slug, name: r.name }));
 }
 
 // --- Blog ---
@@ -1015,27 +1060,13 @@ export async function getStores(): Promise<Store[]> {
  * [{value,label}]). Chưa cấu hình -> dùng danh sách mặc định NEED_OPTIONS.
  * Dùng cho: ô tick nhu cầu ở form sản phẩm + bộ lọc nhu cầu ngoài web.
  */
+// Danh sách "nhu cầu" cho ô TÍCH trong form sản phẩm — LẤY CHÍNH TỪ danh mục
+// nhóm "nhu cầu" để đồng bộ với menu + bộ lọc. Value = slug danh mục (đúng cái
+// CategoryView lọc). Chưa có danh mục nhu cầu nào -> quay về danh sách mặc định.
 export async function getNeeds(): Promise<{ value: string; label: string }[]> {
-  const raw = await getSetting("needs");
-  if (raw) {
-    try {
-      const parsed = JSON.parse(raw);
-      if (Array.isArray(parsed)) {
-        const clean = parsed
-          .filter(
-            (x): x is { value: string; label: string } =>
-              x &&
-              typeof x.value === "string" &&
-              typeof x.label === "string" &&
-              x.value.trim() !== "" &&
-              x.label.trim() !== "",
-          )
-          .map((x) => ({ value: x.value.trim(), label: x.label.trim() }));
-        if (clean.length) return clean;
-      }
-    } catch {
-      /* JSON hỏng -> dùng mặc định */
-    }
+  const nav = await getNavCategories();
+  if (nav.needs.length) {
+    return nav.needs.map((c) => ({ value: c.slug, label: c.name }));
   }
   return [...NEED_OPTIONS];
 }
