@@ -5,9 +5,10 @@ import { prisma } from "@/lib/prisma";
 import { ADMIN_COOKIE, verifyAdminToken } from "@/lib/admin-auth";
 import {
   EDITABLE_PAGES,
+  INFO_PAGES,
+  POLICIES,
   isFixedPage,
   isValidPageSlug,
-  pagePublicPath,
 } from "@/lib/policies";
 
 // Lưu nội dung trang nội dung (chính sách + giới thiệu/liên hệ) vào DB. Chỉ admin.
@@ -20,6 +21,41 @@ async function requireAdmin(): Promise<boolean> {
 function strArray(v: unknown): string[] {
   if (!Array.isArray(v)) return [];
   return v.map((x) => String(x ?? "").trim()).filter(Boolean);
+}
+
+const POLICY_SLUGS_SETTING = "policySlugs";
+
+function cleanPolicySlugMap(raw: unknown): Record<string, string> {
+  if (!raw || typeof raw !== "object" || Array.isArray(raw)) return {};
+  const map: Record<string, string> = {};
+  for (const [key, value] of Object.entries(raw)) {
+    const slug = String(value ?? "").trim();
+    if (POLICIES[key] && isValidPageSlug(slug)) map[key] = slug;
+  }
+  return map;
+}
+
+async function getPolicySlugMap(): Promise<Record<string, string>> {
+  const s = await prisma.setting.findUnique({ where: { key: POLICY_SLUGS_SETTING } });
+  try {
+    return cleanPolicySlugMap(s ? JSON.parse(s.value) : {});
+  } catch {
+    return {};
+  }
+}
+
+async function savePolicySlugMap(map: Record<string, string>) {
+  await prisma.setting.upsert({
+    where: { key: POLICY_SLUGS_SETTING },
+    update: { value: JSON.stringify(map) },
+    create: { key: POLICY_SLUGS_SETTING, value: JSON.stringify(map) },
+  });
+}
+
+function pagePath(id: string, map: Record<string, string>): string {
+  if (POLICIES[id]) return `/chinh-sach/${map[id] ?? id}`;
+  if (INFO_PAGES[id]) return `/${id}`;
+  return `/chinh-sach/${id}`;
 }
 
 export async function PUT(req: Request) {
@@ -48,11 +84,19 @@ export async function PUT(req: Request) {
   if (!id || (!EDITABLE_PAGES[id] && !isValidPageSlug(id))) {
     return NextResponse.json({ ok: false, error: "invalid_page" }, { status: 400 });
   }
-  if (isFixedPage(id) && nextId !== id) {
+  if (INFO_PAGES[id] && nextId !== id) {
     return NextResponse.json({ ok: false, error: "fixed_page_slug" }, { status: 400 });
   }
-  if (!isFixedPage(id) && (!isValidPageSlug(nextId) || isFixedPage(nextId))) {
+  if (!isValidPageSlug(nextId) || (isFixedPage(nextId) && nextId !== id)) {
     return NextResponse.json({ ok: false, error: "invalid_slug" }, { status: 400 });
+  }
+  const policySlugMap = await getPolicySlugMap();
+  const oldPolicyPublicSlug = policySlugMap[id] ?? id;
+  const slugUsedByPolicy = Object.entries(policySlugMap).some(
+    ([policyId, publicSlug]) => policyId !== id && publicSlug === nextId,
+  );
+  if (slugUsedByPolicy) {
+    return NextResponse.json({ ok: false, error: "slug_exists" }, { status: 409 });
   }
 
   const title =
@@ -77,7 +121,23 @@ export async function PUT(req: Request) {
     : [];
 
   try {
-    if (!isFixedPage(id) && nextId !== id) {
+    if (POLICIES[id]) {
+      await prisma.page.upsert({
+        where: { id },
+        update: { title, lead, content: { intro, sections } },
+        create: { id, title, lead, content: { intro, sections } },
+      });
+      if (nextId === id) {
+        delete policySlugMap[id];
+      } else {
+        const exists = await prisma.page.findUnique({ where: { id: nextId } });
+        if (exists) {
+          return NextResponse.json({ ok: false, error: "slug_exists" }, { status: 409 });
+        }
+        policySlugMap[id] = nextId;
+      }
+      await savePolicySlugMap(policySlugMap);
+    } else if (!isFixedPage(id) && nextId !== id) {
       const exists = await prisma.page.findUnique({ where: { id: nextId } });
       if (exists) {
         return NextResponse.json({ ok: false, error: "slug_exists" }, { status: 409 });
@@ -100,10 +160,16 @@ export async function PUT(req: Request) {
         create: { id, title, lead, content: { intro, sections } },
       });
     }
-    revalidatePath(pagePublicPath(id));
-    revalidatePath(pagePublicPath(nextId));
+    revalidatePath(pagePath(id, policySlugMap));
+    revalidatePath(`/chinh-sach/${oldPolicyPublicSlug}`);
+    revalidatePath(`/chinh-sach/${id}`);
+    revalidatePath(`/chinh-sach/${nextId}`);
     if (nextId !== id) revalidatePath(`/trang/${id}`);
-    return NextResponse.json({ ok: true, id: nextId, path: pagePublicPath(nextId) });
+    return NextResponse.json({
+      ok: true,
+      id,
+      path: POLICIES[id] ? pagePath(id, policySlugMap) : pagePath(nextId, policySlugMap),
+    });
   } catch (err) {
     console.error("Lưu trang chính sách lỗi:", err);
     return NextResponse.json({ ok: false, error: "save_failed" }, { status: 500 });
@@ -124,7 +190,7 @@ export async function DELETE(req: Request) {
   } catch {
     // đã xoá / không tồn tại -> coi như xong
   }
-  revalidatePath(pagePublicPath(id));
+  revalidatePath(`/chinh-sach/${id}`);
   revalidatePath(`/trang/${id}`);
   return NextResponse.json({ ok: true });
 }

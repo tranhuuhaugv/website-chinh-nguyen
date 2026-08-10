@@ -6,8 +6,13 @@ import { Band } from "@/components/static/Band";
 import { Container } from "@/components/Container";
 import { SITE } from "@/lib/site";
 import { CheckIcon } from "@/components/icons";
-import { POLICIES, POLICY_NAV } from "@/lib/policies";
-import { getCustomPages, getPolicyOverride } from "@/lib/data";
+import { POLICIES } from "@/lib/policies";
+import {
+  getCustomPages,
+  getPolicyNavItems,
+  getPolicyOverride,
+  resolvePolicySlug,
+} from "@/lib/data";
 
 // Nội dung có thể được admin sửa (lưu DB) — ưu tiên bản DB, không có thì dùng
 // bản mặc định trong lib/policies. ISR: tự làm mới + revalidate khi admin lưu.
@@ -22,7 +27,8 @@ export async function generateMetadata({
 }: {
   params: { slug: string };
 }): Promise<Metadata> {
-  const policy = (await getPolicyOverride(params.slug)) ?? POLICIES[params.slug];
+  const policyKey = await resolvePolicySlug(params.slug);
+  const policy = (await getPolicyOverride(policyKey)) ?? POLICIES[policyKey];
   return {
     title: policy?.title ?? "Chính sách",
     description: policy?.lead,
@@ -34,13 +40,17 @@ export default async function PolicyPage({
 }: {
   params: { slug: string };
 }) {
-  const policy = (await getPolicyOverride(params.slug)) ?? POLICIES[params.slug];
+  const policyKey = await resolvePolicySlug(params.slug);
+  const policy = (await getPolicyOverride(policyKey)) ?? POLICIES[policyKey];
   if (!policy) notFound();
 
   const activeHref = `/chinh-sach/${params.slug}`;
-  const customPages = await getCustomPages();
+  const [fixedNav, customPages] = await Promise.all([
+    getPolicyNavItems(),
+    getCustomPages(),
+  ]);
   const policyNav = [
-    ...POLICY_NAV,
+    ...fixedNav,
     ...customPages.map((page) => ({
       label: page.title,
       href: `/chinh-sach/${page.slug}`,

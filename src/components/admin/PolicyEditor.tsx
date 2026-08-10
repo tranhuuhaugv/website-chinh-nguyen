@@ -23,16 +23,20 @@ export function PolicyEditor({
   id,
   policy,
   path,
+  publicSlug,
   canEditPath = false,
+  pathHelpText,
 }: {
   id: string;
   policy: Policy;
   path: string;
+  publicSlug?: string;
   canEditPath?: boolean;
+  pathHelpText?: string;
 }) {
   const router = useRouter();
   const [title, setTitle] = useState(policy.title);
-  const [slug, setSlug] = useState(id);
+  const [slug, setSlug] = useState(publicSlug ?? id);
   const [lead, setLead] = useState(policy.lead);
   const [intro, setIntro] = useState(policy.intro.join("\n"));
   const [sections, setSections] = useState<SectionDraft[]>(
@@ -163,7 +167,7 @@ export function PolicyEditor({
         )}
         {canEditPath ? (
           <p className="mt-1.5 text-[12.5px] text-muted">
-            Bạn có thể sửa đường dẫn cho trang tự tạo. Đường dẫn mới:{" "}
+            {pathHelpText ?? "Bạn có thể sửa đường dẫn cho trang tự tạo."} Đường dẫn mới:{" "}
             <code className="text-ink-2">{currentPath}</code>
           </p>
         ) : (

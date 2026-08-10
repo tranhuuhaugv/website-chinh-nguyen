@@ -17,7 +17,13 @@ import { sanitizeRichText, toRichHtml } from "./rich-text";
 import { NEED_OPTIONS, matchesKeyword } from "./product-query";
 import { VOUCHERS, type Voucher } from "./vouchers";
 import type { Policy, Section } from "./policies";
-import { EDITABLE_PAGES } from "./policies";
+import {
+  EDITABLE_PAGES,
+  INFO_PAGES,
+  POLICIES,
+  POLICY_NAV,
+  isValidPageSlug,
+} from "./policies";
 import type { PcPart } from "./pc-parts";
 import { PC_PART_TYPE_KEYS } from "./pc-parts";
 import {
@@ -709,6 +715,67 @@ export async function getPolicyOverride(
   } catch {
     return null;
   }
+}
+
+const POLICY_SLUGS_SETTING = "policySlugs";
+
+function cleanPolicySlugMap(raw: unknown): Record<string, string> {
+  if (!raw || typeof raw !== "object" || Array.isArray(raw)) return {};
+  const map: Record<string, string> = {};
+  for (const [key, value] of Object.entries(raw)) {
+    const slug = String(value ?? "").trim();
+    if (POLICIES[key] && isValidPageSlug(slug)) map[key] = slug;
+  }
+  return map;
+}
+
+export async function getPolicySlugMap(): Promise<Record<string, string>> {
+  if (NO_DB) return {};
+  const s = await prisma.setting.findUnique({
+    where: { key: POLICY_SLUGS_SETTING },
+  });
+  try {
+    return cleanPolicySlugMap(s ? JSON.parse(s.value) : {});
+  } catch {
+    return {};
+  }
+}
+
+export async function getPolicyPublicSlug(id: string): Promise<string> {
+  if (!POLICIES[id]) return id;
+  const map = await getPolicySlugMap();
+  return map[id] ?? id;
+}
+
+export async function getPagePublicPath(id: string): Promise<string> {
+  if (POLICIES[id]) return `/chinh-sach/${await getPolicyPublicSlug(id)}`;
+  if (INFO_PAGES[id]) return `/${id}`;
+  return `/chinh-sach/${id}`;
+}
+
+export async function resolvePolicySlug(slug: string): Promise<string> {
+  const map = await getPolicySlugMap();
+  const mapped = Object.entries(map).find(([, publicSlug]) => publicSlug === slug);
+  return mapped?.[0] ?? slug;
+}
+
+export async function getPolicyNavItems(): Promise<
+  { label: string; href: string }[]
+> {
+  const [map, overrides] = await Promise.all([
+    getPolicySlugMap(),
+    NO_DB
+      ? Promise.resolve([] as { id: string; title: string }[])
+      : prisma.page.findMany({ select: { id: true, title: true } }),
+  ]);
+  const titleById = new Map(overrides.map((p) => [p.id, p.title]));
+  return POLICY_NAV.map((item) => {
+    const id = item.href.split("/").pop() ?? "";
+    return {
+      label: titleById.get(id) ?? item.label,
+      href: `/chinh-sach/${map[id] ?? id}`,
+    };
+  });
 }
 
 // --- Sản phẩm & thương hiệu (admin) ---

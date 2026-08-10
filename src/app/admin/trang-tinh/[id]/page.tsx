@@ -2,11 +2,11 @@ import { notFound } from "next/navigation";
 import { PolicyEditor } from "@/components/admin/PolicyEditor";
 import {
   EDITABLE_PAGES,
+  POLICIES,
   isFixedPage,
   isValidPageSlug,
-  pagePublicPath,
 } from "@/lib/policies";
-import { getPolicyOverride } from "@/lib/data";
+import { getPagePublicPath, getPolicyOverride, getPolicyPublicSlug } from "@/lib/data";
 
 export const metadata = { title: "Sửa trang nội dung" };
 export const dynamic = "force-dynamic";
@@ -34,13 +34,21 @@ export default async function EditStaticPage({
         sections: [],
       });
   const policy = override ?? base;
+  const canEditPath = !!POLICIES[id] || !fixed;
+  const publicSlug = await getPolicyPublicSlug(id);
 
   return (
     <PolicyEditor
       id={id}
       policy={policy}
-      path={pagePublicPath(id)}
-      canEditPath={!fixed}
+      path={await getPagePublicPath(id)}
+      publicSlug={publicSlug}
+      canEditPath={canEditPath}
+      pathHelpText={
+        POLICIES[id]
+          ? "Bạn có thể sửa đường dẫn cho chính sách mặc định."
+          : undefined
+      }
     />
   );
 }

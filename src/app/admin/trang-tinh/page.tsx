@@ -2,7 +2,7 @@ import Link from "next/link";
 import { EditIcon, PlusIcon } from "@/components/icons";
 import { DeletePageButton } from "@/components/admin/DeletePageButton";
 import { INFO_PAGES, POLICIES } from "@/lib/policies";
-import { getCustomPages } from "@/lib/data";
+import { getCustomPages, getPolicyPublicSlug } from "@/lib/data";
 
 export const metadata = { title: "Trang nội dung" };
 export const dynamic = "force-dynamic";
@@ -10,6 +10,14 @@ export const dynamic = "force-dynamic";
 export default async function AdminStaticPagesPage() {
   const custom = await getCustomPages();
 
+  const policyPages = await Promise.all(
+    Object.entries(POLICIES).map(async ([slug, p]) => ({
+      slug,
+      title: p.title,
+      path: `/chinh-sach/${await getPolicyPublicSlug(slug)}`,
+      custom: false,
+    })),
+  );
   const fixedPages = [
     ...Object.entries(INFO_PAGES).map(([slug, p]) => ({
       slug,
@@ -17,12 +25,7 @@ export default async function AdminStaticPagesPage() {
       path: `/${slug}`,
       custom: false,
     })),
-    ...Object.entries(POLICIES).map(([slug, p]) => ({
-      slug,
-      title: p.title,
-      path: `/chinh-sach/${slug}`,
-      custom: false,
-    })),
+    ...policyPages,
   ];
   const customPages = custom.map((p) => ({
     slug: p.slug,
