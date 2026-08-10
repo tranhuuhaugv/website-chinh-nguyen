@@ -36,6 +36,11 @@ export default async function EditStaticPage({
   const policy = override ?? base;
 
   return (
-    <PolicyEditor id={id} policy={policy} path={pagePublicPath(id)} />
+    <PolicyEditor
+      id={id}
+      policy={policy}
+      path={pagePublicPath(id)}
+      canEditPath={!fixed}
+    />
   );
 }

@@ -1,8 +1,5 @@
 import type { Metadata } from "next";
-import { notFound } from "next/navigation";
-import { StaticPage } from "@/components/StaticPage";
-import { Band } from "@/components/static/Band";
-import { PageArticle } from "@/components/static/PageArticle";
+import { notFound, permanentRedirect } from "next/navigation";
 import { getPolicyOverride } from "@/lib/data";
 import { isFixedPage } from "@/lib/policies";
 
@@ -26,20 +23,10 @@ export default async function CustomContentPage({
 }: {
   params: { slug: string };
 }) {
-  // Trang cố định có route riêng -> không hiện lại ở /trang/*.
+  // Link cũ /trang/* được chuyển sang nhóm Chính sách để không làm gãy URL đã chia sẻ.
   if (isFixedPage(params.slug)) notFound();
   const page = await getPolicyOverride(params.slug);
   if (!page) notFound();
 
-  return (
-    <StaticPage
-      title={page.title}
-      lead={page.lead}
-      breadcrumb={[{ label: "Trang chủ", href: "/" }, { label: page.title }]}
-    >
-      <Band tone="white">
-        <PageArticle intro={page.intro} sections={page.sections} />
-      </Band>
-    </StaticPage>
-  );
+  permanentRedirect(`/chinh-sach/${params.slug}`);
 }

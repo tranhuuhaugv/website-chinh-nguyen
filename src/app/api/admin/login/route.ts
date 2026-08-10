@@ -22,7 +22,10 @@ export async function POST(req: Request) {
   let ok = checkAdminCredentials(email, password);
 
   // 2) Admin lưu trong database (role = admin)
-  const user = email ? await prisma.user.findUnique({ where: { email } }) : null;
+  const user =
+    !ok && email && process.env.DATABASE_URL
+      ? await prisma.user.findUnique({ where: { email } })
+      : null;
   if (!ok && user && user.role === "admin" && user.passwordHash) {
     ok = await bcrypt.compare(password, user.passwordHash);
   }

@@ -5,6 +5,7 @@ import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { PlusIcon, TrashIcon } from "@/components/icons";
 import type { Policy } from "@/lib/policies";
+import { slugify } from "@/lib/slug";
 
 // Form sửa nội dung 1 trang chính sách. Mỗi đoạn văn / gạch đầu dòng là 1 dòng
 // trong textarea (xuống dòng = tách mục) cho dễ nhập.
@@ -22,13 +23,16 @@ export function PolicyEditor({
   id,
   policy,
   path,
+  canEditPath = false,
 }: {
   id: string;
   policy: Policy;
   path: string;
+  canEditPath?: boolean;
 }) {
   const router = useRouter();
   const [title, setTitle] = useState(policy.title);
+  const [slug, setSlug] = useState(id);
   const [lead, setLead] = useState(policy.lead);
   const [intro, setIntro] = useState(policy.intro.join("\n"));
   const [sections, setSections] = useState<SectionDraft[]>(
@@ -64,12 +68,20 @@ export function PolicyEditor({
 
   const toLines = (s: string) =>
     s.split("\n").map((x) => x.trim()).filter(Boolean);
+  const cleanSlug = (slug || slugify(title)).trim();
+  const slugValid = /^[a-z0-9]+(?:-[a-z0-9]+)*$/.test(cleanSlug);
+  const currentPath = canEditPath ? `/chinh-sach/${cleanSlug || "..."}` : path;
 
   async function save() {
+    if (canEditPath && !slugValid) {
+      setNotice("Đường dẫn không hợp lệ. Chỉ dùng chữ thường, số và dấu gạch ngang.");
+      return;
+    }
     setSaving(true);
     setNotice("");
     const payload = {
       id,
+      slug: canEditPath ? cleanSlug : id,
       title: title.trim(),
       lead: lead.trim(),
       intro: toLines(intro),
@@ -89,7 +101,12 @@ export function PolicyEditor({
         router.push("/admin/trang-tinh");
         router.refresh();
       } else {
-        setNotice("Lưu thất bại, vui lòng thử lại.");
+        const data = await res.json().catch(() => null);
+        setNotice(
+          data?.error === "slug_exists"
+            ? "Đường dẫn này đã tồn tại, vui lòng chọn đường dẫn khác."
+            : "Lưu thất bại, vui lòng thử lại.",
+        );
       }
     } catch {
       setNotice("Lỗi kết nối, vui lòng thử lại.");
@@ -104,12 +121,12 @@ export function PolicyEditor({
         <div>
           <h1 className="text-[20px] font-bold text-ink">Chỉnh sửa: {policy.title}</h1>
           <a
-            href={path}
+            href={currentPath}
             target="_blank"
             rel="noreferrer"
             className="text-[13px] text-green-d hover:underline"
           >
-            Xem trang: {path} ↗
+            Xem trang: {currentPath} ↗
           </a>
         </div>
         <Link
@@ -126,6 +143,34 @@ export function PolicyEditor({
           Tiêu đề trang
         </label>
         <input value={title} onChange={(e) => setTitle(e.target.value)} className={inputCls} />
+
+        <label className="mb-1.5 mt-4 block text-[13px] font-semibold text-ink">
+          Đường dẫn trang
+        </label>
+        {canEditPath ? (
+          <div className="flex overflow-hidden rounded-lg border border-line bg-white focus-within:border-green">
+            <span className="flex items-center border-r border-line bg-bg px-3 text-sm text-muted">
+              /chinh-sach/
+            </span>
+            <input
+              value={slug}
+              onChange={(e) => setSlug(slugify(e.target.value))}
+              className="min-w-0 flex-1 px-3 py-2 text-sm text-ink outline-none"
+            />
+          </div>
+        ) : (
+          <input value={currentPath} disabled className={`${inputCls} bg-bg/60 text-muted`} />
+        )}
+        {canEditPath ? (
+          <p className="mt-1.5 text-[12.5px] text-muted">
+            Bạn có thể sửa đường dẫn cho trang tự tạo. Đường dẫn mới:{" "}
+            <code className="text-ink-2">{currentPath}</code>
+          </p>
+        ) : (
+          <p className="mt-1.5 text-[12.5px] text-muted">
+            Trang cố định dùng đường dẫn mặc định của hệ thống.
+          </p>
+        )}
 
         <label className="mb-1.5 mt-4 block text-[13px] font-semibold text-ink">
           Mô tả ngắn (dưới tiêu đề)

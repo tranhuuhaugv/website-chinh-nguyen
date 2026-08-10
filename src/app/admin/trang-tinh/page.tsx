@@ -27,7 +27,7 @@ export default async function AdminStaticPagesPage() {
   const customPages = custom.map((p) => ({
     slug: p.slug,
     title: p.title,
-    path: `/trang/${p.slug}`,
+    path: `/chinh-sach/${p.slug}`,
     custom: true,
   }));
   const pages = [...fixedPages, ...customPages];

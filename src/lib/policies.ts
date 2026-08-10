@@ -388,7 +388,7 @@ export const EDITABLE_PAGES: Record<string, Policy> = {
 export function pagePublicPath(id: string): string {
   if (POLICIES[id]) return `/chinh-sach/${id}`;
   if (INFO_PAGES[id]) return `/${id}`;
-  return `/trang/${id}`; // trang admin tự tạo
+  return `/chinh-sach/${id}`; // trang admin tự tạo cũng nằm trong mục Chính sách
 }
 
 /** Slug hợp lệ cho trang tuỳ chỉnh: chữ thường/số/gạch, 2–60 ký tự. */

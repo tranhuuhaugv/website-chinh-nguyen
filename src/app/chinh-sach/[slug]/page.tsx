@@ -7,7 +7,7 @@ import { Container } from "@/components/Container";
 import { SITE } from "@/lib/site";
 import { CheckIcon } from "@/components/icons";
 import { POLICIES, POLICY_NAV } from "@/lib/policies";
-import { getPolicyOverride } from "@/lib/data";
+import { getCustomPages, getPolicyOverride } from "@/lib/data";
 
 // Nội dung có thể được admin sửa (lưu DB) — ưu tiên bản DB, không có thì dùng
 // bản mặc định trong lib/policies. ISR: tự làm mới + revalidate khi admin lưu.
@@ -38,6 +38,14 @@ export default async function PolicyPage({
   if (!policy) notFound();
 
   const activeHref = `/chinh-sach/${params.slug}`;
+  const customPages = await getCustomPages();
+  const policyNav = [
+    ...POLICY_NAV,
+    ...customPages.map((page) => ({
+      label: page.title,
+      href: `/chinh-sach/${page.slug}`,
+    })),
+  ];
 
   return (
     <StaticPage
@@ -53,7 +61,7 @@ export default async function PolicyPage({
       <div className="border-b border-line bg-white">
         <Container>
           <nav className="flex gap-2 overflow-x-auto py-4 [scrollbar-width:none] [&::-webkit-scrollbar]:hidden">
-            {POLICY_NAV.map((item) => {
+            {policyNav.map((item) => {
               const active = item.href === activeHref;
               return (
                 <Link

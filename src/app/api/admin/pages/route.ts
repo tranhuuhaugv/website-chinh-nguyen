@@ -29,6 +29,7 @@ export async function PUT(req: Request) {
 
   let body: {
     id?: string;
+    slug?: string;
     title?: string;
     lead?: string;
     intro?: unknown;
@@ -41,14 +42,21 @@ export async function PUT(req: Request) {
   }
 
   const id = String(body.id ?? "").trim();
+  const nextId = String(body.slug ?? body.id ?? "").trim();
   // Cho sửa/tạo: trang cố định (chính sách/giới thiệu/liên hệ) HOẶC slug hợp lệ
   // (trang tuỳ chỉnh admin tự tạo -> upsert vào bảng Page).
   if (!id || (!EDITABLE_PAGES[id] && !isValidPageSlug(id))) {
     return NextResponse.json({ ok: false, error: "invalid_page" }, { status: 400 });
   }
+  if (isFixedPage(id) && nextId !== id) {
+    return NextResponse.json({ ok: false, error: "fixed_page_slug" }, { status: 400 });
+  }
+  if (!isFixedPage(id) && (!isValidPageSlug(nextId) || isFixedPage(nextId))) {
+    return NextResponse.json({ ok: false, error: "invalid_slug" }, { status: 400 });
+  }
 
   const title =
-    String(body.title ?? "").trim() || EDITABLE_PAGES[id]?.title || id;
+    String(body.title ?? "").trim() || EDITABLE_PAGES[id]?.title || nextId;
   const lead = String(body.lead ?? "").trim();
   const intro = strArray(body.intro);
   const sections = Array.isArray(body.sections)
@@ -69,13 +77,33 @@ export async function PUT(req: Request) {
     : [];
 
   try {
-    await prisma.page.upsert({
-      where: { id },
-      update: { title, lead, content: { intro, sections } },
-      create: { id, title, lead, content: { intro, sections } },
-    });
+    if (!isFixedPage(id) && nextId !== id) {
+      const exists = await prisma.page.findUnique({ where: { id: nextId } });
+      if (exists) {
+        return NextResponse.json({ ok: false, error: "slug_exists" }, { status: 409 });
+      }
+      const current = await prisma.page.findUnique({ where: { id } });
+      if (current) {
+        await prisma.page.update({
+          where: { id },
+          data: { id: nextId, title, lead, content: { intro, sections } },
+        });
+      } else {
+        await prisma.page.create({
+          data: { id: nextId, title, lead, content: { intro, sections } },
+        });
+      }
+    } else {
+      await prisma.page.upsert({
+        where: { id },
+        update: { title, lead, content: { intro, sections } },
+        create: { id, title, lead, content: { intro, sections } },
+      });
+    }
     revalidatePath(pagePublicPath(id));
-    return NextResponse.json({ ok: true });
+    revalidatePath(pagePublicPath(nextId));
+    if (nextId !== id) revalidatePath(`/trang/${id}`);
+    return NextResponse.json({ ok: true, id: nextId, path: pagePublicPath(nextId) });
   } catch (err) {
     console.error("Lưu trang chính sách lỗi:", err);
     return NextResponse.json({ ok: false, error: "save_failed" }, { status: 500 });
@@ -96,6 +124,7 @@ export async function DELETE(req: Request) {
   } catch {
     // đã xoá / không tồn tại -> coi như xong
   }
+  revalidatePath(pagePublicPath(id));
   revalidatePath(`/trang/${id}`);
   return NextResponse.json({ ok: true });
 }

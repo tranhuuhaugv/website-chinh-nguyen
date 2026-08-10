@@ -56,7 +56,7 @@ export default function CreatePagePage() {
               className={inputCls}
             />
             <p className="mt-1.5 text-[12.5px] text-muted">
-              Trang sẽ ở địa chỉ: <code className="text-ink-2">/trang/{slug || "…"}</code>
+              Trang sẽ ở địa chỉ: <code className="text-ink-2">/chinh-sach/{slug || "…"}</code>
             </p>
           </div>
 
