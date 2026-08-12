@@ -419,12 +419,12 @@ const DERIVED_CATEGORY_SLUGS = new Set([
 ]);
 
 /**
- * Danh mục cho ô "Danh mục" (◆) ở form sản phẩm — gán trực tiếp vào cột
+ * Danh mục cho ô "Danh mục" ở form sản phẩm — gán trực tiếp vào cột
  * `category`. = mọi danh mục TRỪ: hãng suy diễn (dell/hp...), dòng máy, các mục
  * laptop suy diễn sẵn, và danh mục NHU CẦU (gán bằng ô tick riêng).
  *
- * KHÔNG loại theo bảng Brand: gán 1 SP vào ◆ PC sẽ tạo "brand ảo" PC -> nếu loại
- * theo Brand thì ◆ PC biến mất sau lần gán đầu. Dùng DERIVED (danh sách hãng
+ * KHÔNG loại theo bảng Brand: gán 1 SP vào PC sẽ tạo "brand ảo" PC -> nếu loại
+ * theo Brand thì PC biến mất sau lần gán đầu. Dùng DERIVED (danh sách hãng
  * thật) để loại hãng, còn PC/Màn hình/Phụ kiện luôn gán được.
  */
 export async function getProductCategoryOptions(): Promise<
@@ -558,7 +558,7 @@ export async function getBrandSeriesOptions(): Promise<
   const catSlugs = new Set(catList.map((c) => c.value));
   const catOpts = catList.map((c) => ({
     value: `__cat:${c.value}`,
-    label: `◆ ${c.label}`,
+    label: `- ${c.label}`,
   }));
   if (NO_DB) return catOpts;
   const [brands, series] = await Promise.all([
@@ -573,7 +573,7 @@ export async function getBrandSeriesOptions(): Promise<
     }),
   ]);
   // Hãng = "- Dell" (chọn được = cả hãng); dòng máy thụt vào = "-- Dell XPS".
-  // Bỏ "brand ảo" trùng danh mục ◆ (gán SP vào PC tạo brand PC) -> tránh hiện 2 lần.
+  // Bỏ "brand ảo" trùng danh mục (gán SP vào PC tạo brand PC) -> tránh hiện 2 lần.
   const opts: { value: string; label: string }[] = [];
   for (const b of brands) {
     if (catSlugs.has(b.slug)) continue;

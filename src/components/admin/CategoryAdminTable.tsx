@@ -49,6 +49,12 @@ function Count({ n }: { n: number }) {
   );
 }
 
+function brandIcon(slug: string): Category["icon"] {
+  return ["dell", "asus", "acer", "lenovo", "hp", "msi", "macbook"].includes(slug)
+    ? (slug as Category["icon"])
+    : "office";
+}
+
 function RowActions({
   cat,
   busy,
@@ -84,10 +90,12 @@ export function CategoryAdminTable({
   categories,
   counts,
   products = [],
+  brands = [],
 }: {
   categories: Category[];
   counts: Record<string, number>;
   products?: AdminProduct[];
+  brands?: { slug: string; name: string }[];
 }) {
   const router = useRouter();
   const [list, setList] = useState(categories);
@@ -106,6 +114,11 @@ export function CategoryAdminTable({
   const noSeriesByBrand = useMemo(() => {
     const m: Record<string, AdminProduct[]> = {};
     for (const p of prods) if (!p.series) (m[p.brand] ??= []).push(p);
+    return m;
+  }, [prods]);
+  const productCountByBrand = useMemo(() => {
+    const m: Record<string, number> = {};
+    for (const p of prods) m[p.brand] = (m[p.brand] ?? 0) + 1;
     return m;
   }, [prods]);
 
@@ -139,8 +152,23 @@ export function CategoryAdminTable({
   }
 
   // Dựng cây + tách nhóm.
-  const { sections, childrenOf, orphans, brandGroups } = useMemo(() => {
-    const parents = list.filter((c) => normGroup(c.group) !== "dong-may");
+  const { sections, childrenOf, orphans, brandGroups, virtualBrandSlugs } = useMemo(() => {
+    const categorySlugs = new Set(list.map((c) => c.slug));
+    const virtualBrandSlugs = new Set(
+      brands.filter((b) => !categorySlugs.has(b.slug)).map((b) => b.slug),
+    );
+    const brandParents: Category[] = brands
+      .filter((b) => virtualBrandSlugs.has(b.slug))
+      .map((b) => ({
+        slug: b.slug,
+        name: b.name,
+        icon: brandIcon(b.slug),
+        group: "thuong-hieu",
+      }));
+    const parents = [
+      ...list.filter((c) => normGroup(c.group) !== "dong-may"),
+      ...brandParents,
+    ];
     const series = list.filter((c) => normGroup(c.group) === "dong-may");
 
     // Con (dòng máy) gắn vào cha có slug là tiền tố dài nhất khớp.
@@ -163,10 +191,20 @@ export function CategoryAdminTable({
       const g = normGroup(p.group) || "__none__";
       (byGroup[g] ??= []).push(p);
     }
-    // Nhóm "thương hiệu" = nhóm có cha chứa dòng máy con.
+    // Nhóm "thương hiệu" = group thuong-hieu, brand thật, hoặc nhóm có cha chứa dòng máy con.
     const brandGroups = new Set<string>();
+    const brandSlugs = new Set(brands.map((b) => b.slug));
     for (const [g, ps] of Object.entries(byGroup)) {
-      if (ps.some((p) => (childrenOf[p.slug]?.length ?? 0) > 0)) brandGroups.add(g);
+      if (
+        g === "thuong-hieu" ||
+        ps.some(
+          (p) =>
+            brandSlugs.has(p.slug) ||
+            (childrenOf[p.slug]?.length ?? 0) > 0,
+        )
+      ) {
+        brandGroups.add(g);
+      }
     }
     const rankOf = (g: string) =>
       brandGroups.has(g) ? 0 : (GROUP_META[g]?.rank ?? 2.5);
@@ -174,8 +212,8 @@ export function CategoryAdminTable({
       .map(([key, ps]) => ({ key, parents: ps }))
       .sort((a, b) => rankOf(a.key) - rankOf(b.key));
 
-    return { sections, childrenOf, orphans, brandGroups };
-  }, [list]);
+    return { sections, childrenOf, orphans, brandGroups, virtualBrandSlugs };
+  }, [list, brands]);
 
   function isOpen(slug: string) {
     return open[slug] ?? allOpen;
@@ -216,6 +254,8 @@ export function CategoryAdminTable({
     const hasKids = kids.length > 0;
     // Máy của hãng này CHƯA gán dòng máy con (hiện dưới hãng để xếp sau).
     const noSeries = isBrand ? (noSeriesByBrand[p.name] ?? []) : [];
+    const productCount = counts[p.slug] ?? productCountByBrand[p.name] ?? 0;
+    const isVirtualBrand = virtualBrandSlugs.has(p.slug);
     const opened = isOpen(p.slug);
     return (
       <li>
@@ -250,7 +290,7 @@ export function CategoryAdminTable({
             ) : (
               <b className="truncate text-[14px] text-ink">{p.name}</b>
             )}
-            <Count n={counts[p.slug] ?? 0} />
+            <Count n={productCount} />
             {isBrand && hasKids && (
               <span className="text-[11.5px] text-muted">· {kids.length} dòng</span>
             )}
@@ -274,11 +314,13 @@ export function CategoryAdminTable({
               <EyeIcon className="h-4 w-4" />
             </Link>
           )}
-          <RowActions
-            cat={p}
-            busy={busy === p.slug}
-            onDelete={() => remove(p, hasKids)}
-          />
+          {!isVirtualBrand && (
+            <RowActions
+              cat={p}
+              busy={busy === p.slug}
+              onDelete={() => remove(p, hasKids)}
+            />
+          )}
         </div>
 
         {isBrand && opened && (hasKids || noSeries.length > 0) && (

@@ -33,7 +33,7 @@ export function productFields(
     {
       name: "brandSeries",
       label:
-        "Hãng / Dòng máy / Danh mục * (laptop chọn hãng; PC đồng bộ / Màn hình chọn dòng ◆ ở cuối)",
+        "Hãng / Dòng máy / Danh mục * (danh mục lớn: - ; danh mục con: --)",
       type: "select",
       options: brandSeriesOptions,
     },
