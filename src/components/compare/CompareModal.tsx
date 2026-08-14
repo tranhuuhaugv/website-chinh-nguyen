@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect } from "react";
+import Image from "next/image";
 import Link from "next/link";
 import { ProductImage } from "@/components/ProductImage";
 import { AddToCartButton } from "@/components/cart/AddToCartButton";
@@ -72,8 +73,18 @@ export function CompareModal({ onClose }: { onClose: () => void }) {
                     className="min-w-[150px] border-l border-line p-3 align-top"
                   >
                     <div className="mb-2 h-24 overflow-hidden rounded-xl bg-[#F5F7F5] p-2">
-                      <div className="h-full w-full overflow-hidden rounded-lg">
-                        <ProductImage accent={p.accent} uid={`cmp-${p.id}`} />
+                      <div className="relative h-full w-full overflow-hidden rounded-lg">
+                        {p.image ? (
+                          <Image
+                            src={p.image}
+                            alt={p.name}
+                            fill
+                            sizes="180px"
+                            className="object-contain"
+                          />
+                        ) : (
+                          <ProductImage accent={p.accent} uid={`cmp-${p.id}`} />
+                        )}
                       </div>
                     </div>
                     <Link
