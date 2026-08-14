@@ -73,7 +73,13 @@ export function CartProvider({ children }: { children: ReactNode }) {
       const existing = prev.find((p) => p.id === item.id);
       if (existing) {
         return prev.map((p) =>
-          p.id === item.id ? { ...p, qty: Math.min(99, p.qty + qty) } : p,
+          p.id === item.id
+            ? {
+                ...p,
+                image: p.image ?? item.image,
+                qty: Math.min(99, p.qty + qty),
+              }
+            : p,
         );
       }
       return [...prev, { ...item, qty: Math.min(99, qty) }];

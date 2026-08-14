@@ -176,6 +176,7 @@ export function ProductCard({
               name: product.name,
               price: product.price,
               accent: product.accent,
+              image: cover,
             }}
             redirectTo="/gio-hang"
             className="mt-3 flex w-full items-center justify-center gap-2 rounded-xl bg-gradient-to-r from-green-d to-green py-2.5 text-sm font-semibold text-white shadow-[0_4px_12px_rgba(11,94,44,.25)] transition hover:shadow-[0_6px_16px_rgba(11,94,44,.38)]"
