@@ -5,7 +5,7 @@ export const SITE = {
   hotlineTel: "0936122144",
   techPhone: "0926.122.144",
   techTel: "0926122144",
-  email: "hotro@laptopchinhnguyen.vn",
+  email: "infor.laptopchinhnguyen@gmail.com",
   hours: "8:00 - 21:00 (T2 - CN)",
   facebook: "https://www.facebook.com/ChinhNguyenLaptopUSA",
   messenger: "https://m.me/ChinhNguyenLaptopUSA",

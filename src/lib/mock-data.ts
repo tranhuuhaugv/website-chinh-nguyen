@@ -28,7 +28,7 @@ export const HERO_SLIDES: HeroSlide[] = [
     badge: "ƯU ĐÃI THÁNG 7",
     title1: "Laptop chính hãng",
     title2: "giá tốt mỗi ngày",
-    subtitle: "Trả góp 0% · Bảo hành 24 tháng · Giao nhanh toàn quốc",
+    subtitle: "Trả góp 0% · Bảo hành 12 tháng · Giao nhanh toàn quốc",
     cta: "Mua ngay",
     accent: "green",
   },

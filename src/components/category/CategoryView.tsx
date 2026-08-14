@@ -36,7 +36,7 @@ export function buildCategoryMetadata(
     title: name,
     description:
       category?.metaDescription ||
-      `Mua ${name} chính hãng, giá tốt tại Laptop Chính Nguyễn. Trả góp 0%, bảo hành 24 tháng, giao nhanh toàn quốc.`,
+      `Mua ${name} chính hãng, giá tốt tại Laptop Chính Nguyễn. Trả góp 0%, bảo hành 12 tháng, giao nhanh toàn quốc.`,
     alternates: { canonical: `${SITE_URL}/${slug}` },
   };
 }

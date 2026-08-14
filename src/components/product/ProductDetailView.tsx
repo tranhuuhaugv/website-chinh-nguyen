@@ -234,7 +234,7 @@ export async function ProductDetailView({ slug }: { slug: string }) {
                 <span className="text-muted">
                   {isUsed
                     ? "Đã kiểm tra kỹ · Bảo hành tại shop"
-                    : "Máy mới · Bảo hành chính hãng 24 tháng"}
+                    : "Máy mới · Bảo hành chính hãng 12 tháng"}
                 </span>
               </div>
 
@@ -299,7 +299,7 @@ export async function ProductDetailView({ slug }: { slug: string }) {
                       </>
                     ) : (
                       <>
-                        Bảo hành <b className="text-ink">24 tháng</b> + kiểm tra
+                        Bảo hành <b className="text-ink">12 tháng</b> + kiểm tra
                         máy trực tiếp khi nhận.
                       </>
                     )}

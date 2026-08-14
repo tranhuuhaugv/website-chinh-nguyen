@@ -15,7 +15,7 @@ const NEW = [
   },
   {
     icon: WarrantyIcon,
-    title: "Bảo hành 24 tháng",
+    title: "Bảo hành 12 tháng",
     desc: "Dùng thử 15 ngày · 1 đổi 1 trong 30 ngày",
   },
   {

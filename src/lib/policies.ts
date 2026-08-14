@@ -41,7 +41,7 @@ export const POLICIES: Record<string, Policy> = {
           "Thời gian bảo hành được tính từ ngày mua hàng ghi trên hóa đơn và có thể khác nhau tùy theo từng nhóm sản phẩm:",
         ],
         items: [
-          "Laptop, máy tính: bảo hành chính hãng 24 tháng.",
+          "Laptop, máy tính: bảo hành chính hãng 12 tháng.",
           "Pin và bộ sạc (adapter): bảo hành 12 tháng.",
           "Phụ kiện (chuột, balo, tai nghe, túi chống sốc...): bảo hành 3 - 6 tháng tùy loại.",
           "Phần mềm cài đặt kèm theo: hỗ trợ cài lại miễn phí trong suốt thời gian bảo hành máy.",

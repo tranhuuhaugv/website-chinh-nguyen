@@ -63,6 +63,9 @@ export async function Footer() {
       getSetting("dmcaUrl"),
       getSetting("copyrightEnabled"),
     ]);
+  const primaryStore =
+    stores.find((s) => s.address.includes("Đỗ Quang")) ?? SITE.stores[0];
+
   return (
     <footer className="mt-12 bg-ink pb-6 text-[#AEB7B1]">
       {/* Dải CTA hotline (gradient) — gối lên đầu footer cho hiện đại */}
@@ -144,12 +147,12 @@ export async function Footer() {
               Liên hệ
             </h4>
             <ul className="space-y-2.5 text-[13.5px]">
-              {stores.map((s) => (
-                <li key={s.address} className="flex items-start gap-2.5">
+              {primaryStore && (
+                <li className="flex items-start gap-2.5">
                   <MapPinIcon className="mt-0.5 h-4 w-4 shrink-0 text-[#7EE0A0]" />
-                  <span className="leading-[1.5]">{s.address}</span>
+                  <span className="leading-[1.5]">{primaryStore.address}</span>
                 </li>
-              ))}
+              )}
               <li className="flex items-center gap-2.5">
                 <PhoneIcon className="h-4 w-4 shrink-0 text-[#7EE0A0]" />
                 <span>
