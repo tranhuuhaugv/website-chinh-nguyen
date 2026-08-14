@@ -25,10 +25,10 @@ const INFO = [
 ];
 
 const DEPARTMENTS = [
-  { name: "Tư vấn bán hàng", contact: SITE.hotline, email: "sales@laptopchinhnguyen.vn" },
-  { name: "Bảo hành - Kỹ thuật", contact: SITE.techPhone, email: "baohanh@laptopchinhnguyen.vn" },
-  { name: "Khiếu nại - Góp ý", contact: SITE.hotline, email: "cskh@laptopchinhnguyen.vn" },
-  { name: "Hợp tác - Đại lý", contact: SITE.hotline, email: "hoptac@laptopchinhnguyen.vn" },
+  { name: "Tư vấn bán hàng", contact: SITE.hotline, email: SITE.email },
+  { name: "Bảo hành - Kỹ thuật", contact: SITE.techPhone, email: SITE.email },
+  { name: "Khiếu nại - Góp ý", contact: SITE.hotline, email: SITE.email },
+  { name: "Hợp tác - Đại lý", contact: SITE.hotline, email: SITE.email },
 ];
 
 const SOCIALS = [
