@@ -1,14 +1,15 @@
 // Thông tin liên hệ / cửa hàng dùng chung toàn site.
 export const SITE = {
   name: "Laptop Chính Nguyễn",
-  hotline: "0936.122.144",
-  hotlineTel: "0936122144",
+  hotline: "0926.122.144",
+  hotlineTel: "0926122144",
   techPhone: "0934.712.144",
   techTel: "0934712144",
   email: "infor.laptopchinhnguyen@gmail.com",
   hours: "8:00 - 21:00 (T2 - CN)",
   facebook: "https://www.facebook.com/ChinhNguyenLaptopUSA",
   messenger: "https://m.me/ChinhNguyenLaptopUSA",
+  zalo: "https://zalo.me/978295400221667062",
   stores: [
     {
       name: "Chính Nguyễn - Đỗ Quang",

@@ -400,7 +400,7 @@ export const BLOG_POSTS: BlogPost[] = [
       `<h2>Nên chọn dòng máy cũ nào?</h2>`,
       `<p>Nếu cần <strong>máy văn phòng bền, pin tốt</strong>, hãy nhắm ThinkPad, Dell Latitude, HP EliteBook — dòng doanh nghiệp làm rất chắc chắn. Cần <strong>mỏng nhẹ cao cấp</strong> thì Dell XPS, LG Gram. Cần <strong>chơi game</strong> thì các dòng gaming đời trước có card rời vẫn rất đáng tiền — tham khảo <a href="/blog/top-5-laptop-gaming-cu-gia-re-da-nang-2026">top laptop gaming cũ giá rẻ tại Đà Nẵng</a>.</p>`,
       `<h2>Mua laptop cũ uy tín tại Đà Nẵng ở đâu?</h2>`,
-      `<p><strong>Laptop Chính Nguyễn</strong> có sẵn hơn 140 mẫu <a href="/laptop-cu">laptop cũ đã kiểm định</a>, tất cả được test kỹ pin và linh kiện, bảo hành rõ ràng, hỗ trợ <a href="/thu-cu-doi-moi">thu cũ đổi mới</a> và trả góp 0%. Bạn có thể tới xem máy trực tiếp tại <a href="/he-thong-cua-hang">hệ thống 4 cửa hàng tại Đà Nẵng &amp; Hội An</a> (mở cửa 8:00–21:00 tất cả các ngày). Cần tư vấn chọn máy đúng nhu cầu, gọi ngay hotline <strong>0936.122.144</strong> hoặc xem <a href="/san-pham">toàn bộ sản phẩm đang bán</a>.</p>`,
+      `<p><strong>Laptop Chính Nguyễn</strong> có sẵn hơn 140 mẫu <a href="/laptop-cu">laptop cũ đã kiểm định</a>, tất cả được test kỹ pin và linh kiện, bảo hành rõ ràng, hỗ trợ <a href="/thu-cu-doi-moi">thu cũ đổi mới</a> và trả góp 0%. Bạn có thể tới xem máy trực tiếp tại <a href="/he-thong-cua-hang">hệ thống 4 cửa hàng tại Đà Nẵng &amp; Hội An</a> (mở cửa 8:00–21:00 tất cả các ngày). Cần tư vấn chọn máy đúng nhu cầu, gọi ngay hotline <strong>0926.122.144</strong> hoặc xem <a href="/san-pham">toàn bộ sản phẩm đang bán</a>.</p>`,
     ].join(""),
   },
   {
@@ -428,7 +428,7 @@ export const BLOG_POSTS: BlogPost[] = [
       `<ul><li><strong>Kiểm tra nhiệt độ khi tải nặng:</strong> chạy thử game hoặc stress test, CPU/GPU không nên vượt 90°C liên tục.</li><li><strong>Xem tình trạng quạt tản nhiệt:</strong> nghe tiếng quạt, hỏi lịch sử vệ sinh máy.</li><li><strong>Chú ý TGP của card:</strong> cùng tên card nhưng bản điện cao chơi mạnh hơn hẳn.</li><li><strong>Test đủ số điểm ảnh màn hình</strong> để tránh điểm chết.</li></ul>`,
       `<p>Chi tiết cách test có trong bài <a href="/blog/cach-kiem-tra-laptop-cu-truoc-khi-mua-checklist">kiểm tra laptop cũ trước khi mua</a>. Nếu quan tâm dòng card mới hơn, đọc thêm <a href="/blog/laptop-gaming-rtx-4060-tam-gia-nao-2026">laptop gaming RTX 4060 tầm giá nào</a>.</p>`,
       `<h2>Mua laptop gaming cũ tại Đà Nẵng ở đâu?</h2>`,
-      `<p>Xem ngay danh mục <a href="/laptop-gaming">laptop gaming</a> tại <strong>Laptop Chính Nguyễn</strong> — máy cũ được test card, tản nhiệt và pin kỹ lưỡng, bảo hành minh bạch, trả góp 0%. Ghé <a href="/he-thong-cua-hang">hệ thống 4 cửa hàng tại Đà Nẵng &amp; Hội An</a> để chơi thử máy, hoặc gọi <strong>0936.122.144</strong> để được tư vấn cấu hình hợp túi tiền.</p>`,
+      `<p>Xem ngay danh mục <a href="/laptop-gaming">laptop gaming</a> tại <strong>Laptop Chính Nguyễn</strong> — máy cũ được test card, tản nhiệt và pin kỹ lưỡng, bảo hành minh bạch, trả góp 0%. Ghé <a href="/he-thong-cua-hang">hệ thống 4 cửa hàng tại Đà Nẵng &amp; Hội An</a> để chơi thử máy, hoặc gọi <strong>0926.122.144</strong> để được tư vấn cấu hình hợp túi tiền.</p>`,
     ].join(""),
   },
   {
@@ -455,7 +455,7 @@ export const BLOG_POSTS: BlogPost[] = [
       `<h2>Nên mua máy trạm hay laptop gaming?</h2>`,
       `<p>Đây là câu hỏi rất phổ biến. Laptop gaming có card mạnh, giá rẻ hơn nhưng thiếu tối ưu driver chuyên nghiệp; máy trạm ổn định và chuẩn màu hơn nhưng đắt. Mình phân tích chi tiết trong bài <a href="/blog/laptop-render-3d-chon-may-tram-hay-gaming">laptop render 3D: chọn máy trạm hay gaming</a>.</p>`,
       `<h2>Mua laptop máy trạm tại Đà Nẵng ở đâu?</h2>`,
-      `<p>Xem danh mục <a href="/may-tram">laptop máy trạm</a> tại <strong>Laptop Chính Nguyễn</strong> — có sẵn Dell Precision, HP ZBook, ThinkPad P đã kiểm định, bảo hành uy tín, hỗ trợ trả góp 0%. Đội ngũ tư vấn sẽ giúp bạn khớp cấu hình với đúng phần mềm đang dùng. Ghé <a href="/he-thong-cua-hang">hệ thống 4 cửa hàng tại Đà Nẵng &amp; Hội An</a> hoặc gọi <strong>0936.122.144</strong>.</p>`,
+      `<p>Xem danh mục <a href="/may-tram">laptop máy trạm</a> tại <strong>Laptop Chính Nguyễn</strong> — có sẵn Dell Precision, HP ZBook, ThinkPad P đã kiểm định, bảo hành uy tín, hỗ trợ trả góp 0%. Đội ngũ tư vấn sẽ giúp bạn khớp cấu hình với đúng phần mềm đang dùng. Ghé <a href="/he-thong-cua-hang">hệ thống 4 cửa hàng tại Đà Nẵng &amp; Hội An</a> hoặc gọi <strong>0926.122.144</strong>.</p>`,
     ].join(""),
   },
   {
@@ -486,7 +486,7 @@ export const BLOG_POSTS: BlogPost[] = [
       `<h2>Kết luận: chọn bản nào?</h2>`,
       `<p>Chọn <strong>XPS 13</strong> nếu ưu tiên nhẹ, pin lâu, dùng văn phòng và di chuyển nhiều. Chọn <strong>XPS 15</strong> nếu cần màn lớn, làm sáng tạo và không ngại máy nặng hơn.</p>`,
       `<h2>Mua Dell XPS tại Đà Nẵng ở đâu?</h2>`,
-      `<p>Xem các mẫu <a href="/dell">Dell XPS 13, XPS 15</a> chính hãng và cũ tại <strong>Laptop Chính Nguyễn</strong> — kiểm định kỹ, bảo hành rõ ràng, trả góp 0%. Ghé thử máy tại <a href="/he-thong-cua-hang">hệ thống 4 cửa hàng tại Đà Nẵng &amp; Hội An</a> hoặc gọi <strong>0936.122.144</strong> để được tư vấn.</p>`,
+      `<p>Xem các mẫu <a href="/dell">Dell XPS 13, XPS 15</a> chính hãng và cũ tại <strong>Laptop Chính Nguyễn</strong> — kiểm định kỹ, bảo hành rõ ràng, trả góp 0%. Ghé thử máy tại <a href="/he-thong-cua-hang">hệ thống 4 cửa hàng tại Đà Nẵng &amp; Hội An</a> hoặc gọi <strong>0926.122.144</strong> để được tư vấn.</p>`,
     ].join(""),
   },
   {
@@ -521,7 +521,7 @@ export const BLOG_POSTS: BlogPost[] = [
       `<h2>10. Đối chiếu cấu hình thực tế</h2>`,
       `<p>Vào thông tin hệ thống để kiểm tra đúng CPU, RAM, dung lượng ổ như quảng cáo — tránh bị "thổi" cấu hình.</p>`,
       `<h2>Mẹo cuối: chọn nơi bán uy tín</h2>`,
-      `<p>Cách chắc ăn nhất vẫn là mua ở nơi kiểm định sẵn và cho bạn test thoải mái. Xem thêm <a href="/blog/mua-laptop-cu-o-dau-uy-tin-tai-da-nang">mua laptop cũ ở đâu uy tín tại Đà Nẵng</a>. Toàn bộ <a href="/laptop-cu">laptop cũ tại Laptop Chính Nguyễn</a> đều được test 10 bước như trên trước khi lên kệ, bảo hành minh bạch. Ghé <a href="/he-thong-cua-hang">hệ thống 4 cửa hàng tại Đà Nẵng &amp; Hội An</a> hoặc gọi <strong>0936.122.144</strong> để được hỗ trợ.</p>`,
+      `<p>Cách chắc ăn nhất vẫn là mua ở nơi kiểm định sẵn và cho bạn test thoải mái. Xem thêm <a href="/blog/mua-laptop-cu-o-dau-uy-tin-tai-da-nang">mua laptop cũ ở đâu uy tín tại Đà Nẵng</a>. Toàn bộ <a href="/laptop-cu">laptop cũ tại Laptop Chính Nguyễn</a> đều được test 10 bước như trên trước khi lên kệ, bảo hành minh bạch. Ghé <a href="/he-thong-cua-hang">hệ thống 4 cửa hàng tại Đà Nẵng &amp; Hội An</a> hoặc gọi <strong>0926.122.144</strong> để được hỗ trợ.</p>`,
     ].join(""),
   },
   {
@@ -544,7 +544,7 @@ export const BLOG_POSTS: BlogPost[] = [
       `<h2>Nên mua mới hay cũ?</h2>`,
       `<p>Nếu ngân sách hạn chế, một chiếc RTX 4060 cũ còn bảo hành, được test kỹ card và tản nhiệt là rất đáng tiền. Bạn cũng có thể cân nhắc đời card trước để tiết kiệm — xem <a href="/blog/top-5-laptop-gaming-cu-gia-re-da-nang-2026">top laptop gaming cũ giá rẻ tại Đà Nẵng</a>.</p>`,
       `<h2>Mua laptop gaming RTX 4060 tại Đà Nẵng ở đâu?</h2>`,
-      `<p>Xem các mẫu trong danh mục <a href="/laptop-gaming">laptop gaming</a> tại <strong>Laptop Chính Nguyễn</strong> — có cả máy mới và cũ RTX 4060 với nhiều mức TGP, bảo hành rõ ràng, trả góp 0%. Ghé <a href="/he-thong-cua-hang">hệ thống 4 cửa hàng tại Đà Nẵng &amp; Hội An</a> để chơi thử, hoặc gọi <strong>0936.122.144</strong> để được tư vấn cấu hình đúng nhu cầu.</p>`,
+      `<p>Xem các mẫu trong danh mục <a href="/laptop-gaming">laptop gaming</a> tại <strong>Laptop Chính Nguyễn</strong> — có cả máy mới và cũ RTX 4060 với nhiều mức TGP, bảo hành rõ ràng, trả góp 0%. Ghé <a href="/he-thong-cua-hang">hệ thống 4 cửa hàng tại Đà Nẵng &amp; Hội An</a> để chơi thử, hoặc gọi <strong>0926.122.144</strong> để được tư vấn cấu hình đúng nhu cầu.</p>`,
     ].join(""),
   },
   {
@@ -570,7 +570,7 @@ export const BLOG_POSTS: BlogPost[] = [
       `<h2>Mẹo tiết kiệm hơn nữa</h2>`,
       `<p>Nếu muốn giảm số tiền trả mỗi tháng, cân nhắc <a href="/laptop-cu">laptop cũ đã kiểm định</a> (giá rẻ hơn nhiều mà vẫn được áp dụng trả góp), hoặc <a href="/thu-cu-doi-moi">thu cũ đổi mới</a> để lấy máy cũ bù vào giá máy mới.</p>`,
       `<h2>Mua laptop trả góp 0% tại Đà Nẵng ở đâu?</h2>`,
-      `<p><strong>Laptop Chính Nguyễn</strong> hỗ trợ trả góp 0% cho cả laptop mới và cũ, thủ tục nhanh gọn ngay tại cửa hàng. Xem <a href="/san-pham">toàn bộ sản phẩm</a> rồi tới <a href="/he-thong-cua-hang">hệ thống 4 cửa hàng tại Đà Nẵng &amp; Hội An</a>, hoặc gọi <strong>0936.122.144</strong> để được tư vấn gói trả góp phù hợp.</p>`,
+      `<p><strong>Laptop Chính Nguyễn</strong> hỗ trợ trả góp 0% cho cả laptop mới và cũ, thủ tục nhanh gọn ngay tại cửa hàng. Xem <a href="/san-pham">toàn bộ sản phẩm</a> rồi tới <a href="/he-thong-cua-hang">hệ thống 4 cửa hàng tại Đà Nẵng &amp; Hội An</a>, hoặc gọi <strong>0926.122.144</strong> để được tư vấn gói trả góp phù hợp.</p>`,
     ].join(""),
   },
   {
@@ -601,7 +601,7 @@ export const BLOG_POSTS: BlogPost[] = [
       `<h2>Kết luận</h2>`,
       `<p>Không có đáp án đúng cho tất cả: <strong>máy trạm</strong> thắng về độ ổn định và chuẩn nghề, <strong>laptop gaming</strong> thắng về hiệu năng trên giá. Hãy xuất phát từ phần mềm bạn dùng và ngân sách. Xem thêm <a href="/blog/kinh-nghiem-chon-laptop-may-tram-do-hoa-render">kinh nghiệm chọn laptop máy trạm cho đồ họa, render</a>.</p>`,
       `<h2>Tư vấn chọn máy render tại Đà Nẵng</h2>`,
-      `<p><strong>Laptop Chính Nguyễn</strong> có cả laptop máy trạm và laptop gaming đã kiểm định, giúp bạn thử máy trực tiếp và chọn đúng nhu cầu render. Ghé <a href="/he-thong-cua-hang">hệ thống 4 cửa hàng tại Đà Nẵng &amp; Hội An</a> hoặc gọi <strong>0936.122.144</strong>.</p>`,
+      `<p><strong>Laptop Chính Nguyễn</strong> có cả laptop máy trạm và laptop gaming đã kiểm định, giúp bạn thử máy trực tiếp và chọn đúng nhu cầu render. Ghé <a href="/he-thong-cua-hang">hệ thống 4 cửa hàng tại Đà Nẵng &amp; Hội An</a> hoặc gọi <strong>0926.122.144</strong>.</p>`,
     ].join(""),
   },
   {
@@ -632,14 +632,14 @@ export const BLOG_POSTS: BlogPost[] = [
       `<p>Mua laptop trong mùa Back To School 2026, bạn còn nhận bộ quà tặng đặc quyền để sẵn sàng nhập học:</p>`,
       `<ul><li><strong>Balo laptop</strong> — đựng máy và tài liệu gọn gàng tới giảng đường.</li><li><strong>Túi chống sốc</strong> — bảo vệ máy an toàn khi di chuyển.</li><li><strong>Mũ bảo hiểm Chính Nguyễn</strong> — đồng hành trên mọi cung đường đến trường.</li></ul>`,
       `<h2>Tư vấn 1-1: chọn máy đúng ngành, không lo mua dư cấu hình</h2>`,
-      `<p>Mỗi ngành học cần một cấu hình khác nhau: kinh tế — ngoại ngữ chỉ cần máy văn phòng pin tốt, CNTT — kỹ thuật cần CPU mạnh và RAM 16GB, thiết kế — dựng phim cần card đồ họa rời. Đội ngũ Chính Nguyễn tư vấn <strong>1-1 miễn phí</strong> để bạn chọn đúng máy, đúng ngành, đúng ngân sách — gọi <strong>0938.122.144</strong> trước khi đến để được chuẩn bị sẵn máy trải nghiệm.</p>`,
+      `<p>Mỗi ngành học cần một cấu hình khác nhau: kinh tế — ngoại ngữ chỉ cần máy văn phòng pin tốt, CNTT — kỹ thuật cần CPU mạnh và RAM 16GB, thiết kế — dựng phim cần card đồ họa rời. Đội ngũ Chính Nguyễn tư vấn <strong>1-1 miễn phí</strong> để bạn chọn đúng máy, đúng ngành, đúng ngân sách — gọi <strong>0926.122.144</strong> trước khi đến để được chuẩn bị sẵn máy trải nghiệm.</p>`,
       `<p>Tham khảo thêm: <a href="/blog/chon-laptop-cho-sinh-vien-2026-ngan-sach-15-trieu">Laptop cho sinh viên 2026: ngân sách 15 triệu nên mua gì?</a> hoặc xem <a href="/san-pham">toàn bộ laptop đang bán tại Chính Nguyễn</a>. Ngân sách eo hẹp? <a href="/laptop-cu">Laptop cũ đã kiểm định</a> cũng được áp dụng ưu đãi Back To School.</p>`,
       `<h2>Cách nhận ưu đãi</h2>`,
       `<ol><li>Chọn laptop phù hợp tại cửa hàng hoặc trên website, hoặc gọi hotline để được tư vấn.</li><li>Mang theo thẻ HSSV / thẻ giáo viên và giấy báo điểm thi (nếu có) khi mua máy.</li><li>Nhân viên xác nhận và trừ trực tiếp mức giảm vào giá máy, kèm bộ quà tặng.</li></ol>`,
       `<h2>Mua ở đâu? Liên hệ thế nào?</h2>`,
       `<p>Chương trình áp dụng tại tất cả cửa hàng Laptop Chính Nguyễn ở Đà Nẵng và Hội An, mở cửa 8:00 — 21:00 tất cả các ngày trong tuần:</p>`,
       `<ul><li><strong>175/8 Đỗ Quang</strong> - TP. Đà Nẵng</li><li><strong>605 Trần Cao Vân</strong> - TP. Đà Nẵng</li><li><strong>306/14 Nguyễn Hoàng</strong> - TP. Đà Nẵng</li><li><strong>139/2 Hùng Vương</strong>, TP. Hội An</li></ul>`,
-      `<p>Liên hệ đặt hàng và tư vấn: <strong>0936.122.144</strong> — <strong>0938.122.144</strong>. Điểm cao — deal lớn — chọn đúng laptop: ghé Chính Nguyễn ngay trong mùa tựu trường này để nhận trọn ưu đãi Back To School 2026!</p>`,
+      `<p>Liên hệ đặt hàng và tư vấn: <strong>0926.122.144</strong>. Điểm cao — deal lớn — chọn đúng laptop: ghé Chính Nguyễn ngay trong mùa tựu trường này để nhận trọn ưu đãi Back To School 2026!</p>`,
     ].join(""),
   },
   {

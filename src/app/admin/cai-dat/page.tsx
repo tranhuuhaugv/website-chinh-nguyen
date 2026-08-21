@@ -70,7 +70,7 @@ const CONTACTS: {
   {
     key: "floatPhone",
     title: "Nút gọi điện",
-    desc: "Số điện thoại nút gọi (chỉ nhập số, VD 0936122144).",
+    desc: "Số điện thoại nút gọi (chỉ nhập số, VD 0926122144).",
     placeholder: SITE.hotlineTel,
   },
   {
@@ -82,8 +82,8 @@ const CONTACTS: {
   {
     key: "floatZalo",
     title: "Nút Zalo",
-    desc: "Link Zalo đầy đủ (VD https://zalo.me/0936122144).",
-    placeholder: `https://zalo.me/${SITE.hotlineTel}`,
+    desc: "Link Zalo đầy đủ (VD https://zalo.me/978295400221667062).",
+    placeholder: SITE.zalo,
   },
 ];
 

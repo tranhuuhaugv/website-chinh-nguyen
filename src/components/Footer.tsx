@@ -93,7 +93,7 @@ export async function Footer() {
               {SITE.hotline}
             </a>
             <a
-              href={`https://zalo.me/${SITE.hotlineTel}`}
+              href={SITE.zalo}
               target="_blank"
               rel="noopener noreferrer"
               className="flex h-11 items-center gap-2 rounded-full bg-white/15 px-4 text-[13.5px] font-semibold text-white ring-1 ring-white/25 transition hover:bg-white/25"

@@ -43,10 +43,10 @@ export default async function BuildPcPage() {
               Chọn từng linh kiện theo nhu cầu — tổng chi phí tự cộng. Cần tư vấn
               ráp máy, gọi{" "}
               <a
-                href="tel:0936122144"
+                href="tel:0926122144"
                 className="font-semibold text-green-d hover:underline"
               >
-                0936.122.144
+                0926.122.144
               </a>
               .
             </p>

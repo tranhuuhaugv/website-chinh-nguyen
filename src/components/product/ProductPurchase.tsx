@@ -117,7 +117,7 @@ export function ProductPurchase({
 
       <div className="grid grid-cols-2 gap-3">
         <a
-          href={`https://zalo.me/${SITE.hotlineTel}`}
+          href={SITE.zalo}
           target="_blank"
           rel="noopener noreferrer"
           className="flex h-11 items-center justify-center gap-2 rounded-xl border border-line bg-white text-[13.5px] font-semibold text-ink-2 transition hover:border-[#0068FF] hover:text-[#0068FF]"

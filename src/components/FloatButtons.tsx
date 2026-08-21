@@ -19,7 +19,7 @@ export async function FloatButtons() {
     ? phoneVal
     : `tel:${phoneVal.replace(/\s+/g, "")}`;
   const messengerHref = (messenger || SITE.messenger).trim();
-  const zaloHref = (zalo || `https://zalo.me/${SITE.hotlineTel}`).trim();
+  const zaloHref = (zalo || SITE.zalo).trim();
 
   return (
     <div className="fixed right-4 bottom-[66px] z-[60] flex flex-col gap-2.5 lg:bottom-5">

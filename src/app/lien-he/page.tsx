@@ -33,7 +33,7 @@ const DEPARTMENTS = [
 
 const SOCIALS = [
   { label: "Facebook", href: SITE.facebook, color: "bg-[#1877F2]" },
-  { label: "Zalo", href: `https://zalo.me/${SITE.hotlineTel}`, color: "bg-[#0068FF]" },
+  { label: "Zalo", href: SITE.zalo, color: "bg-[#0068FF]" },
   { label: "YouTube", href: "https://youtube.com", color: "bg-[#FF0000]" },
   { label: "TikTok", href: "https://tiktok.com", color: "bg-[#111]" },
 ];
