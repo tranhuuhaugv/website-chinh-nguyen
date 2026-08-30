@@ -11,8 +11,8 @@ import { BLOG_POSTS } from "../src/lib/mock-data";
 const SYNC_SLUGS = [
   "top-10-cua-hang-laptop-cu-da-nang-uy-tin-2026",
   "top-5-cua-hang-mua-laptop-da-nang-chinh-hang-2026",
-  "guest-post-kinh-nghiem-mua-laptop-cu-da-nang-cho-sinh-vien",
-  "guest-post-checklist-chon-cua-hang-laptop-da-nang-uy-tin",
+  "kinh-nghiem-mua-laptop-cu-da-nang-cho-sinh-vien",
+  "checklist-chon-cua-hang-laptop-da-nang-uy-tin",
   "laptop-cu-da-nang-duoi-10-trieu-nen-mua-may-nao",
   "laptop-van-phong-2026-nen-chon-core-i5-hay-core-i7",
   "nen-mua-laptop-moi-hay-laptop-cu-nam-2026",
@@ -31,14 +31,30 @@ const SYNC_SLUGS = [
 // Các bài do code quản lý nội dung SEO: nếu đã có trong DB thì cập nhật lại.
 // Các slug khác vẫn chỉ tạo khi thiếu để không ghi đè bài admin tự sửa.
 const UPDATE_SLUGS = new Set([
+  "top-10-cua-hang-laptop-cu-da-nang-uy-tin-2026",
+  "top-5-cua-hang-mua-laptop-da-nang-chinh-hang-2026",
+  "kinh-nghiem-mua-laptop-cu-da-nang-cho-sinh-vien",
+  "checklist-chon-cua-hang-laptop-da-nang-uy-tin",
+  "laptop-cu-da-nang-duoi-10-trieu-nen-mua-may-nao",
   "laptop-van-phong-2026-nen-chon-core-i5-hay-core-i7",
   "nen-mua-laptop-moi-hay-laptop-cu-nam-2026",
   "macbook-cu-2026-nen-mua-m1-m2-hay-m3",
 ]);
 
+// Xoá 2 slug cũ do bản trước đặt nhầm tiền tố.
+const DELETE_SLUGS = [
+  "guest-post-kinh-nghiem-mua-laptop-cu-da-nang-cho-sinh-vien",
+  "guest-post-checklist-chon-cua-hang-laptop-da-nang-uy-tin",
+];
+
 const prisma = new PrismaClient();
 
 async function main() {
+  for (const slug of DELETE_SLUGS) {
+    const deleted = await prisma.blogPost.deleteMany({ where: { slug } });
+    if (deleted.count) console.log(`Đã xoá slug cũ "${slug}".`);
+  }
+
   for (const slug of SYNC_SLUGS) {
     const post = BLOG_POSTS.find((p) => p.slug === slug);
     if (!post) {
