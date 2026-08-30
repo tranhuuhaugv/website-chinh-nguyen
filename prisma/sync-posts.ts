@@ -2,12 +2,18 @@ import { PrismaClient } from "@prisma/client";
 import { BLOG_POSTS } from "../src/lib/mock-data";
 
 // Đưa các bài blog soạn trong code (mock-data) lên DB production.
-// CHỈ TẠO bài còn thiếu (theo slug) — không ghi đè, không xoá, nên bài admin
-// tự thêm/sửa qua /admin/blog không bị ảnh hưởng. Chạy: `npm run db:sync-posts`
-// (deploy.yml tự chạy trước khi build để trang blog render tĩnh có bài mới).
+// Tạo bài còn thiếu (theo slug); chỉ cập nhật lại các bài code-managed trong
+// UPDATE_SLUGS bên dưới, nên bài admin tự thêm/sửa qua /admin/blog không bị
+// ảnh hưởng. Chạy: `npm run db:sync-posts` (deploy.yml tự chạy trước khi build
+// để trang blog render tĩnh có bài mới).
 
 // Chỉ sync các slug liệt kê ở đây (tránh tự ý thêm lại bài admin đã xoá).
 const SYNC_SLUGS = [
+  "top-10-cua-hang-laptop-cu-da-nang-uy-tin-2026",
+  "top-5-cua-hang-mua-laptop-da-nang-chinh-hang-2026",
+  "guest-post-kinh-nghiem-mua-laptop-cu-da-nang-cho-sinh-vien",
+  "guest-post-checklist-chon-cua-hang-laptop-da-nang-uy-tin",
+  "laptop-cu-da-nang-duoi-10-trieu-nen-mua-may-nao",
   "laptop-van-phong-2026-nen-chon-core-i5-hay-core-i7",
   "nen-mua-laptop-moi-hay-laptop-cu-nam-2026",
   "macbook-cu-2026-nen-mua-m1-m2-hay-m3",
@@ -22,6 +28,14 @@ const SYNC_SLUGS = [
   "laptop-render-3d-chon-may-tram-hay-gaming",
 ];
 
+// Các bài do code quản lý nội dung SEO: nếu đã có trong DB thì cập nhật lại.
+// Các slug khác vẫn chỉ tạo khi thiếu để không ghi đè bài admin tự sửa.
+const UPDATE_SLUGS = new Set([
+  "laptop-van-phong-2026-nen-chon-core-i5-hay-core-i7",
+  "nen-mua-laptop-moi-hay-laptop-cu-nam-2026",
+  "macbook-cu-2026-nen-mua-m1-m2-hay-m3",
+]);
+
 const prisma = new PrismaClient();
 
 async function main() {
@@ -33,6 +47,23 @@ async function main() {
     }
     const existing = await prisma.blogPost.findUnique({ where: { slug } });
     if (existing) {
+      if (UPDATE_SLUGS.has(slug)) {
+        await prisma.blogPost.update({
+          where: { slug },
+          data: {
+            title: post.title,
+            tag: post.tag,
+            excerpt: post.excerpt,
+            content: post.content,
+            readMinutes: post.readMinutes,
+            accent: post.accent,
+            image: post.image ?? null,
+            date: post.date,
+          },
+        });
+        console.log(`Đã cập nhật "${slug}".`);
+        continue;
+      }
       console.log(`Đã có "${slug}" — giữ nguyên.`);
       continue;
     }
