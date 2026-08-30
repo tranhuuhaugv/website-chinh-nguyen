@@ -664,8 +664,17 @@ export async function getBrands(): Promise<{ slug: string; name: string }[]> {
 }
 
 // --- Blog ---
+function blogDateValue(date: string) {
+  const [day, month, year] = date.split("/").map(Number);
+  return new Date(year, month - 1, day).getTime();
+}
+
+function sortPostsNewest(posts: BlogPost[]) {
+  return [...posts].sort((a, b) => blogDateValue(b.date) - blogDateValue(a.date));
+}
+
 export async function getBlogPosts(): Promise<BlogPost[]> {
-  if (NO_DB) return BLOG_POSTS;
+  if (NO_DB) return sortPostsNewest(BLOG_POSTS);
   const rows = await prisma.blogPost.findMany({ orderBy: { createdAt: "desc" } });
   return rows.map(toPost);
 }
@@ -681,7 +690,9 @@ export async function getRelatedPosts(
   limit = 3,
 ): Promise<BlogPost[]> {
   if (NO_DB)
-    return BLOG_POSTS.filter((p) => p.slug !== post.slug).slice(0, limit);
+    return sortPostsNewest(BLOG_POSTS)
+      .filter((p) => p.slug !== post.slug)
+      .slice(0, limit);
   const rows = await prisma.blogPost.findMany({
     where: { slug: { not: post.slug } },
     orderBy: { createdAt: "desc" },

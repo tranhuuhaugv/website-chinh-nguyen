@@ -8,6 +8,9 @@ import { BLOG_POSTS } from "../src/lib/mock-data";
 
 // Chỉ sync các slug liệt kê ở đây (tránh tự ý thêm lại bài admin đã xoá).
 const SYNC_SLUGS = [
+  "laptop-van-phong-2026-nen-chon-core-i5-hay-core-i7",
+  "nen-mua-laptop-moi-hay-laptop-cu-nam-2026",
+  "macbook-cu-2026-nen-mua-m1-m2-hay-m3",
   "back-to-school-2026-giam-gia-theo-diem-thi",
   "mua-laptop-cu-o-dau-uy-tin-tai-da-nang",
   "top-5-laptop-gaming-cu-gia-re-da-nang-2026",
