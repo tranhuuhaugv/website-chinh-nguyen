@@ -157,16 +157,40 @@ export function RichTextEditor({
         },
       ],
     },
-    image: {
-      toolbar: [
-        "imageStyle:inline",
-        "imageStyle:block",
-        "imageStyle:side",
-        "|",
-        "toggleImageCaption",
-        "imageTextAlternative",
-      ],
+image: {
+  resizeOptions: [
+    {
+      name: "resizeImage:original",
+      value: null,
+      label: "Kích thước gốc",
     },
+    {
+      name: "resizeImage:50",
+      value: "50",
+      label: "50%",
+    },
+    {
+      name: "resizeImage:75",
+      value: "75",
+      label: "75%",
+    },
+    {
+      name: "resizeImage:100",
+      value: "100",
+      label: "100%",
+    },
+  ],
+  toolbar: [
+    "imageStyle:inline",
+    "imageStyle:block",
+    "imageStyle:side",
+    "|",
+    "resizeImage",
+    "|",
+    "toggleImageCaption",
+    "imageTextAlternative",
+  ],
+},
     table: { contentToolbar: ["tableColumn", "tableRow", "mergeTableCells"] },
     language: "vi",
   };
