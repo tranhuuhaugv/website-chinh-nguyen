@@ -1,24 +1,32 @@
 import { NextResponse } from "next/server";
 import { searchProducts } from "@/lib/data";
 
-// Gợi ý sản phẩm cho autocomplete ô tìm kiếm. Công khai (không cần đăng nhập).
+// Goi y san pham cho autocomplete o tim kiem. Cong khai (khong can dang nhap).
 export async function GET(req: Request) {
   const q = new URL(req.url).searchParams.get("q") ?? "";
   if (!q.trim()) return NextResponse.json({ products: [] });
 
   try {
     const products = await searchProducts(q, 6);
-    return NextResponse.json({
-      products: products.map((p) => ({
-        slug: p.slug,
-        name: p.name,
-        price: p.price,
-        oldPrice: p.oldPrice ?? null,
-        accent: p.accent,
-        // Ảnh thật (nếu có) để gợi ý hiện đúng ảnh máy; chưa có -> accent vẽ SVG.
-        image: p.images?.[0] ?? null,
-      })),
-    });
+    return NextResponse.json(
+      {
+        products: products.map((p) => ({
+          slug: p.slug,
+          name: p.name,
+          price: p.price,
+          oldPrice: p.oldPrice ?? null,
+          accent: p.accent,
+          // Anh that (neu co) de goi y hien dung anh may; chua co -> accent ve SVG.
+          image: p.images?.[0] ?? null,
+        })),
+      },
+      {
+        headers: {
+          // Cache tai browser/CDN 30s: cung tu khoa khong query DB lai
+          "Cache-Control": "public, max-age=30, stale-while-revalidate=60",
+        },
+      },
+    );
   } catch {
     return NextResponse.json({ products: [] });
   }

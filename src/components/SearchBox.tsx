@@ -36,7 +36,7 @@ export function SearchBox({
   const [open, setOpen] = useState(false);
   const [loading, setLoading] = useState(false);
 
-  // Gọi API gợi ý (debounce 250ms).
+  // Gọi API gợi ý (debounce 350ms).
   useEffect(() => {
     const term = q.trim();
     if (!term) {
@@ -58,7 +58,7 @@ export function SearchBox({
       } finally {
         setLoading(false);
       }
-    }, 250);
+    }, 350);
     return () => {
       clearTimeout(id);
       ctrl.abort();

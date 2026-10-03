@@ -14,7 +14,7 @@ import type {
 } from "./types";
 import { SITE } from "./site";
 import { sanitizeRichText, toRichHtml } from "./rich-text";
-import { NEED_OPTIONS, matchesKeyword } from "./product-query";
+import { NEED_OPTIONS, matchesKeyword, normalizeText } from "./product-query";
 import { VOUCHERS, type Voucher } from "./vouchers";
 import type { Policy, Section } from "./policies";
 import {
@@ -367,15 +367,64 @@ export async function getAllProductSlugs(): Promise<string[]> {
   return rows.map((r) => r.slug);
 }
 
-// Gợi ý sản phẩm theo từ khoá (dùng cho autocomplete ô tìm kiếm).
+// Goi y san pham theo tu khoa (dung cho autocomplete o tim kiem).
 export async function searchProducts(q: string, limit = 6): Promise<Product[]> {
   const term = q.trim();
   if (!term) return [];
-  // Khớp "gần đúng" (bỏ dấu, đủ mọi từ khoá trong tên + hãng + cấu hình) —
-  // dùng chung logic với trang /tim-kiem. Kho ~vài trăm máy nên lọc trong JS
-  // trên toàn bộ sản phẩm là đủ nhanh và cho kết quả nhất quán.
-  const all = await getAllProducts();
-  return all.filter((p) => matchesKeyword(p, term)).slice(0, limit);
+
+  if (NO_DB) {
+    // Che do local: loc mock trong JS nhu cu
+    return MOCK_PRODUCTS.filter((p) => matchesKeyword(p, term)).slice(0, limit);
+  }
+
+  // Production: tach tu khoa, loc truc tiep tai PostgreSQL - khong lay toan bo SP.
+  // Moi tu phai xuat hien trong it nhat 1 truong (ten / CPU / GPU / RAM / o cung).
+  const tokens = normalizeText(term).split(' ').filter(Boolean);
+  if (!tokens.length) return [];
+
+  const andClauses = tokens.map((token) => ({
+    OR: [
+      { name:    { contains: token, mode: 'insensitive' as const } },
+      { cpu:     { contains: token, mode: 'insensitive' as const } },
+      { gpu:     { contains: token, mode: 'insensitive' as const } },
+      { ram:     { contains: token, mode: 'insensitive' as const } },
+      { storage: { contains: token, mode: 'insensitive' as const } },
+      { series:  { contains: token, mode: 'insensitive' as const } },
+    ],
+  }));
+
+  const rows = await prisma.product.findMany({
+    where: { active: true, AND: andClauses },
+    // Chi lay fields autocomplete can - khong fetch description/ports/blocks nang
+    select: {
+      id: true, slug: true, name: true, price: true, oldPrice: true,
+      accent: true, images: true, cpu: true, ram: true, storage: true,
+      gpu: true, series: true, condition: true, stockStatus: true,
+      brand: { select: { name: true } },
+    },
+    orderBy: { sort: 'asc' },
+    take: limit,
+  });
+
+  return rows.map((r) => ({
+    id: r.id, slug: r.slug, name: r.name, brand: r.brand.name as Brand,
+    price: r.price, oldPrice: r.oldPrice ?? undefined,
+    cpu: r.cpu, ram: r.ram, storage: r.storage,
+    gpu: r.gpu ?? undefined, series: r.series ?? undefined,
+    accent: r.accent as ProductAccent, images: r.images ?? [],
+    condition: (r.condition as ProductCondition) ?? 'used',
+    stockStatus: r.stockStatus ?? 'con_hang',
+    // Cac truong autocomplete khong dung - de mac dinh
+    capacity: undefined, color: undefined, mux: undefined,
+    webcam: undefined, screen: undefined, resolution: undefined,
+    refresh: undefined, os: undefined, battery: undefined,
+    weight: undefined, ports: undefined, warranty: undefined,
+    rating: 5, reviewCount: 0, installmentPerMonth: undefined,
+    gift: undefined, badge: undefined, isNew: false,
+    isFeatured: false, active: true, views: 0,
+    variantSlugs: [], description: undefined, options: [],
+    needs: [], category: undefined,
+  }));
 }
 
 // --- Danh mục ---

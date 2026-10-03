@@ -85,6 +85,7 @@ export function ProductCard({
             accent: product.accent,
             image: cover,
           }}
+          outOfStock={product.stockStatus === "het_hang"}
           className="absolute right-2.5 top-2.5 z-[2] flex h-9 w-9 items-center justify-center rounded-full border border-line bg-white/95 text-green-d shadow-sm backdrop-blur transition hover:-translate-y-0.5 hover:border-green-d hover:bg-green-d hover:text-white hover:shadow-md"
           ariaLabel={`Thêm ${product.name} vào giỏ`}
         >
@@ -178,6 +179,7 @@ export function ProductCard({
               accent: product.accent,
               image: cover,
             }}
+            outOfStock={product.stockStatus === "het_hang"}
             redirectTo="/gio-hang"
             className="mt-3 flex w-full items-center justify-center gap-2 rounded-xl bg-gradient-to-r from-green-d to-green py-2.5 text-sm font-semibold text-white shadow-[0_4px_12px_rgba(11,94,44,.25)] transition hover:shadow-[0_6px_16px_rgba(11,94,44,.38)]"
           >

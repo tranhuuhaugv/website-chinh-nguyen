@@ -30,6 +30,8 @@ interface CartContextValue {
   removeItem: (id: string) => void;
   updateQty: (id: string, qty: number) => void;
   clear: () => void;
+  /** Hiện toast cảnh báo đỏ (VD: sản phẩm hết hàng). */
+  showWarning: (msg: string) => void;
   /** Đã đọc xong localStorage chưa (tránh nhấp nháy khi hydrate). */
   ready: boolean;
 }
@@ -39,12 +41,14 @@ const CartContext = createContext<CartContextValue | null>(null);
 export function CartProvider({ children }: { children: ReactNode }) {
   const [items, setItems] = useState<CartItem[]>([]);
   const [ready, setReady] = useState(false);
-  // Thông báo nhỏ (toast) khi thêm vào giỏ.
+  // Toast xanh: thêm vào giỏ thành công.
   const [toast, setToast] = useState<{
     name: string;
     image?: string;
     id: number;
   } | null>(null);
+  // Toast đỏ: cảnh báo (VD: hết hàng).
+  const [warning, setWarning] = useState<{ msg: string; id: number } | null>(null);
   const toastId = useRef(0);
 
   // Đọc giỏ từ localStorage sau khi mount (không chạy trên server).
@@ -88,12 +92,24 @@ export function CartProvider({ children }: { children: ReactNode }) {
     setToast({ name: item.name, image: item.image, id: toastId.current });
   }, []);
 
-  // Tự ẩn toast sau ~2.4s (khớp thời lượng animation).
+  // Tự ẩn toast xanh sau ~2.4s (khớp thời lượng animation).
   useEffect(() => {
     if (!toast) return;
     const t = setTimeout(() => setToast(null), 2400);
     return () => clearTimeout(t);
   }, [toast]);
+
+  const showWarning = useCallback((msg: string) => {
+    toastId.current += 1;
+    setWarning({ msg, id: toastId.current });
+  }, []);
+
+  // Tự ẩn toast đỏ sau 3s.
+  useEffect(() => {
+    if (!warning) return;
+    const t = setTimeout(() => setWarning(null), 3000);
+    return () => clearTimeout(t);
+  }, [warning]);
 
   const removeItem = useCallback((id: string) => {
     setItems((prev) => prev.filter((p) => p.id !== id));
@@ -117,9 +133,10 @@ export function CartProvider({ children }: { children: ReactNode }) {
       removeItem,
       updateQty,
       clear,
+      showWarning,
       ready,
     };
-  }, [items, addItem, removeItem, updateQty, clear, ready]);
+  }, [items, addItem, removeItem, updateQty, clear, showWarning, ready]);
 
   return (
     <CartContext.Provider value={value}>
@@ -164,6 +181,26 @@ export function CartProvider({ children }: { children: ReactNode }) {
             >
               Xem giỏ
             </Link>
+          </div>
+        </div>
+      )}
+      {warning && (
+        <div className="pointer-events-none fixed inset-x-0 bottom-4 z-[60] flex justify-center px-4 max-lg:bottom-[76px] lg:bottom-6">
+          <div
+            key={warning.id}
+            className="cart-toast pointer-events-auto flex w-full max-w-sm items-center gap-3 rounded-2xl border border-sale/30 bg-white p-2.5 shadow-[0_16px_40px_rgba(16,24,20,0.22)]"
+          >
+            <span className="flex h-11 w-11 shrink-0 items-center justify-center rounded-xl bg-sale/10 text-sale text-xl font-bold">
+              ✕
+            </span>
+            <div className="min-w-0 flex-1">
+              <div className="flex items-center gap-1 text-[11.5px] font-semibold text-sale">
+                Không thể thêm vào giỏ
+              </div>
+              <div className="line-clamp-2 text-[13px] font-medium text-ink">
+                {warning.msg}
+              </div>
+            </div>
           </div>
         </div>
       )}
