@@ -24,6 +24,7 @@ export interface AdminField {
     | "images"
     | "blocks"
     | "checkboxes"
+    | "capacity-picker" // ô text + 2 dropdown RAM/SSD gợi ý bên dưới
     | "heading";
   options?: { value: string; label: string }[];
   placeholder?: string;
@@ -46,6 +47,9 @@ function formatMoney(raw: string): string {
   const digits = (raw ?? "").replace(/\D/g, "");
   return digits ? digits.replace(/\B(?=(\d{3})+(?!\d))/g, ".") : "";
 }
+
+const RAM_OPTIONS = ["8GB", "12GB", "16GB", "24GB", "32GB", "64GB"];
+const SSD_OPTIONS = ["128GB", "256GB", "512GB", "1TB", "2TB"];
 
 export function AdminForm({
   title,
@@ -270,6 +274,61 @@ export function AdminForm({
                     </option>
                   ))}
                 </select>
+              ) : f.type === "capacity-picker" ? (
+                /* Ô text tự nhập + 2 dropdown RAM/SSD gợi ý */
+                <div className="space-y-2">
+                  <input
+                    type="text"
+                    value={values[f.name]}
+                    onChange={(e) => set(f.name, e.target.value)}
+                    placeholder={f.placeholder}
+                    className={inputCls}
+                  />
+                  <div className="flex gap-2">
+                    <select
+                      defaultValue=""
+                      onChange={(e) => {
+                        if (!e.target.value) return;
+                        const cur = values[f.name] ?? "";
+                        // Nếu đã có SSD (có " - ") thì thay phần RAM đầu
+                        const parts = cur.split(" - ");
+                        const newVal =
+                          parts.length >= 2
+                            ? `${e.target.value} - ${parts.slice(1).join(" - ")}`
+                            : e.target.value + (cur ? ` - ${cur}` : "");
+                        set(f.name, newVal);
+                        e.target.value = "";
+                      }}
+                      className="h-9 flex-1 rounded-lg border border-line bg-bg px-2 text-[12.5px] text-ink outline-none focus:border-green"
+                    >
+                      <option value="">RAM…</option>
+                      {RAM_OPTIONS.map((r) => (
+                        <option key={r} value={r}>{r}</option>
+                      ))}
+                    </select>
+                    <select
+                      defaultValue=""
+                      onChange={(e) => {
+                        if (!e.target.value) return;
+                        const cur = values[f.name] ?? "";
+                        // Nếu đã có RAM (có " - ") thì thay phần SSD sau
+                        const parts = cur.split(" - ");
+                        const newVal =
+                          parts.length >= 2
+                            ? `${parts[0]} - ${e.target.value}`
+                            : (cur ? `${cur} - ` : "") + e.target.value;
+                        set(f.name, newVal);
+                        e.target.value = "";
+                      }}
+                      className="h-9 flex-1 rounded-lg border border-line bg-bg px-2 text-[12.5px] text-ink outline-none focus:border-green"
+                    >
+                      <option value="">SSD…</option>
+                      {SSD_OPTIONS.map((s) => (
+                        <option key={s} value={s}>{s}</option>
+                      ))}
+                    </select>
+                  </div>
+                </div>
               ) : f.type === "money" ? (
                 <input
                   type="text"

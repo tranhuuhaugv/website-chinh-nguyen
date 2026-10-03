@@ -75,18 +75,10 @@ export function productFields(
     {
       name: "capacity",
       label: "Dung lượng (hiện nhanh ở chi tiết, VD: 8GB - 256GB)",
+      type: "capacity-picker",
       placeholder: "8GB - 256GB (để trống sẽ tự ghép RAM + ổ cứng)",
     },
     { name: "gpu", label: "Card VGA", placeholder: "T1000 / RTX 4050 (để trống nếu tích hợp)" },
-    {
-      name: "mux",
-      label: "MUX Switch",
-      type: "select",
-      options: [
-        { value: "Có", label: "Có" },
-        { value: "Không", label: "Không" },
-      ],
-    },
     { name: "screen", label: "Màn hình", placeholder: "15.6 inch FHD 144Hz IPS" },
     { name: "webcam", label: "Webcam", placeholder: "HD 720p" },
     { name: "color", label: "Màu sắc", placeholder: "Bạc / Đen / Xám..." },
