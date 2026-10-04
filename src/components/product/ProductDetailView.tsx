@@ -208,7 +208,7 @@ export async function ProductDetailView({ slug }: { slug: string }) {
           />
 
           <div className="mt-5 grid grid-cols-1 gap-8 lg:grid-cols-2">
-            <div>
+            <div className="flex flex-col">
               <ProductGallery
                 accent={product.accent}
                 slug={product.slug}
@@ -216,9 +216,13 @@ export async function ProductDetailView({ slug }: { slug: string }) {
                 images={product.images}
               />
 
-              <KeySpecs product={product} />
+              {/* Chỉ desktop (dưới ảnh); mobile ẩn cho gọn, bảng thông số đầy đủ vẫn ở phần dưới trang. */}
+              <div className="max-lg:hidden">
+                <KeySpecs product={product} />
+              </div>
 
-              <div className="mt-4 max-lg:hidden">
+              {/* flex-1: khối cuối mỗi cột giãn ra -> 2 cột luôn kết thúc ngang nhau */}
+              <div className="mt-4 flex-1 max-lg:hidden">
                 <CommitmentCards condition={product.condition} />
               </div>
             </div>
@@ -299,12 +303,12 @@ export async function ProductDetailView({ slug }: { slug: string }) {
                 <CommitmentCards condition={product.condition} />
               </div>
 
-              <div className="mt-4 rounded-2xl border border-line bg-white p-4 max-lg:hidden">
+              <div className="mt-4 flex flex-col rounded-2xl border border-line bg-white p-4 max-lg:hidden lg:flex-1">
                 <p className="flex items-center gap-2 text-[14px] font-bold text-ink">
                   <MapPinIcon className="h-[18px] w-[18px] shrink-0 text-green" />
                   Xem &amp; nhận máy tại cửa hàng
                 </p>
-                <ul className="mt-2.5 flex flex-col gap-2.5">
+                <ul className="mb-3 mt-2.5 flex flex-col gap-2.5">
                   {stores.map((s) => (
                     <li
                       key={s.address}
@@ -319,7 +323,7 @@ export async function ProductDetailView({ slug }: { slug: string }) {
                     </li>
                   ))}
                 </ul>
-                <p className="mt-2.5 border-t border-line pt-2.5 text-[12px] text-muted">
+                <p className="mt-auto border-t border-line pt-2.5 text-[12px] text-muted">
                   Giờ mở cửa: {SITE.hours}
                 </p>
               </div>

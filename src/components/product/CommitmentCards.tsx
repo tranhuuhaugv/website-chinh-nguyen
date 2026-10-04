@@ -64,7 +64,7 @@ const TONES = [
 export function CommitmentCards({ condition }: { condition?: string }) {
   const items = condition === "new" ? NEW : USED;
   return (
-    <div className="grid grid-cols-2 gap-3 max-[420px]:grid-cols-1">
+    <div className="grid h-full auto-rows-fr grid-cols-2 gap-3 max-[420px]:grid-cols-1">
       {items.map(({ icon: Icon, title, desc }, i) => (
         <div
           key={title}
