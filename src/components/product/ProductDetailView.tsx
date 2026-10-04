@@ -20,7 +20,7 @@ import {
 } from "@/components/product/ProductOptions";
 import { CompareBar } from "@/components/compare/CompareBar";
 import { CompareProvider } from "@/components/compare/CompareContext";
-import { InstallmentIcon, MapPinIcon, StarIcon } from "@/components/icons";
+import { MapPinIcon, StarIcon } from "@/components/icons";
 import { CommitmentCards } from "@/components/product/CommitmentCards";
 import { KeySpecs, PromoBox } from "@/components/product/ProductHighlights";
 import { SITE } from "@/lib/site";
@@ -277,17 +277,6 @@ export async function ProductDetailView({ slug }: { slug: string }) {
                 >
                   <ProductPrice oldPrice={product.oldPrice} discount={discount} />
                 </div>
-                {product.installmentPerMonth && configOptions.length === 0 && (
-                  <div className="flex items-center gap-2 border-t border-line bg-[#F4F8F5] px-4 py-2.5 text-[13px] text-ink-2">
-                    <InstallmentIcon className="h-4 w-4 shrink-0 text-green" />
-                    <span>
-                      Hỗ trợ trả góp chỉ từ{" "}
-                      <b className="text-green-d">
-                        {formatPrice(product.installmentPerMonth)}/tháng
-                      </b>
-                    </span>
-                  </div>
-                )}
               </div>
 
               <ProductOptionPicker />

@@ -70,8 +70,10 @@ export function PromoBox({ gift }: { gift?: string }) {
   const rows: React.ReactNode[] = [];
   if (gift) {
     rows.push(
+      // Dữ liệu quà có thể đã mở đầu bằng "Tặng" -> không thêm lần nữa.
       <>
-        Tặng <b className="text-ink">{gift}</b> khi mua trong hôm nay.
+        {/^tặng\s/i.test(gift.trim()) ? null : "Tặng "}
+        <b className="text-ink">{gift}</b> khi mua trong hôm nay.
       </>,
     );
   }
@@ -81,8 +83,7 @@ export function PromoBox({ gift }: { gift?: string }) {
       nhận.
     </>,
     <>
-      <b className="text-ink">Dùng thử 15 ngày</b>, không hài lòng được hỗ trợ
-      đổi trả.
+      <b className="text-ink">Dùng thử 15 ngày</b>, 1 đổi 1.
     </>,
     <>
       <b className="text-ink">Miễn phí</b> cài đặt phần mềm &amp; vệ sinh máy.
