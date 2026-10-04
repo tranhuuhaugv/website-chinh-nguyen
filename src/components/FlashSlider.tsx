@@ -87,7 +87,7 @@ export function FlashSlider({ children }: { children: ReactNode }) {
         type="button"
         aria-label="Sản phẩm trước"
         onClick={() => slide(-1)}
-        className="absolute left-1 top-[42%] z-10 flex h-9 w-9 -translate-y-1/2 items-center justify-center rounded-full bg-black/70 text-white ring-1 ring-white/25 backdrop-blur transition hover:bg-black max-[640px]:hidden"
+        className="absolute left-1 top-[45%] z-10 flex h-9 w-9 -translate-y-1/2 items-center justify-center rounded-full bg-white text-ink shadow-lg transition hover:scale-105 hover:bg-white max-[640px]:hidden"
       >
         <ChevronLeftIcon className="h-5 w-5" />
       </button>
@@ -95,7 +95,7 @@ export function FlashSlider({ children }: { children: ReactNode }) {
         type="button"
         aria-label="Sản phẩm sau"
         onClick={() => slide(1)}
-        className="absolute right-1 top-[42%] z-10 flex h-9 w-9 -translate-y-1/2 items-center justify-center rounded-full bg-black/70 text-white ring-1 ring-white/25 backdrop-blur transition hover:bg-black max-[640px]:hidden"
+        className="absolute right-1 top-[45%] z-10 flex h-9 w-9 -translate-y-1/2 items-center justify-center rounded-full bg-white text-ink shadow-lg transition hover:scale-105 hover:bg-white max-[640px]:hidden"
       >
         <ChevronRightIcon className="h-5 w-5" />
       </button>

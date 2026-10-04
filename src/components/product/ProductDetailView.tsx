@@ -280,42 +280,21 @@ export async function ProductDetailView({ slug }: { slug: string }) {
 
               <ProductVariants options={variants} currentSlug={product.slug} />
 
-              <div className="mt-5 rounded-2xl border border-green/30 bg-green-tint/50 p-4">
-                <p className="mb-2.5 text-[12px] font-bold uppercase tracking-wide text-green-d">
-                  Ưu đãi tại Chính Nguyễn
-                </p>
-                <ul className="flex flex-col gap-2 text-[13px] text-ink-2">
-                  {product.gift && (
-                    <Bullet>
-                      Tặng <b className="text-ink">{product.gift}</b> khi mua
-                      trong hôm nay.
-                    </Bullet>
-                  )}
-                  <Bullet>
-                    {isUsed ? (
-                      <>
-                        <b className="text-ink">Bảo hành tại shop</b> + kiểm tra
-                        máy trực tiếp khi nhận.
-                      </>
-                    ) : (
-                      <>
-                        Bảo hành <b className="text-ink">12 tháng</b> + kiểm tra
-                        máy trực tiếp khi nhận.
-                      </>
-                    )}
-                  </Bullet>
-                  <Bullet>
-                    <b className="text-ink">Dùng thử 15 ngày</b> · 1 đổi 1 trong 30
-                    ngày nếu lỗi · miễn phí cài đặt phần mềm.
-                  </Bullet>
-                </ul>
-
-                <div className="mt-3 border-t border-green/20 pt-3 lg:hidden">
-                  <CommitmentCards condition={product.condition} />
-                </div>
+              {/* Nút mua ngay dưới phần chọn cấu hình -> cột phải gọn, cân với cột ảnh */}
+              <div className="mt-5">
+                <ProductPurchase
+                  item={item}
+                  available={available}
+                  unavailableLabel={stock.label}
+                />
               </div>
 
-              <div className="mt-3 rounded-2xl border border-line bg-white p-4 max-lg:hidden">
+              {/* Mobile: cam kết hiện ngay dưới nút mua (desktop nằm dưới ảnh) */}
+              <div className="mt-4 lg:hidden">
+                <CommitmentCards condition={product.condition} />
+              </div>
+
+              <div className="mt-4 rounded-2xl border border-line bg-white p-4 max-lg:hidden">
                 <p className="flex items-center gap-2 text-[14px] font-bold text-ink">
                   <MapPinIcon className="h-[18px] w-[18px] shrink-0 text-green" />
                   Xem &amp; nhận máy tại cửa hàng
@@ -338,14 +317,6 @@ export async function ProductDetailView({ slug }: { slug: string }) {
                 <p className="mt-2.5 border-t border-line pt-2.5 text-[12px] text-muted">
                   Giờ mở cửa: {SITE.hours}
                 </p>
-              </div>
-
-              <div className="mt-auto pt-5">
-                <ProductPurchase
-                  item={item}
-                  available={available}
-                  unavailableLabel={stock.label}
-                />
               </div>
             </div>
           </div>

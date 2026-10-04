@@ -41,66 +41,72 @@ function FlashCard({
     : 0;
   const pct = Math.max(6, Math.round((stock.remaining / stock.total) * 100));
 
+  const isFlash = mode === "flash";
+
   return (
     <Link
       href={`/${product.slug}`}
-      className="group flex w-[186px] shrink-0 flex-col overflow-hidden rounded-xl border border-white/10 bg-[#2a2a2e] transition hover:border-white/25 hover:bg-[#313136] max-[460px]:w-[150px]"
+      className="group relative flex w-[196px] shrink-0 flex-col overflow-hidden rounded-2xl bg-white shadow-[0_6px_18px_rgba(0,0,0,0.18)] ring-1 ring-black/5 transition duration-200 hover:-translate-y-1 hover:shadow-[0_14px_28px_rgba(0,0,0,0.26)] max-[460px]:w-[156px]"
     >
-      {/* Ảnh trên nền trắng (ảnh sản phẩm chụp nền trắng) */}
-      <div className="relative m-2 mb-0 aspect-square overflow-hidden rounded-lg bg-white p-2.5">
-        {mode === "new" && (
-          <span className="absolute left-1.5 top-1.5 z-[2] rounded-md bg-green px-1.5 py-0.5 text-[10.5px] font-bold text-white shadow">
-            MỚI VỀ
-          </span>
-        )}
+      {/* Nhãn giảm giá / mới về dạng ruy-băng góc trên trái */}
+      {isFlash && discount > 0 && (
+        <span className="absolute left-0 top-3 z-[2] rounded-r-full bg-gradient-to-r from-[#FFB020] to-[#FF8A00] py-1 pl-2.5 pr-3 text-[12px] font-extrabold leading-none text-[#4A2400] shadow-md">
+          -{discount}%
+        </span>
+      )}
+      {!isFlash && (
+        <span className="absolute left-0 top-3 z-[2] rounded-r-full bg-gradient-to-r from-[#0E5A66] to-[#14808A] py-1 pl-2.5 pr-3 text-[12px] font-extrabold leading-none text-white shadow-md">
+          MỚI VỀ
+        </span>
+      )}
+
+      {/* Ảnh trên nền sáng, phóng nhẹ khi hover */}
+      <div className="relative mx-2 mt-2 aspect-square overflow-hidden rounded-xl bg-gradient-to-b from-[#F6F7F9] to-white p-2.5">
         {cover ? (
           <Image
             src={cover}
             alt={product.name}
             fill
-            sizes="186px"
-            className="object-contain p-1"
+            sizes="196px"
+            className="object-contain p-1.5 transition duration-300 group-hover:scale-105"
           />
         ) : (
           <ProductImage accent={product.accent} uid={product.slug} />
         )}
       </div>
 
-      <div className="flex flex-1 flex-col p-2.5">
-        <p className="mb-1.5 line-clamp-2 min-h-[34px] text-[12.5px] font-medium leading-snug text-white/90">
+      <div className="flex flex-1 flex-col p-3 pt-2.5">
+        <p className="mb-2 line-clamp-2 min-h-[36px] text-[13px] font-semibold leading-snug text-ink">
           {product.name}
         </p>
-        <div className="text-[16px] font-extrabold text-[#FFB020]">
-          {formatPrice(product.price)}
-        </div>
-        {product.oldPrice && (
-          <div className="mt-0.5 flex items-center gap-1.5">
-            <s className="text-[11.5px] text-white/40">
+        <div className="flex flex-wrap items-baseline gap-x-2">
+          <span className="text-[17px] font-extrabold leading-tight text-sale">
+            {formatPrice(product.price)}
+          </span>
+          {product.oldPrice && (
+            <s className="text-[12px] text-muted">
               {formatPrice(product.oldPrice)}
             </s>
-            {discount > 0 && (
-              <span className="rounded bg-sale px-1 py-px text-[10.5px] font-bold text-white">
-                -{discount}%
-              </span>
-            )}
-          </div>
-        )}
+          )}
+        </div>
 
-        {mode === "flash" ? (
-          // Thanh flame: còn hàng / tổng
-          <div className="relative mt-2.5 h-[18px] overflow-hidden rounded-full bg-[#4a4a4e]">
-            <div
-              className="h-full rounded-full bg-gradient-to-r from-[#FDBA2D] to-[#F97316]"
-              style={{ width: `${pct}%` }}
-            />
-            <span className="absolute inset-0 flex items-center gap-1 px-2 text-[11px] font-bold text-[#5a2c00]">
-              <FlameIcon className="h-3 w-3 text-[#C2410C]" />
-              Còn {stock.remaining}/{stock.total}
-            </span>
+        {isFlash ? (
+          // Thanh tiến độ: còn hàng / tổng
+          <div className="mt-3">
+            <p className="mb-1 flex items-center gap-1 text-[11.5px] font-bold text-[#C2570C]">
+              <FlameIcon className="h-3.5 w-3.5" />
+              Còn {stock.remaining}/{stock.total} suất
+            </p>
+            <div className="h-[7px] overflow-hidden rounded-full bg-[#FFEBC8]">
+              <div
+                className="h-full rounded-full bg-gradient-to-r from-[#FFC53D] to-[#FF8A00]"
+                style={{ width: `${pct}%` }}
+              />
+            </div>
           </div>
         ) : (
-          <div className="mt-2.5 flex items-center gap-1.5 text-[11px] font-semibold text-[#7EE0A0]">
-            <span className="h-1.5 w-1.5 rounded-full bg-[#22C55E]" />
+          <div className="mt-3 flex items-center gap-1.5 text-[11.5px] font-semibold text-green-d">
+            <span className="h-1.5 w-1.5 rounded-full bg-green" />
             Vừa lên kệ
           </div>
         )}
@@ -166,17 +172,25 @@ export function FlashSale({
     label: string;
     sub: string;
   }) => (
-    <button type="button" onClick={onClick} className="text-center">
+    <button
+      type="button"
+      onClick={onClick}
+      className={`rounded-xl px-4 py-1.5 text-center transition ${
+        active
+          ? "bg-white shadow-md"
+          : "bg-white/10 hover:bg-white/20"
+      }`}
+    >
       <p
-        className={`text-[13px] font-bold ${active ? "text-white" : "text-white/70"}`}
+        className={`text-[13px] font-bold ${
+          active ? "text-[#0E5A66]" : "text-white"
+        }`}
       >
         {label}
       </p>
       <p
-        className={`mx-auto mt-0.5 w-max pb-0.5 text-[13px] font-bold ${
-          active
-            ? "border-b-2 border-[#3B82F6] text-[#60A5FA]"
-            : "text-white/55"
+        className={`text-[11.5px] font-medium ${
+          active ? "text-muted" : "text-white/75"
         }`}
       >
         {sub}
@@ -187,9 +201,20 @@ export function FlashSale({
   return (
     <section className="py-[18px]">
       <Container>
-        <div className="overflow-hidden rounded-2xl bg-[#1c1c1e] p-4 shadow-product max-[640px]:p-3">
+        <div
+          className="relative overflow-hidden rounded-2xl bg-gradient-to-br from-[#0B3B4F] via-[#0E5A66] to-[#14808A] p-4 shadow-product max-[640px]:p-3"
+        >
+          {/* Vệt sáng trang trí */}
+          <div
+            aria-hidden
+            className="pointer-events-none absolute -right-16 -top-20 h-64 w-64 rounded-full bg-[#FFB020]/15 blur-2xl"
+          />
+          <div
+            aria-hidden
+            className="pointer-events-none absolute -bottom-24 -left-10 h-56 w-56 rounded-full bg-black/10 blur-2xl"
+          />
           {/* Header: logo (tiêu đề đổi theo tab) + đồng hồ + tab */}
-          <div className="mb-4 flex flex-wrap items-center gap-x-6 gap-y-3">
+          <div className="relative mb-3 flex flex-wrap items-center gap-x-6 gap-y-3">
             <div className="flex items-center gap-1 max-[640px]:gap-0.5">
               <BoltIcon className="sale-bolt h-6 w-6 -rotate-6 text-[#FFCF33]" />
               <span className="sale-shimmer inline-block py-1 pr-1.5 text-[26px] font-black italic leading-[1.3] max-[640px]:text-[19px]">
@@ -201,7 +226,7 @@ export function FlashSale({
             {isFlash && <CountdownTimer endsAt={endsAt} />}
 
             {/* Tab: Đang diễn ra / Sản phẩm mới về */}
-            <div className="ml-auto flex items-center gap-5 max-[900px]:ml-0">
+            <div className="ml-auto flex items-center gap-2 max-[900px]:ml-0">
               <Tab
                 active={isFlash}
                 onClick={() => setTab("flash")}
@@ -221,6 +246,7 @@ export function FlashSale({
 
           {/* Sản phẩm — 1 hàng cuộn ngang, có nút ‹ › + kéo chuột.
               key={tab} để cuộn về đầu khi đổi tab. */}
+          <div className="relative">
           <FlashSlider key={tab}>
             {products.map((product, i) => (
               <FlashCard
@@ -231,6 +257,7 @@ export function FlashSale({
               />
             ))}
           </FlashSlider>
+          </div>
         </div>
       </Container>
     </section>

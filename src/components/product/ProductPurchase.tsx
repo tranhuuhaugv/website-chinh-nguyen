@@ -8,6 +8,7 @@ import { useCart } from "@/components/cart/CartContext";
 import { useProductOption } from "@/components/product/ProductOptions";
 import { CartIcon, MessengerIcon, MinusIcon, PlusIcon } from "@/components/icons";
 import { SITE } from "@/lib/site";
+import { StockNoticeModal } from "@/components/product/StockNoticeModal";
 
 // Panel mua hàng: số lượng + Mua ngay / Thêm giỏ + kênh chat. Client Component.
 
@@ -17,7 +18,7 @@ export function ProductPurchase({
   unavailableLabel = "Hết hàng",
 }: {
   item: Omit<CartItem, "qty">;
-  /** Còn hàng mới cho mua; hết/sắp về -> khoá nút. */
+  /** Hết/sắp về -> bấm mua sẽ hiện pop-up báo thay vì thêm vào giỏ. */
   available?: boolean;
   /** Nhãn hiện trên nút khi không mua được (VD "Hết hàng" / "Sắp về hàng"). */
   unavailableLabel?: string;
@@ -27,6 +28,7 @@ export function ProductPurchase({
   const router = useRouter();
   const [qty, setQty] = useState(1);
   const [added, setAdded] = useState(false);
+  const [noticeOpen, setNoticeOpen] = useState(false);
 
   // Áp giá + nhãn cấu hình đang chọn. Mỗi cấu hình = 1 dòng giỏ riêng (id gắn nhãn).
   const buyItem: Omit<CartItem, "qty"> = opt?.label
@@ -40,8 +42,6 @@ export function ProductPurchase({
 
   return (
     <div className="flex flex-col gap-4">
-      {available ? (
-        <>
       <div className="flex items-center gap-3">
         <span className="text-[13px] font-medium text-ink-2">Số lượng</span>
         <div className="flex items-center rounded-xl border border-line">
@@ -80,6 +80,7 @@ export function ProductPurchase({
         <button
           type="button"
           onClick={() => {
+            if (!available) return setNoticeOpen(true);
             addItem(buyItem, qty);
             router.push("/gio-hang");
           }}
@@ -93,6 +94,7 @@ export function ProductPurchase({
         <button
           type="button"
           onClick={() => {
+            if (!available) return setNoticeOpen(true);
             addItem(buyItem, qty);
             setAdded(true);
           }}
@@ -102,18 +104,12 @@ export function ProductPurchase({
           Thêm vào giỏ
         </button>
       </div>
-        </>
-      ) : (
-        <div className="rounded-2xl bg-[#F1F3F1] px-4 py-4 text-center">
-          <p className="flex items-center justify-center gap-2 text-[15px] font-bold text-ink-2">
-            <span className="h-2.5 w-2.5 rounded-full bg-sale" />
-            {unavailableLabel}
-          </p>
-          <p className="mt-1 text-[12.5px] text-muted">
-            Liên hệ shop để được báo khi có hàng hoặc đặt trước.
-          </p>
-        </div>
-      )}
+      <StockNoticeModal
+        open={noticeOpen}
+        onClose={() => setNoticeOpen(false)}
+        productName={item.name}
+        label={unavailableLabel}
+      />
 
       <div className="grid grid-cols-2 gap-3">
         <a

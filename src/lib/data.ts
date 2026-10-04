@@ -1,3 +1,4 @@
+import { cache } from "react";
 import { unstable_cache } from "next/cache";
 import { prisma } from "./prisma";
 import type {
@@ -252,13 +253,14 @@ export async function getNewProducts(): Promise<Product[]> {
   return recent.map((r) => toProduct(r as PrismaProductWithBrand));
 }
 
-export async function getProductBySlug(slug: string): Promise<Product | null> {
+// React cache: metadata + page + ProductDetailView gọi cùng slug -> chỉ 1 query/request.
+export const getProductBySlug = cache(async (slug: string): Promise<Product | null> => {
   if (NO_DB) return MOCK_PRODUCTS.find((p) => p.slug === slug) ?? null;
   const row = await prisma.product.findUnique({ where: { slug }, ...withBrand });
   // Ẩn (active=false) -> coi như không tồn tại ngoài web (404).
   if (!row || !row.active) return null;
   return toProduct(row as PrismaProductWithBrand);
-}
+});
 
 /** 1 lựa chọn cấu hình ở trang chi tiết (nút "8GB - 256GB"). */
 export interface VariantOption {
@@ -359,18 +361,34 @@ export async function getRelatedProducts(
   product: Product,
   limit = 4,
 ): Promise<Product[]> {
-  const mapped = NO_DB
-    ? MOCK_PRODUCTS.filter((p) => p.slug !== product.slug)
-    : (
-        await prisma.product.findMany({
-          where: { slug: { not: product.slug }, active: true },
-          ...withBrand,
-          orderBy: { sort: "asc" },
-        })
-      ).map((r) => toProduct(r as PrismaProductWithBrand));
-  const sameBrand = mapped.filter((p) => p.brand === product.brand);
-  const others = mapped.filter((p) => p.brand !== product.brand);
-  return [...sameBrand, ...others].slice(0, limit);
+  if (NO_DB) {
+    const mapped = MOCK_PRODUCTS.filter((p) => p.slug !== product.slug);
+    return [
+      ...mapped.filter((p) => p.brand === product.brand),
+      ...mapped.filter((p) => p.brand !== product.brand),
+    ].slice(0, limit);
+  }
+  // Chỉ lấy đúng số máy cần (cùng hãng trước, thiếu thì bù hãng khác), bỏ
+  // `description` — trước đây tải TOÀN BỘ sản phẩm rồi mới cắt còn `limit`.
+  const base = { active: true, slug: { not: product.slug } };
+  const query = (where: object, take: number) =>
+    prisma.product.findMany({
+      where,
+      ...withBrand,
+      omit: { description: true },
+      orderBy: { sort: "asc" },
+      take,
+    });
+  const toP = (r: unknown) =>
+    toProduct({ ...(r as object), description: null } as PrismaProductWithBrand);
+
+  const same = await query({ ...base, brand: { name: product.brand } }, limit);
+  if (same.length >= limit) return same.map(toP);
+  const rest = await query(
+    { ...base, brand: { name: { not: product.brand } } },
+    limit - same.length,
+  );
+  return [...same, ...rest].map(toP);
 }
 
 export async function getAllProductSlugs(): Promise<string[]> {

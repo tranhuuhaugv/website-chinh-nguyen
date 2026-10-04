@@ -1,9 +1,11 @@
 "use client";
 
+import { useState } from "react";
 import type { CartItem } from "@/lib/types";
 import { AddToCartButton } from "@/components/cart/AddToCartButton";
 import { useProductOption } from "@/components/product/ProductOptions";
 import { CartIcon } from "@/components/icons";
+import { StockNoticeModal } from "@/components/product/StockNoticeModal";
 import { formatPrice } from "@/lib/format";
 
 // Thanh "Mua ngay" dính đáy — CHỈ mobile, trang chi tiết sản phẩm.
@@ -23,6 +25,7 @@ export function MobileBuyBar({
   unavailableLabel?: string;
 }) {
   const opt = useProductOption();
+  const [noticeOpen, setNoticeOpen] = useState(false);
   // Theo cấu hình đang chọn (nếu có).
   const shownPrice = opt?.label ? opt.price : price;
   const shownOld = opt?.label ? undefined : oldPrice;
@@ -60,12 +63,22 @@ export function MobileBuyBar({
             Mua ngay
           </AddToCartButton>
         ) : (
-          <span className="ml-auto flex max-w-[230px] flex-1 items-center justify-center gap-2 rounded-xl bg-[#E4E8E3] py-3 text-sm font-bold text-ink-2">
-            <span className="h-2 w-2 rounded-full bg-sale" />
-            {unavailableLabel}
-          </span>
+          <button
+            type="button"
+            onClick={() => setNoticeOpen(true)}
+            className="ml-auto flex max-w-[230px] flex-1 items-center justify-center gap-2 rounded-xl bg-gradient-to-r from-green-d to-green py-3 text-sm font-bold text-white shadow-[0_4px_12px_rgba(11,94,44,.28)]"
+          >
+            <CartIcon className="h-4 w-4" />
+            Mua ngay
+          </button>
         )}
       </div>
+      <StockNoticeModal
+        open={noticeOpen}
+        onClose={() => setNoticeOpen(false)}
+        productName={item.name}
+        label={unavailableLabel}
+      />
     </div>
   );
 }
