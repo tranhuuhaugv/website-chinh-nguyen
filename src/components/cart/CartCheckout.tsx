@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import Link from "next/link";
 import Image from "next/image";
 import { useCart } from "./CartContext";
@@ -85,7 +85,7 @@ export function CartCheckout({
     };
     setSending(true);
     try {
-      const res = await fetch("/api/order", {
+      await fetch("/api/order", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(payload),

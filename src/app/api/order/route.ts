@@ -3,7 +3,6 @@ import { orderSchema } from "@/lib/validations/order";
 import { sendOrderEmail } from "@/lib/mail";
 import { prisma } from "@/lib/prisma";
 import { getCurrentUser } from "@/lib/session";
-import { formatPrice } from "@/lib/format";
 
 // Nhận đơn (thu cũ / mua hàng) -> lưu vào DB + gửi email thông báo về Gmail.
 export async function POST(req: Request) {

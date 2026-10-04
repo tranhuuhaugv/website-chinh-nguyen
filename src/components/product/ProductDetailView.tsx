@@ -64,15 +64,6 @@ export function buildProductMetadata(product: Product): Metadata {
   };
 }
 
-function Bullet({ children }: { children: React.ReactNode }) {
-  return (
-    <li className="flex items-start gap-2">
-      <span className="mt-[7px] h-1.5 w-1.5 shrink-0 rounded-full bg-green" />
-      <span>{children}</span>
-    </li>
-  );
-}
-
 export async function ProductDetailView({ slug }: { slug: string }) {
   const product = await getProductBySlug(slug);
   if (!product) notFound();
