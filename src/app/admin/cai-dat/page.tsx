@@ -3,8 +3,7 @@ import { SettingInput } from "@/components/admin/SettingInput";
 import { SettingImage } from "@/components/admin/SettingImage";
 import { FlashSaleSchedule } from "@/components/admin/FlashSaleSchedule";
 import { NeedsManager } from "@/components/admin/NeedsManager";
-import { VouchersManager } from "@/components/admin/VouchersManager";
-import { getNeeds, getSetting, getVouchers } from "@/lib/data";
+import { getNeeds, getSetting } from "@/lib/data";
 import { SITE } from "@/lib/site";
 
 export const metadata = { title: "Cài đặt" };
@@ -20,11 +19,6 @@ const OPTIONS: { key: string; title: string; desc: string }[] = [
     key: "flashSaleEnabled",
     title: "Khối Flash Sale",
     desc: "Bật/tắt hiển thị khối Flash Sale trên trang chủ.",
-  },
-  {
-    key: "vouchersEnabled",
-    title: "Khối mã giảm giá",
-    desc: "Bật/tắt dải voucher 100K - 200K - 500K trên trang chủ (khách sao chép mã, nhập ở giỏ hàng).",
   },
   {
     key: "bctEnabled",
@@ -94,7 +88,6 @@ export default async function AdminSettingsPage() {
     certValues,
     bctImg,
     needs,
-    vouchers,
     flashStart,
     flashEnd,
   ] = await Promise.all([
@@ -103,7 +96,6 @@ export default async function AdminSettingsPage() {
       Promise.all(CERTS.map((c) => getSetting(c.key))),
       getSetting("bctImage"),
       getNeeds(),
-      getVouchers(),
       getSetting("flashSaleStart"),
       getSetting("flashSaleEnd"),
     ]);
@@ -197,20 +189,6 @@ export default async function AdminSettingsPage() {
               />
             </div>
           ))}
-        </section>
-      </div>
-
-      {/* Mã giảm giá — admin tự thêm/sửa; khối trang chủ + giỏ hàng dùng theo */}
-      <div>
-        <h2 className="mb-1 text-[15px] font-bold text-ink">
-          Danh sách mã giảm giá
-        </h2>
-        <p className="mb-3 text-[13px] text-muted">
-          Sửa mã / số tiền giảm / đơn tối thiểu / số lượt phát hành. Bật/tắt hiển
-          thị khối này ở công tắc “Khối mã giảm giá” phía trên.
-        </p>
-        <section className="rounded-2xl border border-line bg-white p-5">
-          <VouchersManager initial={vouchers} />
         </section>
       </div>
 

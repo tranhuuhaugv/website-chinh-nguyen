@@ -171,6 +171,10 @@ export interface Store {
   address: string;
   /** Thành phố -> dùng cho schema.org addressLocality (Đà Nẵng / Hội An…). */
   city: string;
+  /** Link Google Map (nút "Chỉ đường"). Trống -> tự tìm theo địa chỉ. */
+  mapUrl?: string;
+  /** src iframe Google Map nhúng (https://www.google.com/maps/embed?...). */
+  mapEmbed?: string;
 }
 
 export type BlogAccent = "green" | "blue" | "purple";

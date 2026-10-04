@@ -17,15 +17,12 @@ const ALLOWED = new Set([
   // Lịch Flash Sale (giờ VN, dạng "YYYY-MM-DDTHH:mm"). Trống = không giới hạn.
   "flashSaleStart",
   "flashSaleEnd",
-  "vouchersEnabled",
   // Link 3 nút liên hệ nổi (gọi / Messenger / Zalo)
   "floatPhone",
   "floatMessenger",
   "floatZalo",
   // Danh sách nhu cầu sử dụng (JSON) — admin tự sửa
   "needs",
-  // Danh sách mã giảm giá (JSON) — admin tự sửa
-  "vouchers",
   // Danh sách cửa hàng (JSON [{name,address,city}]) — admin tự sửa
   "stores",
   // Badge chứng nhận ở footer: bật/tắt + link (BCT online.gov.vn / DMCA)

@@ -1,6 +1,6 @@
 import { NextResponse } from "next/server";
 import { cookies } from "next/headers";
-import { revalidatePath } from "next/cache";
+import { revalidatePath, revalidateTag } from "next/cache";
 import { prisma } from "@/lib/prisma";
 import { ADMIN_COOKIE, verifyAdminToken } from "@/lib/admin-auth";
 import {
@@ -160,6 +160,7 @@ export async function PUT(req: Request) {
         create: { id, title, lead, content: { intro, sections } },
       });
     }
+    revalidateTag("policy-links");
     revalidatePath(pagePath(id, policySlugMap));
     revalidatePath(`/chinh-sach/${oldPolicyPublicSlug}`);
     revalidatePath(`/chinh-sach/${id}`);
@@ -190,6 +191,7 @@ export async function DELETE(req: Request) {
   } catch {
     // đã xoá / không tồn tại -> coi như xong
   }
+  revalidateTag("policy-links");
   revalidatePath(`/chinh-sach/${id}`);
   revalidatePath(`/trang/${id}`);
   return NextResponse.json({ ok: true });

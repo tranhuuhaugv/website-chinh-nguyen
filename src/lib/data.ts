@@ -15,9 +15,9 @@ import type {
   Store,
 } from "./types";
 import { SITE } from "./site";
+import { cleanMapUrl, extractEmbedSrc } from "./store-map";
 import { sanitizeRichText, toRichHtml } from "./rich-text";
 import { NEED_OPTIONS, matchesKeyword, normalizeText } from "./product-query";
-import { VOUCHERS, type Voucher } from "./vouchers";
 import type { Policy, Section } from "./policies";
 import {
   EDITABLE_PAGES,
@@ -929,6 +929,49 @@ export async function getOrders() {
   return prisma.order.findMany({ orderBy: { createdAt: "desc" } });
 }
 
+/** Đơn mới nhất + số đơn đang chờ xử lý, cho khối "Cần xử lý" ở trang tổng quan admin. */
+export async function getDashboardOrders(limit = 5): Promise<{
+  pending: number;
+  recent: {
+    id: string;
+    type: string;
+    name: string;
+    total: number | null;
+    model: string | null;
+    status: string;
+    createdAt: Date;
+  }[];
+}> {
+  if (NO_DB) {
+    const now = Date.now();
+    return {
+      pending: 2,
+      recent: [
+        { id: "demo1", type: "purchase", name: "Nguyễn Văn An", total: 28990000, model: null, status: "new", createdAt: new Date(now - 12 * 60000) },
+        { id: "demo2", type: "tradein", name: "Trần Thị Bích", total: null, model: "MacBook Air M1", status: "new", createdAt: new Date(now - 3 * 3600000) },
+        { id: "demo3", type: "purchase", name: "Lê Hoàng Nam", total: 24990000, model: null, status: "processing", createdAt: new Date(now - 26 * 3600000) },
+      ].slice(0, limit),
+    };
+  }
+  const [pending, recent] = await Promise.all([
+    prisma.order.count({ where: { status: "new" } }),
+    prisma.order.findMany({
+      orderBy: { createdAt: "desc" },
+      take: limit,
+      select: {
+        id: true,
+        type: true,
+        name: true,
+        total: true,
+        model: true,
+        status: true,
+        createdAt: true,
+      },
+    }),
+  ]);
+  return { pending, recent };
+}
+
 // Đơn hàng của 1 khách (cho trang "Đơn hàng của tôi").
 export async function getUserOrders(userId: string) {
   if (NO_DB) return [];
@@ -1147,12 +1190,33 @@ export async function getMonthlyViews(year: string): Promise<number[]> {
 
 // --- Cài đặt ---
 export async function getSetting(key: string): Promise<string | null> {
-  // Xem local: bật sẵn Flash Sale + voucher để thấy đủ khối trên trang chủ.
+  // Xem local: bật sẵn Flash Sale để thấy đủ khối trên trang chủ.
   if (NO_DB)
-    return ["flashSaleEnabled", "vouchersEnabled"].includes(key) ? "true" : null;
+    return ["flashSaleEnabled"].includes(key) ? "true" : null;
   const s = await prisma.setting.findUnique({ where: { key } });
   return s?.value ?? null;
 }
+
+/**
+ * NGUỒN DUY NHẤT cho mọi link chính sách trên web (Footer, sitemap, thanh điều
+ * hướng trang chính sách): 6 trang cố định THEO slug/tiêu đề admin đã sửa + các
+ * trang admin tự tạo. Cache 60s (Footer có mặt ở mọi trang, tránh query lặp);
+ * admin lưu/xoá -> revalidateTag("policy-links") làm mới ngay.
+ */
+export const getPolicyLinks = unstable_cache(
+  async (): Promise<{ label: string; href: string }[]> => {
+    const [nav, custom] = await Promise.all([
+      getPolicyNavItems(),
+      getCustomPages(),
+    ]);
+    return [
+      ...nav,
+      ...custom.map((p) => ({ label: p.title, href: `/chinh-sach/${p.slug}` })),
+    ];
+  },
+  ["policy-links"],
+  { revalidate: 60, tags: ["policy-links"] },
+);
 
 /** Danh sách trang tuỳ chỉnh admin tự tạo (không phải trang cố định trong code). */
 export async function getCustomPages(): Promise<
@@ -1207,6 +1271,9 @@ export async function getStores(): Promise<Store[]> {
               typeof x.city === "string" && x.city.trim()
                 ? x.city.trim()
                 : "Đà Nẵng",
+            mapUrl: cleanMapUrl((x as { mapUrl?: unknown }).mapUrl) || undefined,
+            mapEmbed:
+              extractEmbedSrc((x as { mapEmbed?: unknown }).mapEmbed) || undefined,
           }));
         // Đã lưu 1 mảng hợp lệ -> theo đúng admin, KỂ CẢ rỗng (admin xoá hết
         // thì hiện rỗng, không tự đổ lại 4 địa chỉ mặc định như trước).
@@ -1233,60 +1300,6 @@ export async function getNeeds(): Promise<{ value: string; label: string }[]> {
     return nav.needs.map((c) => ({ value: c.slug, label: c.name }));
   }
   return [...NEED_OPTIONS];
-}
-
-/**
- * Danh sách MÃ GIẢM GIÁ — admin tự sửa (lưu Setting "vouchers" dạng JSON
- * [{code,amount,minSubtotal,quantity}]). Chưa cấu hình -> dùng mặc định VOUCHERS.
- * Dùng cho: khối voucher trang chủ + ô nhập mã ở giỏ + kiểm tra khi đặt hàng.
- */
-export async function getVouchers(): Promise<Voucher[]> {
-  const raw = await getSetting("vouchers");
-  if (raw) {
-    try {
-      const parsed = JSON.parse(raw);
-      if (Array.isArray(parsed)) {
-        const clean = parsed
-          .map((x) => ({
-            code: String(x?.code ?? "").trim().toUpperCase(),
-            amount: Math.max(0, Math.round(Number(x?.amount) || 0)),
-            minSubtotal: Math.max(0, Math.round(Number(x?.minSubtotal) || 0)),
-            quantity: Math.max(0, Math.round(Number(x?.quantity) || 0)),
-          }))
-          .filter((v) => v.code && v.amount > 0);
-        if (clean.length) return clean;
-      }
-    } catch {
-      /* JSON hỏng -> dùng mặc định */
-    }
-  }
-  return VOUCHERS.map((v) => ({ ...v }));
-}
-
-// --- Mã giảm giá: đếm số lượt đã dùng (theo đơn hàng đã lưu) ---
-// Trả về map code -> số đơn đã dùng mã đó. Dùng để tính số lượt còn lại.
-export async function getVoucherUsage(): Promise<Record<string, number>> {
-  if (NO_DB) return {};
-  const rows = await prisma.order.groupBy({
-    by: ["voucher"],
-    where: { voucher: { not: null } },
-    _count: { voucher: true },
-  });
-  const usage: Record<string, number> = {};
-  for (const r of rows) {
-    if (r.voucher) usage[r.voucher] = r._count.voucher;
-  }
-  return usage;
-}
-
-/** Số lượt còn lại của 1 mã (đã trừ số đơn đã dùng), không âm. */
-export async function getVoucherRemaining(
-  code: string,
-  quantity: number,
-): Promise<number> {
-  if (NO_DB) return quantity;
-  const used = await prisma.order.count({ where: { voucher: code } });
-  return Math.max(0, quantity - used);
 }
 
 // ——— Build PC: linh kiện ———

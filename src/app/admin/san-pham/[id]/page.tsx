@@ -11,10 +11,20 @@ import { toRichHtml } from "@/lib/rich-text";
 export const metadata = { title: "Sửa sản phẩm" };
 export const dynamic = "force-dynamic";
 
+/** Chỉ nhận đường dẫn nội bộ trong /admin/san-pham (chặn open-redirect). */
+function safeBack(raw?: string): string {
+  const base = "/admin/san-pham";
+  if (!raw || !raw.startsWith(base) || raw.startsWith("//") || raw.includes("\\"))
+    return base;
+  return raw;
+}
+
 export default async function EditProductPage({
   params,
+  searchParams,
 }: {
   params: { id: string };
+  searchParams: { back?: string };
 }) {
   const [product, brandSeries, needs] = await Promise.all([
     getAdminProductById(params.id),
@@ -86,7 +96,7 @@ export default async function EditProductPage({
         metaDescription: s(product.metaDescription),
       }}
       submitLabel="Lưu thay đổi"
-      backHref="/admin/san-pham"
+      backHref={safeBack(searchParams.back)}
       endpoint="/api/admin/products"
       method="PUT"
       extra={{ id: product.id }}

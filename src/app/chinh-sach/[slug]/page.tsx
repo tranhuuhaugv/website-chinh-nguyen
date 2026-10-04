@@ -1,6 +1,6 @@
 import type { Metadata } from "next";
 import Link from "next/link";
-import { notFound } from "next/navigation";
+import { notFound, permanentRedirect } from "next/navigation";
 import { StaticPage } from "@/components/StaticPage";
 import { Band } from "@/components/static/Band";
 import { Container } from "@/components/Container";
@@ -8,9 +8,9 @@ import { SITE } from "@/lib/site";
 import { CheckIcon } from "@/components/icons";
 import { POLICIES } from "@/lib/policies";
 import {
-  getCustomPages,
-  getPolicyNavItems,
+  getPolicyLinks,
   getPolicyOverride,
+  getPolicySlugMap,
   resolvePolicySlug,
 } from "@/lib/data";
 
@@ -44,18 +44,16 @@ export default async function PolicyPage({
   const policy = (await getPolicyOverride(policyKey)) ?? POLICIES[policyKey];
   if (!policy) notFound();
 
+  // Link cũ / ghi cứng (Header, form đăng ký...) trỏ slug mặc định mà admin đã
+  // đổi sang slug khác -> chuyển 301 về slug hiện hành để mọi link luôn khớp.
+  const slugMap = await getPolicySlugMap();
+  const currentSlug = slugMap[policyKey];
+  if (POLICIES[policyKey] && currentSlug && params.slug !== currentSlug) {
+    permanentRedirect(`/chinh-sach/${currentSlug}`);
+  }
+
   const activeHref = `/chinh-sach/${params.slug}`;
-  const [fixedNav, customPages] = await Promise.all([
-    getPolicyNavItems(),
-    getCustomPages(),
-  ]);
-  const policyNav = [
-    ...fixedNav,
-    ...customPages.map((page) => ({
-      label: page.title,
-      href: `/chinh-sach/${page.slug}`,
-    })),
-  ];
+  const policyNav = await getPolicyLinks();
 
   return (
     <StaticPage
@@ -63,7 +61,7 @@ export default async function PolicyPage({
       lead={policy.lead}
       breadcrumb={[
         { label: "Trang chủ", href: "/" },
-        { label: "Chính sách", href: "/chinh-sach/bao-hanh" },
+        { label: "Chính sách", href: policyNav[0]?.href ?? "/chinh-sach/bao-hanh" },
         { label: policy.title },
       ]}
     >

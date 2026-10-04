@@ -1,5 +1,10 @@
 import type { MetadataRoute } from "next";
-import { getAllProductSlugs, getAllPostSlugs, getCategories } from "@/lib/data";
+import {
+  getAllProductSlugs,
+  getAllPostSlugs,
+  getCategories,
+  getPolicyLinks,
+} from "@/lib/data";
 
 const SITE_URL =
   process.env.NEXT_PUBLIC_SITE_URL ?? "https://laptopchinhnguyen.vn";
@@ -7,10 +12,11 @@ const SITE_URL =
 // Tự sinh sitemap từ dữ liệu database (chỉ lấy slug).
 export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   const now = new Date();
-  const [productSlugs, categories, postSlugs] = await Promise.all([
+  const [productSlugs, categories, postSlugs, policyLinks] = await Promise.all([
     getAllProductSlugs(),
     getCategories(),
     getAllPostSlugs(),
+    getPolicyLinks(),
   ]);
 
   const products = productSlugs.map((slug) => ({
@@ -49,10 +55,7 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
       "/lien-he",
       "/he-thong-cua-hang",
       "/thu-cu-doi-moi",
-      "/chinh-sach/bao-hanh",
-      "/chinh-sach/doi-tra",
-      "/chinh-sach/giao-hang",
-      "/chinh-sach/tra-gop",
+      ...policyLinks.map((l) => l.href),
     ].map((path) => ({
       url: `${SITE_URL}${path}`,
       lastModified: now,

@@ -3,6 +3,7 @@ import { StaticPage } from "@/components/StaticPage";
 import { Band, SectionIntro } from "@/components/static/Band";
 import { SITE } from "@/lib/site";
 import { getStores } from "@/lib/data";
+import { directionsUrl } from "@/lib/store-map";
 import { CheckIcon, ClockIcon, MapPinIcon, PhoneIcon } from "@/components/icons";
 
 export const metadata: Metadata = {
@@ -72,9 +73,20 @@ export default async function StoresPage() {
               key={store.name}
               className="overflow-hidden rounded-2xl border border-line bg-white shadow-card"
             >
-              <div className="flex h-28 items-center justify-center bg-gradient-to-br from-green to-green-dd">
-                <MapPinIcon className="h-10 w-10 text-white/90" />
-              </div>
+              {store.mapEmbed ? (
+                <iframe
+                  src={store.mapEmbed}
+                  title={`Bản đồ ${store.name}`}
+                  loading="lazy"
+                  referrerPolicy="no-referrer-when-downgrade"
+                  allowFullScreen
+                  className="block h-56 w-full border-0"
+                />
+              ) : (
+                <div className="flex h-28 items-center justify-center bg-gradient-to-br from-green to-green-dd">
+                  <MapPinIcon className="h-10 w-10 text-white/90" />
+                </div>
+              )}
               <div className="p-6">
                 <h3 className="text-[16px] font-bold text-ink">{store.name}</h3>
                 <ul className="mt-3 flex flex-col gap-2.5 text-[14px] text-ink-2">
@@ -91,6 +103,15 @@ export default async function StoresPage() {
                     {SITE.hours}
                   </li>
                 </ul>
+                <a
+                  href={directionsUrl(store)}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="mt-4 inline-flex h-10 items-center gap-2 rounded-xl bg-green px-4 text-[13.5px] font-semibold text-white transition hover:bg-green-d"
+                >
+                  <MapPinIcon className="h-4 w-4" />
+                  Chỉ đường trên Google Maps
+                </a>
               </div>
             </div>
           ))}

@@ -17,7 +17,6 @@ import {
 } from "@/components/icons";
 import { formatPrice } from "@/lib/format";
 import { checkoutSchema } from "@/lib/validations/checkout";
-import { normalizeVoucherCode } from "@/lib/vouchers";
 import { SITE } from "@/lib/site";
 
 // Giỏ hàng + thanh toán COD trên cùng 1 trang. Client Component.
@@ -48,60 +47,7 @@ export function CartCheckout({
   const [sending, setSending] = useState(false);
   const loggedIn = Boolean(initialUser);
 
-  // Mã giảm giá (voucher trang chủ). Giảm chỉ có hiệu lực khi đơn đủ mức tối
-  // thiểu — khách bớt hàng xuống dưới mức thì tự mất giảm (có dòng nhắc).
-  const [voucherInput, setVoucherInput] = useState("");
-  const [appliedCode, setAppliedCode] = useState<string | null>(null);
-  const [voucherError, setVoucherError] = useState("");
-  // Số lượt còn lại của từng mã (lấy từ server) — chặn mã đã hết ngay ở giỏ.
-  const [remaining, setRemaining] = useState<Record<string, number> | null>(
-    null,
-  );
-  // Danh sách mã hiện hành (admin sửa được) — lấy từ /api/vouchers.
-  const [vouchers, setVouchers] = useState<
-    { code: string; amount: number; minSubtotal: number }[]
-  >([]);
-  const findV = (code: string) => {
-    const c = normalizeVoucherCode(code);
-    return vouchers.find((v) => v.code === c);
-  };
-  const appliedVoucher = appliedCode ? findV(appliedCode) : undefined;
-  const voucherValid =
-    !!appliedVoucher && subtotal >= appliedVoucher.minSubtotal;
-  const discount = voucherValid ? appliedVoucher.amount : 0;
-  const total = subtotal - discount;
-
-  // Lấy danh sách mã + số lượt còn lại 1 lần khi mở giỏ hàng.
-  useEffect(() => {
-    fetch("/api/vouchers")
-      .then((r) => r.json())
-      .then((d) => {
-        setVouchers(Array.isArray(d?.vouchers) ? d.vouchers : []);
-        setRemaining(d?.remaining ?? {});
-      })
-      .catch(() => setRemaining({}));
-  }, []);
-
-  function applyVoucher() {
-    const v = findV(voucherInput);
-    if (!v) {
-      setVoucherError("Mã giảm giá không hợp lệ");
-      return;
-    }
-    if (remaining && (remaining[v.code] ?? 0) <= 0) {
-      setVoucherError(`Mã ${v.code} đã hết lượt sử dụng`);
-      return;
-    }
-    if (subtotal < v.minSubtotal) {
-      setVoucherError(
-        `Mã ${v.code} áp dụng cho đơn từ ${formatPrice(v.minSubtotal)}`,
-      );
-      return;
-    }
-    setVoucherError("");
-    setAppliedCode(v.code);
-    setVoucherInput("");
-  }
+  const total = subtotal;
 
   function set<K extends keyof typeof values>(key: K, val: string) {
     setValues((v) => ({ ...v, [key]: val }));
@@ -136,7 +82,6 @@ export function CartCheckout({
         image: i.image,
       })),
       total,
-      voucher: voucherValid ? appliedVoucher.code : undefined,
     };
     setSending(true);
     try {
@@ -145,21 +90,6 @@ export function CartCheckout({
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(payload),
       });
-      // Mã vừa hết lượt giữa lúc khách bấm đặt -> báo để khách bỏ mã, không tạo đơn.
-      if (res.status === 409) {
-        const j = await res.json().catch(() => null);
-        if (j?.error === "voucher_used_up") {
-          setSending(false);
-          setAppliedCode(null);
-          setVoucherError(
-            "Mã giảm giá vừa hết lượt sử dụng. Vui lòng đặt lại đơn.",
-          );
-          setRemaining((r) =>
-            appliedVoucher ? { ...(r ?? {}), [appliedVoucher.code]: 0 } : r,
-          );
-          return;
-        }
-      }
     } catch {
       // bỏ qua lỗi mạng — vẫn xác nhận đơn cho khách
     }
@@ -480,78 +410,11 @@ export function CartCheckout({
       <aside className="h-fit rounded-2xl border border-line bg-white p-5 lg:sticky lg:top-6">
         <h2 className="text-[15px] font-bold text-ink">Tóm tắt đơn hàng</h2>
 
-        {/* Mã giảm giá */}
-        <div className="mt-4">
-          {appliedVoucher ? (
-            <div
-              className={`flex items-center justify-between gap-2 rounded-xl px-3.5 py-2.5 text-[13px] ${
-                voucherValid
-                  ? "bg-green-soft text-green-d"
-                  : "bg-[#FFF7E6] text-[#92400E]"
-              }`}
-            >
-              <span className="min-w-0">
-                <b className="font-bold">{appliedVoucher.code}</b>
-                {voucherValid ? (
-                  <> — giảm {formatPrice(appliedVoucher.amount)}</>
-                ) : (
-                  <>
-                    {" "}
-                    cần đơn từ {formatPrice(appliedVoucher.minSubtotal)} — chưa
-                    đủ điều kiện
-                  </>
-                )}
-              </span>
-              <button
-                type="button"
-                onClick={() => setAppliedCode(null)}
-                aria-label="Bỏ mã giảm giá"
-                className="shrink-0 font-semibold underline"
-              >
-                Bỏ mã
-              </button>
-            </div>
-          ) : (
-            <>
-              <div className="flex gap-2">
-                <input
-                  value={voucherInput}
-                  onChange={(e) => {
-                    setVoucherInput(e.target.value);
-                    setVoucherError("");
-                  }}
-                  onKeyDown={(e) => e.key === "Enter" && applyVoucher()}
-                  placeholder="Mã giảm giá (VD: CN100K)"
-                  className="h-10 w-full rounded-xl border border-line bg-white px-3 text-sm uppercase text-ink outline-none transition placeholder:normal-case focus:border-green"
-                />
-                <button
-                  type="button"
-                  onClick={applyVoucher}
-                  className="h-10 shrink-0 rounded-xl bg-ink px-4 text-[13px] font-semibold text-white transition hover:bg-black"
-                >
-                  Áp dụng
-                </button>
-              </div>
-              {voucherError && (
-                <p className="mt-1.5 text-[12px] text-sale">{voucherError}</p>
-              )}
-            </>
-          )}
-        </div>
-
         <div className="mt-4 flex flex-col gap-2.5 border-b border-line pb-4">
           <div className="flex justify-between text-[13.5px] text-ink-2">
             <span>Tạm tính ({totalItems} sản phẩm)</span>
             <span className="font-semibold text-ink">{formatPrice(subtotal)}</span>
           </div>
-          {discount > 0 && appliedVoucher && (
-            <div className="flex justify-between text-[13.5px] text-ink-2">
-              <span>Giảm giá ({appliedVoucher.code})</span>
-              <span className="font-semibold text-green-d">
-                -{formatPrice(discount)}
-              </span>
-            </div>
-          )}
           <div className="flex justify-between text-[13.5px] text-ink-2">
             <span>Phí vận chuyển</span>
             <span className="font-medium text-green-d">Miễn phí</span>

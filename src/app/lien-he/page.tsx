@@ -7,6 +7,7 @@ import { SITE } from "@/lib/site";
 import { getPolicyOverride, getStores } from "@/lib/data";
 import { INFO_PAGES } from "@/lib/policies";
 import { ClockIcon, MailIcon, MapPinIcon, PhoneIcon } from "@/components/icons";
+import { directionsUrl } from "@/lib/store-map";
 
 // Tiêu đề / mô tả / đoạn văn đầu trang sửa được ở admin (Trang nội dung -> Liên
 // hệ). Các kênh liên hệ + cửa hàng tự đồng bộ từ cài đặt & danh sách cửa hàng.
@@ -121,6 +122,14 @@ export default async function ContactPage() {
                 <p className="mt-1.5 text-[13.5px] text-green-d">
                   {SITE.hours}
                 </p>
+                <a
+                  href={directionsUrl(s)}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="mt-2 inline-block text-[13px] font-semibold text-green-d hover:underline"
+                >
+                  Chỉ đường ↗
+                </a>
               </div>
             </div>
           ))}

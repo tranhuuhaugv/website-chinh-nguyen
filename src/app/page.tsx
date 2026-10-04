@@ -2,7 +2,6 @@ import { BlogSection } from "@/components/BlogSection";
 import { ComingSoon } from "@/components/ComingSoon";
 import { CategoryGrid } from "@/components/CategoryGrid";
 import { CustomerGallery } from "@/components/CustomerGallery";
-import { VoucherStrip } from "@/components/VoucherStrip";
 import { FeaturedProducts } from "@/components/FeaturedProducts";
 import { FlashSale } from "@/components/FlashSale";
 import { FloatButtons } from "@/components/FloatButtons";
@@ -25,12 +24,10 @@ import {
   getFeaturedProducts,
   getFlashSaleProducts,
   getNewProducts,
-  getVouchers,
   getHeroBanners,
   getSetting,
   getSideBanners,
   getStores,
-  getVoucherUsage,
 } from "@/lib/data";
 import { SITE } from "@/lib/site";
 
@@ -92,7 +89,6 @@ export default async function HomePage() {
     heroBanners,
     sideBanners,
     flashSetting,
-    voucherSetting,
     stores,
     flashStart,
     flashEnd,
@@ -106,7 +102,6 @@ export default async function HomePage() {
     getHeroBanners(),
     getSideBanners(),
     getSetting("flashSaleEnabled"),
-    getSetting("vouchersEnabled"),
     getStores(),
     getSetting("flashSaleStart"),
     getSetting("flashSaleEnd"),
@@ -121,11 +116,6 @@ export default async function HomePage() {
     (!flashStart || nowVN >= flashStart) && (!flashEnd || nowVN < flashEnd);
   const flashOn =
     flashSetting === "true" && trongLich && flashProducts.length > 0;
-  const vouchersOn = voucherSetting === "true";
-  // Chỉ đếm số lượt + lấy danh sách mã khi khối đang bật (tránh query thừa).
-  const [voucherUsage, vouchers] = vouchersOn
-    ? await Promise.all([getVoucherUsage(), getVouchers()])
-    : [{} as Record<string, number>, []];
 
   return (
     <CompareProvider>
@@ -141,9 +131,6 @@ export default async function HomePage() {
       />
       <main>
         <HeroSlider slides={HERO_SLIDES} imageSlides={heroBanners} />
-        {vouchersOn && (
-          <VoucherStrip usage={voucherUsage} vouchers={vouchers} />
-        )}
         {flashOn && (
           <FlashSale
             flashProducts={flashProducts}

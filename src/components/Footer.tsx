@@ -9,7 +9,8 @@ import {
   PhoneIcon,
 } from "./icons";
 import { SITE } from "@/lib/site";
-import { getSetting, getStores } from "@/lib/data";
+import { getPolicyLinks, getSetting, getStores } from "@/lib/data";
+import { POLICY_NAV } from "@/lib/policies";
 
 // Footer dùng chung toàn site. Server Component.
 
@@ -17,13 +18,6 @@ const ABOUT_LINKS = [
   { href: "/gioi-thieu", label: "Giới thiệu" },
   { href: "/he-thong-cua-hang", label: "Hệ thống cửa hàng" },
   { href: "/lien-he", label: "Liên hệ" },
-];
-
-const POLICY_LINKS = [
-  { href: "/chinh-sach/bao-hanh", label: "Bảo hành" },
-  { href: "/chinh-sach/doi-tra", label: "Đổi trả" },
-  { href: "/chinh-sach/giao-hang", label: "Giao hàng" },
-  { href: "/chinh-sach/tra-gop", label: "Trả góp" },
 ];
 
 function FooterList({
@@ -53,7 +47,7 @@ function FooterList({
 }
 
 export async function Footer() {
-  const [stores, bctOn, bctUrl, bctImage, dmcaOn, dmcaUrl, copyrightOn] =
+  const [stores, bctOn, bctUrl, bctImage, dmcaOn, dmcaUrl, copyrightOn, policyLinks] =
     await Promise.all([
       getStores(),
       getSetting("bctEnabled"),
@@ -62,7 +56,13 @@ export async function Footer() {
       getSetting("dmcaEnabled"),
       getSetting("dmcaUrl"),
       getSetting("copyrightEnabled"),
+      getPolicyLinks(),
     ]);
+  // Link Điều khoản / Bảo mật theo đúng slug admin đã đặt (cùng thứ tự POLICY_NAV).
+  const linkOf = (key: string) =>
+    policyLinks[POLICY_NAV.findIndex((n) => n.href.endsWith(`/${key}`))];
+  const termsLink = linkOf("dieu-khoan");
+  const privacyLink = linkOf("bao-mat");
   const primaryStore =
     stores.find((s) => s.address.includes("Đỗ Quang")) ?? SITE.stores[0];
 
@@ -140,7 +140,7 @@ export async function Footer() {
           </div>
 
           <FooterList title="Về chúng tôi" links={ABOUT_LINKS} />
-          <FooterList title="Chính sách" links={POLICY_LINKS} />
+          <FooterList title="Chính sách" links={policyLinks} />
 
           <div>
             <h4 className="mb-3.5 text-[14.5px] font-semibold text-white">
@@ -181,7 +181,19 @@ export async function Footer() {
         {copyrightOn === "true" && (
           <div className="flex flex-wrap justify-between gap-2 pt-5 text-[12.5px] text-[#78827C]">
             <span>© 2026 Laptop Chính Nguyễn — Đà Nẵng.</span>
-            <span>Điều khoản · Bảo mật</span>
+            <span>
+              {termsLink && (
+                <Link href={termsLink.href} className="hover:text-white">
+                  Điều khoản
+                </Link>
+              )}
+              {termsLink && privacyLink && " · "}
+              {privacyLink && (
+                <Link href={privacyLink.href} className="hover:text-white">
+                  Bảo mật
+                </Link>
+              )}
+            </span>
           </div>
         )}
       </Container>

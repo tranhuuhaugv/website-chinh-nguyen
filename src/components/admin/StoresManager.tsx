@@ -4,6 +4,7 @@ import { useState } from "react";
 import { useRouter } from "next/navigation";
 import { PlusIcon, TrashIcon } from "@/components/icons";
 import type { Store } from "@/lib/types";
+import { cleanMapUrl, extractEmbedSrc } from "@/lib/store-map";
 
 // Thêm/sửa/xoá cửa hàng trong hệ thống. Lưu Setting "stores" (JSON).
 // Áp dụng ngay cho Footer, trang Hệ thống cửa hàng, Liên hệ, chi tiết SP...
@@ -37,6 +38,9 @@ export function StoresManager({ initial }: { initial: Store[] }) {
         name: r.name.trim(),
         address: r.address.trim(),
         city: r.city.trim() || "Đà Nẵng",
+        // Dán cả đoạn <iframe ...> cũng được: chỉ giữ lại src hợp lệ của Google.
+        mapUrl: cleanMapUrl(r.mapUrl) || undefined,
+        mapEmbed: extractEmbedSrc(r.mapEmbed) || undefined,
       }))
       .filter((r) => r.name && r.address);
     setStatus("saving");
@@ -107,6 +111,25 @@ export function StoresManager({ initial }: { initial: Store[] }) {
               className={inputCls}
             />
           </div>
+          <input
+            value={r.mapUrl ?? ""}
+            onChange={(e) => setField(i, "mapUrl", e.target.value)}
+            placeholder="Link Google Map (VD: https://maps.app.goo.gl/xxxx) — nút “Chỉ đường”"
+            className={inputCls}
+          />
+          <textarea
+            value={r.mapEmbed ?? ""}
+            onChange={(e) => setField(i, "mapEmbed", e.target.value)}
+            rows={2}
+            placeholder='Iframe Google Map — dán nguyên đoạn <iframe src="https://www.google.com/maps/embed?..."></iframe>'
+            className={`${inputCls} h-auto py-2 font-mono text-[12px]`}
+          />
+          {(r.mapUrl?.trim() && !cleanMapUrl(r.mapUrl)) ||
+          (r.mapEmbed?.trim() && !extractEmbedSrc(r.mapEmbed)) ? (
+            <p className="text-[12px] text-sale">
+              Link/iframe chưa đúng của Google Map nên sẽ bị bỏ qua khi lưu.
+            </p>
+          ) : null}
         </div>
       ))}
 

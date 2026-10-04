@@ -31,6 +31,16 @@ export interface AdminProduct {
 
 const PER_PAGE = 20;
 
+const SCROLL_KEY = "admin-products-scroll";
+
+function saveScroll(url: string) {
+  try {
+    sessionStorage.setItem(SCROLL_KEY, JSON.stringify({ url, y: window.scrollY }));
+  } catch {
+    /* bỏ qua */
+  }
+}
+
 export function ProductAdminList({
   products,
   seriesList = [],
@@ -68,6 +78,27 @@ export function ProductAdminList({
       router.replace(qs ? `${pathname}?${qs}` : pathname, { scroll: false });
     }
   }, [q, brand, series, cond, page, pathname, router, searchParams]);
+
+  // URL danh sách hiện tại (kèm bộ lọc/trang) — truyền sang trang sửa để lưu xong
+  // quay về ĐÚNG chỗ này thay vì danh sách trống.
+  const listUrl = searchParams.toString()
+    ? `${pathname}?${searchParams.toString()}`
+    : pathname;
+
+  // Khôi phục vị trí cuộn khi quay lại từ trang sửa.
+  useEffect(() => {
+    try {
+      const raw = sessionStorage.getItem(SCROLL_KEY);
+      if (!raw) return;
+      sessionStorage.removeItem(SCROLL_KEY);
+      const saved = JSON.parse(raw) as { url: string; y: number };
+      if (saved.url === listUrl) window.scrollTo(0, saved.y);
+    } catch {
+      /* bỏ qua */
+    }
+    // chỉ chạy 1 lần khi vào trang
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
   const brands = useMemo(
     () => Array.from(new Set(rows.map((p) => p.brand))).sort(),
@@ -343,7 +374,8 @@ export function ProductAdminList({
                         Xem
                       </Link>
                       <Link
-                        href={`/admin/san-pham/${p.id}`}
+                        href={`/admin/san-pham/${p.id}?back=${encodeURIComponent(listUrl)}`}
+                        onClick={() => saveScroll(listUrl)}
                         aria-label="Sửa"
                         className="flex h-8 w-8 items-center justify-center rounded-lg border border-line text-ink-2 transition hover:border-green hover:text-green-d"
                       >
