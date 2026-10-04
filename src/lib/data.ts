@@ -899,6 +899,40 @@ export async function getAdminProducts() {
   }));
 }
 
+/** Sản phẩm NỔI BẬT (đang hiện) theo đúng thứ tự trên trang chủ — cho trang sắp xếp ở admin. */
+export async function getAdminFeatured(): Promise<
+  { id: string; name: string; brand: string; price: number; image: string | null }[]
+> {
+  if (NO_DB) {
+    return FEATURED_PRODUCTS.slice(0, FEATURED_LIMIT).map((p) => ({
+      id: p.id,
+      name: p.name,
+      brand: p.brand,
+      price: p.price,
+      image: p.images?.[0] ?? null,
+    }));
+  }
+  const rows = await prisma.product.findMany({
+    where: { isFeatured: true, active: true },
+    orderBy: { sort: "asc" },
+    take: FEATURED_LIMIT,
+    select: {
+      id: true,
+      name: true,
+      price: true,
+      images: true,
+      brand: { select: { name: true } },
+    },
+  });
+  return rows.map((r) => ({
+    id: r.id,
+    name: r.name,
+    brand: r.brand.name,
+    price: r.price,
+    image: r.images?.[0] ?? null,
+  }));
+}
+
 /** 1 sản phẩm (đủ trường) để đổ vào form sửa. */
 export async function getAdminProductById(id: string) {
   if (NO_DB) return null;

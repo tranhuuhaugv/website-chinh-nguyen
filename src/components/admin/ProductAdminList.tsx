@@ -181,21 +181,29 @@ export function ProductAdminList({
             Dữ liệu thật từ database — sửa giá / cấu hình / ảnh tại đây.
           </p>
         </div>
-        <Link
-          href={
-            brand !== "Tất cả"
-              ? `/admin/san-pham/them?brand=${encodeURIComponent(brand)}${
-                  series !== "Tất cả"
-                    ? `&series=${encodeURIComponent(series)}`
-                    : ""
-                }`
-              : "/admin/san-pham/them"
-          }
-          className="flex h-9 items-center gap-1.5 rounded-lg bg-green px-3.5 text-sm font-semibold text-white transition hover:bg-green-d"
-        >
-          <PlusIcon className="h-4 w-4" />
-          Thêm sản phẩm
-        </Link>
+        <div className="flex flex-wrap items-center gap-2">
+          <Link
+            href="/admin/san-pham/noi-bat"
+            className="flex h-9 items-center gap-1.5 rounded-lg border border-line bg-white px-3.5 text-sm font-semibold text-ink-2 transition hover:border-green hover:text-green-d"
+          >
+            ⇅ Sắp xếp nổi bật
+          </Link>
+          <Link
+            href={
+              brand !== "Tất cả"
+                ? `/admin/san-pham/them?brand=${encodeURIComponent(brand)}${
+                    series !== "Tất cả"
+                      ? `&series=${encodeURIComponent(series)}`
+                      : ""
+                  }`
+                : "/admin/san-pham/them"
+            }
+            className="flex h-9 items-center gap-1.5 rounded-lg bg-green px-3.5 text-sm font-semibold text-white transition hover:bg-green-d"
+          >
+            <PlusIcon className="h-4 w-4" />
+            Thêm sản phẩm
+          </Link>
+        </div>
       </div>
 
       {/* Tìm kiếm + lọc */}
