@@ -1,3 +1,4 @@
+import { unstable_cache } from "next/cache";
 import { prisma } from "./prisma";
 import type {
   BannerItem,
@@ -155,14 +156,28 @@ function toPost(b: {
 const withBrand = { include: { brand: true } } as const;
 
 // --- Sản phẩm ---
+// Dùng cho các trang DANH SÁCH (tìm kiếm, danh mục, đếm): bỏ cột `description`
+// (HTML nặng, thẻ sản phẩm không dùng -> khỏi tải + khỏi lọc XSS từng máy) và
+// cache 60s để mỗi lượt tìm/lọc không query lại toàn bảng.
+const loadAllProducts = unstable_cache(
+  async (): Promise<Product[]> => {
+    const rows = await prisma.product.findMany({
+      where: { active: true }, // ẩn (active=false) -> không hiện ngoài web
+      ...withBrand,
+      omit: { description: true },
+      orderBy: { sort: "asc" },
+    });
+    return rows.map((r) =>
+      toProduct({ ...r, description: null } as unknown as PrismaProductWithBrand),
+    );
+  },
+  ["all-products-list"],
+  { revalidate: 60, tags: ["products"] },
+);
+
 export async function getAllProducts(): Promise<Product[]> {
   if (NO_DB) return MOCK_PRODUCTS;
-  const rows = await prisma.product.findMany({
-    where: { active: true }, // ẩn (active=false) -> không hiện ngoài web
-    ...withBrand,
-    orderBy: { sort: "asc" },
-  });
-  return rows.map((r) => toProduct(r as PrismaProductWithBrand));
+  return loadAllProducts();
 }
 
 /** Số máy tối đa cho khối Flash Sale trang chủ (khối là 1 lưới, không phân trang). */
