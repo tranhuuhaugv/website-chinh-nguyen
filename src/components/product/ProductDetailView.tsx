@@ -20,8 +20,9 @@ import {
 } from "@/components/product/ProductOptions";
 import { CompareBar } from "@/components/compare/CompareBar";
 import { CompareProvider } from "@/components/compare/CompareContext";
-import { MapPinIcon, StarIcon } from "@/components/icons";
+import { InstallmentIcon, MapPinIcon, StarIcon } from "@/components/icons";
 import { CommitmentCards } from "@/components/product/CommitmentCards";
+import { KeySpecs, PromoBox } from "@/components/product/ProductHighlights";
 import { SITE } from "@/lib/site";
 import {
   getProductBySlug,
@@ -44,7 +45,7 @@ export function buildProductMetadata(product: Product): Metadata {
     product.price,
   )} tại Laptop Chính Nguyễn (Đà Nẵng). ${
     used
-      ? "Máy đã qua sử dụng, kiểm tra kỹ, bảo hành tại shop, dùng thử 15 ngày, 1 đổi 1 trong 30 ngày."
+      ? "Máy đã qua sử dụng, kiểm tra kỹ, bảo hành 12 tháng, dùng thử 15 ngày."
       : "Máy mới nguyên seal, bảo hành chính hãng, giao nhanh toàn quốc."
   }`;
   const url = `${SITE_URL}/${product.slug}`;
@@ -215,6 +216,8 @@ export async function ProductDetailView({ slug }: { slug: string }) {
                 images={product.images}
               />
 
+              <KeySpecs product={product} />
+
               <div className="mt-4 max-lg:hidden">
                 <CommitmentCards condition={product.condition} />
               </div>
@@ -233,7 +236,7 @@ export async function ProductDetailView({ slug }: { slug: string }) {
                 </span>
                 <span className="text-muted">
                   {isUsed
-                    ? "Đã kiểm tra kỹ · Bảo hành tại shop"
+                    ? "Đã kiểm tra kỹ · Bảo hành 12 tháng"
                     : "Máy mới · Bảo hành chính hãng 12 tháng"}
                 </span>
               </div>
@@ -274,6 +277,17 @@ export async function ProductDetailView({ slug }: { slug: string }) {
                 >
                   <ProductPrice oldPrice={product.oldPrice} discount={discount} />
                 </div>
+                {product.installmentPerMonth && configOptions.length === 0 && (
+                  <div className="flex items-center gap-2 border-t border-line bg-[#F4F8F5] px-4 py-2.5 text-[13px] text-ink-2">
+                    <InstallmentIcon className="h-4 w-4 shrink-0 text-green" />
+                    <span>
+                      Hỗ trợ trả góp chỉ từ{" "}
+                      <b className="text-green-d">
+                        {formatPrice(product.installmentPerMonth)}/tháng
+                      </b>
+                    </span>
+                  </div>
+                )}
               </div>
 
               <ProductOptionPicker />
@@ -288,6 +302,8 @@ export async function ProductDetailView({ slug }: { slug: string }) {
                   unavailableLabel={stock.label}
                 />
               </div>
+
+              <PromoBox gift={product.gift} />
 
               {/* Mobile: cam kết hiện ngay dưới nút mua (desktop nằm dưới ảnh) */}
               <div className="mt-4 lg:hidden">

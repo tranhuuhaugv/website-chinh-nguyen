@@ -16,7 +16,7 @@ const NEW = [
   {
     icon: WarrantyIcon,
     title: "Bảo hành 12 tháng",
-    desc: "Dùng thử 15 ngày · 1 đổi 1 trong 30 ngày",
+    desc: "Dùng thử 15 ngày",
   },
   {
     icon: TruckIcon,
@@ -25,7 +25,7 @@ const NEW = [
   },
   {
     icon: InstallmentIcon,
-    title: "Trả góp 0% lãi suất",
+    title: "Hỗ trợ trả góp",
     desc: "Qua thẻ tín dụng / công ty tài chính",
   },
 ];
@@ -38,8 +38,8 @@ const USED = [
   },
   {
     icon: WarrantyIcon,
-    title: "Bảo hành tại shop",
-    desc: "Dùng thử 15 ngày · 1 đổi 1 trong 30 ngày",
+    title: "Bảo hành 12 tháng",
+    desc: "Dùng thử 15 ngày",
   },
   {
     icon: TruckIcon,
@@ -48,7 +48,7 @@ const USED = [
   },
   {
     icon: InstallmentIcon,
-    title: "Trả góp 0% · thu cũ",
+    title: "Hỗ trợ trả góp · thu cũ",
     desc: "Thu cũ đổi mới lên đời, trợ giá tốt",
   },
 ];

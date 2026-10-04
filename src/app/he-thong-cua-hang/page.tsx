@@ -15,7 +15,7 @@ const SERVICES = [
   "Tư vấn chọn máy theo nhu cầu và ngân sách, tận tình 1-1.",
   "Trải nghiệm sản phẩm trực tiếp trước khi mua.",
   "Bảo hành, sửa chữa và vệ sinh máy tại chỗ.",
-  "Hỗ trợ trả góp 0%, duyệt hồ sơ trong 15 phút.",
+  "Hỗ trợ trả góp, duyệt hồ sơ trong 15 phút.",
   "Cài phần mềm, chuyển dữ liệu, hướng dẫn miễn phí.",
   "Thu cũ đổi mới, trợ giá hấp dẫn.",
 ];

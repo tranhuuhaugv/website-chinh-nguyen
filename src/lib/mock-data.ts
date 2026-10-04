@@ -28,7 +28,7 @@ export const HERO_SLIDES: HeroSlide[] = [
     badge: "ƯU ĐÃI THÁNG 7",
     title1: "Laptop chính hãng",
     title2: "giá tốt mỗi ngày",
-    subtitle: "Trả góp 0% · Bảo hành 12 tháng · Giao nhanh toàn quốc",
+    subtitle: "Hỗ trợ trả góp · Bảo hành 12 tháng · Giao nhanh toàn quốc",
     cta: "Mua ngay",
     accent: "green",
   },
@@ -38,7 +38,7 @@ export const HERO_SLIDES: HeroSlide[] = [
     badge: "GAMING WEEK",
     title1: "Laptop Gaming RTX",
     title2: "giảm đến 20%",
-    subtitle: "RTX 4050/4060 · Trả góp 0% · Quà tặng hấp dẫn",
+    subtitle: "RTX 4050/4060 · Hỗ trợ trả góp · Quà tặng hấp dẫn",
     cta: "Săn deal ngay",
     accent: "blue",
   },
@@ -47,7 +47,7 @@ export const HERO_SLIDES: HeroSlide[] = [
     href: "/macbook",
     badge: "APPLE DAYS",
     title1: "MacBook chính hãng",
-    title2: "trả góp 0%",
+    title2: "hỗ trợ trả góp",
     subtitle: "MacBook Air/Pro · Giá tốt nhất Đà Nẵng",
     cta: "Khám phá ngay",
     accent: "purple",
@@ -59,7 +59,7 @@ export const SIDE_BANNERS: SideBanner[] = [
   {
     id: "tra-gop-0",
     href: "/chinh-sach/tra-gop",
-    title: "Trả góp 0%",
+    title: "Hỗ trợ trả góp",
     subtitle: "Duyệt trong 15 phút",
     accent: "green",
   },
@@ -1046,7 +1046,7 @@ export const QUICK_NAV_LINKS: { label: string; href: string; hot?: boolean }[] =
     { label: "Dell", href: "/dell" },
     { label: "Asus", href: "/asus" },
     { label: "Thu cũ đổi mới", href: "/thu-cu-doi-moi" },
-    { label: "Trả góp 0%", href: "/chinh-sach/tra-gop" },
+    { label: "Hỗ trợ trả góp", href: "/chinh-sach/tra-gop" },
   ];
 
 /** Các brand dùng làm tab lọc ở khối "Sản phẩm nổi bật". */

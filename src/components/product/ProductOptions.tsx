@@ -82,9 +82,16 @@ export function ProductPrice({
         ) : null}
       </div>
       {!hasOptions && discount > 0 ? (
-        <span className="mt-1.5 inline-block rounded-full bg-sale px-2.5 py-0.5 text-[12px] font-bold text-white">
-          Giảm {discount}%
-        </span>
+        <div className="mt-2 flex flex-wrap items-center gap-2">
+          <span className="rounded-full bg-sale px-2.5 py-0.5 text-[12px] font-bold text-white">
+            Giảm {discount}%
+          </span>
+          {oldPrice ? (
+            <span className="text-[12.5px] font-medium text-sale">
+              Tiết kiệm {formatPrice(oldPrice - (ctx?.price ?? 0))}
+            </span>
+          ) : null}
+        </div>
       ) : null}
     </div>
   );

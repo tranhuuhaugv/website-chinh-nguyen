@@ -26,14 +26,14 @@ export const metadata: Metadata = {
     template: `%s | ${SITE_NAME}`,
   },
   description:
-    "Cửa hàng laptop chính hãng tại Đà Nẵng. Trả góp 0%, bảo hành 12 tháng, giao nhanh toàn quốc. Dell, Asus, Acer, Lenovo, HP, MacBook giá tốt mỗi ngày.",
+    "Cửa hàng laptop chính hãng tại Đà Nẵng. Hỗ trợ trả góp, bảo hành 12 tháng, giao nhanh toàn quốc. Dell, Asus, Acer, Lenovo, HP, MacBook giá tốt mỗi ngày.",
   keywords: [
     "laptop",
     "laptop chính hãng",
     "laptop Đà Nẵng",
     "laptop gaming",
     "MacBook",
-    "trả góp 0%",
+    "hỗ trợ trả góp",
   ],
   openGraph: {
     type: "website",
@@ -42,13 +42,13 @@ export const metadata: Metadata = {
     siteName: SITE_NAME,
     title: `${SITE_NAME} — Laptop chính hãng giá tốt`,
     description:
-      "Laptop chính hãng, trả góp 0%, bảo hành 12 tháng, giao nhanh toàn quốc.",
+      "Laptop chính hãng, hỗ trợ trả góp, bảo hành 12 tháng, giao nhanh toàn quốc.",
   },
   twitter: {
     card: "summary_large_image",
     title: `${SITE_NAME} — Laptop chính hãng giá tốt`,
     description:
-      "Laptop chính hãng, trả góp 0%, bảo hành 12 tháng, giao nhanh toàn quốc.",
+      "Laptop chính hãng, hỗ trợ trả góp, bảo hành 12 tháng, giao nhanh toàn quốc.",
   },
 };
 

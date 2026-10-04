@@ -72,18 +72,7 @@ export const POLICIES: Record<string, Policy> = {
         ],
       },
       {
-        heading: "5. Chính sách 1 đổi 1 trong 30 ngày",
-        paragraphs: [
-          "Trong vòng 30 ngày kể từ ngày mua, nếu sản phẩm phát sinh lỗi kỹ thuật do nhà sản xuất, khách hàng được đổi mới 1 đổi 1 sản phẩm cùng loại (hoặc tương đương nếu sản phẩm đã ngừng kinh doanh).",
-        ],
-        items: [
-          "Sản phẩm đổi phải còn đầy đủ hộp, phụ kiện, quà tặng kèm và không có dấu hiệu tác động vật lý.",
-          "Trường hợp sản phẩm mới có giá cao hơn, khách hàng bù phần chênh lệch; nếu thấp hơn sẽ được hoàn lại.",
-          "Sau 30 ngày, sản phẩm được bảo hành theo chế độ tiêu chuẩn (sửa chữa/thay linh kiện).",
-        ],
-      },
-      {
-        heading: "6. Quy trình tiếp nhận bảo hành",
+        heading: "5. Quy trình tiếp nhận bảo hành",
         items: [
           `Bước 1: Liên hệ hotline ${SITE.hotline} hoặc mang sản phẩm kèm hóa đơn đến cửa hàng gần nhất.`,
           "Bước 2: Kỹ thuật viên tiếp nhận, kiểm tra và xác định nguyên nhân lỗi trong vòng 24 giờ.",
@@ -92,7 +81,7 @@ export const POLICIES: Record<string, Policy> = {
         ],
       },
       {
-        heading: "7. Thời gian xử lý & lưu ý",
+        heading: "6. Thời gian xử lý & lưu ý",
         items: [
           "Thời gian bảo hành thông thường từ 3 - 7 ngày làm việc; trường hợp cần gửi hãng có thể lâu hơn.",
           "Khách hàng vui lòng sao lưu dữ liệu trước khi gửi bảo hành; cửa hàng không chịu trách nhiệm về dữ liệu bị mất.",
@@ -104,7 +93,7 @@ export const POLICIES: Record<string, Policy> = {
 
   "doi-tra": {
     title: "Chính sách đổi trả & hoàn tiền",
-    lead: "Cho dùng thử 15 ngày, 1 đổi 1 trong 30 ngày nếu lỗi kỹ thuật — đặt sự hài lòng của khách hàng lên hàng đầu.",
+    lead: "Bảo hành 12 tháng, dùng thử 15 ngày — đặt sự hài lòng của khách hàng lên hàng đầu.",
     intro: [
       "Laptop Chính Nguyễn luôn mong muốn khách hàng hoàn toàn hài lòng với sản phẩm của mình. Trong trường hợp sản phẩm không đúng như mô tả, phát sinh lỗi kỹ thuật hoặc chưa phù hợp với nhu cầu, chúng tôi hỗ trợ đổi trả và hoàn tiền theo các quy định rõ ràng dưới đây.",
     ],
@@ -120,7 +109,7 @@ export const POLICIES: Record<string, Policy> = {
       {
         heading: "2. Thời gian & điều kiện đổi trả",
         paragraphs: [
-          "Khách hàng được dùng thử và đổi trả trong vòng 15 ngày kể từ ngày nhận hàng; riêng lỗi kỹ thuật do nhà sản xuất được 1 đổi 1 trong vòng 30 ngày. Điều kiện áp dụng:",
+          "Khách hàng được dùng thử và đổi trả trong vòng 15 ngày kể từ ngày nhận hàng. Điều kiện áp dụng:",
         ],
         items: [
           "Sản phẩm còn nguyên vẹn, đầy đủ hộp, phụ kiện, quà tặng kèm và giấy tờ.",
@@ -212,10 +201,10 @@ export const POLICIES: Record<string, Policy> = {
   },
 
   "tra-gop": {
-    title: "Chính sách trả góp 0%",
-    lead: "Sở hữu laptop chính hãng ngay hôm nay với hình thức trả góp 0% lãi suất, thủ tục nhanh gọn.",
+    title: "Chính sách hỗ trợ trả góp",
+    lead: "Sở hữu laptop chính hãng ngay hôm nay với hình thức hỗ trợ trả góp, thủ tục nhanh gọn.",
     intro: [
-      "Nhằm giúp khách hàng dễ dàng sở hữu sản phẩm mong muốn mà không cần thanh toán toàn bộ ngay, Laptop Chính Nguyễn triển khai chương trình trả góp linh hoạt qua thẻ tín dụng và các công ty tài chính uy tín, với nhiều gói lãi suất 0%.",
+      "Nhằm giúp khách hàng dễ dàng sở hữu sản phẩm mong muốn mà không cần thanh toán toàn bộ ngay, Laptop Chính Nguyễn triển khai chương trình hỗ trợ trả góp linh hoạt qua thẻ tín dụng và các công ty tài chính uy tín.",
     ],
     sections: [
       {
@@ -223,7 +212,7 @@ export const POLICIES: Record<string, Policy> = {
         items: [
           "Trả góp qua thẻ tín dụng (Visa, Mastercard, JCB...) của các ngân hàng liên kết.",
           "Trả góp qua công ty tài chính: chỉ cần CCCD/CMND và giấy tờ theo yêu cầu.",
-          "Nhiều gói lãi suất 0% áp dụng theo từng sản phẩm và chương trình cụ thể.",
+          "Các gói ưu đãi lãi suất (nếu có) áp dụng theo từng sản phẩm và chương trình cụ thể.",
         ],
       },
       {
@@ -246,7 +235,7 @@ export const POLICIES: Record<string, Policy> = {
         heading: "4. Kỳ hạn & lãi suất",
         items: [
           "Kỳ hạn linh hoạt từ 3, 6, 9 đến 12 tháng tùy sản phẩm và đối tác.",
-          "Lãi suất 0% áp dụng cho các sản phẩm và chương trình được chỉ định.",
+          "Mức lãi suất ưu đãi (nếu có) áp dụng cho các sản phẩm và chương trình được chỉ định.",
           "Một số gói có thể phát sinh phí chuyển đổi trả góp theo quy định của đối tác.",
         ],
       },
@@ -357,7 +346,7 @@ export const INFO_PAGES: Record<string, Policy> = {
         items: [
           "Máy được kiểm tra kỹ pin, màn hình, linh kiện trước khi bán.",
           "Bảo hành minh bạch, hỗ trợ đổi trả theo chính sách.",
-          "Trả góp 0%, giao nhanh, cài đặt phần mềm miễn phí.",
+          "Hỗ trợ trả góp, giao nhanh, cài đặt phần mềm miễn phí.",
         ],
       },
       {
