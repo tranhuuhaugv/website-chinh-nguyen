@@ -1,6 +1,6 @@
 import { NextResponse } from "next/server";
 import { cookies } from "next/headers";
-import { revalidatePath } from "next/cache";
+import { revalidatePath, revalidateTag } from "next/cache";
 import { prisma } from "@/lib/prisma";
 import { ADMIN_COOKIE, verifyAdminToken } from "@/lib/admin-auth";
 import { slugify } from "@/lib/slug";
@@ -38,6 +38,7 @@ async function uniqueSlug(base: string, exclude?: string): Promise<string> {
 }
 
 function done() {
+  revalidateTag("site-data");
   revalidatePath("/"); // trang chủ + mega-menu dùng danh mục
 }
 

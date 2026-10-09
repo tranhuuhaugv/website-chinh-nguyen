@@ -1,6 +1,6 @@
 import { NextResponse } from "next/server";
 import { cookies } from "next/headers";
-import { revalidatePath } from "next/cache";
+import { revalidatePath, revalidateTag } from "next/cache";
 import { prisma } from "@/lib/prisma";
 import { ADMIN_COOKIE, verifyAdminToken } from "@/lib/admin-auth";
 
@@ -60,6 +60,7 @@ export async function POST(req: Request) {
 
   // Nút liên hệ nổi có trên MỌI trang -> làm mới toàn bộ (revalidate layout);
   // các cờ hiển thị khác cũng được làm mới ngay.
+  revalidateTag("site-data");
   revalidatePath("/", "layout");
 
   return NextResponse.json({ ok: true });

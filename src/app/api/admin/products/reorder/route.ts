@@ -1,6 +1,6 @@
 import { NextResponse } from "next/server";
 import { cookies } from "next/headers";
-import { revalidatePath } from "next/cache";
+import { revalidatePath, revalidateTag } from "next/cache";
 import { prisma } from "@/lib/prisma";
 import { ADMIN_COOKIE, verifyAdminToken } from "@/lib/admin-auth";
 
@@ -49,6 +49,7 @@ export async function POST(req: Request) {
         prisma.product.update({ where: { id }, data: { sort: values[i] } }),
       ),
     );
+    revalidateTag("site-data");
     revalidatePath("/");
     revalidatePath("/san-pham");
     return NextResponse.json({ ok: true });

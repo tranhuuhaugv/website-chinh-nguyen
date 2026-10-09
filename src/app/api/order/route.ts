@@ -1,11 +1,36 @@
 import { NextResponse } from "next/server";
 import { orderSchema } from "@/lib/validations/order";
-import { sendOrderEmail } from "@/lib/mail";
+import { sendOrderEmail, type OrderRef } from "@/lib/mail";
 import { prisma } from "@/lib/prisma";
 import { getCurrentUser } from "@/lib/session";
 
+// Chống lạm dụng: endpoint công khai này gửi email tới địa chỉ khách nhập, nên giới hạn
+// số đơn / IP trong 10 phút (bộ nhớ tiến trình — app chạy 1 tiến trình PM2 là đủ).
+const WINDOW_MS = 10 * 60 * 1000;
+const MAX_PER_WINDOW = 6;
+const hits = new Map<string, number[]>();
+
+function rateLimited(ip: string): boolean {
+  const now = Date.now();
+  const recent = (hits.get(ip) ?? []).filter((t) => now - t < WINDOW_MS);
+  recent.push(now);
+  hits.set(ip, recent);
+  if (hits.size > 5000) {
+    // dọn bớt để Map không phình mãi
+    hits.forEach((v, k) => {
+      if (!v.some((t) => now - t < WINDOW_MS)) hits.delete(k);
+    });
+  }
+  return recent.length > MAX_PER_WINDOW;
+}
+
 // Nhận đơn (thu cũ / mua hàng) -> lưu vào DB + gửi email thông báo về Gmail.
 export async function POST(req: Request) {
+  const ip = (req.headers.get("x-forwarded-for") ?? "").split(",")[0].trim() || "unknown";
+  if (rateLimited(ip)) {
+    return NextResponse.json({ ok: false, error: "too_many" }, { status: 429 });
+  }
+
   let body: unknown;
   try {
     body = await req.json();
@@ -64,8 +89,9 @@ export async function POST(req: Request) {
 
   // Lưu đơn vào database (để hiện trong admin).
   let saved = false;
+  let ref: OrderRef | undefined;
   try {
-    await prisma.order.create({
+    const created = await prisma.order.create({
       data: {
         type: d.type,
         name: d.name,
@@ -81,6 +107,8 @@ export async function POST(req: Request) {
       },
     });
     saved = true;
+    // Mã đơn khách thấy = 6 ký tự cuối id (trùng mã trong trang admin).
+    ref = { code: created.id.slice(-6).toUpperCase(), at: created.createdAt };
   } catch (err) {
     console.error("Lưu đơn hàng lỗi:", err);
   }
@@ -88,9 +116,9 @@ export async function POST(req: Request) {
   // Gửi email CHẠY NỀN: khách không phải chờ SMTP Gmail (vài giây) mới thấy
   // màn hình "Đặt hàng thành công". App chạy Node thường trên VPS (PM2) nên
   // promise vẫn chạy tiếp sau khi response đã trả về.
-  void sendOrderEmail(d, customerEmail).catch((err) => {
+  void sendOrderEmail(d, customerEmail, ref).catch((err) => {
     console.error("Gửi email đơn hàng lỗi:", err);
   });
 
-  return NextResponse.json({ ok: true, saved });
+  return NextResponse.json({ ok: true, saved, code: ref?.code ?? null });
 }

@@ -25,6 +25,7 @@ export default async function AdminOrdersPage() {
     upgradeTo: o.upgradeTo,
     items: Array.isArray(o.items) ? (o.items as unknown as AdminOrderItem[]) : [],
     createdAt: o.createdAt.toISOString(),
+    status: o.status,
   }));
 
   return <OrdersManager orders={orders} />;

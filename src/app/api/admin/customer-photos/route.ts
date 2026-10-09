@@ -1,4 +1,5 @@
 import { NextResponse } from "next/server";
+import { revalidateTag } from "next/cache";
 import { cookies } from "next/headers";
 import { prisma } from "@/lib/prisma";
 import { ADMIN_COOKIE, verifyAdminToken } from "@/lib/admin-auth";
@@ -30,5 +31,6 @@ export async function POST(req: Request) {
     create: { key: "customerPhotos", value },
   });
 
+  revalidateTag("site-data");
   return NextResponse.json({ ok: true, count: images.length });
 }

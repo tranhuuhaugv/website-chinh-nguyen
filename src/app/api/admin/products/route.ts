@@ -1,6 +1,6 @@
 import { NextResponse } from "next/server";
 import { cookies } from "next/headers";
-import { revalidatePath } from "next/cache";
+import { revalidatePath, revalidateTag } from "next/cache";
 import { prisma } from "@/lib/prisma";
 import {
   ADMIN_COOKIE,
@@ -206,6 +206,7 @@ async function buildData(body: Body, selfSlug: string) {
  * mới, không thì nút bên đó còn ghi RAM/ổ cứng cũ.
  */
 function done(slug?: string, lienQuan: string[] = []) {
+  revalidateTag("site-data");
   revalidatePath("/");
   revalidatePath("/san-pham");
   // Trang chi tiết nay ở URL gốc /[slug].

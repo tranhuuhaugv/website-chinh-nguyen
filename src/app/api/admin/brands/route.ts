@@ -1,6 +1,6 @@
 import { NextResponse } from "next/server";
 import { cookies } from "next/headers";
-import { revalidatePath } from "next/cache";
+import { revalidatePath, revalidateTag } from "next/cache";
 import { prisma } from "@/lib/prisma";
 import { ADMIN_COOKIE, verifyAdminToken } from "@/lib/admin-auth";
 import { slugify } from "@/lib/slug";
@@ -36,6 +36,7 @@ export async function POST(req: Request) {
   const slug = await uniqueSlug(slugify(String(body?.slug ?? "").trim() || name));
   try {
     await prisma.brand.create({ data: { name, slug } });
+    revalidateTag("site-data");
     revalidatePath("/");
     return NextResponse.json({ ok: true, slug });
   } catch (err) {
@@ -64,6 +65,7 @@ export async function PUT(req: Request) {
   );
   try {
     await prisma.brand.update({ where: { id }, data: { name, slug } });
+    revalidateTag("site-data");
     revalidatePath("/");
     return NextResponse.json({ ok: true, slug });
   } catch (err) {
@@ -89,6 +91,7 @@ export async function DELETE(req: Request) {
   }
   try {
     await prisma.brand.delete({ where: { id } });
+    revalidateTag("site-data");
     revalidatePath("/");
     return NextResponse.json({ ok: true });
   } catch (err) {

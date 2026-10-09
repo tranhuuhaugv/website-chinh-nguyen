@@ -16,6 +16,13 @@ import {
 import { ProductImage } from "@/components/ProductImage";
 import type { ProductAccent } from "@/lib/types";
 import { formatPrice } from "@/lib/format";
+import {
+  ORDER_STATUSES,
+  ORDER_STATUS_CLS,
+  ORDER_STATUS_LABEL,
+  isOrderStatus,
+  type OrderStatus,
+} from "@/lib/order-status";
 
 export interface AdminOrderItem {
   name: string;
@@ -80,6 +87,7 @@ export interface AdminOrder {
   upgradeTo: string | null;
   items: AdminOrderItem[];
   createdAt: string;
+  status: string;
 }
 
 function fmtDate(s: string) {
@@ -91,6 +99,29 @@ export function OrdersManager({ orders: initial }: { orders: AdminOrder[] }) {
   const [orders, setOrders] = useState(initial);
   const [viewing, setViewing] = useState<AdminOrder | null>(null);
   const [busyId, setBusyId] = useState<string | null>(null);
+
+  async function setStatus(o: AdminOrder, status: OrderStatus) {
+    if (o.status === status) return;
+    const prev = o.status;
+    setOrders((list) => list.map((x) => (x.id === o.id ? { ...x, status } : x)));
+    setBusyId(o.id);
+    try {
+      const res = await fetch("/api/admin/orders", {
+        method: "PATCH",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ id: o.id, status }),
+      });
+      if (!res.ok) throw new Error("update_failed");
+      router.refresh();
+    } catch {
+      setOrders((list) =>
+        list.map((x) => (x.id === o.id ? { ...x, status: prev } : x)),
+      );
+      alert("Đổi trạng thái thất bại, vui lòng thử lại.");
+    } finally {
+      setBusyId(null);
+    }
+  }
 
   async function remove(o: AdminOrder) {
     if (
@@ -134,7 +165,7 @@ export function OrdersManager({ orders: initial }: { orders: AdminOrder[] }) {
         </div>
       ) : (
         <div className="overflow-x-auto rounded-2xl border border-line bg-white shadow-sm">
-          <table className="w-full min-w-[760px] text-left text-[13.5px]">
+          <table className="w-full min-w-[860px] text-left text-[13.5px]">
             <thead>
               <tr className="border-b border-line bg-bg text-[12.5px] uppercase tracking-wide text-muted">
                 <th className="px-4 py-3 font-semibold">Loại</th>
@@ -142,6 +173,7 @@ export function OrdersManager({ orders: initial }: { orders: AdminOrder[] }) {
                 <th className="px-4 py-3 font-semibold">Liên hệ</th>
                 <th className="px-4 py-3 font-semibold">Chi tiết</th>
                 <th className="px-4 py-3 font-semibold">Thời gian</th>
+                <th className="px-4 py-3 font-semibold">Trạng thái</th>
                 <th className="px-4 py-3 text-right font-semibold">Thao tác</th>
               </tr>
             </thead>
@@ -185,6 +217,23 @@ export function OrdersManager({ orders: initial }: { orders: AdminOrder[] }) {
                   </td>
                   <td className="whitespace-nowrap px-4 py-3 text-[12.5px] text-muted">
                     {fmtDate(o.createdAt)}
+                  </td>
+                  <td className="px-4 py-3">
+                    <select
+                      value={isOrderStatus(o.status) ? o.status : "new"}
+                      disabled={busyId === o.id}
+                      onChange={(e) => setStatus(o, e.target.value as OrderStatus)}
+                      aria-label="Trạng thái đơn"
+                      className={`h-8 cursor-pointer rounded-full border-0 px-2.5 text-[12px] font-semibold outline-none disabled:opacity-50 ${
+                        ORDER_STATUS_CLS[isOrderStatus(o.status) ? o.status : "new"]
+                      }`}
+                    >
+                      {ORDER_STATUSES.map((s) => (
+                        <option key={s} value={s}>
+                          {ORDER_STATUS_LABEL[s]}
+                        </option>
+                      ))}
+                    </select>
                   </td>
                   <td className="px-4 py-3">
                     <div className="flex items-center justify-end gap-1.5">

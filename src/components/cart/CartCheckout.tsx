@@ -44,6 +44,9 @@ export function CartCheckout({
   });
   const [errors, setErrors] = useState<Record<string, string>>({});
   const [done, setDone] = useState(false);
+  // Mã đơn + email đã gửi xác nhận (hiện ở màn hình thành công).
+  const [orderCode, setOrderCode] = useState<string | null>(null);
+  const [sentTo, setSentTo] = useState<string | null>(null);
   const [sending, setSending] = useState(false);
   const loggedIn = Boolean(initialUser);
 
@@ -85,11 +88,21 @@ export function CartCheckout({
     };
     setSending(true);
     try {
-      await fetch("/api/order", {
+      const res = await fetch("/api/order", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(payload),
       });
+      if (res.status === 429) {
+        setSending(false);
+        alert("Bạn gửi đơn quá nhanh. Vui lòng đợi vài phút hoặc gọi hotline để được hỗ trợ.");
+        return;
+      }
+      const data = (await res.json().catch(() => null)) as {
+        code?: string | null;
+      } | null;
+      setOrderCode(data?.code ?? null);
+      setSentTo(values.email.trim() || initialUser?.email || null);
     } catch {
       // bỏ qua lỗi mạng — vẫn xác nhận đơn cho khách
     }
@@ -124,6 +137,19 @@ export function CartCheckout({
               <b className="text-green-d">{SITE.name}</b>. Đơn hàng của Quý khách
               đã được ghi nhận thành công.
             </p>
+            {orderCode && (
+              <p className="mt-3 inline-block rounded-full bg-green-soft px-4 py-1.5 text-[13.5px] text-ink-2">
+                Mã đơn của bạn:{" "}
+                <b className="tracking-wide text-green-d">#{orderCode}</b>
+              </p>
+            )}
+            {sentTo && (
+              <p className="mx-auto mt-2 max-w-md text-[13px] text-muted">
+                Chúng tôi đã gửi email xác nhận tới{" "}
+                <b className="text-ink-2">{sentTo}</b>. Nếu chưa thấy, bạn kiểm
+                tra thêm mục Spam/Quảng cáo.
+              </p>
+            )}
           </div>
 
           {/* Các mốc liên hệ / cam kết */}
@@ -359,7 +385,7 @@ export function CartCheckout({
             {field("phone", "Số điện thoại", "0912345678")}
             {field(
               "email",
-              "Email (nhận xác nhận đơn hàng)",
+              "Email (không bắt buộc — để nhận xác nhận đơn)",
               "email@example.com",
               true,
             )}

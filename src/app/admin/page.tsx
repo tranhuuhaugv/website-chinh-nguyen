@@ -2,12 +2,12 @@ import type { ComponentType, SVGProps } from "react";
 import Link from "next/link";
 import { TrafficChart } from "@/components/admin/TrafficChart";
 import { MonthPicker } from "@/components/admin/MonthPicker";
+import { PendingOrders } from "@/components/admin/PendingOrders";
 import {
   BoxIcon,
   CartIcon,
   FileTextIcon,
   LayoutIcon,
-  PlusIcon,
   StarIcon,
   TrendUpIcon,
   UsersIcon,
@@ -18,7 +18,6 @@ import {
   getDashboardOrders,
   getTrafficStats,
 } from "@/lib/data";
-import { formatPrice } from "@/lib/format";
 
 export const metadata = { title: "Tổng quan" };
 export const dynamic = "force-dynamic";
@@ -69,13 +68,6 @@ const QUICK = [
   { href: "/admin/don-hang", label: "Xem đơn hàng", icon: CartIcon },
 ];
 
-const STATUS: Record<string, { label: string; cls: string }> = {
-  new: { label: "Mới", cls: "bg-[#FFF1D9] text-[#B45309]" },
-  processing: { label: "Đang xử lý", cls: "bg-[#E4F0FB] text-[#1D6FE0]" },
-  done: { label: "Hoàn tất", cls: "bg-green-soft text-green-d" },
-  canceled: { label: "Đã huỷ", cls: "bg-[#F1F3F1] text-muted" },
-};
-
 /** "12 phút trước", "3 giờ trước", "2 ngày trước". */
 function timeAgo(d: Date): string {
   const m = Math.max(0, Math.floor((Date.now() - d.getTime()) / 60000));
@@ -116,7 +108,7 @@ export default async function AdminDashboard({
     getDashboardCounts(),
     getTrafficStats(),
     getDailyViews(ym),
-    getDashboardOrders(5),
+    getDashboardOrders(8),
   ]);
   const monthTotal = daily.reduce((a, b) => a + b, 0);
 
@@ -202,7 +194,7 @@ export default async function AdminDashboard({
         <section className="min-w-0">
           <div className="mb-3 flex items-center justify-between">
             <h2 className="text-[13px] font-bold uppercase tracking-[0.08em] text-muted">
-              Đơn hàng gần đây
+              Đơn cần xử lý ({orders.pending})
             </h2>
             <Link
               href="/admin/don-hang"
@@ -212,55 +204,17 @@ export default async function AdminDashboard({
             </Link>
           </div>
           <div className="overflow-hidden rounded-2xl border border-line bg-white shadow-card">
-            {orders.recent.length === 0 ? (
-              <div className="flex flex-col items-center gap-2 px-6 py-10 text-center">
-                <span className="flex h-12 w-12 items-center justify-center rounded-full bg-green-tint text-green">
-                  <PlusIcon className="h-5 w-5" />
-                </span>
-                <p className="text-[14px] font-semibold text-ink">
-                  Chưa có đơn hàng nào
-                </p>
-                <p className="text-[12.5px] text-muted">
-                  Đơn mới sẽ hiện ở đây ngay khi khách đặt.
-                </p>
-              </div>
-            ) : (
-              <ul className="divide-y divide-line">
-                {orders.recent.map((o) => {
-                  const st = STATUS[o.status] ?? STATUS.new;
-                  return (
-                    <li key={o.id}>
-                      <Link
-                        href="/admin/don-hang"
-                        className="flex items-center gap-3 px-4 py-3 transition hover:bg-bg/60"
-                      >
-                        <span className="flex h-9 w-9 shrink-0 items-center justify-center rounded-full bg-green-tint text-[13px] font-bold text-green-d">
-                          {o.name.trim().charAt(0).toUpperCase() || "?"}
-                        </span>
-                        <div className="min-w-0 flex-1">
-                          <p className="truncate text-[13.5px] font-semibold text-ink">
-                            {o.name}
-                          </p>
-                          <p className="truncate text-[12px] text-muted">
-                            {o.type === "tradein"
-                              ? `Thu cũ${o.model ? ` · ${o.model}` : ""}`
-                              : o.total
-                                ? formatPrice(o.total)
-                                : "Đơn mua"}{" "}
-                            · {timeAgo(o.createdAt)}
-                          </p>
-                        </div>
-                        <span
-                          className={`shrink-0 rounded-full px-2.5 py-1 text-[11.5px] font-semibold ${st.cls}`}
-                        >
-                          {st.label}
-                        </span>
-                      </Link>
-                    </li>
-                  );
-                })}
-              </ul>
-            )}
+            <PendingOrders
+              initial={orders.recent.map((o) => ({
+                id: o.id,
+                type: o.type,
+                name: o.name,
+                total: o.total,
+                model: o.model,
+                status: o.status,
+                ago: timeAgo(o.createdAt),
+              }))}
+            />
           </div>
         </section>
       </div>

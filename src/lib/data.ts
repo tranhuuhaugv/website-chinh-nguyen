@@ -173,7 +173,7 @@ const loadAllProducts = unstable_cache(
     );
   },
   ["all-products-list"],
-  { revalidate: 60, tags: ["products"] },
+  { revalidate: 60, tags: ["products", "site-data"] },
 );
 
 export async function getAllProducts(): Promise<Product[]> {
@@ -254,13 +254,15 @@ export async function getNewProducts(): Promise<Product[]> {
 }
 
 // React cache: metadata + page + ProductDetailView gọi cùng slug -> chỉ 1 query/request.
-export const getProductBySlug = cache(async (slug: string): Promise<Product | null> => {
+const getProductBySlugCached = unstable_cache(async (slug: string): Promise<Product | null> => {
   if (NO_DB) return MOCK_PRODUCTS.find((p) => p.slug === slug) ?? null;
   const row = await prisma.product.findUnique({ where: { slug }, ...withBrand });
   // Ẩn (active=false) -> coi như không tồn tại ngoài web (404).
   if (!row || !row.active) return null;
   return toProduct(row as PrismaProductWithBrand);
-});
+}, ["product-by-slug"], { revalidate: 60, tags: ["site-data"] });
+
+export const getProductBySlug = cache(getProductBySlugCached);
 
 /** 1 lựa chọn cấu hình ở trang chi tiết (nút "8GB - 256GB"). */
 export interface VariantOption {
@@ -357,7 +359,7 @@ export async function getProductVariants(
   return xepNut([...rows, banThan], product.slug);
 }
 
-export async function getRelatedProducts(
+async function getRelatedProductsRaw(
   product: Product,
   limit = 4,
 ): Promise<Product[]> {
@@ -461,7 +463,7 @@ export async function searchProducts(q: string, limit = 6): Promise<Product[]> {
 }
 
 // --- Danh mục ---
-export async function getCategories(): Promise<Category[]> {
+async function getCategoriesRaw(): Promise<Category[]> {
   if (NO_DB) return CATEGORIES;
   const rows = await prisma.category.findMany({ orderBy: { sort: "asc" } });
   return rows.map((c) => ({
@@ -572,7 +574,7 @@ export interface CategorySeo {
   cover: string | null; // ảnh bìa NGANG riêng (admin tải lên) -> hero trang danh mục
 }
 
-export async function getCategorySeo(slug: string): Promise<CategorySeo | null> {
+async function getCategorySeoRaw(slug: string): Promise<CategorySeo | null> {
   if (NO_DB) {
     const c = CATEGORIES.find((x) => x.slug === slug);
     return c
@@ -673,7 +675,7 @@ export async function getBrandSeriesOptions(): Promise<
  * dữ liệu thật -> link luôn khớp slug (hết 404), thêm danh mục là tự hiện.
  * Nhận diện nhóm: ưu tiên cột `group`; dữ liệu cũ chưa gán group thì đoán theo slug.
  */
-export async function getNavCategories(): Promise<{
+async function getNavCategoriesRaw(): Promise<{
   brands: { slug: string; name: string }[];
   needs: { slug: string; name: string }[];
   others: { slug: string; name: string }[];
@@ -715,7 +717,7 @@ export async function getCategoryEdit(slug: string) {
   return prisma.category.findUnique({ where: { slug } });
 }
 
-export async function getBrandBySlug(slug: string): Promise<string | null> {
+async function getBrandBySlugRaw(slug: string): Promise<string | null> {
   if (NO_DB) {
     const p = MOCK_PRODUCTS.find((x) => x.brand.toLowerCase() === slug);
     return p?.brand ?? null;
@@ -728,7 +730,7 @@ export async function getBrandBySlug(slug: string): Promise<string | null> {
  * Toàn bộ thương hiệu THẬT (bảng Brand) — nguồn duy nhất cho mega-menu/nav, để
  * đồng bộ với trình "Quản lý thương hiệu" (thêm hãng là tự hiện ở menu).
  */
-export async function getBrands(): Promise<{ slug: string; name: string }[]> {
+async function getBrandsRaw(): Promise<{ slug: string; name: string }[]> {
   if (NO_DB) {
     const names = Array.from(new Set(MOCK_PRODUCTS.map((p) => p.brand)));
     return names
@@ -963,8 +965,11 @@ export async function getOrders() {
   return prisma.order.findMany({ orderBy: { createdAt: "desc" } });
 }
 
-/** Đơn mới nhất + số đơn đang chờ xử lý, cho khối "Cần xử lý" ở trang tổng quan admin. */
-export async function getDashboardOrders(limit = 5): Promise<{
+/**
+ * Các đơn CHƯA XONG (Mới + Đang xử lý) và số lượng, cho khối "Đơn cần xử lý" ở trang
+ * tổng quan admin. Đơn Hoàn thành / Đã huỷ không hiện ở đây nữa.
+ */
+export async function getDashboardOrders(limit = 8): Promise<{
   pending: number;
   recent: {
     id: string;
@@ -979,7 +984,7 @@ export async function getDashboardOrders(limit = 5): Promise<{
   if (NO_DB) {
     const now = Date.now();
     return {
-      pending: 2,
+      pending: 3,
       recent: [
         { id: "demo1", type: "purchase", name: "Nguyễn Văn An", total: 28990000, model: null, status: "new", createdAt: new Date(now - 12 * 60000) },
         { id: "demo2", type: "tradein", name: "Trần Thị Bích", total: null, model: "MacBook Air M1", status: "new", createdAt: new Date(now - 3 * 3600000) },
@@ -988,8 +993,9 @@ export async function getDashboardOrders(limit = 5): Promise<{
     };
   }
   const [pending, recent] = await Promise.all([
-    prisma.order.count({ where: { status: "new" } }),
+    prisma.order.count({ where: { status: { in: ["new", "processing"] } } }),
     prisma.order.findMany({
+      where: { status: { in: ["new", "processing"] } },
       orderBy: { createdAt: "desc" },
       take: limit,
       select: {
@@ -1223,7 +1229,7 @@ export async function getMonthlyViews(year: string): Promise<number[]> {
 }
 
 // --- Cài đặt ---
-export async function getSetting(key: string): Promise<string | null> {
+async function getSettingRaw(key: string): Promise<string | null> {
   // Xem local: bật sẵn Flash Sale để thấy đủ khối trên trang chủ.
   if (NO_DB)
     return ["flashSaleEnabled"].includes(key) ? "true" : null;
@@ -1400,4 +1406,30 @@ export async function getPcPartById(
 /** Đảm bảo type hợp lệ (dùng ở API). */
 export function validPcPartType(type: string): boolean {
   return PC_PART_TYPE_KEYS.includes(type);
+}
+
+// ---------------------------------------------------------------------------
+// CACHE dữ liệu ít đổi (60s) — dùng chung cho Header/Footer/trang sản phẩm/danh mục.
+// Trước đây mỗi lượt xem chạy ~20 truy vấn (mega-menu 3, nút nổi 3, footer ~8,
+// trang ~8...). Giờ chỉ chạy lại khi hết hạn HOẶC khi admin lưu (các API admin gọi
+// revalidateTag("site-data") nên sửa xong web cập nhật ngay).
+// ---------------------------------------------------------------------------
+const SITE_DATA = { revalidate: 60, tags: ["site-data"] };
+
+export const getCategories = unstable_cache(getCategoriesRaw, ["categories"], SITE_DATA);
+export const getNavCategories = unstable_cache(getNavCategoriesRaw, ["nav-categories"], SITE_DATA);
+export const getCategorySeo = unstable_cache(getCategorySeoRaw, ["category-seo"], SITE_DATA);
+export const getBrandBySlug = unstable_cache(getBrandBySlugRaw, ["brand-by-slug"], SITE_DATA);
+export const getBrands = unstable_cache(getBrandsRaw, ["brands"], SITE_DATA);
+export const getSetting = unstable_cache(getSettingRaw, ["setting"], SITE_DATA);
+
+// Máy liên quan chỉ cần slug + hãng -> cache theo 2 giá trị này (khỏi serialize cả object sản phẩm).
+const getRelatedCached = unstable_cache(
+  async (slug: string, brand: string, limit: number) =>
+    getRelatedProductsRaw({ slug, brand } as Product, limit),
+  ["related-products"],
+  SITE_DATA,
+);
+export async function getRelatedProducts(product: Product, limit = 4): Promise<Product[]> {
+  return getRelatedCached(product.slug, product.brand, limit);
 }

@@ -161,6 +161,7 @@ export async function PUT(req: Request) {
       });
     }
     revalidateTag("policy-links");
+    revalidateTag("site-data");
     revalidatePath(pagePath(id, policySlugMap));
     revalidatePath(`/chinh-sach/${oldPolicyPublicSlug}`);
     revalidatePath(`/chinh-sach/${id}`);
@@ -192,6 +193,7 @@ export async function DELETE(req: Request) {
     // đã xoá / không tồn tại -> coi như xong
   }
   revalidateTag("policy-links");
+    revalidateTag("site-data");
   revalidatePath(`/chinh-sach/${id}`);
   revalidatePath(`/trang/${id}`);
   return NextResponse.json({ ok: true });

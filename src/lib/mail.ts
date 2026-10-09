@@ -78,12 +78,52 @@ function srcAnhEmail(url: string | undefined): string {
   return `cid:${cidCuaAnh(url)}`;
 }
 
+/**
+ * Escape HTML cho MỌI chuỗi do khách nhập (tên, địa chỉ, ghi chú...). Nếu không, khách
+ * có thể chèn thẻ/link giả vào email — kể cả thư gửi tới địa chỉ email của người khác.
+ */
+function esc(v: unknown): string {
+  return String(v ?? "")
+    .replace(/&/g, "&amp;")
+    .replace(/</g, "&lt;")
+    .replace(/>/g, "&gt;")
+    .replace(/"/g, "&quot;")
+    .replace(/'/g, "&#39;");
+}
+
+/** Mã đơn + giờ đặt (đơn đã lưu DB thì mới có). Mã = 6 ký tự cuối id, khớp trang admin. */
+export interface OrderRef {
+  code: string;
+  at: Date;
+}
+
+function fmtOrderTime(d: Date): string {
+  return new Intl.DateTimeFormat("vi-VN", {
+    dateStyle: "short",
+    timeStyle: "short",
+    timeZone: "Asia/Ho_Chi_Minh",
+  }).format(d);
+}
+
+function orderRefCard(ref?: OrderRef): string {
+  if (!ref) return "";
+  return `
+  <table role="presentation" width="100%" cellpadding="0" cellspacing="0">
+    <tr><td style="padding:10px 28px 0">
+      <div style="background:${C.soft};border-radius:12px;padding:12px 16px;font-size:13.5px;color:${C.ink2}">
+        Mã đơn: <b style="color:${C.greenD};font-size:15px;letter-spacing:.5px">#${esc(ref.code)}</b>
+        <span style="color:${C.muted}"> · Đặt lúc ${esc(fmtOrderTime(ref.at))}</span>
+      </div>
+    </td></tr>
+  </table>`;
+}
+
 // 1 dòng thông tin (nhãn trái / giá trị phải).
 function row(label: string, value: string) {
   return `
     <tr>
       <td style="padding:9px 0;color:${C.muted};font-size:13px;white-space:nowrap;vertical-align:top">${label}</td>
-      <td style="padding:9px 0 9px 16px;color:${C.ink};font-size:14px;font-weight:600;text-align:right">${value}</td>
+      <td style="padding:9px 0 9px 16px;color:${C.ink};font-size:14px;font-weight:600;text-align:right">${esc(value)}</td>
     </tr>`;
 }
 
@@ -158,7 +198,7 @@ function itemRow(i: {
     <tr>
       <td style="padding:10px 0;width:56px;vertical-align:top">${pic}</td>
       <td style="padding:10px 0 10px 12px;vertical-align:top">
-        <div style="font-size:14px;font-weight:600;color:${C.ink};line-height:1.4">${i.name}</div>
+        <div style="font-size:14px;font-weight:600;color:${C.ink};line-height:1.4">${esc(i.name)}</div>
         <div style="font-size:12.5px;color:${C.muted};margin-top:3px">${i.qty} × ${formatPrice(i.price)}</div>
       </td>
       <td style="padding:10px 0;vertical-align:top;text-align:right;white-space:nowrap;font-size:14px;font-weight:700;color:${C.ink}">${formatPrice(i.price * i.qty)}</td>
@@ -237,53 +277,59 @@ function commitmentsCard(type: OrderInput["type"]): string {
 function buildAdminEmail(
   order: OrderInput,
   customerEmail?: string | null,
+  ref?: OrderRef,
 ): { subject: string; html: string } {
+  const tag = ref ? ` #${ref.code}` : "";
   if (order.type === "tradein") {
     return {
-      subject: `[Thu cũ đổi mới] ${order.name} - ${order.model}`,
+      subject: `[Thu cũ đổi mới${tag}] ${order.name} - ${order.model}`,
       html: shell(
         "Yêu cầu thu cũ đổi mới",
         "Có khách gửi yêu cầu thu cũ đổi mới",
-        tradeInfoCards(order),
+        orderRefCard(ref) + tradeInfoCards(order),
       ),
     };
   }
   return {
-    subject: `[Đơn hàng mới] ${order.name} - ${formatPrice(order.total)}`,
+    subject: `[Đơn hàng mới${tag}] ${order.name} - ${formatPrice(order.total)}`,
     html: shell(
       "Đơn hàng mới (COD)",
       "Có đơn hàng mới trên website",
-      purchaseCards(order, customerEmail),
+      orderRefCard(ref) + purchaseCards(order, customerEmail),
     ),
   };
 }
 
 // Email GỬI KHÁCH (xác nhận + cảm ơn).
-function buildCustomerEmail(order: OrderInput): { subject: string; html: string } {
+function buildCustomerEmail(
+  order: OrderInput,
+  ref?: OrderRef,
+): { subject: string; html: string } {
+  const tag = ref ? ` #${ref.code}` : "";
   const greeting = `
     <table role="presentation" width="100%" cellpadding="0" cellspacing="0">
       <tr><td style="padding:4px 28px 0;font-size:14px;color:${C.ink2};line-height:1.7">
-        Chào <b style="color:${C.ink}">${order.name}</b>,<br/>
+        Chào <b style="color:${C.ink}">${esc(order.name)}</b>,<br/>
         Cảm ơn Quý khách đã ${order.type === "purchase" ? "đặt hàng" : "gửi yêu cầu thu cũ đổi mới"} tại <b style="color:${C.greenD}">${SITE.name}</b>. Chúng tôi đã ghi nhận thông tin của Quý khách.
       </td></tr>
     </table>`;
 
   if (order.type === "tradein") {
     return {
-      subject: `Xác nhận yêu cầu thu cũ đổi mới - ${SITE.name}`,
+      subject: `Xác nhận yêu cầu thu cũ đổi mới${tag} - ${SITE.name}`,
       html: shell(
         "Đã nhận yêu cầu thu cũ đổi mới",
         "Cảm ơn Quý khách",
-        greeting + tradeInfoCards(order) + commitmentsCard("tradein"),
+        greeting + orderRefCard(ref) + tradeInfoCards(order) + commitmentsCard("tradein"),
       ),
     };
   }
   return {
-    subject: `Xác nhận đơn hàng - ${SITE.name}`,
+    subject: `Xác nhận đơn hàng${tag} - ${SITE.name}`,
     html: shell(
       "Đặt hàng thành công!",
       "Cảm ơn Quý khách đã mua hàng",
-      greeting + purchaseCards(order) + commitmentsCard("purchase"),
+      greeting + orderRefCard(ref) + purchaseCards(order) + commitmentsCard("purchase"),
     ),
   };
 }
@@ -336,10 +382,11 @@ async function sendMail(
 export async function sendOrderEmail(
   order: OrderInput,
   customerEmail?: string | null,
+  ref?: OrderRef,
 ): Promise<boolean> {
   const toCustomer =
     order.type === "tradein" ? order.email : (customerEmail ?? "").trim();
-  const admin = buildAdminEmail(order, toCustomer);
+  const admin = buildAdminEmail(order, toCustomer, ref);
 
   // Đọc ảnh sản phẩm để nhúng kèm thư (cả 2 thư dùng chung bộ đính kèm).
   const anhKem =
@@ -356,7 +403,7 @@ export async function sendOrderEmail(
     ),
     (async () => {
       if (!toCustomer) return false;
-      const cust = buildCustomerEmail(order);
+      const cust = buildCustomerEmail(order, ref);
       // Không để lỗi gửi khách làm hỏng kết quả chung.
       return sendMail(
         cust.subject,
@@ -396,12 +443,12 @@ export async function sendPasswordResetEmail(
 ): Promise<boolean> {
   const body = `
     <div style="font-size:14px;color:${C.ink2};line-height:1.7;padding:6px 0">
-      Chúng tôi nhận được yêu cầu đặt lại mật khẩu cho tài khoản <b style="color:${C.ink}">${to}</b>.
+      Chúng tôi nhận được yêu cầu đặt lại mật khẩu cho tài khoản <b style="color:${C.ink}">${esc(to)}</b>.
       Bấm nút bên dưới để đặt mật khẩu mới.
     </div>
     <table role="presentation" cellpadding="0" cellspacing="0" style="margin:14px 0 6px">
       <tr><td style="border-radius:10px;background:${C.green}">
-        <a href="${link}" style="display:inline-block;padding:12px 22px;font-size:14px;font-weight:700;color:#ffffff;text-decoration:none">
+        <a href="${esc(link)}" style="display:inline-block;padding:12px 22px;font-size:14px;font-weight:700;color:#ffffff;text-decoration:none">
           Đặt lại mật khẩu
         </a>
       </td></tr>
@@ -409,7 +456,7 @@ export async function sendPasswordResetEmail(
     <div style="font-size:12.5px;color:${C.muted};line-height:1.7;padding-top:6px">
       Link chỉ dùng được <b>1 lần</b> và hết hạn sau <b>${minutes} phút</b>.<br/>
       Nút không bấm được thì sao chép link này vào trình duyệt:<br/>
-      <span style="color:${C.ink2};word-break:break-all">${link}</span><br/><br/>
+      <span style="color:${C.ink2};word-break:break-all">${esc(link)}</span><br/><br/>
       Nếu Quý khách <b>không</b> yêu cầu đặt lại mật khẩu, hãy bỏ qua email này —
       mật khẩu hiện tại vẫn giữ nguyên.
     </div>`;
