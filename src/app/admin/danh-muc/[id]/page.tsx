@@ -47,7 +47,20 @@ const FIELDS: AdminField[] = [
   },
 
   { name: "hSeo", label: "Nội dung SEO (hiện dưới danh sách sản phẩm)", type: "heading" },
+  {
+    name: "metaTitle",
+    label: "Meta title (tiêu đề trên Google) — để trống sẽ tự tạo",
+    placeholder: "VD: Laptop Dell cũ giá rẻ tại Đà Nẵng, bảo hành 12 tháng",
+  },
   { name: "metaDescription", label: "Meta description (mô tả ngắn cho Google)", type: "textarea" },
+  {
+    name: "faq",
+    label: "Câu hỏi thường gặp (FAQ) — mỗi câu cách nhau 1 dòng trống: dòng đầu là câu hỏi, dòng dưới là trả lời",
+    type: "textarea",
+    full: true,
+    placeholder:
+      "Mua laptop cũ ở Đà Nẵng có được bảo hành không?\nCó, mọi máy bảo hành 12 tháng, 1 đổi 1 trong 15 ngày.\n\nCó hỗ trợ trả góp không?\nCó, trả góp 0% qua thẻ tín dụng.",
+  },
   {
     name: "seoContent",
     label: "Bài viết SEO — chèn từ khoá cần lên top",
@@ -83,7 +96,9 @@ export default async function AdminCategoryFormPage({
         image: category.image ?? "",
         coverImage: category.coverImage ?? "",
         sort: String(category.sort ?? ""),
+        metaTitle: category.metaTitle ?? "",
         metaDescription: category.metaDescription ?? "",
+        faq: category.faq ?? "",
         seoContent: category.seoContent ?? "",
       }
     : addingChild

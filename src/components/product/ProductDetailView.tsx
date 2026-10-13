@@ -36,29 +36,47 @@ import { richTextToText } from "@/lib/rich-text";
 import { formatPrice } from "@/lib/format";
 
 const SITE_URL =
-  process.env.NEXT_PUBLIC_SITE_URL ?? "https://laptopchinhnguyen.vn";
+  process.env.NEXT_PUBLIC_SITE_URL ?? "https://laptopchinhnguyen.com.vn";
+
+// Tình trạng hàng -> schema.org availability (phải khớp với nội dung trang).
+const SCHEMA_AVAILABILITY: Record<string, string> = {
+  con_hang: "https://schema.org/InStock",
+  het_hang: "https://schema.org/OutOfStock",
+  sap_ve: "https://schema.org/PreOrder",
+};
 
 // Metadata trang sản phẩm (route gốc /[slug] gọi khi slug là sản phẩm).
 export function buildProductMetadata(product: Product): Metadata {
   const used = (product.condition ?? "used") === "used";
-  const description = `${product.name} - ${product.cpu}, RAM ${product.ram}, ${product.storage}. Giá ${formatPrice(
-    product.price,
-  )} tại Laptop Chính Nguyễn (Đà Nẵng). ${
-    used
-      ? "Máy đã qua sử dụng, kiểm tra kỹ, bảo hành 12 tháng, dùng thử 15 ngày."
-      : "Máy mới nguyên seal, bảo hành chính hãng, giao nhanh toàn quốc."
-  }`;
+  const description =
+    product.metaDescription ||
+    `${product.name} - ${product.cpu}, RAM ${product.ram}, ${product.storage}. Giá ${formatPrice(
+      product.price,
+    )} tại Laptop Chính Nguyễn (Đà Nẵng). ${
+      used
+        ? "Máy đã qua sử dụng, kiểm tra kỹ, bảo hành 12 tháng, dùng thử 15 ngày."
+        : "Máy mới nguyên seal, bảo hành chính hãng, giao nhanh toàn quốc."
+    }`;
+  // Admin nhập Meta title thì dùng; không thì gắn từ khoá địa phương vào tên máy.
+  const title =
+    product.metaTitle || `${product.name} giá tốt tại Đà Nẵng`;
   const url = `${SITE_URL}/${product.slug}`;
   const ogImages = (product.images ?? []).map((i) => `${SITE_URL}${i}`);
   return {
-    title: product.name,
+    title,
     description,
     alternates: { canonical: url },
     openGraph: {
-      title: product.name,
+      title,
       description,
       url,
       type: "website",
+      ...(ogImages.length ? { images: ogImages } : {}),
+    },
+    twitter: {
+      card: "summary_large_image",
+      title,
+      description,
       ...(ogImages.length ? { images: ogImages } : {}),
     },
   };
@@ -138,16 +156,23 @@ export async function ProductDetailView({ slug }: { slug: string }) {
           ? { image: product.images.map((i) => `${SITE_URL}${i}`) }
           : {}),
         description: ldDescription,
-        aggregateRating: {
-          "@type": "AggregateRating",
-          ratingValue: product.rating,
-          reviewCount: product.reviewCount,
-        },
+        // Chỉ khai báo đánh giá khi có đánh giá thật — rating mặc định 5 với
+        // 0 lượt bị Google coi là dữ liệu không hợp lệ.
+        ...(product.reviewCount > 0
+          ? {
+              aggregateRating: {
+                "@type": "AggregateRating",
+                ratingValue: product.rating,
+                reviewCount: product.reviewCount,
+              },
+            }
+          : {}),
         offers: {
           "@type": "Offer",
           price: product.price,
           priceCurrency: "VND",
-          availability: "https://schema.org/InStock",
+          availability: SCHEMA_AVAILABILITY[product.stockStatus ?? "con_hang"] ??
+            "https://schema.org/InStock",
           itemCondition: isUsed
             ? "https://schema.org/UsedCondition"
             : "https://schema.org/NewCondition",

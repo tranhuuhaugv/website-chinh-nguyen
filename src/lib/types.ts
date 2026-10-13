@@ -83,6 +83,9 @@ export interface Product {
   series?: string;
   /** Danh mục "đứng riêng" (nhóm Khác): "pc" | "man-hinh" | "phu-kien"... */
   category?: string;
+  /** SEO admin tự nhập; trống -> trang chi tiết tự sinh title/description. */
+  metaTitle?: string;
+  metaDescription?: string;
 }
 
 export interface Category {

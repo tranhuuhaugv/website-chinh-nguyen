@@ -17,7 +17,7 @@ const inter = localFont({
 
 const SITE_NAME = "Laptop Chính Nguyễn";
 const SITE_URL =
-  process.env.NEXT_PUBLIC_SITE_URL ?? "https://laptopchinhnguyen.vn";
+  process.env.NEXT_PUBLIC_SITE_URL ?? "https://laptopchinhnguyen.com.vn";
 
 export const metadata: Metadata = {
   metadataBase: new URL(SITE_URL),

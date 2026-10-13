@@ -127,6 +127,8 @@ function toProduct(p: PrismaProductWithBrand): Product {
     needs: p.needs ?? [],
     series: p.series ?? undefined,
     category: p.category ?? undefined,
+    metaTitle: p.metaTitle ?? undefined,
+    metaDescription: p.metaDescription ?? undefined,
   };
 }
 
@@ -402,6 +404,15 @@ export async function getAllProductSlugs(): Promise<string[]> {
   return rows.map((r) => r.slug);
 }
 
+/** Sitemap: slug + ngày sửa thật (để Google biết trang nào vừa đổi). */
+export async function getSitemapProducts(): Promise<{ slug: string; updatedAt: Date | null }[]> {
+  if (NO_DB) return MOCK_PRODUCTS.map((p) => ({ slug: p.slug, updatedAt: null }));
+  return prisma.product.findMany({
+    where: { active: true },
+    select: { slug: true, updatedAt: true },
+  });
+}
+
 // Goi y san pham theo tu khoa (dung cho autocomplete o tim kiem).
 export async function searchProducts(q: string, limit = 6): Promise<Product[]> {
   const term = q.trim();
@@ -565,10 +576,28 @@ export async function getCategoryCounts(): Promise<Record<string, number>> {
   return counts;
 }
 
+/**
+ * FAQ danh mục (văn bản admin nhập) -> mảng {q, a}. Mỗi cặp cách nhau 1 dòng
+ * trống; dòng đầu = câu hỏi, các dòng còn lại = trả lời. Cặp thiếu trả lời bị bỏ.
+ */
+function parseFaq(raw: string | null | undefined): { q: string; a: string }[] {
+  if (!raw) return [];
+  return raw
+    .replace(/\r/g, "")
+    .split(/\n\s*\n/)
+    .map((block) => {
+      const [q, ...rest] = block.trim().split("\n");
+      return { q: (q ?? "").trim(), a: rest.join(" ").trim() };
+    })
+    .filter((x) => x.q && x.a);
+}
+
 /** Thông tin SEO của 1 danh mục cho trang khách. `seoContent` đã lọc XSS sẵn. */
 export interface CategorySeo {
   name: string;
+  metaTitle: string | null;
   metaDescription: string | null;
+  faq: { q: string; a: string }[];
   seoContent: string; // HTML đã sanitize; "" nếu chưa soạn
   group: string | null; // "dong-may" -> trang lọc SP theo series
   cover: string | null; // ảnh bìa NGANG riêng (admin tải lên) -> hero trang danh mục
@@ -580,7 +609,9 @@ async function getCategorySeoRaw(slug: string): Promise<CategorySeo | null> {
     return c
       ? {
           name: c.name,
+          metaTitle: null,
           metaDescription: null,
+          faq: [],
           seoContent: "",
           group: null,
           cover: null,
@@ -591,7 +622,9 @@ async function getCategorySeoRaw(slug: string): Promise<CategorySeo | null> {
   if (!c) return null;
   return {
     name: c.name,
+    metaTitle: c.metaTitle ?? null,
     metaDescription: c.metaDescription ?? null,
+    faq: parseFaq(c.faq),
     seoContent: c.seoContent ? sanitizeRichText(c.seoContent) : "",
     group: c.group ?? null,
     cover: c.coverImage ?? null,
@@ -789,6 +822,12 @@ export async function getAllPostSlugs(): Promise<string[]> {
   if (NO_DB) return BLOG_POSTS.map((p) => p.slug);
   const rows = await prisma.blogPost.findMany({ select: { slug: true } });
   return rows.map((r) => r.slug);
+}
+
+/** Sitemap: slug + ngày tạo bài viết. */
+export async function getSitemapPosts(): Promise<{ slug: string; createdAt: Date | null }[]> {
+  if (NO_DB) return BLOG_POSTS.map((p) => ({ slug: p.slug, createdAt: null }));
+  return prisma.blogPost.findMany({ select: { slug: true, createdAt: true } });
 }
 
 // --- Trang chính sách (nội dung sửa qua admin, ghi đè bản mặc định) ---

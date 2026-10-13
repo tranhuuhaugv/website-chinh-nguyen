@@ -21,7 +21,7 @@ import { bocMucLuc } from "@/lib/rich-text";
 export const revalidate = 3600;
 
 const SITE_URL =
-  process.env.NEXT_PUBLIC_SITE_URL ?? "https://laptopchinhnguyen.vn";
+  process.env.NEXT_PUBLIC_SITE_URL ?? "https://laptopchinhnguyen.com.vn";
 
 export async function generateStaticParams() {
   const slugs = await getAllPostSlugs();

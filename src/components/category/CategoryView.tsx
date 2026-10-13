@@ -24,20 +24,41 @@ import {
 import type { RawParams } from "@/lib/product-query";
 
 const SITE_URL =
-  process.env.NEXT_PUBLIC_SITE_URL ?? "https://laptopchinhnguyen.vn";
+  process.env.NEXT_PUBLIC_SITE_URL ?? "https://laptopchinhnguyen.com.vn";
 
 // Metadata trang danh mục/hãng (route gốc /[slug] gọi khi slug là danh mục).
+// Title mặc định nhắm từ khoá địa phương: trang hãng / dòng máy -> "Laptop Dell
+// cũ, mới giá tốt tại Đà Nẵng"; danh mục khác -> "<tên> giá tốt tại Đà Nẵng".
+function defaultCategoryTitle(name: string, isBrandLike: boolean): string {
+  if (!isBrandLike) return `${name} giá tốt tại Đà Nẵng`;
+  const prefix = /laptop|macbook/i.test(name) ? "" : "Laptop ";
+  return `${prefix}${name} cũ, mới giá tốt tại Đà Nẵng`;
+}
+
 export function buildCategoryMetadata(
   category: CategorySeo | null,
   slug: string,
+  brand: string | null,
+  searchParams: RawParams,
 ): Metadata {
-  const name = category?.name ?? "Danh mục sản phẩm";
+  const name = category?.name ?? brand ?? "Danh mục sản phẩm";
+  const isBrandLike = !!brand || normGroup(category?.group) === "dong-may";
+  const page = Number(searchParams.trang) > 1 ? Number(searchParams.trang) : 1;
+  const baseTitle = category?.metaTitle || defaultCategoryTitle(name, isBrandLike);
+  const title = page > 1 ? `${baseTitle} - Trang ${page}` : baseTitle;
+  const label =
+    isBrandLike && !/laptop|macbook/i.test(name) ? `laptop ${name}` : name;
+  const description =
+    category?.metaDescription ||
+    `Mua ${label} tại Đà Nẵng giá tốt ở Laptop Chính Nguyễn: máy mới & like new kiểm tra kỹ, bảo hành 12 tháng, hỗ trợ trả góp, giao nhanh toàn quốc.`;
+  // Trang 2+ tự canonical về chính nó (có ?trang=); bộ lọc/sắp xếp -> về trang gốc.
+  const url = `${SITE_URL}/${slug}${page > 1 ? `?trang=${page}` : ""}`;
   return {
-    title: name,
-    description:
-      category?.metaDescription ||
-      `Mua ${name} chính hãng, giá tốt tại Laptop Chính Nguyễn. Hỗ trợ trả góp, bảo hành 12 tháng, giao nhanh toàn quốc.`,
-    alternates: { canonical: `${SITE_URL}/${slug}` },
+    title,
+    description,
+    alternates: { canonical: url },
+    openGraph: { title, description, url, type: "website" },
+    twitter: { card: "summary_large_image", title, description },
   };
 }
 
@@ -110,8 +131,56 @@ export async function CategoryView({
 
   const brands = Array.from(new Set(baseProducts.map((p) => p.brand)));
 
+  // Structured data: breadcrumb + FAQPage (chỉ khi admin có nhập FAQ).
+  const faq = category?.faq ?? [];
+  const jsonLd = {
+    "@context": "https://schema.org",
+    "@graph": [
+      {
+        "@type": "BreadcrumbList",
+        itemListElement: [
+          { "@type": "ListItem", position: 1, name: "Trang chủ", item: SITE_URL },
+          ...(brandCrumb
+            ? [
+                {
+                  "@type": "ListItem",
+                  position: 2,
+                  name: brandCrumb.label,
+                  item: `${SITE_URL}${brandCrumb.href}`,
+                },
+              ]
+            : []),
+          {
+            "@type": "ListItem",
+            position: brandCrumb ? 3 : 2,
+            name,
+            item: `${SITE_URL}/${slug}`,
+          },
+        ],
+      },
+      ...(faq.length
+        ? [
+            {
+              "@type": "FAQPage",
+              mainEntity: faq.map((f) => ({
+                "@type": "Question",
+                name: f.q,
+                acceptedAnswer: { "@type": "Answer", text: f.a },
+              })),
+            },
+          ]
+        : []),
+    ],
+  };
+
   return (
     <CompareProvider>
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{
+          __html: JSON.stringify(jsonLd).replace(/</g, "\\u003c"),
+        }}
+      />
       <Header />
       <main className="py-6">
         <Container>
@@ -210,6 +279,28 @@ export async function CategoryView({
               className="rich-text mt-12 border-t border-line pt-8"
               dangerouslySetInnerHTML={{ __html: category.seoContent }}
             />
+          )}
+
+          {faq.length > 0 && (
+            <section className="mt-10 border-t border-line pt-8">
+              <h2 className="mb-4 text-[20px] font-bold text-ink">
+                Câu hỏi thường gặp
+              </h2>
+              <div className="divide-y divide-line rounded-2xl border border-line bg-white">
+                {faq.map((f) => (
+                  <details key={f.q} className="group px-5 py-4">
+                    <summary className="cursor-pointer list-none text-[15px] font-semibold text-ink marker:hidden">
+                      <span className="mr-2 text-green-d group-open:hidden">+</span>
+                      <span className="mr-2 hidden text-green-d group-open:inline">−</span>
+                      {f.q}
+                    </summary>
+                    <p className="mt-2 text-[14px] leading-relaxed text-ink-2">
+                      {f.a}
+                    </p>
+                  </details>
+                ))}
+              </div>
+            </section>
           )}
         </Container>
       </main>

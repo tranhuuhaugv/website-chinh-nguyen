@@ -1,49 +1,61 @@
 import type { MetadataRoute } from "next";
 import {
-  getAllProductSlugs,
-  getAllPostSlugs,
+  getSitemapProducts,
+  getSitemapPosts,
+  getBrands,
   getCategories,
   getPolicyLinks,
 } from "@/lib/data";
 
 const SITE_URL =
-  process.env.NEXT_PUBLIC_SITE_URL ?? "https://laptopchinhnguyen.vn";
+  process.env.NEXT_PUBLIC_SITE_URL ?? "https://laptopchinhnguyen.com.vn";
 
-// Tự sinh sitemap từ dữ liệu database (chỉ lấy slug).
+// Tự sinh sitemap từ dữ liệu database (chỉ lấy slug + ngày sửa).
+// lastModified dùng ngày THẬT (sản phẩm: updatedAt, bài viết: createdAt); trang
+// không có ngày thì bỏ trống — ghi "now" cho mọi URL khiến Google bỏ qua trường này.
 export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
-  const now = new Date();
-  const [productSlugs, categories, postSlugs, policyLinks] = await Promise.all([
-    getAllProductSlugs(),
+  const [products, categories, brands, posts, policyLinks] = await Promise.all([
+    getSitemapProducts(),
     getCategories(),
-    getAllPostSlugs(),
+    getBrands(),
+    getSitemapPosts(),
     getPolicyLinks(),
   ]);
 
-  const products = productSlugs.map((slug) => ({
-    url: `${SITE_URL}/${slug}`,
-    lastModified: now,
+  const productUrls = products.map((p) => ({
+    url: `${SITE_URL}/${p.slug}`,
+    ...(p.updatedAt ? { lastModified: p.updatedAt } : {}),
     changeFrequency: "daily" as const,
     priority: 0.8,
   }));
 
-  const categoryUrls = categories.map((c) => ({
-    url: `${SITE_URL}/${c.slug}`,
-    lastModified: now,
+  // Danh mục + trang hãng (hãng có thể chưa có bản ghi danh mục riêng).
+  const listSlugs = Array.from(
+    new Set([...categories.map((c) => c.slug), ...brands.map((b) => b.slug)]),
+  );
+  const categoryUrls = listSlugs.map((slug) => ({
+    url: `${SITE_URL}/${slug}`,
     changeFrequency: "weekly" as const,
     priority: 0.7,
   }));
 
-  const posts = postSlugs.map((slug) => ({
-    url: `${SITE_URL}/blog/${slug}`,
-    lastModified: now,
+  const postUrls = posts.map((p) => ({
+    url: `${SITE_URL}/blog/${p.slug}`,
+    ...(p.createdAt ? { lastModified: p.createdAt } : {}),
     changeFrequency: "monthly" as const,
     priority: 0.5,
   }));
 
+  // Trang chủ đổi theo sản phẩm mới nhất.
+  const latest = products.reduce<Date | null>(
+    (max, p) => (p.updatedAt && (!max || p.updatedAt > max) ? p.updatedAt : max),
+    null,
+  );
+
   return [
     {
       url: SITE_URL,
-      lastModified: now,
+      ...(latest ? { lastModified: latest } : {}),
       changeFrequency: "daily",
       priority: 1,
     },
@@ -58,12 +70,11 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
       ...policyLinks.map((l) => l.href),
     ].map((path) => ({
       url: `${SITE_URL}${path}`,
-      lastModified: now,
       changeFrequency: "monthly" as const,
       priority: 0.5,
     })),
     ...categoryUrls,
-    ...products,
-    ...posts,
+    ...productUrls,
+    ...postUrls,
   ];
 }

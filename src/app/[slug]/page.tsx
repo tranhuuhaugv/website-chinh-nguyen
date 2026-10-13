@@ -33,13 +33,19 @@ export async function generateStaticParams() {
 
 export async function generateMetadata({
   params,
+  searchParams,
 }: {
   params: { slug: string };
+  searchParams: RawParams;
 }): Promise<Metadata> {
   const slug = params.slug;
-  const category = await getCategorySeo(slug);
-  const brand = category ? null : await getBrandBySlug(slug);
-  if (category || brand) return buildCategoryMetadata(category, slug);
+  const [category, brand] = await Promise.all([
+    getCategorySeo(slug),
+    getBrandBySlug(slug),
+  ]);
+  if (category || brand) {
+    return buildCategoryMetadata(category, slug, brand, searchParams);
+  }
   const product = await getProductBySlug(slug);
   if (product) return buildProductMetadata(product);
   return { title: "Không tìm thấy trang" };

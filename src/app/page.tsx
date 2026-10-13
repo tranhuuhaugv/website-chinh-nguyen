@@ -8,6 +8,7 @@ import { FloatButtons } from "@/components/FloatButtons";
 import { Footer } from "@/components/Footer";
 import { Header } from "@/components/Header";
 import { HeroSlider } from "@/components/HeroSlider";
+import { HomeIntro } from "@/components/HomeIntro";
 import { SideBanners } from "@/components/SideBanners";
 import { TradeInCTA } from "@/components/TradeInCTA";
 import { CompareBar } from "@/components/compare/CompareBar";
@@ -30,34 +31,86 @@ import {
   getStores,
 } from "@/lib/data";
 import { SITE } from "@/lib/site";
+import type { Store } from "@/lib/types";
 
 // Trang chủ ít thay đổi -> ISR: build tĩnh, tự làm mới mỗi giờ (quy tắc CLAUDE.md).
 // Khi nối DB, các mảng mock ở trên sẽ thay bằng query Prisma (có select/pagination).
 export const revalidate = 3600;
 
 const SITE_URL =
-  process.env.NEXT_PUBLIC_SITE_URL ?? "https://laptopchinhnguyen.vn";
+  process.env.NEXT_PUBLIC_SITE_URL ?? "https://laptopchinhnguyen.com.vn";
 
-// Structured data cho trang chủ (Organization + WebSite có ô tìm kiếm).
-// Địa chỉ lấy từ danh sách cửa hàng thật (admin sửa được) -> luôn khớp SEO.
-function buildJsonLd(stores: { address: string; city: string }[]) {
+// Structured data cho trang chủ: Organization + từng cửa hàng là ComputerStore
+// (LocalBusiness — tín hiệu chính cho tìm kiếm "laptop Đà Nẵng") + WebSite có ô
+// tìm kiếm. Địa chỉ lấy từ danh sách cửa hàng thật (admin sửa được) -> luôn khớp.
+function buildJsonLd(stores: Store[]) {
   const cities = Array.from(new Set(stores.map((s) => s.city)));
+  const orgId = `${SITE_URL}/#organization`;
+  const sameAs = [SITE.facebook, SITE.zalo];
   return {
     "@context": "https://schema.org",
     "@graph": [
       {
         "@type": "Organization",
-        name: "Laptop Chính Nguyễn",
+        "@id": orgId,
+        name: SITE.name,
         url: SITE_URL,
+        logo: `${SITE_URL}/logo_V1.png`,
+        email: SITE.email,
+        telephone: SITE.hotlineTel,
         areaServed: cities.length ? cities : ["Đà Nẵng"],
-        telephone: SITE.hotline,
-        address: stores.map((s) => ({
+        sameAs,
+        contactPoint: [
+          {
+            "@type": "ContactPoint",
+            telephone: `+84${SITE.hotlineTel.slice(1)}`,
+            contactType: "sales",
+            areaServed: "VN",
+            availableLanguage: "Vietnamese",
+          },
+          {
+            "@type": "ContactPoint",
+            telephone: `+84${SITE.techTel.slice(1)}`,
+            contactType: "technical support",
+            areaServed: "VN",
+            availableLanguage: "Vietnamese",
+          },
+        ],
+      },
+      ...stores.map((s, i) => ({
+        "@type": "ComputerStore",
+        "@id": `${SITE_URL}/he-thong-cua-hang#store-${i + 1}`,
+        name: s.name,
+        url: `${SITE_URL}/he-thong-cua-hang`,
+        image: `${SITE_URL}/logo_V1.png`,
+        telephone: SITE.hotlineTel,
+        priceRange: "₫₫",
+        parentOrganization: { "@id": orgId },
+        address: {
           "@type": "PostalAddress",
           streetAddress: s.address,
           addressLocality: s.city,
+          addressRegion: s.city,
           addressCountry: "VN",
-        })),
-      },
+        },
+        // Giờ mở cửa: 8:00 - 21:00, cả tuần (SITE.hours).
+        openingHoursSpecification: {
+          "@type": "OpeningHoursSpecification",
+          dayOfWeek: [
+            "Monday",
+            "Tuesday",
+            "Wednesday",
+            "Thursday",
+            "Friday",
+            "Saturday",
+            "Sunday",
+          ],
+          opens: "08:00",
+          closes: "21:00",
+        },
+        ...(s.mapUrl ? { hasMap: s.mapUrl } : {}),
+        sameAs,
+      })),
       {
         "@type": "WebSite",
         name: "Laptop Chính Nguyễn",
@@ -121,7 +174,9 @@ export default async function HomePage() {
     <CompareProvider>
       <script
         type="application/ld+json"
-        dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
+        dangerouslySetInnerHTML={{
+          __html: JSON.stringify(jsonLd).replace(/</g, "\\u003c"),
+        }}
       />
       <Header />
       <SideBanners
@@ -148,6 +203,10 @@ export default async function HomePage() {
         <CustomerGallery photos={customerPhotos} />
         <TradeInCTA />
         <BlogSection posts={posts} />
+        <HomeIntro
+          categories={categories.filter((c) => c.group !== "dong-may")}
+          stores={stores}
+        />
       </main>
       <Footer />
       <FloatButtons />

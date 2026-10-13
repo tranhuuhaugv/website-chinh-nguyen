@@ -35,9 +35,7 @@ export function HeroSlider({
   return (
     <section className="py-4">
       <Container>
-        <h1 className="sr-only">
-          Laptop Chính Nguyễn — Laptop chính hãng giá tốt tại Đà Nẵng
-        </h1>
+        {/* H1 của trang chủ nằm ở khối HomeIntro (hiển thị thật, không ẩn). */}
 
         <div className="group relative aspect-[1200/380] w-full overflow-hidden rounded-2xl shadow-[0_16px_40px_rgba(11,94,44,0.18)] ring-1 ring-black/5 max-[900px]:aspect-[16/7]">
           {/* Track trượt ngang */}

@@ -16,7 +16,7 @@ import {
 import type { RawParams } from "@/lib/product-query";
 
 const SITE_URL =
-  process.env.NEXT_PUBLIC_SITE_URL ?? "https://laptopchinhnguyen.vn";
+  process.env.NEXT_PUBLIC_SITE_URL ?? "https://laptopchinhnguyen.com.vn";
 
 export const metadata: Metadata = {
   title: "Tất cả sản phẩm",

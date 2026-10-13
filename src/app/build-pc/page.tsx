@@ -8,7 +8,7 @@ import { PcBuilder } from "@/components/buildpc/PcBuilder";
 import { getPcParts } from "@/lib/data";
 
 const SITE_URL =
-  process.env.NEXT_PUBLIC_SITE_URL ?? "https://laptopchinhnguyen.vn";
+  process.env.NEXT_PUBLIC_SITE_URL ?? "https://laptopchinhnguyen.com.vn";
 
 export const metadata: Metadata = {
   title: "Build PC — Tự chọn cấu hình máy tính",

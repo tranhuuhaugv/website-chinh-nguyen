@@ -1,7 +1,7 @@
 import type { MetadataRoute } from "next";
 
 const SITE_URL =
-  process.env.NEXT_PUBLIC_SITE_URL ?? "https://laptopchinhnguyen.vn";
+  process.env.NEXT_PUBLIC_SITE_URL ?? "https://laptopchinhnguyen.com.vn";
 
 // Cho index trang sản phẩm/danh mục/blog; chặn giỏ hàng, thanh toán, tài khoản, admin.
 export default function robots(): MetadataRoute.Robots {
