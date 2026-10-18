@@ -29,6 +29,8 @@ export function MultiImageUpload({
   const [busy, setBusy] = useState(false);
   const [link, setLink] = useState("");
   const [linkError, setLinkError] = useState("");
+  const [fileError, setFileError] = useState("");
+  const nextId = useRef(0);
 
   // Kéo-thả sắp xếp thứ tự ảnh: giữ vị trí đang kéo + vị trí đang thả tới (viền xanh).
   const dragIndex = useRef<number | null>(null);
@@ -92,27 +94,39 @@ export function MultiImageUpload({
     // 1) Hiện ảnh NGAY từ file trong máy — không chờ nén + tải lên xong.
     //    (Trước đây await cả loạt rồi mới hiện -> chọn 7 ảnh là ngồi nhìn màn
     //    hình trống tới khi ảnh cuối tải xong.)
-    const items = list.map((file, i) => ({
-      id: Date.now() + i,
+    const items = list.map((file) => ({
+      id: ++nextId.current,
       localUrl: URL.createObjectURL(file),
       file,
     }));
     setDangTai((d) => [...d, ...items.map(({ id, localUrl }) => ({ id, localUrl }))]);
+    setFileError("");
 
-    // 2) Nén + tải ngầm. Ảnh nào xong trước thì vào thư viện trước.
-    await Promise.all(
-      items.map(async (it) => {
+    // 2) Tải LẦN LƯỢT từng ảnh (không gửi song song): gửi cùng lúc nhiều ảnh làm
+    //    VPS (RAM ít, sharp nén từng ảnh) quá tải -> vài ảnh lỗi và biến mất.
+    //    Lỗi thì thử lại 1 lần; vẫn lỗi thì báo cho admin, không nuốt im lặng.
+    let failed = 0;
+    let lastErr = "";
+    for (const it of items) {
+      try {
+        let url: string;
         try {
-          const { url } = await uploadImage(it.file, { raw });
-          commit([...imagesRef.current, url]);
+          ({ url } = await uploadImage(it.file, { raw }));
         } catch {
-          // Lỗi -> bỏ ảnh đó, các ảnh khác vẫn tiếp tục.
-        } finally {
-          setDangTai((d) => d.filter((x) => x.id !== it.id));
-          URL.revokeObjectURL(it.localUrl);
+          ({ url } = await uploadImage(it.file, { raw }));
         }
-      }),
-    );
+        commit([...imagesRef.current, url]);
+      } catch (e) {
+        failed++;
+        lastErr = (e as Error).message;
+      } finally {
+        setDangTai((d) => d.filter((x) => x.id !== it.id));
+        URL.revokeObjectURL(it.localUrl);
+      }
+    }
+    if (failed) {
+      setFileError(`${failed}/${items.length} ảnh tải lên thất bại: ${lastErr}`);
+    }
   }
 
   function removeAt(i: number) {
@@ -238,6 +252,10 @@ export function MultiImageUpload({
           <span className="text-[11.5px] font-medium text-ink-2">Thêm ảnh</span>
         </button>
       </div>
+
+      {fileError && (
+        <p className="mt-2 text-[12.5px] text-sale">{fileError}</p>
+      )}
 
       {images.length > 1 && (
         <p className="mt-2 text-[12px] text-ink-2">

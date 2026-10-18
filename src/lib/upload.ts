@@ -98,7 +98,19 @@ export async function uploadImage(
   if (opts?.raw) form.append("raw", "1");
 
   const res = await fetch("/api/upload", { method: "POST", body: form });
-  if (!res.ok) throw new Error("upload failed");
-  const json = (await res.json()) as { url: string };
+  const json = (await res.json().catch(() => null)) as
+    | { url?: string; error?: string }
+    | null;
+  if (!res.ok || !json?.url) {
+    const msg =
+      res.status === 401
+        ? "Phiên đăng nhập admin đã hết, hãy đăng nhập lại"
+        : res.status === 413 || json?.error === "too_large"
+          ? "Ảnh quá nặng"
+          : json?.error === "bad_type"
+            ? "Định dạng ảnh không hỗ trợ (dùng jpg/png/webp)"
+            : "Không tải được ảnh";
+    throw new Error(msg);
+  }
   return { url: json.url, demo: false };
 }
