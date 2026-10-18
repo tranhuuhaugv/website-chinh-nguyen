@@ -92,6 +92,11 @@ function variantSlugs(v: unknown, selfSlug?: string): string[] {
  * gửi lên, kể cả từ admin (tài khoản admin có thể bị chiếm).
  * Rỗng (CKEditor trống trả "<p>&nbsp;</p>") -> "" = coi như chưa soạn mô tả.
  */
+/** Ảnh trong mô tả còn là data:/blob: (chưa tải lên xong) -> lưu sẽ mất ảnh, từ chối. */
+function hasPendingImage(v: unknown): boolean {
+  return /<img[^>]+src=["'](?:data|blob):/i.test(str(v));
+}
+
 function richText(v: unknown): string {
   const s = sanitizeRichText(str(v));
   return richTextRong(s) ? "" : s;
@@ -234,6 +239,9 @@ export async function POST(req: Request) {
   if (!name) {
     return NextResponse.json({ ok: false, error: "missing_name" }, { status: 400 });
   }
+  if (hasPendingImage(body.description)) {
+    return NextResponse.json({ ok: false, error: "pending_image" }, { status: 400 });
+  }
   const slug = await uniqueSlug(slugify(str(body.slug) || name));
   const data = await buildData(body, slug);
   if (!data) {
@@ -259,6 +267,9 @@ export async function PUT(req: Request) {
   const id = str(body?.id);
   if (!body || !id) {
     return NextResponse.json({ ok: false, error: "missing_id" }, { status: 400 });
+  }
+  if (hasPendingImage(body.description)) {
+    return NextResponse.json({ ok: false, error: "pending_image" }, { status: 400 });
   }
   const current = await prisma.product.findUnique({ where: { id } });
   if (!current) {

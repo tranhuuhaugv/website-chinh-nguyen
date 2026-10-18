@@ -32,6 +32,7 @@ import {
 } from "ckeditor5";
 import coreTranslations from "ckeditor5/translations/vi.js";
 import "ckeditor5/ckeditor5.css";
+import { uploadImage } from "@/lib/upload";
 
 // Soạn nội dung (mô tả sản phẩm / bài viết) bằng CKEditor 5.
 // Lưu ra HTML. Controlled: nhận `value` (HTML) và báo thay đổi qua `onChange`.
@@ -47,21 +48,9 @@ class UploadToVps implements UploadAdapter {
     const file = await this.loader.file;
     if (!file) throw new Error("Không đọc được file");
 
-    const form = new FormData();
-    form.append("file", file);
-    const res = await fetch("/api/upload", { method: "POST", body: form });
-    const json = (await res.json().catch(() => null)) as
-      | { url?: string; error?: string }
-      | null;
-
-    if (!res.ok || !json?.url) {
-      const loi: Record<string, string> = {
-        bad_type: "Chỉ nhận ảnh jpg/png/webp/gif/avif",
-        too_large: "Ảnh nặng quá 8MB",
-      };
-      throw new Error(loi[json?.error ?? ""] ?? "Không tải được ảnh lên");
-    }
-    return { default: json.url };
+    // Nén ở client + báo lỗi tiếng Việt, dùng chung với các ô tải ảnh khác.
+    const { url } = await uploadImage(file);
+    return { default: url };
   }
 
   abort() {

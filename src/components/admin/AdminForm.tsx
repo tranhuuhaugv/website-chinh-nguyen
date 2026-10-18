@@ -98,6 +98,11 @@ export function AdminForm({
       return;
     }
     if (submitting.current) return; // đang gửi -> bỏ qua lần bấm thừa
+    // Ảnh trong ô soạn thảo chưa tải xong (còn là data:/blob:) -> lưu sẽ mất ảnh.
+    if (Object.values(values).some((v) => /<img[^>]+src=["'](?:data|blob):/i.test(v))) {
+      setError("Còn ảnh trong phần mô tả đang tải lên. Đợi ảnh tải xong (hết vòng xoay) rồi bấm Lưu lại.");
+      return;
+    }
     submitting.current = true;
     setBusy(true);
     setError("");
