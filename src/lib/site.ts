@@ -7,8 +7,8 @@ export const SITE = {
   techTel: "0934712144",
   email: "infor.laptopchinhnguyen@gmail.com",
   hours: "8:00 - 21:00 (T2 - CN)",
-  facebook: "https://www.facebook.com/ChinhNguyenLaptopUSA",
-  messenger: "https://m.me/ChinhNguyenLaptopUSA",
+  facebook: "https://www.facebook.com/laptopchinhnguyen.danang",
+  messenger: "https://m.me/laptopchinhnguyen.danang",
   zalo: "https://zalo.me/978295400221667062",
   stores: [
     {
