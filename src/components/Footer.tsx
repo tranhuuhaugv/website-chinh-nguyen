@@ -140,8 +140,8 @@ export async function Footer() {
           </div>
 
           <FooterList title="Về chúng tôi" links={ABOUT_LINKS} />
-          {/* Chỉ hiện 6 chính sách chính cho footer cân cột; trang còn lại vẫn có ở sitemap + thanh điều hướng trang chính sách. */}
-          <FooterList title="Chính sách" links={policyLinks.slice(0, 6)} />
+          {/* Chỉ hiện 4 chính sách chính cho footer cân cột; trang còn lại vẫn có ở sitemap + thanh điều hướng trang chính sách. */}
+          <FooterList title="Chính sách" links={policyLinks.slice(0, 4)} />
 
           <div>
             <h4 className="mb-3.5 text-[14.5px] font-semibold text-white">
