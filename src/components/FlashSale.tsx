@@ -11,7 +11,7 @@ import { ProductImage } from "./ProductImage";
 import { BoltIcon, FlameIcon } from "./icons";
 import { formatPrice } from "@/lib/format";
 
-// Ô "Flash Sale" nền tối kiểu sàn TMĐT, có 2 tab:
+// Ô "Flash Sale" nền đỏ-cam nổi bật kiểu sàn TMĐT, có 2 tab:
 //  - "Đang diễn ra": sản phẩm flash sale + thanh flame "Còn X/Y" + đồng hồ.
 //  - "Sản phẩm mới về": sản phẩm mới, tiêu đề đổi thành "SẢN PHẨM MỚI VỀ".
 // Client Component vì cần state chuyển tab.
@@ -50,7 +50,7 @@ function FlashCard({
     >
       {/* Nhãn giảm giá / mới về dạng ruy-băng góc trên trái */}
       {isFlash && discount > 0 && (
-        <span className="absolute left-0 top-3 z-[2] rounded-r-full bg-gradient-to-r from-[#FFB020] to-[#FF8A00] py-1 pl-2.5 pr-3 text-[12px] font-extrabold leading-none text-[#4A2400] shadow-md">
+        <span className="absolute left-0 top-3 z-[2] rounded-r-full bg-gradient-to-r from-[#FF3B30] to-[#D7261E] py-1 pl-2.5 pr-3 text-[12px] font-extrabold leading-none text-white shadow-md">
           -{discount}%
         </span>
       )}
@@ -178,12 +178,12 @@ export function FlashSale({
       className={`rounded-xl px-4 py-1.5 text-center transition ${
         active
           ? "bg-white shadow-md"
-          : "bg-white/10 hover:bg-white/20"
+          : "bg-black/15 ring-1 ring-white/25 hover:bg-black/25"
       }`}
     >
       <p
         className={`text-[13px] font-bold ${
-          active ? "text-[#0E5A66]" : "text-white"
+          active ? "text-[#D7261E]" : "text-white"
         }`}
       >
         {label}
@@ -202,12 +202,21 @@ export function FlashSale({
     <section className="py-[18px]">
       <Container>
         <div
-          className="relative overflow-hidden rounded-2xl bg-gradient-to-br from-[#0B3B4F] via-[#0E5A66] to-[#14808A] p-4 shadow-product max-[640px]:p-3"
+          className="relative overflow-hidden rounded-2xl bg-gradient-to-br from-[#B3001B] via-[#E4261C] to-[#FF7A1A] p-4 shadow-[0_12px_32px_rgba(215,38,30,0.35)] ring-2 ring-[#FFCF33]/70 max-[640px]:p-3"
         >
+          {/* Sọc chéo mờ kiểu sàn sale */}
+          <div
+            aria-hidden
+            className="pointer-events-none absolute inset-0 opacity-[0.07]"
+            style={{
+              backgroundImage:
+                "repeating-linear-gradient(135deg,#fff 0 2px,transparent 2px 14px)",
+            }}
+          />
           {/* Vệt sáng trang trí */}
           <div
             aria-hidden
-            className="pointer-events-none absolute -right-16 -top-20 h-64 w-64 rounded-full bg-[#FFB020]/15 blur-2xl"
+            className="pointer-events-none absolute -right-16 -top-20 h-64 w-64 rounded-full bg-[#FFE259]/30 blur-3xl"
           />
           <div
             aria-hidden
@@ -216,11 +225,11 @@ export function FlashSale({
           {/* Header: logo (tiêu đề đổi theo tab) + đồng hồ + tab */}
           <div className="relative mb-3 flex flex-wrap items-center gap-x-6 gap-y-3">
             <div className="flex items-center gap-1 max-[640px]:gap-0.5">
-              <BoltIcon className="sale-bolt h-6 w-6 -rotate-6 text-[#FFCF33]" />
-              <span className="sale-shimmer inline-block py-1 pr-1.5 text-[26px] font-black italic leading-[1.3] max-[640px]:text-[19px]">
+              <BoltIcon className="sale-bolt h-7 w-7 -rotate-6 text-[#FFCF33]" />
+              <span className="sale-shimmer inline-block py-1 pr-1.5 text-[30px] font-black italic leading-[1.3] tracking-tight drop-shadow-[0_2px_0_rgba(120,0,10,0.45)] max-[640px]:text-[21px]">
                 {title}
               </span>
-              <BoltIcon className="sale-bolt h-6 w-6 rotate-6 text-[#FFCF33]" />
+              <BoltIcon className="sale-bolt h-7 w-7 rotate-6 text-[#FFCF33]" />
             </div>
 
             {isFlash && <CountdownTimer endsAt={endsAt} />}

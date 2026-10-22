@@ -44,7 +44,7 @@ export function CountdownTimer({ endsAt }: { endsAt?: string }) {
   const ss = left === null ? "--" : pad(left % 60);
 
   const Box = ({ children }: { children: string }) => (
-    <div className="flex h-9 min-w-[36px] items-center justify-center rounded-lg bg-white px-1 text-[18px] font-extrabold tabular-nums text-[#0E5A66] shadow-md">
+    <div className="flex h-9 min-w-[36px] items-center justify-center rounded-lg bg-white px-1 text-[18px] font-extrabold tabular-nums text-[#D7261E] shadow-md">
       {children}
     </div>
   );
