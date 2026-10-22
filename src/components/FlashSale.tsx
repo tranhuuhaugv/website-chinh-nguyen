@@ -1,6 +1,3 @@
-"use client";
-
-import { useState } from "react";
 import Image from "next/image";
 import Link from "next/link";
 import type { Product } from "@/lib/types";
@@ -8,15 +5,21 @@ import { Container } from "./Container";
 import { CountdownTimer } from "./CountdownTimer";
 import { FlashSlider } from "./FlashSlider";
 import { ProductImage } from "./ProductImage";
-import { BoltIcon, FlameIcon } from "./icons";
-import { formatPrice } from "@/lib/format";
+import {
+  BoltIcon,
+  CpuIcon,
+  GpuIcon,
+  MonitorIcon,
+  RamIcon,
+  StorageIcon,
+} from "./icons";
+import { formatPrice, shortCpu, shortSize } from "@/lib/format";
 
-// Ô "Flash Sale" nền xanh dương đồng bộ banner kiểu sàn TMĐT, có 2 tab:
-//  - "Đang diễn ra": sản phẩm flash sale + thanh flame "Còn X/Y" + đồng hồ.
-//  - "Sản phẩm mới về": sản phẩm mới, tiêu đề đổi thành "SẢN PHẨM MỚI VỀ".
-// Client Component vì cần state chuyển tab.
+// Khối "Flash Sale" kiểu FPT Shop: đầu khối nền xanh (đồng bộ banner) + tiêu đề
+// lớn + đồng hồ; bên dưới là khung trắng chứa thẻ máy (ảnh + thông số bên phải,
+// "Còn X/Y suất", ô giá đỏ kèm tag % vàng).
 
-// Số suất còn / tổng cho thanh flame (minh hoạ — dữ liệu thật cần cột kho riêng).
+// Số suất còn / tổng (minh hoạ — dữ liệu thật cần cột kho riêng).
 const STOCK = [
   { remaining: 13, total: 20 },
   { remaining: 18, total: 20 },
@@ -28,89 +31,90 @@ const STOCK = [
 
 function FlashCard({
   product,
-  mode,
   stock,
 }: {
   product: Product;
-  mode: "flash" | "new";
   stock: { remaining: number; total: number };
 }) {
   const cover = product.images?.[0];
   const discount = product.oldPrice
     ? Math.round((1 - product.price / product.oldPrice) * 100)
     : 0;
-  const pct = Math.max(6, Math.round((stock.remaining / stock.total) * 100));
 
-  const isFlash = mode === "flash";
+  const specs = [
+    { Icon: CpuIcon, value: shortCpu(product.cpu) },
+    { Icon: RamIcon, value: product.ram && `RAM ${shortSize(product.ram)}` },
+    { Icon: StorageIcon, value: product.storage && `SSD ${shortSize(product.storage)}` },
+    { Icon: GpuIcon, value: product.gpu },
+    { Icon: MonitorIcon, value: product.screen },
+  ]
+    .filter((s): s is { Icon: typeof CpuIcon; value: string } =>
+      Boolean(s.value && s.value.trim()),
+    )
+    .slice(0, 3);
 
   return (
     <Link
       href={`/${product.slug}`}
-      className="group relative flex w-[196px] shrink-0 flex-col overflow-hidden rounded-2xl bg-white shadow-[0_6px_18px_rgba(0,0,0,0.18)] ring-1 ring-black/5 transition duration-200 hover:-translate-y-1 hover:shadow-[0_14px_28px_rgba(0,0,0,0.26)] max-[460px]:w-[156px]"
+      className="group flex w-[232px] shrink-0 flex-col border-r border-line px-3 py-2 last:border-r-0 max-[460px]:w-[180px] max-[460px]:px-2"
     >
-      {/* Nhãn giảm giá / mới về dạng ruy-băng góc trên trái */}
-      {isFlash && discount > 0 && (
-        <span className="absolute left-0 top-3 z-[2] rounded-r-full bg-gradient-to-r from-[#FF3B30] to-[#D7261E] py-1 pl-2.5 pr-3 text-[12px] font-extrabold leading-none text-white shadow-md">
-          -{discount}%
-        </span>
-      )}
-      {!isFlash && (
-        <span className="absolute left-0 top-3 z-[2] rounded-r-full bg-gradient-to-r from-[#0E5A66] to-[#14808A] py-1 pl-2.5 pr-3 text-[12px] font-extrabold leading-none text-white shadow-md">
-          MỚI VỀ
-        </span>
-      )}
-
-      {/* Ảnh trên nền sáng, phóng nhẹ khi hover */}
-      <div className="relative mx-2 mt-2 aspect-square overflow-hidden rounded-xl bg-gradient-to-b from-[#F6F7F9] to-white p-2.5">
-        {cover ? (
-          <Image
-            src={cover}
-            alt={product.name}
-            fill
-            sizes="196px"
-            className="object-contain p-1.5 transition duration-300 group-hover:scale-105"
-          />
-        ) : (
-          <ProductImage accent={product.accent} uid={product.slug} />
-        )}
-      </div>
-
-      <div className="flex flex-1 flex-col p-3 pt-2.5">
-        <p className="mb-2 line-clamp-2 min-h-[36px] text-[13px] font-semibold leading-snug text-ink">
-          {product.name}
-        </p>
-        <div className="flex flex-wrap items-baseline gap-x-2">
-          <span className="text-[17px] font-extrabold leading-tight text-sale">
-            {formatPrice(product.price)}
-          </span>
-          {product.oldPrice && (
-            <s className="text-[12px] text-muted">
-              {formatPrice(product.oldPrice)}
-            </s>
+      {/* Ảnh bên trái + thông số dọc bên phải */}
+      <div className="flex gap-2">
+        <div className="relative aspect-square w-[62%] shrink-0">
+          {cover ? (
+            <Image
+              src={cover}
+              alt={product.name}
+              fill
+              sizes="150px"
+              className="object-contain transition duration-300 group-hover:scale-105"
+            />
+          ) : (
+            <ProductImage accent={product.accent} uid={product.slug} />
           )}
         </div>
+        <ul className="flex min-w-0 flex-1 flex-col justify-center gap-2.5">
+          {specs.map(({ Icon, value }, i) => (
+            <li key={i} className="flex flex-col items-center gap-0.5 text-center">
+              <Icon className="h-4 w-4 text-muted" />
+              <span className="line-clamp-2 text-[10.5px] leading-tight text-ink-2">
+                {value}
+              </span>
+            </li>
+          ))}
+        </ul>
+      </div>
 
-        {isFlash ? (
-          // Thanh tiến độ: còn hàng / tổng
-          <div className="mt-3">
-            <p className="mb-1 flex items-center gap-1 text-[11.5px] font-bold text-[#C2570C]">
-              <FlameIcon className="h-3.5 w-3.5" />
-              Còn {stock.remaining}/{stock.total} suất
-            </p>
-            <div className="h-[7px] overflow-hidden rounded-full bg-[#FFEBC8]">
-              <div
-                className="h-full rounded-full bg-gradient-to-r from-[#FFC53D] to-[#FF8A00]"
-                style={{ width: `${pct}%` }}
-              />
-            </div>
-          </div>
-        ) : (
-          <div className="mt-3 flex items-center gap-1.5 text-[11.5px] font-semibold text-green-d">
-            <span className="h-1.5 w-1.5 rounded-full bg-green" />
-            Vừa lên kệ
+      {/* Còn X/Y suất */}
+      <span className="mt-2 inline-flex w-fit items-center gap-1 rounded-full bg-gradient-to-r from-[#FFE7A3] to-white py-0.5 pl-1 pr-3 text-[11.5px] font-bold text-ink">
+        <BoltIcon className="h-3.5 w-3.5 text-[#F59E0B]" />
+        Còn {stock.remaining}/{stock.total} suất
+      </span>
+
+      {/* Ô giá đỏ + tag % vàng */}
+      <div className="mt-1.5 flex overflow-hidden rounded-lg">
+        <div className="min-w-0 flex-1 bg-gradient-to-r from-[#D7261E] to-[#EF3B2D] px-2.5 py-1.5 text-white">
+          <p className="text-[17px] font-extrabold leading-tight max-[460px]:text-[15px]">
+            {formatPrice(product.price)}
+          </p>
+          {product.oldPrice ? (
+            <s className="text-[11.5px] text-white/75">
+              {formatPrice(product.oldPrice)}
+            </s>
+          ) : (
+            <span className="text-[11.5px]">&nbsp;</span>
+          )}
+        </div>
+        {discount > 0 && (
+          <div className="flex items-center bg-gradient-to-r from-[#FFE259] to-[#FFC53D] px-2.5 text-[15px] font-extrabold text-[#D7261E] max-[460px]:px-1.5 max-[460px]:text-[13px]">
+            -{discount}%
           </div>
         )}
       </div>
+
+      <p className="mt-2 line-clamp-2 min-h-[36px] text-[13px] font-medium leading-snug text-ink group-hover:text-[#0B3BB8]">
+        {product.name}
+      </p>
     </Link>
   );
 }
@@ -144,110 +148,46 @@ function khungGioLabel(start?: string, end?: string): string {
 
 export function FlashSale({
   flashProducts,
-  newProducts,
   startsAt,
   endsAt,
 }: {
   flashProducts: Product[];
-  newProducts: Product[];
   /** Giờ bắt đầu Flash Sale (giờ VN "YYYY-MM-DDTHH:mm"). Trống -> không giới hạn. */
   startsAt?: string;
   /** Giờ kết thúc Flash Sale (giờ VN "YYYY-MM-DDTHH:mm"). Trống -> hết ngày. */
   endsAt?: string;
 }) {
-  const [tab, setTab] = useState<"flash" | "new">("flash");
-  const hasNew = newProducts.length > 0;
-  const isFlash = tab === "flash" || !hasNew;
-  const products = isFlash ? flashProducts : newProducts;
-  const title = isFlash ? "FLASH SALE" : "SẢN PHẨM MỚI VỀ";
-
-  const Tab = ({
-    active,
-    onClick,
-    label,
-    sub,
-  }: {
-    active: boolean;
-    onClick: () => void;
-    label: string;
-    sub: string;
-  }) => (
-    <button
-      type="button"
-      onClick={onClick}
-      className={`rounded-xl px-4 py-1.5 text-center transition ${
-        active
-          ? "bg-white shadow-md"
-          : "bg-black/15 ring-1 ring-white/25 hover:bg-black/25"
-      }`}
-    >
-      <p
-        className={`text-[13px] font-bold ${
-          active ? "text-[#0B3BB8]" : "text-white"
-        }`}
-      >
-        {label}
-      </p>
-      <p
-        className={`text-[11.5px] font-medium ${
-          active ? "text-muted" : "text-white/75"
-        }`}
-      >
-        {sub}
-      </p>
-    </button>
-  );
-
   return (
     <section className="py-[18px]">
       <Container>
-        <div
-          className="relative overflow-hidden rounded-2xl bg-gradient-to-br from-[#071D6B] via-[#0B3BB8] to-[#1677F0] p-4 shadow-[0_10px_28px_rgba(7,29,107,0.25)] max-[640px]:p-3"
-        >
-          {/* Header: logo (tiêu đề đổi theo tab) + đồng hồ + tab */}
-          <div className="relative mb-3 flex flex-wrap items-center gap-x-6 gap-y-3">
-            <div className="flex items-center gap-1 max-[640px]:gap-0.5">
-              <BoltIcon className="sale-bolt h-7 w-7 -rotate-6 text-[#FFCF33]" />
-              <span className="sale-shimmer inline-block py-1 pr-1.5 text-[30px] font-black italic leading-[1.3] tracking-tight drop-shadow-[0_2px_0_rgba(3,15,70,0.6)] max-[640px]:text-[21px]">
-                {title}
+        <div className="overflow-hidden rounded-2xl bg-gradient-to-br from-[#071D6B] via-[#0B3BB8] to-[#1677F0] shadow-[0_10px_28px_rgba(7,29,107,0.25)]">
+          {/* Đầu khối: tiêu đề lớn + nhãn "Deal sốc" + đồng hồ */}
+          <div className="flex flex-wrap items-center justify-between gap-x-6 gap-y-3 px-5 pb-4 pt-4 max-[640px]:px-3">
+            <div className="flex flex-col items-start">
+              <div className="flex items-center gap-1">
+                <BoltIcon className="sale-bolt h-8 w-8 -rotate-6 text-[#FFCF33] max-[640px]:h-6 max-[640px]:w-6" />
+                <h2 className="sale-shimmer inline-block py-0.5 pr-2 text-[34px] font-black italic leading-[1.2] tracking-tight drop-shadow-[0_2px_0_rgba(3,15,70,0.6)] max-[640px]:text-[24px]">
+                  FLASH SALE
+                </h2>
+              </div>
+              <span className="-mt-0.5 ml-8 rounded-full bg-white px-3 py-0.5 text-[12.5px] font-extrabold text-[#0B3BB8] shadow-md max-[640px]:ml-6 max-[640px]:text-[11px]">
+                Deal sốc mỗi ngày · {khungGioLabel(startsAt, endsAt)}
               </span>
-              <BoltIcon className="sale-bolt h-7 w-7 rotate-6 text-[#FFCF33]" />
             </div>
-
-            {isFlash && <CountdownTimer endsAt={endsAt} />}
-
-            {/* Tab: Đang diễn ra / Sản phẩm mới về */}
-            <div className="ml-auto flex items-center gap-2 max-[900px]:ml-0">
-              <Tab
-                active={isFlash}
-                onClick={() => setTab("flash")}
-                label="Đang diễn ra"
-                sub={khungGioLabel(startsAt, endsAt)}
-              />
-              {hasNew && (
-                <Tab
-                  active={!isFlash}
-                  onClick={() => setTab("new")}
-                  label="Sản phẩm mới về"
-                  sub="Vừa cập nhật"
-                />
-              )}
-            </div>
+            <CountdownTimer endsAt={endsAt} />
           </div>
 
-          {/* Sản phẩm — 1 hàng cuộn ngang, có nút ‹ › + kéo chuột.
-              key={tab} để cuộn về đầu khi đổi tab. */}
-          <div className="relative">
-          <FlashSlider key={tab}>
-            {products.map((product, i) => (
-              <FlashCard
-                key={product.id}
-                product={product}
-                mode={isFlash ? "flash" : "new"}
-                stock={STOCK[i % STOCK.length]}
-              />
-            ))}
-          </FlashSlider>
+          {/* Khung trắng chứa thẻ máy */}
+          <div className="mx-3 mb-3 rounded-xl bg-white p-2 max-[640px]:mx-2 max-[640px]:mb-2">
+            <FlashSlider>
+              {flashProducts.map((product, i) => (
+                <FlashCard
+                  key={product.id}
+                  product={product}
+                  stock={STOCK[i % STOCK.length]}
+                />
+              ))}
+            </FlashSlider>
           </div>
         </div>
       </Container>

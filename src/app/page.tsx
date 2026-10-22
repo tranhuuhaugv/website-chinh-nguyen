@@ -24,7 +24,6 @@ import {
   getCustomerPhotos,
   getFeaturedProducts,
   getFlashSaleProducts,
-  getNewProducts,
   getHeroBanners,
   getSetting,
   getSideBanners,
@@ -134,7 +133,6 @@ export default async function HomePage() {
 
   const [
     flashProducts,
-    newProducts,
     featured,
     categories,
     posts,
@@ -147,7 +145,6 @@ export default async function HomePage() {
     flashEnd,
   ] = await Promise.all([
     getFlashSaleProducts(),
-    getNewProducts(),
     getFeaturedProducts(),
     getCategories(),
     getBlogPosts(),
@@ -192,7 +189,6 @@ export default async function HomePage() {
         {flashOn && (
           <FlashSale
             flashProducts={flashProducts}
-            newProducts={newProducts}
             startsAt={flashStart ?? ""}
             endsAt={flashEnd ?? ""}
           />
