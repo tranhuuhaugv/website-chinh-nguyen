@@ -11,7 +11,7 @@ import { ProductImage } from "./ProductImage";
 import { BoltIcon, FlameIcon } from "./icons";
 import { formatPrice } from "@/lib/format";
 
-// Ô "Flash Sale" nền đỏ-cam nổi bật kiểu sàn TMĐT, có 2 tab:
+// Ô "Flash Sale" nền xanh dương đồng bộ banner kiểu sàn TMĐT, có 2 tab:
 //  - "Đang diễn ra": sản phẩm flash sale + thanh flame "Còn X/Y" + đồng hồ.
 //  - "Sản phẩm mới về": sản phẩm mới, tiêu đề đổi thành "SẢN PHẨM MỚI VỀ".
 // Client Component vì cần state chuyển tab.
@@ -183,7 +183,7 @@ export function FlashSale({
     >
       <p
         className={`text-[13px] font-bold ${
-          active ? "text-[#D7261E]" : "text-white"
+          active ? "text-[#0B3BB8]" : "text-white"
         }`}
       >
         {label}
@@ -202,7 +202,7 @@ export function FlashSale({
     <section className="py-[18px]">
       <Container>
         <div
-          className="relative overflow-hidden rounded-2xl bg-gradient-to-br from-[#B3001B] via-[#E4261C] to-[#FF7A1A] p-4 shadow-[0_12px_32px_rgba(215,38,30,0.35)] ring-2 ring-[#FFCF33]/70 max-[640px]:p-3"
+          className="relative overflow-hidden rounded-2xl bg-gradient-to-br from-[#071D6B] via-[#0B3BB8] to-[#1677F0] p-4 shadow-[0_12px_32px_rgba(11,59,184,0.35)] ring-2 ring-[#5BC2FF]/60 max-[640px]:p-3"
         >
           {/* Sọc chéo mờ kiểu sàn sale */}
           <div
@@ -216,7 +216,7 @@ export function FlashSale({
           {/* Vệt sáng trang trí */}
           <div
             aria-hidden
-            className="pointer-events-none absolute -right-16 -top-20 h-64 w-64 rounded-full bg-[#FFE259]/30 blur-3xl"
+            className="pointer-events-none absolute -right-16 -top-20 h-64 w-64 rounded-full bg-[#38BDF8]/35 blur-3xl"
           />
           <div
             aria-hidden
@@ -226,7 +226,7 @@ export function FlashSale({
           <div className="relative mb-3 flex flex-wrap items-center gap-x-6 gap-y-3">
             <div className="flex items-center gap-1 max-[640px]:gap-0.5">
               <BoltIcon className="sale-bolt h-7 w-7 -rotate-6 text-[#FFCF33]" />
-              <span className="sale-shimmer inline-block py-1 pr-1.5 text-[30px] font-black italic leading-[1.3] tracking-tight drop-shadow-[0_2px_0_rgba(120,0,10,0.45)] max-[640px]:text-[21px]">
+              <span className="sale-shimmer inline-block py-1 pr-1.5 text-[30px] font-black italic leading-[1.3] tracking-tight drop-shadow-[0_2px_0_rgba(3,15,70,0.6)] max-[640px]:text-[21px]">
                 {title}
               </span>
               <BoltIcon className="sale-bolt h-7 w-7 rotate-6 text-[#FFCF33]" />
