@@ -6,6 +6,7 @@ import {
   getCategories,
   getPolicyLinks,
 } from "@/lib/data";
+import { HIDDEN_CATEGORY_SLUGS } from "@/lib/site";
 
 const SITE_URL =
   process.env.NEXT_PUBLIC_SITE_URL ?? "https://laptopchinhnguyen.com.vn";
@@ -31,7 +32,11 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
 
   // Danh mục + trang hãng (hãng có thể chưa có bản ghi danh mục riêng).
   const listSlugs = Array.from(
-    new Set([...categories.map((c) => c.slug), ...brands.map((b) => b.slug)]),
+    new Set(
+      [...categories.map((c) => c.slug), ...brands.map((b) => b.slug)].filter(
+        (s) => !HIDDEN_CATEGORY_SLUGS.has(s),
+      ),
+    ),
   );
   const categoryUrls = listSlugs.map((slug) => ({
     url: `${SITE_URL}/${slug}`,

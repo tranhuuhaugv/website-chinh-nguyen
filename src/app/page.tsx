@@ -30,7 +30,7 @@ import {
   getSideBanners,
   getStores,
 } from "@/lib/data";
-import { SITE } from "@/lib/site";
+import { HIDDEN_CATEGORY_SLUGS, SITE } from "@/lib/site";
 import type { Store } from "@/lib/types";
 
 // Trang chủ ít thay đổi -> ISR: build tĩnh, tự làm mới mỗi giờ (quy tắc CLAUDE.md).
@@ -167,6 +167,9 @@ export default async function HomePage() {
     .slice(0, 16);
   const trongLich =
     (!flashStart || nowVN >= flashStart) && (!flashEnd || nowVN < flashEnd);
+  const homeCategories = categories.filter(
+    (c) => c.group !== "dong-may" && !HIDDEN_CATEGORY_SLUGS.has(c.slug),
+  );
   const flashOn =
     flashSetting === "true" && trongLich && flashProducts.length > 0;
 
@@ -195,19 +198,16 @@ export default async function HomePage() {
           />
         )}
         {/* Ẩn "dòng máy" (Lenovo ThinkPad...) khỏi lưới trang chủ — chúng chỉ
-            là danh mục con SEO, truy cập từ trang hãng / sản phẩm. Ẩn luôn
-            "Màn hình" (shop tập trung laptop). */}
-        <CategoryGrid
-          categories={categories.filter(
-            (c) => c.group !== "dong-may" && c.slug !== "man-hinh",
-          )}
+            là danh mục con SEO, truy cập từ trang hãng / sản phẩm. Danh mục
+            tạm ẩn (Màn hình) cũng bỏ. */}
+        <CategoryGrid categories={homeCategories}
         />
         <FeaturedProducts products={featured} tabs={FEATURED_BRAND_TABS} />
         <CustomerGallery photos={customerPhotos} />
         <TradeInCTA />
         <BlogSection posts={posts} />
         <HomeIntro
-          categories={categories.filter((c) => c.group !== "dong-may")}
+          categories={homeCategories}
           stores={stores}
         />
       </main>

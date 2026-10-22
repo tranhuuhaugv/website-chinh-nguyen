@@ -17,7 +17,6 @@ const ITEMS: { label: string; href: string; icon: CategoryIconName }[] = [
   { label: "Máy trạm - Đồ họa", href: "/laptop-do-hoa", icon: "graphic" },
   { label: "Văn phòng", href: "/laptop-van-phong", icon: "office" },
   { label: "PC đồng bộ", href: "/pc", icon: "pc" },
-  { label: "Màn hình", href: "/man-hinh", icon: "monitor" },
   { label: "Phụ kiện", href: "/phu-kien", icon: "accessory" },
   { label: "Thu cũ đổi mới", href: "/thu-cu-doi-moi", icon: "used" },
 ];

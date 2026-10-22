@@ -14,7 +14,7 @@ import type {
   ProductCondition,
   Store,
 } from "./types";
-import { SITE } from "./site";
+import { HIDDEN_CATEGORY_SLUGS, SITE } from "./site";
 import { cleanMapUrl, extractEmbedSrc } from "./store-map";
 import { sanitizeRichText, toRichHtml } from "./rich-text";
 import { NEED_OPTIONS, matchesKeyword, normalizeText } from "./product-query";
@@ -719,7 +719,9 @@ async function getNavCategoriesRaw(): Promise<{
     getBrands(),
     getProductCategoryOptions(),
   ]);
-  const cats = allCats.filter((c) => normGroup(c.group) !== "dong-may");
+  const cats = allCats.filter(
+    (c) => normGroup(c.group) !== "dong-may" && !HIDDEN_CATEGORY_SLUGS.has(c.slug),
+  );
   const isBrandCat = (c: Category) => {
     const g = normGroup(c.group);
     return g === "thuong-hieu" || (!g && NAV_BRAND_SLUGS.has(c.slug));
@@ -731,7 +733,9 @@ async function getNavCategoriesRaw(): Promise<{
   // Cột "Hãng" = HÃNG THẬT (bảng Brand trừ brand ảo) + danh mục thuộc nhóm hãng
   // chưa có trong đó (PC, Màn hình, hoặc hãng 0 sản phẩm). Phụ kiện (nhóm Khác)
   // KHÔNG isBrandCat nên không lọt vào đây.
-  const realBrands = brands.filter((b) => !catSlugs.has(b.slug));
+  const realBrands = brands.filter(
+    (b) => !catSlugs.has(b.slug) && !HIDDEN_CATEGORY_SLUGS.has(b.slug),
+  );
   const haveSlug = new Set(realBrands.map((b) => b.slug));
   const extraBrandCats = cats
     .filter((c) => isBrandCat(c) && !haveSlug.has(c.slug))

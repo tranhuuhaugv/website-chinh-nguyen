@@ -1,4 +1,7 @@
 // Thông tin liên hệ / cửa hàng dùng chung toàn site.
+/** Danh mục tạm ẩn khỏi mọi chỗ điều hướng (menu, trang chủ, sitemap). */
+export const HIDDEN_CATEGORY_SLUGS = new Set(["man-hinh"]);
+
 export const SITE = {
   name: "Laptop Chính Nguyễn",
   hotline: "0926.122.144",
