@@ -202,26 +202,8 @@ export function FlashSale({
     <section className="py-[18px]">
       <Container>
         <div
-          className="relative overflow-hidden rounded-2xl bg-gradient-to-br from-[#071D6B] via-[#0B3BB8] to-[#1677F0] p-4 shadow-[0_12px_32px_rgba(11,59,184,0.35)] ring-2 ring-[#5BC2FF]/60 max-[640px]:p-3"
+          className="relative overflow-hidden rounded-2xl bg-gradient-to-br from-[#071D6B] via-[#0B3BB8] to-[#1677F0] p-4 shadow-[0_10px_28px_rgba(7,29,107,0.25)] max-[640px]:p-3"
         >
-          {/* Sọc chéo mờ kiểu sàn sale */}
-          <div
-            aria-hidden
-            className="pointer-events-none absolute inset-0 opacity-[0.07]"
-            style={{
-              backgroundImage:
-                "repeating-linear-gradient(135deg,#fff 0 2px,transparent 2px 14px)",
-            }}
-          />
-          {/* Vệt sáng trang trí */}
-          <div
-            aria-hidden
-            className="pointer-events-none absolute -right-16 -top-20 h-64 w-64 rounded-full bg-[#38BDF8]/35 blur-3xl"
-          />
-          <div
-            aria-hidden
-            className="pointer-events-none absolute -bottom-24 -left-10 h-56 w-56 rounded-full bg-black/10 blur-2xl"
-          />
           {/* Header: logo (tiêu đề đổi theo tab) + đồng hồ + tab */}
           <div className="relative mb-3 flex flex-wrap items-center gap-x-6 gap-y-3">
             <div className="flex items-center gap-1 max-[640px]:gap-0.5">

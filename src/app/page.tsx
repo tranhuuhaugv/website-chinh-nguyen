@@ -195,9 +195,12 @@ export default async function HomePage() {
           />
         )}
         {/* Ẩn "dòng máy" (Lenovo ThinkPad...) khỏi lưới trang chủ — chúng chỉ
-            là danh mục con SEO, truy cập từ trang hãng / sản phẩm. */}
+            là danh mục con SEO, truy cập từ trang hãng / sản phẩm. Ẩn luôn
+            "Màn hình" (shop tập trung laptop). */}
         <CategoryGrid
-          categories={categories.filter((c) => c.group !== "dong-may")}
+          categories={categories.filter(
+            (c) => c.group !== "dong-may" && c.slug !== "man-hinh",
+          )}
         />
         <FeaturedProducts products={featured} tabs={FEATURED_BRAND_TABS} />
         <CustomerGallery photos={customerPhotos} />
