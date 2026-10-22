@@ -41,7 +41,9 @@ export function ProductCard({
   const soldPct = progress
     ? Math.min(100, Math.round((progress.sold / progress.total) * 100))
     : 0;
-  const discount = product.oldPrice
+  // Hết hàng / sắp về: ẩn giá + % giảm, thay bằng nhãn tình trạng.
+  const available = (product.stockStatus ?? "con_hang") === "con_hang";
+  const discount = available && product.oldPrice
     ? Math.round((1 - product.price / product.oldPrice) * 100)
     : 0;
 
@@ -143,6 +145,11 @@ export function ProductCard({
         </div>
 
         <div className="mt-auto">
+          {!available ? (
+            <span className="text-[16px] font-bold text-muted">
+              {product.stockStatus === "sap_ve" ? "Sắp về hàng" : "Hết hàng"}
+            </span>
+          ) : (
           <div className="flex flex-wrap items-baseline gap-2">
             <span className="text-[19px] font-extrabold text-sale">
               {formatPrice(product.price)}
@@ -153,6 +160,7 @@ export function ProductCard({
               </span>
             )}
           </div>
+          )}
         </div>
 
         {progress && (

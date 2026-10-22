@@ -50,9 +50,11 @@ export function buildProductMetadata(product: Product): Metadata {
   const used = (product.condition ?? "used") === "used";
   const description =
     product.metaDescription ||
-    `${product.name} - ${product.cpu}, RAM ${product.ram}, ${product.storage}. Giá ${formatPrice(
-      product.price,
-    )} tại Laptop Chính Nguyễn (Đà Nẵng). ${
+    `${product.name} - ${product.cpu}, RAM ${product.ram}, ${product.storage}${
+      (product.stockStatus ?? "con_hang") === "con_hang"
+        ? `. Giá ${formatPrice(product.price)}`
+        : ""
+    } tại Laptop Chính Nguyễn (Đà Nẵng). ${
       used
         ? "Máy đã qua sử dụng, kiểm tra kỹ, bảo hành 12 tháng, dùng thử 15 ngày."
         : "Máy mới nguyên seal, bảo hành chính hãng, giao nhanh toàn quốc."
@@ -295,11 +297,17 @@ export async function ProductDetailView({ slug }: { slug: string }) {
                       : "bg-white"
                   }`}
                 >
-                  <ProductPrice oldPrice={product.oldPrice} discount={discount} />
+                  {available ? (
+                    <ProductPrice oldPrice={product.oldPrice} discount={discount} />
+                  ) : (
+                    <span className="text-[20px] font-bold text-muted">
+                      {stock.label}
+                    </span>
+                  )}
                 </div>
               </div>
 
-              <ProductOptionPicker />
+              {available && <ProductOptionPicker />}
 
               <ProductVariants options={variants} currentSlug={product.slug} />
 

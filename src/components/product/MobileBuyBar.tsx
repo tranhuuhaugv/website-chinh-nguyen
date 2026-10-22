@@ -44,10 +44,16 @@ export function MobileBuyBar({
     >
       <div className="flex items-center gap-3">
         <div className="min-w-0 leading-tight">
-          <div className="text-[16px] font-extrabold text-sale">
-            {formatPrice(shownPrice)}
-          </div>
-          {shownOld ? (
+          {available ? (
+            <div className="text-[16px] font-extrabold text-sale">
+              {formatPrice(shownPrice)}
+            </div>
+          ) : (
+            <div className="text-[15px] font-bold text-muted">
+              {unavailableLabel}
+            </div>
+          )}
+          {available && shownOld ? (
             <div className="text-[11px] text-muted line-through">
               {formatPrice(shownOld)}
             </div>

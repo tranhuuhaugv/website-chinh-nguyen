@@ -189,7 +189,7 @@ const FLASH_SALE_LIMIT = 8;
 export async function getFlashSaleProducts(): Promise<Product[]> {
   if (NO_DB) return FLASH_SALE_PRODUCTS;
   const rows = await prisma.product.findMany({
-    where: { isFlashSale: true, active: true },
+    where: { isFlashSale: true, active: true, stockStatus: "con_hang" },
     ...withBrand,
     orderBy: { sort: "asc" },
     take: FLASH_SALE_LIMIT,
@@ -202,6 +202,7 @@ const FEATURED_LIMIT = 24;
 
 /**
  * Khối "Sản phẩm nổi bật" trang chủ: máy admin TÍCH nổi bật.
+ * Chỉ lấy máy CÒN HÀNG (hết hàng / sắp về không lên các khối trang chủ).
  * Máy có thể VỪA nổi bật VỪA flash sale (hiện ở cả hai khối) -> KHÔNG loại
  * flash sale ở đây. Giới hạn FEATURED_LIMIT để không đổ hết máy xuống trình
  * duyệt (quy tắc "không query lấy tất cả" trong CLAUDE.md).
@@ -211,7 +212,7 @@ const FEATURED_LIMIT = 24;
 export async function getFeaturedProducts(): Promise<Product[]> {
   if (NO_DB) return FEATURED_PRODUCTS;
   const rows = await prisma.product.findMany({
-    where: { isFeatured: true, active: true },
+    where: { isFeatured: true, active: true, stockStatus: "con_hang" },
     ...withBrand,
     orderBy: { sort: "asc" },
     take: FEATURED_LIMIT,
@@ -221,7 +222,7 @@ export async function getFeaturedProducts(): Promise<Product[]> {
   }
 
   const duPhong = await prisma.product.findMany({
-    where: { active: true },
+    where: { active: true, stockStatus: "con_hang" },
     ...withBrand,
     orderBy: { createdAt: "desc" },
     take: FEATURED_LIMIT,
@@ -238,7 +239,7 @@ const NEW_LIMIT = 12;
 export async function getNewProducts(): Promise<Product[]> {
   if (NO_DB) return FEATURED_PRODUCTS;
   const rows = await prisma.product.findMany({
-    where: { isNew: true, active: true },
+    where: { isNew: true, active: true, stockStatus: "con_hang" },
     ...withBrand,
     orderBy: { createdAt: "desc" },
     take: NEW_LIMIT,
