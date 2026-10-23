@@ -300,8 +300,8 @@ export async function ProductDetailView({ slug }: { slug: string }) {
                   {available ? (
                     <ProductPrice oldPrice={product.oldPrice} discount={discount} />
                   ) : (
-                    <span className="text-[20px] font-bold text-muted">
-                      {stock.label}
+                    <span className="text-[24px] font-extrabold text-sale">
+                      Liên hệ
                     </span>
                   )}
                 </div>

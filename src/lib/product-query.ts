@@ -116,6 +116,11 @@ export function queryProducts(all: Product[], q: ProductQuery): QueryResult {
       break; // "moi": giữ nguyên thứ tự nguồn
   }
 
+  // Hết hàng / sắp về luôn dồn xuống cuối (sort ổn định -> giữ thứ tự trong từng nhóm).
+  const inStock = (p: (typeof list)[number]) =>
+    (p.stockStatus ?? "con_hang") === "con_hang" ? 0 : 1;
+  list = [...list].sort((a, b) => inStock(a) - inStock(b));
+
   const total = list.length;
   const totalPages = Math.max(1, Math.ceil(total / PER_PAGE));
   const page = Math.min(Math.max(1, q.page), totalPages);
