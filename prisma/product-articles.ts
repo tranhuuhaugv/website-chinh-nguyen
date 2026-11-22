@@ -16,7 +16,7 @@ export interface ProductArticle {
 }
 
 /** Bảng "Thông tin nhanh" — câu trả lời gọn cho người đọc lẫn công cụ AI. */
-function quickFacts(rows: [string, string][]): string {
+export function quickFacts(rows: [string, string][]): string {
   const body = rows
     .map(([k, v]) => `<tr><th>${k}</th><td>${v}</td></tr>`)
     .join("");
@@ -24,7 +24,7 @@ function quickFacts(rows: [string, string][]): string {
 }
 
 /** Khối địa chỉ + chính sách (dữ kiện giống nhau ở mọi bài, lời dẫn khác nhau). */
-function storeBlock(lead: string): string {
+export function storeBlock(lead: string): string {
   return `<p>${lead}</p>
 <ul>
 <li><strong>Chính Nguyễn – Đỗ Quang:</strong> 175/8 Đỗ Quang, TP. Đà Nẵng</li>

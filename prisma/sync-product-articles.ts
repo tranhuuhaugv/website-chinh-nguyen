@@ -1,5 +1,8 @@
 import { PrismaClient } from "@prisma/client";
-import { PRODUCT_ARTICLES } from "./product-articles";
+import { PRODUCT_ARTICLES as BASE_ARTICLES } from "./product-articles";
+import { PRODUCT_ARTICLES_2026_11 } from "./product-articles-2026-11";
+
+const PRODUCT_ARTICLES = [...BASE_ARTICLES, ...PRODUCT_ARTICLES_2026_11];
 
 // Đưa bài viết mô tả sản phẩm soạn trong code (product-articles.ts) lên DB.
 // - Khớp sản phẩm theo slug.
