@@ -15,14 +15,6 @@ export interface ProductArticle {
   contentHtml: string;
 }
 
-/** Bảng "Thông tin nhanh" — câu trả lời gọn cho người đọc lẫn công cụ AI. */
-export function quickFacts(rows: [string, string][]): string {
-  const body = rows
-    .map(([k, v]) => `<tr><th>${k}</th><td>${v}</td></tr>`)
-    .join("");
-  return `<figure class="table"><table><tbody>${body}</tbody></table></figure>`;
-}
-
 /** Khối địa chỉ + chính sách (dữ kiện giống nhau ở mọi bài, lời dẫn khác nhau). */
 export function storeBlock(lead: string): string {
   return `<p>${lead}</p>
@@ -43,17 +35,6 @@ export const PRODUCT_ARTICLES: ProductArticle[] = [
     metaDescription:
       "Acer Nitro 5 AN515-57 Core i5-11400H, RAM 16GB, SSD 512GB, RTX 3050 4GB, màn 15.6 inch FHD IPS 144Hz. Laptop gaming cũ Like New tại Đà Nẵng, bảo hành 12 tháng, dùng thử 15 ngày.",
     contentHtml: `<p><strong>Acer Nitro 5 AN515-57</strong> (Core i5-11400H, RAM 16GB, SSD 512GB, RTX 3050 4GB, màn hình 15.6 inch FHD IPS 144Hz) là mẫu <a href="/laptop-gaming">laptop gaming Đà Nẵng</a> dễ tiếp cận nhất cho sinh viên và người mới chơi game: đủ mạnh để chơi mượt các tựa eSports, làm đồ họa cơ bản, và có giá mềm hơn hẳn máy mới khi mua ở dạng <a href="/laptop-cu">laptop cũ</a> Like New. Tại Laptop Chính Nguyễn, máy được kiểm tra kỹ, bảo hành 12 tháng và cho dùng thử 15 ngày.</p>
-<h3>Thông tin nhanh về Acer Nitro 5 AN515-57</h3>
-${quickFacts([
-  ["CPU", "Intel Core i5-11400H – 6 nhân 12 luồng, tối đa 4.5 GHz"],
-  ["RAM", "16GB DDR4 3200MHz"],
-  ["Ổ cứng", "512GB SSD M.2 NVMe"],
-  ["Card đồ họa", "NVIDIA GeForce RTX 3050 4GB GDDR6"],
-  ["Màn hình", "15.6 inch FHD (1920 x 1080) IPS, 144Hz, chống chói"],
-  ["Pin / Trọng lượng", "4 cell / khoảng 2.2 kg"],
-  ["Cổng kết nối", "3 x USB 3.2, USB Type-C, HDMI, LAN RJ45, jack 3.5 mm"],
-  ["Tình trạng", "Máy đã qua sử dụng, Like New, bảo hành 12 tháng"],
-])}
 <h3>Thiết kế đậm chất gaming, tản nhiệt 2 quạt</h3>
 <p>Nitro 5 AN515-57 giữ ngôn ngữ thiết kế quen thuộc của dòng <a href="/acer-nitro">Acer Nitro</a>: thân máy đen góc cạnh, bàn phím full-size có phím số và đèn nền, khe tản nhiệt lớn ở hai bên và phía sau. Máy nặng khoảng 2.2 kg – không phải dạng mỏng nhẹ, nhưng vẫn bỏ vừa balo để mang đi học, đi làm hằng ngày. Hệ thống 2 quạt cùng phần mềm NitroSense cho phép chỉnh tốc độ quạt và chế độ hiệu năng theo nhu cầu, rất hữu ích khi chơi game lâu trong thời tiết nóng của Đà Nẵng.</p>
 <h3>Hiệu năng: Core i5-11400H và RTX 3050 làm được gì?</h3>
@@ -93,17 +74,6 @@ ${storeBlock("Bạn có thể đến xem và trải nghiệm trực tiếp Acer 
     metaDescription:
       "Acer Nitro Lite 16 NL16-71G Core i5-13420H, RAM 16GB DDR5, SSD 512GB, RTX 3050 6GB, màn 16 inch FHD+ 165Hz, nặng 1.95 kg. Laptop gaming mỏng nhẹ tại Đà Nẵng, bảo hành 12 tháng.",
     contentHtml: `<p><strong>Acer Nitro Lite 16 NL16-71G</strong> (Core i5-13420H, RAM 16GB DDR5, SSD 512GB, RTX 3050 6GB, màn hình 16 inch FHD+ 165Hz) là mẫu <a href="/laptop-gaming">laptop gaming</a> mỏng nhẹ đời mới của Acer: nặng chỉ khoảng 1.95 kg, vỏ trắng Pearl White thanh lịch, nhưng vẫn có card rời 6GB VRAM để chơi game và làm đồ họa. Đây là lựa chọn đáng cân nhắc nếu bạn đang tìm <strong>laptop Đà Nẵng</strong> vừa mang đi học, đi làm gọn gàng vừa giải trí tốt.</p>
-<h3>Thông tin nhanh về Acer Nitro Lite 16</h3>
-${quickFacts([
-  ["CPU", "Intel Core i5-13420H – 8 nhân 12 luồng, tối đa 4.6 GHz"],
-  ["RAM", "16GB DDR5 4800MHz (8GB onboard + 8GB khe rời)"],
-  ["Ổ cứng", "512GB SSD PCIe NVMe"],
-  ["Card đồ họa", "NVIDIA GeForce RTX 3050 6GB GDDR6"],
-  ["Màn hình", "16 inch FHD+ IPS, 165Hz, 300 nits, 45% NTSC"],
-  ["Pin / Trọng lượng", "53 Wh 3-cell / khoảng 1.95 kg"],
-  ["Màu sắc", "Pearl White (trắng ngọc trai)"],
-  ["Tình trạng", "Like New, bảo hành 12 tháng"],
-])}
 <h3>Thiết kế: máy gaming nhưng không "hầm hố"</h3>
 <p>Khác với vẻ ngoài góc cạnh của <a href="/acer-nitro">dòng Acer Nitro</a> truyền thống, Nitro Lite 16 đi theo hướng tối giản: vỏ trắng, đường nét phẳng, ít chi tiết gaming. Mang máy vào lớp học, văn phòng hay phòng họp đều hợp. Trọng lượng khoảng 1.95 kg là mức nhẹ so với một chiếc laptop 16 inch có card rời, dễ chịu cho người phải di chuyển nhiều.</p>
 <h3>Hiệu năng: Core i5-13420H và RTX 3050 6GB</h3>
@@ -143,17 +113,6 @@ ${storeBlock("Acer Nitro Lite 16 đang có tại Laptop Chính Nguyễn. Bạn n
     metaDescription:
       "Dell Inspiron 5510 Core i5-11320H, RAM 16GB, SSD 512GB, card MX450 2GB, màn 15.6 inch FHD IPS, nặng 1.75 kg. Laptop văn phòng cũ Like New tại Đà Nẵng, bảo hành 12 tháng.",
     contentHtml: `<p><strong>Dell Inspiron 5510</strong> (Core i5-11320H, RAM 16GB, SSD 512GB, card rời MX450 2GB, màn hình 15.6 inch FHD IPS) là mẫu <a href="/laptop-van-phong">laptop văn phòng</a> màn hình lớn mà vẫn gọn nhẹ, chỉ khoảng 1.75 kg. Máy dùng chip dòng H hiệu năng cao kèm card đồ họa rời, nên ngoài Word, Excel, họp online còn xử lý tốt Photoshop, thiết kế 2D và giải trí nhẹ. Đây là một trong những mẫu <strong>laptop cũ Đà Nẵng</strong> đáng mua cho sinh viên và dân văn phòng cần máy bền, dùng lâu dài.</p>
-<h3>Thông tin nhanh về Dell Inspiron 5510</h3>
-${quickFacts([
-  ["CPU", "Intel Core i5-11320H – 4 nhân 8 luồng"],
-  ["RAM", "16GB DDR4 3200MHz"],
-  ["Ổ cứng", "512GB SSD NVMe"],
-  ["Card đồ họa", "NVIDIA GeForce MX450 2GB"],
-  ["Màn hình", "15.6 inch FHD IPS, 300 nits"],
-  ["Pin / Trọng lượng", "41 Whr / khoảng 1.75 kg"],
-  ["Kết nối", "Wi-Fi 6, Bluetooth 5.1, 2 x USB-A 3.2, USB-C (Thunderbolt), HDMI, khe thẻ microSD, jack 3.5 mm"],
-  ["Tình trạng", "Like New, bảo hành 12 tháng"],
-])}
 <h3>Thiết kế mỏng gọn, màn hình 15.6 inch</h3>
 <p>Inspiron 5510 thuộc phân khúc trung cấp của <a href="/dell-inspiron">dòng Dell Inspiron</a>, thiết kế tối giản, viền màn hình mỏng, bàn phím full-size có phím số tiện cho nhập liệu kế toán, bảng tính. Với 1.75 kg, máy nhẹ hơn nhiều mẫu 15.6 inch cùng tầm, mang đi làm hằng ngày không quá nặng vai.</p>
 <h3>Hiệu năng: chip H kèm card rời MX450</h3>
@@ -193,17 +152,6 @@ ${storeBlock("Dell Inspiron 5510 Core i5-11320H đang có tại Laptop Chính Ng
     metaDescription:
       "HP Gaming Victus 15 Core i5-13420H, RAM 16GB, SSD 512GB, RTX 3050 6GB, màn 15.6 inch FHD IPS 144Hz, pin 70Wh. Laptop gaming cũ Like New tại Đà Nẵng, bảo hành 12 tháng.",
     contentHtml: `<p><strong>HP Gaming Victus 15</strong> (Core i5-13420H, RAM 16GB, SSD 512GB, RTX 3050 6GB, màn hình 15.6 inch FHD IPS 144Hz) là mẫu <a href="/laptop-gaming">laptop gaming Đà Nẵng</a> phổ thông có thiết kế gọn gàng, lịch sự và viên pin 70 Wh lớn trong phân khúc. Máy phù hợp với sinh viên, người đi làm muốn một chiếc laptop "hai trong một": ban ngày học tập, làm việc, buổi tối chơi game.</p>
-<h3>Thông tin nhanh về HP Victus 15</h3>
-${quickFacts([
-  ["CPU", "Intel Core i5-13420H – 8 nhân 12 luồng, tối đa 4.6 GHz"],
-  ["RAM", "16GB DDR4 3200MHz"],
-  ["Ổ cứng", "512GB SSD M.2 PCIe NVMe"],
-  ["Card đồ họa", "NVIDIA GeForce RTX 3050 6GB GDDR6"],
-  ["Màn hình", "15.6 inch FHD (1920 x 1080) IPS, 144Hz"],
-  ["Pin / Trọng lượng", "4 cell 70 Wh / khoảng 2.29 kg"],
-  ["Cổng kết nối", "2 x USB-A, 1 x USB-C, HDMI 2.1, LAN RJ45, khe thẻ SD, jack 3.5 mm"],
-  ["Tình trạng", "Like New, bảo hành 12 tháng"],
-])}
 <h3>Thiết kế tối giản, hợp cả đi học lẫn đi làm</h3>
 <p><a href="/hp-victus">HP Victus</a> là dòng gaming phổ thông của HP, nằm dưới dòng OMEN. Máy có vẻ ngoài phẳng, ít chi tiết trang trí, logo chữ V kín đáo – dùng trong lớp học hay văn phòng đều không bị "lạc quẻ". Bàn phím full-size có phím số, hành trình phím tốt cho cả gõ văn bản lẫn chơi game.</p>
 <h3>Hiệu năng: Core i5-13420H và RTX 3050 6GB</h3>
@@ -243,17 +191,6 @@ ${storeBlock("HP Gaming Victus 15 Core i5-13420H được bán tại Laptop Chí
     metaDescription:
       "HP ZBook Studio 15 G8 Core i7-11800H, card RTX 3070 8GB, màn 15.6 inch 4K 100% sRGB, vỏ nhôm chỉ 1.79 kg. Máy trạm đồ họa mỏng nhẹ tại Đà Nẵng, bảo hành 12 tháng.",
     contentHtml: `<p><strong>HP ZBook Studio 15 G8</strong> (Core i7-11800H, card RTX 3070 8GB, màn hình 15.6 inch 4K) là mẫu <a href="/may-tram">máy trạm</a> di động cao cấp của HP: hiệu năng ngang một chiếc laptop gaming mạnh nhưng nằm trong thân máy nhôm chỉ khoảng 1.79 kg, màn hình 4K phủ 100% sRGB. Với người làm kiến trúc, dựng phim, thiết kế đang tìm <strong>laptop đồ họa tại Đà Nẵng</strong>, đây là lựa chọn hiếm hoi vừa mạnh, vừa nhẹ, vừa có màn hình chuẩn màu.</p>
-<h3>Thông tin nhanh về HP ZBook Studio 15 G8</h3>
-${quickFacts([
-  ["CPU", "Intel Core i7-11800H – 8 nhân 16 luồng, tối đa 4.6 GHz"],
-  ["RAM / Ổ cứng", "DDR4 3200MHz, SSD M.2 PCIe – dung lượng theo phiên bản, xem bảng thông số kỹ thuật"],
-  ["Card đồ họa", "NVIDIA GeForce RTX 3070 8GB GDDR6"],
-  ["Màn hình", "15.6 inch 4K (3840 x 2160) IPS, 400 nits, 100% sRGB, chống chói, viền mỏng"],
-  ["Pin / Trọng lượng", "6 cell 83 Wh / khoảng 1.79 kg"],
-  ["Cổng kết nối", "2 x Thunderbolt 4, 1 x USB-A 3.1, HDMI 2.1, khe thẻ SD, jack 3.5 mm"],
-  ["Màu sắc", "Bạc"],
-  ["Tình trạng", "Like New, bảo hành 12 tháng"],
-])}
 <h3>Thiết kế: máy trạm mỏng nhẹ vỏ nhôm</h3>
 <p>Dòng <a href="/hp-zbook">HP ZBook</a> Studio được tạo ra cho người sáng tạo nội dung cần di chuyển. Thân máy nhôm nguyên khối màu bạc, hoàn thiện chắc chắn, mỏng và nhẹ hơn hẳn các máy trạm truyền thống thường nặng trên 2.5 kg. Mang máy đi công trình, gặp khách hàng hay làm việc ở quán cà phê đều gọn gàng, chuyên nghiệp.</p>
 <h3>Hiệu năng: Core i7-11800H và RTX 3070 8GB</h3>
@@ -293,17 +230,6 @@ ${storeBlock("Máy trạm HP ZBook Studio 15 G8 là dòng hiếm, số lượng 
     metaDescription:
       "Lenovo Legion R7000P Ryzen 7-6800H, RAM 16GB DDR5, SSD 512GB, RTX 3050 4GB, màn 15.6 inch 2K 165Hz 100% sRGB, pin 80Wh. Laptop gaming cũ tại Đà Nẵng, bảo hành 12 tháng.",
     contentHtml: `<p><strong>Lenovo Legion R7000P</strong> (Ryzen 7-6800H, RAM 16GB DDR5, SSD 512GB, RTX 3050 4GB, màn hình 15.6 inch 2K 165Hz) là mẫu <a href="/laptop-gaming">laptop gaming</a> có màn hình và tản nhiệt thuộc hàng tốt nhất phân khúc. Điểm khác biệt so với phần lớn máy cùng tầm giá là tấm nền 2K phủ 100% sRGB – chơi game đẹp mà làm đồ họa cũng chuẩn màu. Nếu bạn đang tìm <strong>laptop gaming cũ Đà Nẵng</strong> để dùng lâu dài cho cả game lẫn công việc, Legion R7000P rất đáng cân nhắc.</p>
-<h3>Thông tin nhanh về Lenovo Legion R7000P</h3>
-${quickFacts([
-  ["CPU", "AMD Ryzen 7-6800H – 8 nhân 16 luồng, tối đa 4.7 GHz"],
-  ["RAM", "16GB DDR5 4800MHz"],
-  ["Ổ cứng", "512GB SSD PCIe NVMe Gen 4"],
-  ["Card đồ họa", "NVIDIA GeForce RTX 3050 4GB GDDR6 (công suất 95W)"],
-  ["Màn hình", "15.6 inch 2K (2560 x 1440) IPS, 165Hz, 3 ms, 100% sRGB"],
-  ["Pin / Trọng lượng", "4 cell 80 Wh / khoảng 2.35 kg"],
-  ["Cổng kết nối", "3 x USB-A 3.2, 3 x USB-C, HDMI 2.1, LAN RJ45, jack 3.5 mm"],
-  ["Tình trạng", "Like New, bảo hành 12 tháng"],
-])}
 <h3>Legion R7000P là dòng máy gì?</h3>
 <p>R7000P là tên gọi phiên bản nội địa của dòng <a href="/lenovo-legion">Lenovo Legion</a> 5 màn hình 15.6 inch chạy chip AMD Ryzen. Phần cứng, chất lượng hoàn thiện, bàn phím và hệ thống tản nhiệt tương đương bản quốc tế, trong khi giá thường tốt hơn. Thiết kế Legion khá trung tính: mặt lưng phẳng, cổng kết nối dồn ra phía sau giúp bàn làm việc gọn dây, dùng ở văn phòng vẫn lịch sự.</p>
 <h3>Hiệu năng: Ryzen 7-6800H và RTX 3050 95W</h3>

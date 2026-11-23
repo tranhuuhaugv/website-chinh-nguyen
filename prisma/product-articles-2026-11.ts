@@ -1,6 +1,7 @@
 // Bài viết cho các sản phẩm thêm ngày 22/11/2026 (cùng quy ước với product-articles.ts).
-// Nội dung riêng từng máy; khung bài (bảng, cửa hàng, FAQ) dựng bằng build().
-import { quickFacts, storeBlock, type ProductArticle } from "./product-articles";
+// Nội dung riêng từng máy; khung bài (cửa hàng, FAQ) dựng bằng build(). Không chèn bảng thông số
+// vào bài: thông số đã có ở mục "Thông số kỹ thuật" của trang.
+import { storeBlock, type ProductArticle } from "./product-articles";
 
 interface Draft {
   slug: string;
@@ -8,7 +9,6 @@ interface Draft {
   desc: string; // metaDescription
   name: string; // tên ngắn dùng trong bài
   intro: string;
-  facts: [string, string][];
   sections: [string, string][]; // [tiêu đề h3, nội dung]
   fit: string[];
   avoid: string; // khi nào KHÔNG nên chọn + máy thay thế
@@ -38,7 +38,6 @@ const B = {
   tram: a("/blog/kinh-nghiem-chon-laptop-may-tram-do-hoa-render", "Kinh nghiệm chọn laptop máy trạm đồ họa, render"),
   shop: a("/blog/checklist-chon-cua-hang-laptop-da-nang-uy-tin", "Checklist chọn cửa hàng laptop Đà Nẵng uy tín"),
 };
-const USED: [string, string] = ["Tình trạng", "Máy đã qua sử dụng, được kiểm tra đầy đủ, bảo hành 12 tháng"];
 
 function build(d: Draft): ProductArticle {
   return {
@@ -46,8 +45,6 @@ function build(d: Draft): ProductArticle {
     metaTitle: d.title,
     metaDescription: d.desc,
     contentHtml: `<p>${d.intro}</p>
-<h3>Thông tin nhanh về ${d.name}</h3>
-${quickFacts([...d.facts, USED])}
 ${d.sections.map(([h, p]) => `<h3>${h}</h3>\n<p>${p}</p>`).join("\n")}
 <h3>${d.name} phù hợp với ai?</h3>
 <ul>
@@ -130,7 +127,6 @@ const DRAFTS: Draft[] = [
     title: "Legion 5 Y7000P i7-14650HX RTX 4060 Đà Nẵng",
     desc: "Lenovo Legion 5 Y7000P 16IRX9: Core i7-14650HX, RAM 16GB DDR5, RTX 4060 8GB, màn 16 inch 2.5K 165Hz 100% sRGB. Xem máy tại Laptop Chính Nguyễn Đà Nẵng, bảo hành 12 tháng.",
     intro: `<strong>Lenovo Legion 5 Y7000P 16IRX9</strong> là ${a("/laptop-gaming", "laptop gaming")} dùng Core i7-14650HX 16 nhân, RTX 4060 8GB và màn hình 16 inch 2.5K 165Hz. Máy hợp với người vừa chơi game AAA vừa dựng phim, làm 3D trên một thiết bị. Bạn có thể test trực tiếp tại Laptop Chính Nguyễn, cửa hàng ${home()} có 4 chi nhánh ở Đà Nẵng và Hội An.`,
-    facts: [["CPU", "Intel Core i7-14650HX – 16 nhân (8P + 8E), 24 luồng, tối đa 5.2 GHz, 30MB cache"], ["RAM", "16GB DDR5"], ["Ổ cứng", "512GB SSD M.2 PCIe NVMe"], ["Card đồ họa", "NVIDIA GeForce RTX 4060 8GB GDDR6"], ["Màn hình", "16 inch 2.5K (2560 x 1600) IPS, 165Hz, 500 nits, 100% sRGB, G-SYNC"], ["Pin / Trọng lượng", "80 Wh / 2.35 kg"], ["Cổng kết nối", "4 USB-A, 2 USB-C (1 cổng sạc PD 140W), HDMI, LAN RJ45, jack 3.5 mm"]],
     sections: [
       ["Core i7-14650HX mạnh ở điểm nào?", "Chip HX có 8 nhân hiệu năng cao lo khung hình trong game và 8 nhân tiết kiệm điện xử lý việc nền. Nhờ 24 luồng, máy không chỉ chơi game mà còn render, biên dịch code, chạy máy ảo rất thoải mái. Đây là khác biệt lớn nhất so với các máy RTX 4060 dùng chip dòng H."],
       ["RTX 4060 8GB trên màn hình 2.5K", "RTX 4060 hỗ trợ DLSS 3, nên game AAA có thể chơi ở 2.5K khi bật DLSS, còn game eSports chạy đủ khung hình để tận dụng 165Hz. Màn 500 nits, 100% sRGB, hỗ trợ Dolby Vision giúp chỉnh ảnh và dựng video đúng màu mà không cần mua màn rời ngay."],
@@ -147,7 +143,6 @@ const DRAFTS: Draft[] = [
     title: "Lenovo LOQ 15AHP10 RTX 5050 Đà Nẵng, BH 2027",
     desc: "Lenovo LOQ 15AHP10: Ryzen 7 250, RAM 16GB DDR5, RTX 5050 8GB TGP 100W, màn FHD 144Hz 100% sRGB, còn bảo hành hãng đến 7/2027. Có tại Laptop Chính Nguyễn Đà Nẵng.",
     intro: `<strong>Lenovo LOQ 15AHP10</strong> là lựa chọn dành cho ai muốn card đời mới RTX 5050 8GB mà máy vẫn còn bảo hành hãng đến tháng 7/2027. Cấu hình gồm Ryzen 7 250 8 nhân, RAM 16GB DDR5 và màn Full HD 144Hz chuẩn 100% sRGB. Nếu đang tìm laptop gaming gần như đời mới nhất tại một cửa hàng ${home()}, đây là máy nên xem trước.`,
-    facts: [["CPU", "AMD Ryzen 7 250 – 8 nhân 16 luồng, tối đa 5.1 GHz, NPU 16 TOPS"], ["RAM", "16GB DDR5 5600MHz"], ["Ổ cứng", "512GB SSD M.2 NVMe PCIe 4.0"], ["Card đồ họa", "NVIDIA GeForce RTX 5050 8GB GDDR7, TGP 100W"], ["Màn hình", "15.6 inch FHD IPS, 144Hz, 300 nits, 100% sRGB, G-SYNC"], ["Pin / Trọng lượng", "60 Wh, hỗ trợ sạc USB-C PD / từ 2.4 kg"], ["Bảo hành hãng", "Đến tháng 7/2027"]],
     sections: [
       ["RTX 5050 8GB có gì hơn RTX 4050?", "Hai điểm đáng giá nhất là 8GB VRAM GDDR7 (RTX 4050 laptop có 6GB) và hỗ trợ DLSS 4. VRAM nhiều hơn giúp game mới ít bị tụt khung khi tăng chất lượng texture. Card chạy ở TGP 100W nên khai thác được hiệu năng chứ không bị bóp điện như trên máy mỏng."],
       ["Ryzen 7 250: chơi game và làm việc", "8 nhân 16 luồng đủ sức vừa chơi vừa stream, dựng video, chạy code. NPU 16 TOPS xử lý các tác vụ AI nhẹ như làm mờ nền khi họp. NPU này chưa đạt mức 40 TOPS của chuẩn Copilot+ PC, vì vậy đừng mua máy chỉ vì các tính năng Copilot+."],
@@ -164,7 +159,6 @@ const DRAFTS: Draft[] = [
     title: "Dell XPS 9315 2in1 i5-1230U 3K Touch Đà Nẵng",
     desc: "Dell XPS 9315 2in1: Core i5-1230U, RAM 16GB, SSD 512GB, màn 13 inch 3K cảm ứng 500 nits, nặng 736g. Laptop kiêm máy tính bảng tại Laptop Chính Nguyễn Đà Nẵng.",
     intro: `<strong>Dell XPS 9315 2in1</strong> là máy tính bảng chạy Windows có thể gắn bàn phím thành laptop, màn 13 inch 3K cảm ứng, phần thân chỉ 736g. Máy dành cho người di chuyển nhiều, hay ghi chú bằng bút và trình bày với khách hàng. Đây là một trong những chiếc ${home()} nhẹ nhất bạn có thể cầm thử tại Laptop Chính Nguyễn.`,
-    facts: [["CPU", "Intel Core i5-1230U – 10 nhân 12 luồng, tối đa 4.4 GHz"], ["RAM", "16GB LPDDR4x 4267MHz"], ["Ổ cứng", "512GB SSD NVMe"], ["Màn hình", "13 inch 3K (2880 x 1920) cảm ứng, 500 nits, Gorilla Glass Victus, hỗ trợ bút"], ["Đồ họa", "Intel Iris Xe"], ["Pin / Trọng lượng", "49.5 Wh / 736g"], ["Cổng kết nối", "2 Thunderbolt 4 (sạc và xuất hình)"]],
     sections: [
       ["Thiết kế 2in1 dùng ra sao trong thực tế?", "Khác với bản XPS 13 thường, 9315 2in1 tách màn hình khỏi bàn phím. Khi họp bạn cầm như máy tính bảng để ký, vẽ, ghi chú; về bàn thì gắn bàn phím để gõ. Hãy hỏi kỹ bàn phím và bút có kèm theo máy hay không khi đặt mua."],
       ["Màn hình 3K tỷ lệ 3:2", "Độ phân giải 2880 x 1920 trên 13 inch cho chữ rất nét, tỷ lệ 3:2 hiển thị được nhiều dòng tài liệu hơn màn 16:9. Độ sáng 500 nits cùng lớp chống phản chiếu giúp dùng được ở quán cà phê nhiều ánh sáng."],
@@ -181,7 +175,6 @@ const DRAFTS: Draft[] = [
     title: "Dell XPS 15 9530 i7-13700H FHD+ Đà Nẵng",
     desc: "Dell XPS 15 9530: Core i7-13700H 14 nhân, RAM 16GB DDR5, SSD 512GB hoặc 1TB kèm Arc A370M, màn 15.6 inch FHD+ 500 nits. Xem máy tại Laptop Chính Nguyễn Đà Nẵng.",
     intro: `<strong>Dell XPS 15 9530</strong> dùng Core i7-13700H 14 nhân, RAM 16GB DDR5 và màn 15.6 inch FHD+ 500 nits trong thân máy 1.92 kg. Máy có hai cấu hình: 16GB/512GB cho công việc văn phòng, lập trình và bản 16GB/1TB có card rời Intel Arc A370M cho đồ họa. Đây là dòng cao cấp đáng cân nhắc khi mua ${home()} để dùng lâu dài.`,
-    facts: [["CPU", "Intel Core i7-13700H – 14 nhân 20 luồng, tối đa 5.0 GHz"], ["RAM", "16GB DDR5 4800MHz"], ["Ổ cứng", "512GB SSD NVMe (tùy chọn 1TB)"], ["Đồ họa", "Bản 1TB có card rời Intel Arc A370M 4GB"], ["Màn hình", "15.6 inch FHD+ (1920 x 1200), chống chói, 500 nits"], ["Trọng lượng", "1.92 kg"], ["Cổng kết nối", "2 Thunderbolt 4, 1 USB-C 3.2 Gen 2, khe thẻ SD, jack 3.5 mm"]],
     sections: [
       ["Nên chọn bản 512GB hay bản 1TB Arc A370M?", "Nếu công việc là code, Excel lớn, phân tích dữ liệu, bản 512GB đã đủ vì sức mạnh nằm ở CPU. Nếu dựng video hoặc dùng phần mềm tận dụng GPU, bản 1TB có Arc A370M 4GB đáng thêm tiền, lại rộng chỗ cho file dự án."],
       ["Màn hình FHD+ không cảm ứng", "Tỷ lệ 16:10 cho thêm không gian dọc so với Full HD thường. Bản FHD+ chống chói sáng 500 nits ít phản chiếu và thường tiết kiệm pin hơn các bản màn độ phân giải cao của cùng dòng."],
@@ -198,7 +191,6 @@ const DRAFTS: Draft[] = [
     title: "Dell XPS 15 9570 4K Touch GTX 1050Ti Đà Nẵng",
     desc: "Dell XPS 15 9570 cũ: Core i7-8750H, RAM 16GB, SSD 256GB, GTX 1050Ti 4GB, màn 15.6 inch 4K cảm ứng. Giá dễ tiếp cận, bảo hành 12 tháng tại Laptop Chính Nguyễn Đà Nẵng.",
     intro: `<strong>Dell XPS 15 9570</strong> là cách tiết kiệm nhất để có một chiếc XPS 15 màn 4K cảm ứng: Core i7-8750H 6 nhân, RAM 16GB, card rời GTX 1050Ti 4GB. Máy hợp người chỉnh ảnh, thiết kế 2D và cần màn hình đẹp trong ngân sách tầm trung. Bạn có thể xem trực tiếp tại cửa hàng ${a("/laptop-cu", "laptop cũ")} Chính Nguyễn, địa chỉ mua ${home()} có bảo hành 12 tháng.`,
-    facts: [["CPU", "Intel Core i7-8750H – 6 nhân 12 luồng, tối đa 4.1 GHz"], ["RAM", "16GB DDR4 2666MHz"], ["Ổ cứng", "256GB SSD M.2 NVMe"], ["Card đồ họa", "Intel UHD 630 + NVIDIA GTX 1050Ti 4GB"], ["Màn hình", "15.6 inch 4K cảm ứng"], ["Trọng lượng", "Khoảng 1.8 kg"], ["Cổng kết nối", "USB-C Thunderbolt 3, HDMI 2.0, khe thẻ SD, jack 3.5 mm"]],
     sections: [
       ["Vì sao XPS 15 9570 vẫn đáng mua?", "Khung nhôm, viền màn mỏng và bàn phím thoải mái khiến máy không lỗi thời về ngoại hình. Màn 4K cho chữ và ảnh rất chi tiết, điều mà máy mới cùng giá hiếm có."],
       ["Hiệu năng 6 nhân và GTX 1050Ti", "i7-8750H đủ cho Photoshop, Lightroom, Illustrator, lập trình web và dựng video Full HD. GTX 1050Ti 4GB chơi được Liên Minh, Valorant, FC Online khi hạ độ phân giải xuống Full HD."],
@@ -215,7 +207,6 @@ const DRAFTS: Draft[] = [
     title: "Dell Inspiron 14 5420 24GB RTX 2050 Đà Nẵng",
     desc: "Dell Inspiron 14 5420: Core i5-1240P, RAM 24GB, SSD 512GB, RTX 2050, màn 14 inch, nặng 1.5 kg. Laptop mỏng nhẹ có card rời tại Laptop Chính Nguyễn Đà Nẵng.",
     intro: `<strong>Dell Inspiron 14 5420</strong> bản này gây chú ý ở RAM 24GB và card rời RTX 2050 trong thân máy 14 inch khoảng 1.5 kg. Máy dành cho người học thiết kế, lập trình và làm việc đa nhiệm nhưng không muốn mang laptop gaming nặng. Máy đang có tại Laptop Chính Nguyễn, địa chỉ ${home()} cho dùng thử 15 ngày.`,
-    facts: [["CPU", "Intel Core i5-1240P – 12 nhân 16 luồng, tối đa 4.4 GHz"], ["RAM", "24GB DDR4"], ["Ổ cứng", "512GB SSD"], ["Card đồ họa", "NVIDIA GeForce RTX 2050 + Intel Iris Xe"], ["Màn hình", "14 inch FHD"], ["Pin / Trọng lượng", "4 cell / khoảng 1.5 kg"], ["Cổng kết nối", "2 USB-A 3.2, 1 USB-C (sạc, xuất hình), HDMI 1.4, khe thẻ SD, jack 3.5 mm"]],
     sections: [
       ["RAM 24GB giải quyết vấn đề gì?", "24GB giúp mở cùng lúc trình duyệt hàng chục tab, Figma, Photoshop, máy ảo hoặc Docker mà ít phải đọc ghi ra ổ cứng. Đây là mức dư dùng trong vài năm tới cho công việc văn phòng nặng."],
       ["RTX 2050 trên máy 14 inch", "RTX 2050 hỗ trợ tăng tốc NVENC, CUDA và DLSS, nên dựng video Full HD, chạy phần mềm đồ họa nhanh hơn rõ so với đồ họa tích hợp. Về game, card hợp eSports và game nhẹ, không phải để chơi AAA thiết lập cao."],
@@ -232,7 +223,6 @@ const DRAFTS: Draft[] = [
     title: "Dell Inspiron 5490 i5-10210U MX250 Đà Nẵng",
     desc: "Dell Inspiron 5490 cũ: Core i5-10210U, RAM 8GB, SSD 256GB, card rời MX250, màn 14 inch FHD, có thêm bản i7 và bản 15.6 inch. Bảo hành 12 tháng tại Chính Nguyễn Đà Nẵng.",
     intro: `<strong>Dell Inspiron 5490</strong> là laptop học tập, văn phòng 14 inch có card rời MX250, giá quanh 10 triệu. Ngoài bản Core i5-10210U, trang này còn cho chọn bản Core i7-10510U 14 inch và bản i5 màn 15.6 inch. Đây là gợi ý hợp túi tiền cho sinh viên tìm ${home("laptop tại Đà Nẵng")} có bảo hành rõ ràng.`,
-    facts: [["CPU", "Intel Core i5-10210U – 4 nhân 8 luồng, tối đa 4.2 GHz"], ["RAM", "8GB"], ["Ổ cứng", "256GB SSD NVMe"], ["Card đồ họa", "NVIDIA GeForce MX250"], ["Màn hình", "14 inch FHD (có tùy chọn 15.6 inch)"], ["Tùy chọn khác", "Core i7-10510U 14 inch; Core i5-10210U 15.6 inch"]],
     sections: [
       ["Ba cấu hình khác nhau thế nào?", "Bản i5 14 inch gọn và rẻ nhất. Bản i5 15.6 inch dành cho người làm bảng tính, thích màn rộng. Bản i7-10510U có xung nhịp cao hơn, nhưng vẫn 4 nhân 8 luồng nên chênh lệch khi làm văn phòng không quá lớn; hãy ưu tiên kích thước và tình trạng máy. Cần card MX250 thì nhớ xác nhận lại với từng bản."],
       ["MX250 làm được việc gì?", "MX250 nhỉnh hơn đồ họa tích hợp cùng đời khi chỉnh ảnh, dùng AutoCAD 2D, chơi Liên Minh hoặc FC Online ở thiết lập vừa. Card không có nhân RT/Tensor nên không hỗ trợ DLSS."],
@@ -249,7 +239,6 @@ const DRAFTS: Draft[] = [
     title: "Dell Latitude 5320 i5-1135G7 16GB cũ Đà Nẵng",
     desc: "Dell Latitude 5320 cũ: Core i5-1135G7, RAM 16GB, SSD 256GB, màn 13.3 inch FHD IPS, Thunderbolt 4. Laptop doanh nhân gọn nhẹ, bảo hành 12 tháng tại Laptop Chính Nguyễn Đà Nẵng.",
     intro: `<strong>Dell Latitude 5320</strong> là ${a("/laptop-van-phong", "laptop văn phòng")} 13.3 inch có sẵn RAM 16GB, thứ rất đáng giá trong tầm dưới 10 triệu. Core i5-1135G7 cùng Thunderbolt 4 giúp máy xử lý công việc hằng ngày nhanh và cắm màn hình rời gọn bằng một dây. Nếu cần ${home()} nhỏ gọn để đi làm, đây là mẫu cân bằng giữa giá và độ bền.`,
-    facts: [["CPU", "Intel Core i5-1135G7 – 4 nhân 8 luồng, tối đa 4.2 GHz"], ["RAM", "16GB LPDDR4 (hàn trên bo mạch)"], ["Ổ cứng", "256GB SSD NVMe"], ["Đồ họa", "Intel Iris Xe"], ["Màn hình", "13.3 inch FHD IPS chống chói, 250 nits"], ["Pin / Trọng lượng", "4 cell / khoảng 1.4 kg"], ["Cổng kết nối", "2 USB-C Thunderbolt 4, 2 USB-A 3.2, HDMI 2.0, microSD, jack 3.5 mm"]],
     sections: [
       ["RAM 16GB hàn liền: ưu hay nhược?", "RAM hàn nghĩa là không thêm được về sau, nhưng bản này đã có sẵn 16GB nên dùng văn phòng nhiều năm không lo thiếu. So với máy 8GB không nâng cấp được, đây là khác biệt rất đáng tiền."],
       ["Hiệu năng văn phòng", "i5-1135G7 xử lý mượt Excel, trình duyệt nhiều tab, Teams, Zoom, phần mềm kế toán. Iris Xe chỉnh ảnh cơ bản và xem video 4K tốt. Máy không hợp game 3D nặng."],
@@ -266,7 +255,6 @@ const DRAFTS: Draft[] = [
     title: "Dell Latitude 5420 Core i5, i7 cũ Đà Nẵng",
     desc: "Dell Latitude 5420 cũ 14 inch FHD, Core i5 thế hệ 11 hoặc i7-1185G7, RAM 8GB, SSD 256GB, Thunderbolt 4, pin 63Wh. Bảo hành 12 tháng tại Laptop Chính Nguyễn Đà Nẵng.",
     intro: `<strong>Dell Latitude 5420</strong> là laptop văn phòng 14 inch dùng Core i5 thế hệ 11, có tùy chọn Core i7-1185G7, dưới 10 triệu đồng. Máy thuộc dòng doanh nghiệp nên bàn phím tốt, khung chắc và nhiều cổng kết nối. Với ngân sách này khi tìm ${home()}, Latitude 5420 là lựa chọn an toàn cho công việc và học tập.`,
-    facts: [["CPU", "Intel Core i5 thế hệ 11 – 4 nhân 8 luồng (tùy chọn i7-1185G7)"], ["RAM", "8GB DDR4"], ["Ổ cứng", "256GB SSD M.2"], ["Đồ họa", "Intel Iris Xe"], ["Màn hình", "14 inch FHD (1920 x 1080)"], ["Pin / Trọng lượng", "63 Wh / khoảng 1.37 kg"], ["Cổng kết nối", "2 Thunderbolt 4, 2 USB-A 3.2, HDMI 2.0"]],
     sections: [
       ["Bản i5 hay i7-1185G7?", "Hai chip cùng 4 nhân 8 luồng. i7-1185G7 có xung và bộ nhớ đệm cao hơn, hợp người xử lý bảng tính lớn hoặc biên dịch code. Soạn thảo, kế toán, học online thì bản i5 đã thoải mái."],
       ["RAM khe cắm, dễ nâng cấp", "Khác với Latitude 5320 RAM hàn, 5420 dùng RAM DDR4 khe cắm. Bạn mua bản 8GB trước, khi cần thì lên 16GB hoặc hơn với chi phí hợp lý."],
@@ -283,7 +271,6 @@ const DRAFTS: Draft[] = [
     title: "Dell Latitude 5430 i5-1245U cũ tại Đà Nẵng",
     desc: "Dell Latitude 5430 cũ: Core i5-1245U 10 nhân, RAM 8GB nâng cấp được, SSD 256GB, màn 14 inch FHD IPS, pin 58Wh, 1.36kg. Bảo hành 12 tháng tại Chính Nguyễn Đà Nẵng.",
     intro: `<strong>Dell Latitude 5430</strong> là một trong những laptop rẻ nhất có chip Intel thế hệ 12 với 10 nhân 12 luồng. Cấu hình gồm Core i5-1245U, RAM 8GB nâng cấp được, SSD 256GB và màn 14 inch FHD IPS. Người tìm ${home()} dưới 10 triệu để làm việc lâu dài nên đặt máy này lên đầu danh sách.`,
-    facts: [["CPU", "Intel Core i5-1245U – 10 nhân 12 luồng, tối đa 4.4 GHz, 12MB cache"], ["RAM", "8GB DDR4 3200MHz, có thể nâng cấp"], ["Ổ cứng", "256GB SSD M.2 NVMe"], ["Đồ họa", "Intel Iris Xe"], ["Màn hình", "14 inch FHD IPS chống chói"], ["Pin / Trọng lượng", "58 Wh, sạc USB-C / khoảng 1.36 kg"], ["Cổng kết nối", "USB-A, USB-C Thunderbolt 4, HDMI, LAN RJ45, jack 3.5 mm"]],
     sections: [
       ["Thế hệ 12 khác gì thế hệ 11?", "i5-1245U kết hợp 2 nhân hiệu năng và 8 nhân tiết kiệm điện. Khi bạn họp Teams, mở Chrome và Excel cùng lúc, nhiều nhân hơn giúp máy ít khựng hơn chip 4 nhân thế hệ 11 ở cùng mức giá."],
       ["Làm việc cả ngày", "Pin 58 Wh và chip dòng U tiết kiệm điện phù hợp người hay di chuyển. Thời lượng thực tế tùy độ chai pin từng máy, bạn có thể yêu cầu cửa hàng cho xem báo cáo pin trước khi nhận."],
@@ -300,7 +287,6 @@ const DRAFTS: Draft[] = [
     title: "Dell Latitude 5440 i7-1355U, i7-1370P Đà Nẵng",
     desc: "Dell Latitude 5440: Core i7-1355U hoặc i7-1370P, RAM 16GB, SSD 512GB, màn 14 inch FHD IPS, pin 54Wh. Laptop văn phòng Intel thế hệ 13 tại Laptop Chính Nguyễn Đà Nẵng.",
     intro: `<strong>Dell Latitude 5440</strong> là laptop doanh nhân 14 inch dùng Intel thế hệ 13, RAM 16GB và SSD 512GB, có hai lựa chọn chip: Core i7-1355U tiết kiệm điện hoặc Core i7-1370P 14 nhân. Máy dành cho dân văn phòng chuyên nghiệp, lập trình viên cần ${home()} mạnh mà vẫn nhẹ 1.36 kg.`,
-    facts: [["CPU", "Intel Core i7-1355U – 10 nhân 12 luồng, tối đa 5.0 GHz (tùy chọn i7-1370P)"], ["RAM", "16GB"], ["Ổ cứng", "512GB SSD M.2 PCIe NVMe"], ["Đồ họa", "Intel Iris Xe"], ["Màn hình", "14 inch FHD IPS chống chói, 250 nits"], ["Pin / Trọng lượng", "3 cell 54 Wh / khoảng 1.36 kg"], ["Cổng kết nối", "Thunderbolt 4, 2 USB-A 3.2, HDMI 2.0, LAN RJ45, jack 3.5 mm"]],
     sections: [
       ["i7-1355U và i7-1370P: chọn chip nào?", "i7-1355U (10 nhân, dòng U) mát và tiết kiệm pin, hợp công việc văn phòng di động. i7-1370P (14 nhân 20 luồng, dòng P) nhanh hơn rõ khi biên dịch code, xử lý dữ liệu, chạy máy ảo; đổi lại máy ấm và tốn pin hơn khi tải cao. Chênh lệch giữa hai bản không lớn nên lập trình viên nên cân nhắc bản P."],
       ["16GB RAM và SSD 512GB", "Cấu hình này dùng ngay, không cần nâng cấp gì. Mở vài chục tab Chrome, Excel nhiều sheet và Teams cùng lúc vẫn ổn. Riêng bản i7-1370P nên hỏi rõ dung lượng SSD của từng chiếc."],
@@ -317,7 +303,6 @@ const DRAFTS: Draft[] = [
     title: "Dell Latitude 7320 Detachable i5, i7 Đà Nẵng",
     desc: "Dell Latitude 7320 Detachable: Core i5-1140G7 hoặc i7-1180G7, RAM 16GB, SSD 256GB, màn 13 inch cảm ứng 500 nits, 2 Thunderbolt 4. Máy tính bảng Windows tại Đà Nẵng.",
     intro: `<strong>Dell Latitude 7320 Detachable</strong> là máy tính bảng Windows cho doanh nghiệp, tháo rời được bàn phím, màn 13 inch cảm ứng sáng 500 nits. Máy có RAM 16GB và chọn được chip Core i5-1140G7 hoặc i7-1180G7. Ai đang tìm ${home()} dạng tablet để ký tài liệu, khảo sát, trình bày sẽ thấy máy thực dụng hơn iPad nhờ chạy Windows đầy đủ.`,
-    facts: [["CPU", "Intel Core i5-1140G7 – 4 nhân 8 luồng (tùy chọn i7-1180G7)"], ["RAM", "16GB 4267MHz"], ["Ổ cứng", "256GB SSD NVMe"], ["Màn hình", "13 inch cảm ứng, độ sáng 500 nits"], ["Đồ họa", "Intel Iris Xe"], ["Pin / Trọng lượng", "40 Wh / khoảng 0.7 kg (thân máy)"], ["Cổng kết nối", "2 Thunderbolt 4, microSD, jack âm thanh, cảm biến vân tay"]],
     sections: [
       ["Máy tính bảng nhưng chạy được mọi phần mềm Windows", "Bạn cài được phần mềm kế toán, Office bản đầy đủ, ứng dụng nội bộ công ty, điều mà máy tính bảng thông thường không làm được. Khi cần gõ nhiều, gắn bàn phím vào là thành laptop."],
       ["Màn 500 nits dùng tốt nơi sáng", "Độ sáng cao giúp xem bản vẽ, hồ sơ ngoài công trình hoặc ngồi cạnh cửa sổ dễ hơn màn 250 nits của laptop văn phòng thường."],
@@ -334,7 +319,6 @@ const DRAFTS: Draft[] = [
     title: "Dell Latitude 7350 Ultra 5 32GB 1TB Đà Nẵng",
     desc: "Dell Latitude 7350 Core Ultra 5 135U, RAM 32GB, SSD 1TB, có tùy chọn Ultra 7 165U màn 2.5K cảm ứng. Laptop doanh nhân cao cấp 13 inch tại Laptop Chính Nguyễn Đà Nẵng.",
     intro: `<strong>Dell Latitude 7350</strong> là máy doanh nhân 13 inch dùng Intel Core Ultra, bản tiêu chuẩn có Ultra 5 135U, RAM 32GB, SSD 1TB; ngoài ra có tùy chọn Ultra 7 165U, RAM 32GB, SSD 256GB và màn 2.5K cảm ứng. Nếu bạn cần ${home()} nhỏ gọn nhưng bộ nhớ lớn và chip đời mới, đây là cấu hình khó gặp ở máy 13 inch.`,
-    facts: [["CPU", "Intel Core Ultra 5 135U – 12 nhân 14 luồng, tối đa 4.4 GHz"], ["RAM", "32GB"], ["Ổ cứng", "1TB SSD"], ["Đồ họa", "Intel Graphics"], ["Màn hình", "13 inch IPS"], ["Tùy chọn khác", "Ultra 7 165U / 32GB / 256GB / 2.5K cảm ứng"], ["Cổng kết nối", "Thunderbolt 4 (sạc và xuất hình)"]],
     sections: [
       ["Core Ultra mang lại điều gì?", "Core Ultra có thêm NPU để xử lý các tác vụ AI như làm mờ nền, lọc tiếng ồn khi họp mà không chiếm CPU. Chip dòng U ưu tiên mát và tiết kiệm điện, hợp máy nhỏ. NPU thế hệ này chưa đạt chuẩn Copilot+ PC 40 TOPS."],
       ["RAM 32GB và SSD 1TB trong máy 13 inch", "Cấu hình này cho phép mở nhiều ứng dụng nặng, chạy máy ảo hoặc lưu trữ dữ liệu công việc mà không cần ổ ngoài. Vì RAM của dòng máy mỏng thường không nâng được về sau, mua sẵn 32GB là quyết định hợp lý."],
@@ -351,7 +335,6 @@ const DRAFTS: Draft[] = [
     title: "Dell Latitude 5300 2in1 cảm ứng cũ Đà Nẵng",
     desc: "Dell Latitude 5300 2in1 cũ: Core i5-8265U hoặc i7-8665U, RAM 8GB, SSD 256GB, màn 13.3 inch FHD cảm ứng xoay gập. Bảo hành 12 tháng tại Laptop Chính Nguyễn Đà Nẵng.",
     intro: `<strong>Dell Latitude 5300 2in1</strong> là laptop cảm ứng xoay gập 13.3 inch giá dưới 9 triệu, có bản Core i5-8265U và Core i7-8665U. Máy dành cho sinh viên, giáo viên cần vừa gõ vừa viết, xem bài giảng. So với nhiều chiếc ${home()} cùng giá, Latitude 5300 2in1 hơn ở màn cảm ứng kính Gorilla Glass và đủ cổng kết nối.`,
-    facts: [["CPU", "Intel Core i5-8265U – 4 nhân 8 luồng, tối đa 4.1 GHz (tùy chọn i7-8665U)"], ["RAM", "8GB DDR4"], ["Ổ cứng", "256GB SSD"], ["Đồ họa", "Intel UHD Graphics 620"], ["Màn hình", "13.3 inch FHD cảm ứng, Gorilla Glass"], ["Pin / Trọng lượng", "42 Wh / khoảng 1.4 kg"], ["Cổng kết nối", "USB-A 3.1, USB-C (sạc, xuất hình), HDMI 1.4, microSD, jack 3.5 mm"]],
     sections: [
       ["Bốn tư thế sử dụng", "Bản lề xoay cho phép dùng kiểu laptop, dựng lều xem phim, dựng đứng để họp và gập hẳn thành máy tính bảng. Ghi chú hoặc đánh dấu PDF trực tiếp trên màn là lợi ích rõ nhất khi đi học."],
       ["Hiệu năng trong năm 2026", "Chip Intel thế hệ 8 bốn nhân đủ cho Office, trình duyệt, học trực tuyến và chạy được Windows 11. Đừng kỳ vọng dựng video hay chơi game 3D."],
@@ -368,7 +351,6 @@ const DRAFTS: Draft[] = [
     title: "Dell Latitude 5320 2in1 i7-1185G7 Đà Nẵng",
     desc: "Dell Latitude 5320 2in1: Core i7-1185G7, RAM 16GB, SSD 256GB, màn 13 inch FHD cảm ứng gập 360 độ. Laptop 2in1 cho doanh nhân tại Laptop Chính Nguyễn Đà Nẵng.",
     intro: `<strong>Dell Latitude 5320 2in1</strong> kết hợp chip Core i7-1185G7, RAM 16GB và màn 13 inch cảm ứng gập 360 độ, phù hợp người vừa làm việc nghiêm túc vừa cần ghi chú, thuyết trình. Trong nhóm ${home()} 2in1 khoảng 11–12 triệu, đây là máy cân bằng giữa hiệu năng và độ bền.`,
-    facts: [["CPU", "Intel Core i7-1185G7 – 4 nhân 8 luồng, tối đa 4.8 GHz"], ["RAM", "16GB"], ["Ổ cứng", "256GB SSD NVMe"], ["Đồ họa", "Intel Iris Xe"], ["Màn hình", "13 inch FHD cảm ứng"], ["Trọng lượng", "Khoảng 1.55 kg"], ["Cổng kết nối", "2 USB-A, USB-C, HDMI, jack 3.5 mm"]],
     sections: [
       ["Khác gì Latitude 5320 thường?", "Bản 2in1 có màn cảm ứng kính và bản lề xoay 360 độ, bù lại nặng hơn một chút. Nếu bạn không bao giờ chạm vào màn hình, bản thường sẽ tiết kiệm hơn."],
       ["i7-1185G7 và RAM 16GB", "Đây là chip 4 nhân nhanh nhất nhì dòng U/G thế hệ 11, đơn luồng tốt nên mở ứng dụng, cuộn tài liệu, xử lý Excel rất nhạy. 16GB RAM giúp họp video khi mở nhiều tài liệu không bị chậm."],
@@ -385,7 +367,6 @@ const DRAFTS: Draft[] = [
     title: "Dell Latitude 7390 2in1 cảm ứng giá rẻ Đà Nẵng",
     desc: "Dell Latitude 7390 2in1 cũ: Core i5-8350U, RAM 8GB, SSD 256GB, màn 13.3 inch FHD cảm ứng, có bản i7 RAM 16GB. Bảo hành 12 tháng tại Laptop Chính Nguyễn Đà Nẵng.",
     intro: `<strong>Dell Latitude 7390 2in1</strong> là lựa chọn rẻ để sở hữu laptop cảm ứng xoay gập dòng doanh nhân: bản Core i5-8350U, RAM 8GB khoảng 7–8 triệu và bản Core i7, RAM 16GB cao hơn một chút. Với ai tìm ${home()} cảm ứng ngân sách thấp, máy này đáng thử trước các dòng phổ thông.`,
-    facts: [["CPU", "Intel Core i5-8350U – 4 nhân 8 luồng (tùy chọn Core i7 thế hệ 8)"], ["RAM", "8GB (bản i7 là 16GB)"], ["Ổ cứng", "256GB SSD"], ["Đồ họa", "Intel UHD Graphics 620"], ["Màn hình", "13.3 inch FHD cảm ứng"], ["Trọng lượng", "Khoảng 1.2–1.4 kg"]],
     sections: [
       ["Dòng 7000 cao cấp hơn dòng 5000", "Latitude 7xxx là dòng cao cấp của Dell nên thân máy mỏng, hoàn thiện kỹ hơn dòng 5xxx cùng thời. Đó là lý do một chiếc 7390 vài năm tuổi vẫn cho cảm giác cầm tốt hơn nhiều máy mới giá rẻ."],
       ["Chọn bản i5 8GB hay i7 16GB?", "RAM của máy mỏng dòng này không dễ nâng cấp, vì vậy điểm đáng tiền nhất của bản i7 không phải là chip mà là 16GB RAM. Nếu định dùng trên 2 năm, bản 16GB là lựa chọn khôn ngoan."],
@@ -402,7 +383,6 @@ const DRAFTS: Draft[] = [
     title: "Dell Latitude 7400 2in1 i5, i7 16GB Đà Nẵng",
     desc: "Dell Latitude 7400 2in1 cũ: Core i5-8365U hoặc i7-8665U, RAM 16GB, SSD 256GB, màn 14 inch FHD IPS cảm ứng, pin 60Wh. Bảo hành 12 tháng tại Chính Nguyễn Đà Nẵng.",
     intro: `<strong>Dell Latitude 7400 2in1</strong> là laptop cảm ứng 14 inch dòng cao cấp của Dell, sẵn RAM 16GB, khoảng 9–11 triệu tùy bản Core i5-8365U hay i7-8665U. Máy dành cho người muốn một chiếc ${home()} sang trọng, gập 360 độ, gõ phím êm mà không phải trả giá máy mới.`,
-    facts: [["CPU", "Intel Core i5-8365U – 4 nhân 8 luồng, tối đa 4.1 GHz (tùy chọn i7-8665U)"], ["RAM", "16GB"], ["Ổ cứng", "256GB SSD NVMe"], ["Đồ họa", "Intel UHD Graphics 620"], ["Màn hình", "14 inch FHD IPS cảm ứng"], ["Pin / Trọng lượng", "60 Wh / khoảng 1.4 kg"], ["Cổng kết nối", "USB-C, HDMI 1.4, 2 USB-A, đầu đọc thẻ, microSD, jack 3.5 mm"]],
     sections: [
       ["Vỏ kim loại, bản lề 360 độ", "Latitude 7400 2in1 từng là máy đầu bảng cho doanh nhân, thân nhôm chắc và viền màn mỏng. Màn 14 inch khi gập lại thành tablet khá rộng, hợp đọc tài liệu khổ A4, xem bản vẽ."],
       ["Vì sao RAM 16GB quan trọng hơn chip?", "Chip thế hệ 8 vẫn đủ nhanh cho văn phòng; thứ làm máy cũ ì là thiếu RAM. Sẵn 16GB, máy mở nhiều tab, họp Zoom và Excel cùng lúc mượt hơn các máy 8GB chip đời mới hơn."],
@@ -419,7 +399,6 @@ const DRAFTS: Draft[] = [
     title: "Dell Latitude 7320 i5-1145G7 16GB cũ Đà Nẵng",
     desc: "Dell Latitude 7320 cũ: Core i5-1145G7, RAM 16GB, SSD 256GB, màn 13 inch FHD chống chói, nhẹ khoảng 1.1kg. Laptop doanh nhân siêu nhẹ tại Laptop Chính Nguyễn Đà Nẵng.",
     intro: `<strong>Dell Latitude 7320</strong> là laptop doanh nhân 13 inch nhẹ khoảng 1.1 kg, dùng Core i5-1145G7 và RAM 16GB. Máy nhắm tới người mang laptop bên mình cả ngày. Trong nhóm ${home()} dưới 10 triệu, hiếm mẫu nào vừa nhẹ vừa sẵn 16GB RAM và 2 cổng Thunderbolt 4 như vậy.`,
-    facts: [["CPU", "Intel Core i5-1145G7 – 4 nhân 8 luồng, hỗ trợ vPro"], ["RAM", "16GB"], ["Ổ cứng", "256GB SSD NVMe PCIe"], ["Đồ họa", "Intel Iris Xe"], ["Màn hình", "13 inch FHD chống chói, ComfortView Plus, không cảm ứng"], ["Trọng lượng", "Khoảng 1.1 kg"], ["Cổng kết nối", "2 Thunderbolt 4, USB-A 3.2 Gen 2, HDMI, jack 3.5 mm"]],
     sections: [
       ["Nhẹ 1.1 kg nhưng không phải máy yếu", "Core i5-1145G7 thuộc nhóm chip doanh nghiệp, hiệu năng ngang các máy 14 inch cùng đời. Bạn mất đi kích thước chứ không mất tốc độ."],
       ["Màn hình dịu mắt", "ComfortView Plus giảm ánh sáng xanh ngay từ phần cứng nên màu ít bị ngả vàng như chế độ lọc phần mềm. Lớp chống chói giúp làm việc dưới đèn văn phòng thoải mái hơn."],
@@ -436,7 +415,6 @@ const DRAFTS: Draft[] = [
     title: "Dell G15 5530 i5-13450HX RTX 3050 6GB Đà Nẵng",
     desc: "Dell Gaming G15 5530: Core i5-13450HX, RAM 16GB DDR5, RTX 3050 6GB, màn 15.6 inch FHD 120Hz. Laptop gaming bền bỉ, bảo hành 12 tháng tại Laptop Chính Nguyễn Đà Nẵng.",
     intro: `<strong>Dell Gaming G15 5530</strong> dùng Core i5-13450HX 10 nhân, RAM 16GB DDR5 và RTX 3050 bản 6GB VRAM. Máy hợp người thích sự bền bỉ, tản nhiệt dày dặn của Dell hơn là máy mỏng. Bạn có thể test game ngay tại Laptop Chính Nguyễn, cửa hàng ${home()} có sẵn nhiều mẫu ${a("/dell-gaming", "Dell Gaming")}.`,
-    facts: [["CPU", "Intel Core i5-13450HX – 10 nhân 16 luồng, tối đa 4.6 GHz, 20MB cache"], ["RAM", "16GB DDR5 4800MHz"], ["Ổ cứng", "512GB SSD M.2 PCIe NVMe"], ["Card đồ họa", "NVIDIA GeForce RTX 3050 6GB GDDR6"], ["Màn hình", "15.6 inch FHD, 120Hz"], ["Pin / Trọng lượng", "56 Wh / khoảng 2.65 kg"], ["Cổng kết nối", "3 USB-A 3.2, USB-C có DisplayPort, HDMI 2.1, LAN RJ45, jack 3.5 mm"]],
     sections: [
       ["RTX 3050 6GB khác bản 4GB thế nào?", "Bản 6GB có thêm 2GB VRAM nên game mới và phần mềm đồ họa ít bị nghẽn bộ nhớ hơn. Khi so giá với máy RTX 3050 khác, hãy hỏi rõ dung lượng VRAM vì tên card giống nhau."],
       ["Core i5-13450HX: điểm mạnh thật sự", "Chip HX 10 nhân 16 luồng mạnh hơn nhu cầu của RTX 3050 nên phần dư dùng cho render CPU, máy ảo, lập trình. Đây là lý do máy hợp sinh viên kỹ thuật."],
@@ -453,7 +431,6 @@ const DRAFTS: Draft[] = [
     title: "ThinkPad T14s Gen 2 i7 RAM 32GB Đà Nẵng",
     desc: "Lenovo ThinkPad T14s Gen 2: Core i7-1185G7, RAM 32GB, SSD 256GB, màn 14 inch FHD IPS, pin 57Wh, nặng 1.25kg. Bảo hành 12 tháng tại Laptop Chính Nguyễn Đà Nẵng.",
     intro: `<strong>Lenovo ThinkPad T14s Gen 2</strong> bản này có RAM 32GB, cấu hình hiếm ở máy 14 inch nặng 1.25 kg. Đi cùng là Core i7-1185G7 và bàn phím ThinkPad nổi tiếng. Lập trình viên, kế toán tổng hợp tìm ${home()} cũ để đa nhiệm nặng sẽ khó thấy máy nào nhẹ mà RAM lớn như vậy trong tầm 15 triệu.`,
-    facts: [["CPU", "Intel Core i7-1185G7 – 4 nhân 8 luồng, tối đa 4.8 GHz, 12MB cache"], ["RAM", "32GB LPDDR4x 4266MHz (hàn trên bo mạch)"], ["Ổ cứng", "256GB SSD M.2 PCIe Gen 4"], ["Đồ họa", "Intel Iris Xe"], ["Màn hình", "14 inch FHD IPS"], ["Pin / Trọng lượng", "57 Wh / khoảng 1.25 kg"], ["Cổng kết nối", "2 USB-C Thunderbolt 4, 2 USB-A 3.2, HDMI"]],
     sections: [
       ["RAM 32GB dành cho ai?", "Nếu bạn chạy Docker, nhiều máy ảo, mở file dữ liệu lớn hoặc giữ cả trăm tab trình duyệt, 32GB tạo khác biệt rõ. RAM hàn nên đây là mức cố định, nhưng cũng là mức rất thoải mái."],
       ["Bàn phím và độ bền ThinkPad", "Phím hành trình sâu, TrackPoint đỏ và khung đạt chuẩn doanh nghiệp là lý do nhiều người gõ cả ngày chọn ThinkPad. Chữ s trong T14s chỉ bản mỏng nhẹ hơn T14."],
@@ -470,7 +447,6 @@ const DRAFTS: Draft[] = [
     title: "ThinkPad T14 Gen 3 Ryzen 7 PRO 6850U Đà Nẵng",
     desc: "Lenovo ThinkPad T14 Gen 3 AMD: Ryzen 7 PRO 6850U 8 nhân, RAM 16GB LPDDR5, SSD 512GB, màn 14 inch cảm ứng. Bảo hành 12 tháng tại Laptop Chính Nguyễn Đà Nẵng.",
     intro: `<strong>Lenovo ThinkPad T14 Gen 3 AMD</strong> là bản ThinkPad cho người cần đa nhiệm thật sự: Ryzen 7 PRO 6850U có 8 nhân lớn 16 luồng, RAM 16GB LPDDR5, SSD 512GB và màn 14 inch cảm ứng. Người làm kỹ thuật tìm ${home()} dòng doanh nghiệp nên so bản AMD này với bản Intel trước khi chọn.`,
-    facts: [["CPU", "AMD Ryzen 7 PRO 6850U – 8 nhân 16 luồng, tối đa 4.7 GHz"], ["RAM", "16GB LPDDR5"], ["Ổ cứng", "512GB SSD M.2 PCIe 4.0"], ["Đồ họa", "AMD Radeon tích hợp"], ["Màn hình", "14 inch IPS cảm ứng, 300 nits"], ["Pin / Trọng lượng", "39.3 Wh / khoảng 1.36 kg"], ["Cổng kết nối", "2 USB-C 3.2 Gen 2, 2 USB-A, HDMI, LAN RJ45, jack 3.5 mm"]],
     sections: [
       ["8 nhân thật cho việc nặng", "Khác với chip Intel pha nhân tiết kiệm điện, 6850U có 8 nhân giống nhau, duy trì tốt khi biên dịch, nén file, chạy nhiều container. Đồ họa Radeon tích hợp kiến trúc RDNA 2 cũng thuộc nhóm mạnh trong các iGPU cùng thời."],
       ["Bảo mật và họp online", "Webcam FHD có nắp che vật lý, hỗ trợ mở khóa khuôn mặt hồng ngoại. Dòng PRO có thêm tính năng quản trị cho doanh nghiệp."],
@@ -487,7 +463,6 @@ const DRAFTS: Draft[] = [
     title: "ThinkPad T14 Gen 3 i7-1260P, 1265U Đà Nẵng",
     desc: "Lenovo ThinkPad T14 Gen 3 Intel: Core i7-1260P RAM 16GB hoặc i7-1265U RAM 32GB, SSD 512GB, màn 14 inch, Thunderbolt 4. Có tại Laptop Chính Nguyễn Đà Nẵng, bảo hành 12 tháng.",
     intro: `<strong>Lenovo ThinkPad T14 Gen 3</strong> bản Intel có hai cấu hình rất khác tính cách: Core i7-1260P RAM 16GB thiên về sức mạnh và Core i7-1265U RAM 32GB thiên về đa nhiệm, tiết kiệm điện. Cả hai có SSD 512GB và Thunderbolt 4. Đây là dòng máy làm việc chuẩn mực khi chọn ${home()} cho doanh nghiệp.`,
-    facts: [["CPU", "Intel Core i7-1260P – 12 nhân 16 luồng, tối đa 4.7 GHz, 18MB cache"], ["RAM", "16GB"], ["Ổ cứng", "512GB SSD M.2 NVMe"], ["Đồ họa", "Intel Iris Xe"], ["Màn hình", "14 inch IPS"], ["Pin", "57 Wh"], ["Tùy chọn khác", "Core i7-1265U / RAM 32GB / SSD 512GB"], ["Cổng kết nối", "2 Thunderbolt 4, 2 USB-A 3.2, HDMI 2.0"]],
     sections: [
       ["i7-1260P 16GB hay i7-1265U 32GB?", "i7-1260P có 4 nhân hiệu năng, nhanh hơn khi biên dịch, xử lý ảnh, tính toán. i7-1265U chỉ có 2 nhân hiệu năng nhưng mát, tiết kiệm pin và đi cùng 32GB RAM. Nghĩ đơn giản: thiếu tốc độ chọn P, thiếu bộ nhớ chọn U."],
       ["Nền tảng làm việc lâu dài", "Thunderbolt 4 cho phép dùng dock xuất nhiều màn hình bằng một dây. Bàn phím, TrackPoint và khung máy giữ chất lượng truyền thống của dòng T."],
@@ -504,7 +479,6 @@ const DRAFTS: Draft[] = [
     title: "ThinkPad X1 Yoga Gen 8 i7-1365U 2K Đà Nẵng",
     desc: "Lenovo ThinkPad X1 Yoga Gen 8: Core i7-1365U, RAM 16GB, SSD 512GB, màn 14 inch 2K cảm ứng xoay 360 độ, nặng 1.38kg. Xem máy tại Laptop Chính Nguyễn Đà Nẵng.",
     intro: `<strong>Lenovo ThinkPad X1 Yoga Gen 8</strong> là laptop xoay 360 độ đầu bảng của ThinkPad: Core i7-1365U, RAM 16GB, SSD 512GB và màn 14 inch 2K cảm ứng trong vỏ nhôm 1.38 kg. Với doanh nhân tìm ${home()} cao cấp vừa gõ vừa viết, đây là mẫu đáng trải nghiệm nhất trong nhóm 2in1.`,
-    facts: [["CPU", "Intel Core i7-1365U – 10 nhân 12 luồng, tối đa 5.2 GHz"], ["RAM", "16GB"], ["Ổ cứng", "512GB SSD"], ["Đồ họa", "Intel Iris Xe"], ["Màn hình", "14 inch 2K cảm ứng, xoay 360 độ"], ["Pin / Trọng lượng", "57 Wh / khoảng 1.38 kg"], ["Cổng kết nối", "2 Thunderbolt 4, 2 USB-A 3.2, HDMI 2.0, jack 3.5 mm"]],
     sections: [
       ["X1 Yoga khác X1 Carbon ở đâu?", "Hai máy cùng đẳng cấp; Carbon nhẹ hơn và dạng laptop thường, còn Yoga dùng vỏ nhôm, xoay 360 độ, cảm ứng và hỗ trợ bút. Chọn Yoga khi bạn thật sự dùng chế độ tablet."],
       ["Core i7-1365U trong công việc", "Xung tối đa 5.2 GHz giúp thao tác đơn lẻ rất nhanh: mở ứng dụng, tính bảng Excel, lướt web. Chip dòng U ưu tiên mát và yên tĩnh, phù hợp phòng họp hơn là dựng phim."],
@@ -521,7 +495,6 @@ const DRAFTS: Draft[] = [
     title: "IdeaPad Slim 3 15IRH8 i7-13620H 1TB Đà Nẵng",
     desc: "Lenovo IdeaPad Slim 3 15IRH8: Core i7-13620H 10 nhân, RAM 16GB, SSD 1TB, màn 15.6 inch FHD, nặng 1.6kg. Laptop học tập, văn phòng mạnh tại Laptop Chính Nguyễn Đà Nẵng.",
     intro: `<strong>Lenovo IdeaPad Slim 3 15IRH8</strong> mang chip dòng H của laptop gaming vào thân máy văn phòng 1.6 kg: Core i7-13620H, RAM 16GB, SSD 1TB. Ai cần CPU mạnh và ổ lớn nhưng không chơi game sẽ thấy đây là chiếc ${home()} rất đáng tiền dưới 15 triệu.`,
-    facts: [["CPU", "Intel Core i7-13620H – 10 nhân 16 luồng, tối đa 4.9 GHz"], ["RAM", "16GB LPDDR5 4800MHz"], ["Ổ cứng", "1TB SSD"], ["Đồ họa", "Intel UHD Graphics"], ["Màn hình", "15.6 inch FHD, 300 nits"], ["Pin / Trọng lượng", "47 Wh / khoảng 1.6 kg"], ["Cổng kết nối", "2 USB-A 3.2, USB-C (sạc, xuất hình), HDMI 1.4, đầu đọc thẻ, jack 3.5 mm"]],
     sections: [
       ["Chip H trong máy mỏng có lợi gì?", "i7-13620H có 6 nhân hiệu năng và 4 nhân tiết kiệm điện, xử lý biên dịch code, Excel lớn, xuất video bằng CPU nhanh hơn chip dòng U. Trên máy mỏng, chip không chạy hết sức lâu như máy gaming, nhưng vẫn là lợi thế lớn cho tác vụ ngắn."],
       ["SSD 1TB, khỏi lo hết chỗ", "1TB đủ cho tài liệu nhiều năm, ảnh, video và phần mềm học tập. Trong tầm giá này đa số máy chỉ có 256–512GB."],
@@ -538,7 +511,6 @@ const DRAFTS: Draft[] = [
     title: "IdeaPad Slim 5 Ryzen 7 7735HS 680M Đà Nẵng",
     desc: "Lenovo IdeaPad Slim 5: Ryzen 7 7735HS, RAM 16GB LPDDR5x, SSD 512GB, Radeon 680M, màn 15 inch 100% DCI-P3, pin 60Wh, 1.49kg. Có tại Laptop Chính Nguyễn Đà Nẵng.",
     intro: `<strong>Lenovo IdeaPad Slim 5 Ryzen 7 7735HS</strong> là laptop 15 inch nhẹ 1.49 kg có màn 100% DCI-P3 và đồ họa tích hợp Radeon 680M. Máy dành cho người làm nội dung, sinh viên thiết kế muốn màn đẹp mà không cần card rời. Trong các mẫu ${home()} mỏng nhẹ, đây là lựa chọn nghiêng về chất lượng hiển thị.`,
-    facts: [["CPU", "AMD Ryzen 7 7735HS – 8 nhân 16 luồng, tối đa 4.75 GHz"], ["RAM", "16GB LPDDR5x 6400MHz (hàn)"], ["Ổ cứng", "512GB SSD M.2 2242 PCIe 4.0, 2 khe"], ["Đồ họa", "AMD Radeon 680M"], ["Màn hình", "15 inch FHD, 100% DCI-P3, DisplayHDR True Black 500, Dolby Vision, 400 nits"], ["Pin / Trọng lượng", "60 Wh / khoảng 1.49 kg"], ["Cổng kết nối", "2 USB-C (sạc, xuất hình), 2 USB-A, HDMI 2.1, đầu đọc thẻ SD, jack 3.5 mm"]],
     sections: [
       ["Màn hình là lý do chính để mua", "Dải màu 100% DCI-P3 và chứng nhận True Black 500 cho màu rực, vùng tối sâu, phù hợp xem phim HDR, chỉnh ảnh, làm thiết kế đăng mạng xã hội."],
       ["Radeon 680M mạnh tới đâu?", "Đây là một trong những đồ họa tích hợp mạnh của thế hệ này, chơi được eSports và game nhẹ ở Full HD, tăng tốc chỉnh ảnh, dựng video ngắn. Nó không thay được card rời RTX."],
@@ -555,7 +527,6 @@ const DRAFTS: Draft[] = [
     title: "HP EliteBook 830 G6 i5-8365U cũ Đà Nẵng",
     desc: "HP EliteBook 830 G6 cũ: Core i5-8365U, RAM 8GB, SSD 256GB, màn 13.3 inch FHD IPS, vỏ nhôm bạc 1.3kg. Laptop văn phòng giá rẻ bảo hành 12 tháng tại Chính Nguyễn Đà Nẵng.",
     intro: `<strong>HP EliteBook 830 G6</strong> là laptop doanh nhân vỏ nhôm 13.3 inch, Core i5-8365U, RAM 8GB, SSD 256GB, thuộc nhóm giá rẻ. Máy phù hợp sinh viên và nhân viên văn phòng muốn máy đẹp, bền mà chi phí thấp. Đây là gợi ý tốt khi tìm ${home()} cũ cho nhu cầu cơ bản.`,
-    facts: [["CPU", "Intel Core i5-8365U – 4 nhân 8 luồng, tối đa 4.1 GHz"], ["RAM", "8GB DDR4"], ["Ổ cứng", "256GB SSD"], ["Đồ họa", "Intel UHD Graphics 620"], ["Màn hình", "13.3 inch FHD IPS, 250 nits"], ["Pin / Trọng lượng", "50 Wh / khoảng 1.3 kg"], ["Cổng kết nối", "2 USB-A, USB-C, HDMI 1.4b, LAN RJ45, jack 3.5 mm"]],
     sections: [
       ["Vỏ nhôm, hoàn thiện cao cấp", "EliteBook là dòng doanh nghiệp của HP, thân nhôm bạc chắc chắn, bàn phím gõ tốt. So với laptop nhựa mới cùng tiền, độ bền và cảm giác dùng hơn rõ."],
       ["Làm được gì với i5 thế hệ 8?", "Soạn thảo, Excel, học trực tuyến, phần mềm bán hàng, xem phim Full HD đều ổn. Chip được Windows 11 hỗ trợ nên vẫn dùng an toàn trong vài năm tới."],
@@ -572,7 +543,6 @@ const DRAFTS: Draft[] = [
     title: "HP ProBook 460 G11 Core Ultra 5 Đà Nẵng",
     desc: "HP ProBook 460 G11: Intel Core Ultra 5, RAM 8GB DDR5, SSD 256GB, màn 16 inch WUXGA IPS, pin 56Wh, 1.74kg. Laptop văn phòng màn lớn tại Laptop Chính Nguyễn Đà Nẵng.",
     intro: `<strong>HP ProBook 460 G11</strong> là laptop văn phòng màn 16 inch tỷ lệ 16:10 dùng Intel Core Ultra 5. Máy dành cho kế toán, hành chính, người làm bảng tính cần màn rộng mà vẫn mang đi được với 1.74 kg. Nếu đang tìm ${home()} đời mới cho công ty, ProBook 460 G11 là dòng doanh nghiệp dễ bảo trì.`,
-    facts: [["CPU", "Intel Core Ultra 5"], ["RAM", "8GB DDR5 5600MHz"], ["Ổ cứng", "256GB SSD PCIe NVMe"], ["Đồ họa", "Intel tích hợp"], ["Màn hình", "16 inch WUXGA (1920 x 1200) IPS chống chói, 300 nits"], ["Pin / Trọng lượng", "56 Wh / khoảng 1.74 kg"], ["Cổng kết nối", "2 USB-C 20Gbps (sạc, xuất hình), 2 USB-A, HDMI 2.1, LAN RJ45, jack 3.5 mm"]],
     sections: [
       ["Màn 16 inch 16:10 cho bảng tính", "So với 15.6 inch Full HD, màn WUXGA có thêm 120 điểm ảnh chiều dọc, thấy nhiều dòng Excel hơn và đỡ phải cuộn. Lớp chống chói hợp môi trường văn phòng; độ phủ màu 45% NTSC thì chưa đủ cho thiết kế."],
       ["Core Ultra và RAM DDR5", "Chip Core Ultra thế hệ mới có NPU hỗ trợ tác vụ AI khi họp. RAM DDR5 8GB là mức khởi điểm; với công việc nhiều cửa sổ, nâng lên 16GB là khoản đầu tư nên làm đầu tiên."],
@@ -589,7 +559,6 @@ const DRAFTS: Draft[] = [
     title: "Asus Vivobook 15 OLED A1505ZA 2.8K Đà Nẵng",
     desc: "Asus Vivobook 15 OLED A1505ZA: Core i5-12500H, RAM 16GB, SSD 512GB, màn 15.6 inch OLED 2.8K 120Hz 100% DCI-P3. Giá tốt, bảo hành 12 tháng tại Chính Nguyễn Đà Nẵng.",
     intro: `<strong>Asus Vivobook 15 OLED A1505ZA</strong> là cách dễ nhất để có màn OLED 2.8K 120Hz cỡ 15.6 inch trong tầm 12–13 triệu. Core i5-12500H 12 nhân và RAM 16GB lo tốt phần hiệu năng. Người thích xem phim, chỉnh ảnh, học thiết kế khi mua ${home()} nên xem máy này đầu tiên.`,
-    facts: [["CPU", "Intel Core i5-12500H – 12 nhân 16 luồng"], ["RAM", "16GB DDR4 3200MHz"], ["Ổ cứng", "512GB SSD M.2 NVMe PCIe 3.0"], ["Đồ họa", "Intel Iris Xe"], ["Màn hình", "15.6 inch OLED 2.8K, 120Hz, 100% DCI-P3, phản hồi 0.2 ms"], ["Pin / Trọng lượng", "50 Wh / khoảng 1.7 kg"], ["Cổng kết nối", "USB-C (sạc), 2 USB-A 3.2, USB 2.0, HDMI 1.4, jack 3.5 mm"]],
     sections: [
       ["OLED 2.8K 120Hz khác gì màn IPS?", "Mỗi điểm ảnh OLED tự phát sáng nên màu đen gần như tuyệt đối, độ tương phản cao và phản hồi nhanh. 120Hz làm thao tác cuộn trang mượt hơn 60Hz. Đây là chất lượng thường thấy ở máy đắt hơn nhiều."],
       ["Hiệu năng Core i5-12500H", "Chip dòng H 12 nhân cùng RAM 16GB chạy tốt Photoshop, Lightroom, dựng video ngắn, lập trình. Iris Xe chơi được eSports nhẹ, không thay thế card rời."],
@@ -606,7 +575,6 @@ const DRAFTS: Draft[] = [
     title: "Asus Zenbook UX3402ZA OLED 2.8K Đà Nẵng",
     desc: "Asus Zenbook 14 OLED UX3402ZA: Core i5-1240P, RAM 8GB, SSD 512GB, màn 14 inch OLED 2880x1800 90Hz, pin 75Wh, 1.39kg. Có tại Laptop Chính Nguyễn Đà Nẵng.",
     intro: `<strong>Asus Zenbook 14 UX3402ZA</strong> kết hợp hai thứ ít khi đi cùng nhau: màn OLED 2880 x 1800 và pin 75 Wh, trong thân máy 1.39 kg. Core i5-1240P 12 nhân đủ cho học tập và văn phòng. Nếu cần ${home()} mỏng nhẹ, màn đẹp, đây là mẫu cân bằng nhất trong tầm 13 triệu.`,
-    facts: [["CPU", "Intel Core i5-1240P – 12 nhân 16 luồng"], ["RAM", "8GB"], ["Ổ cứng", "512GB SSD"], ["Đồ họa", "Intel Iris Xe"], ["Màn hình", "14 inch OLED 2880 x 1800, 90Hz, 400 nits"], ["Pin / Trọng lượng", "75 Wh / khoảng 1.39 kg"], ["Cổng kết nối", "2 Thunderbolt 4, USB-A 3.2 Gen 2, HDMI 2.0b, microSD, jack 3.5 mm"]],
     sections: [
       ["Pin 75 Wh: lợi thế hiếm ở máy 14 inch", "Phần lớn máy cùng cỡ chỉ có 50–60 Wh. Màn OLED tốn điện hơn khi hiển thị nền trắng, nên viên pin lớn giúp cân lại thời gian sử dụng. Dùng giao diện tối sẽ có lợi thêm."],
       ["OLED 2880 x 1800 tỷ lệ 16:10", "Độ phân giải thường được gọi là 2.8K hoặc 3K. Chữ rất sắc, tỷ lệ 16:10 hợp đọc tài liệu, 90Hz cho cảm giác cuộn mượt."],
@@ -623,7 +591,6 @@ const DRAFTS: Draft[] = [
     title: "Asus Zenbook 14X UX3404 OLED 120Hz Đà Nẵng",
     desc: "Asus Zenbook 14X OLED UX3404: Core i5-13500H, RAM 8GB, SSD 512GB, màn 14.5 inch 2.8K OLED 120Hz cảm ứng, pin 70Wh. Xem máy tại Laptop Chính Nguyễn Đà Nẵng.",
     intro: `<strong>Asus Zenbook 14X UX3404</strong> có màn 14.5 inch OLED 2.8K 120Hz cảm ứng đạt 100% DCI-P3, chip Core i5-13500H dòng H và pin 70 Wh. Máy dành cho người coi màn hình là ưu tiên số một: chỉnh ảnh, thiết kế, xem phim. Đây là một trong những chiếc ${home()} có màn đẹp nhất tầm 15–16 triệu.`,
-    facts: [["CPU", "Intel Core i5-13500H – 12 nhân 16 luồng, tối đa 4.7 GHz, 18MB cache"], ["RAM", "8GB LPDDR5"], ["Ổ cứng", "512GB SSD M.2 NVMe PCIe 4.0"], ["Màn hình", "14.5 inch 2.8K OLED (2880 x 1800), 120Hz, 100% DCI-P3, cảm ứng, 400 nits"], ["Webcam", "FHD, hồng ngoại"], ["Pin / Trọng lượng", "70 Wh / khoảng 1.56 kg"], ["Cổng kết nối", "2 Thunderbolt 4, USB-A 3.2 Gen 2, HDMI 2.1, jack 3.5 mm"]],
     sections: [
       ["Màn hình Pantone Validated", "Chứng nhận Pantone và 100% DCI-P3 nghĩa là màu đáng tin cho chỉnh ảnh, thiết kế. 120Hz kết hợp cảm ứng cho thao tác kéo, phóng ảnh trơn tru. Bề mặt gương nên phản chiếu khi ngồi ngược sáng."],
       ["Core i5-13500H không hề yếu", "12 nhân 16 luồng dòng H xử lý Photoshop, Lightroom, dựng video ngắn nhanh hơn các máy mỏng dùng chip U. Đồ họa tích hợp nên không dành cho 3D và game nặng."],
@@ -640,7 +607,6 @@ const DRAFTS: Draft[] = [
     title: "Asus Zenbook UX425UG Ryzen 5 MX450 Đà Nẵng",
     desc: "Asus Zenbook UX425UG cũ: Ryzen 5-5500U 6 nhân, RAM 8GB, SSD 256GB, card rời MX450, màn 14 inch FHD IPS 100% sRGB, 1.3kg. Bảo hành 12 tháng tại Chính Nguyễn Đà Nẵng.",
     intro: `<strong>Asus Zenbook UX425UG</strong> là laptop 14 inch 1.3 kg có cả card rời MX450 lẫn màn 100% sRGB, dùng Ryzen 5-5500U 6 nhân 12 luồng. Máy hợp sinh viên thiết kế, nhân viên marketing cần máy nhẹ mà xử lý ảnh tốt. Đây là tổ hợp khó tìm ở ${home()} mỏng nhẹ khoảng 12 triệu.`,
-    facts: [["CPU", "AMD Ryzen 5-5500U – 6 nhân 12 luồng, tối đa 4.0 GHz"], ["RAM", "8GB LPDDR4X"], ["Ổ cứng", "256GB SSD NVMe PCIe"], ["Card đồ họa", "NVIDIA GeForce MX450"], ["Màn hình", "14 inch FHD IPS NanoEdge, 100% sRGB"], ["Pin / Trọng lượng", "63 Wh / khoảng 1.3 kg"], ["Cổng kết nối", "USB-A 3.2, 2 USB-C, HDMI, microSD"]],
     sections: [
       ["MX450 giúp được gì?", "MX450 hỗ trợ CUDA, tăng tốc vài tác vụ trong Photoshop, Premiere và chơi eSports ở Full HD tốt hơn đồ họa tích hợp của Ryzen 5-5500U. Đây không phải card RTX nên không có DLSS."],
       ["Màn 100% sRGB chuẩn màu web", "100% sRGB là mức cần cho thiết kế đăng web và mạng xã hội. Viền NanoEdge mỏng giúp máy 14 inch gọn gần bằng máy 13 inch."],
@@ -657,7 +623,6 @@ const DRAFTS: Draft[] = [
     title: "Acer Shadow SH16-41 R7-8745H RTX 4060 Đà Nẵng",
     desc: "Acer Shadow SH16-41: Ryzen 7-8745H, RAM 16GB DDR5, SSD 512GB, RTX 4060 8GB, màn 16 inch FHD+ 165Hz. Laptop gaming màn lớn tại Laptop Chính Nguyễn Đà Nẵng, BH 12 tháng.",
     intro: `<strong>Acer Shadow SH16-41</strong> là laptop gaming 16 inch dùng Ryzen 7-8745H và RTX 4060 8GB, màn FHD+ 165Hz. Màn FHD+ giúp RTX 4060 đạt khung hình cao mà không phải hạ thiết lập nhiều. Với game thủ tìm ${home()} có RTX 4060 dưới 30 triệu, đây là cấu hình cân đối.`,
-    facts: [["CPU", "AMD Ryzen 7-8745H – 8 nhân 16 luồng"], ["RAM", "16GB DDR5"], ["Ổ cứng", "512GB SSD"], ["Card đồ họa", "NVIDIA GeForce RTX 4060 8GB + Radeon 780M tích hợp"], ["Màn hình", "16 inch FHD+, 165Hz"]],
     sections: [
       ["Vì sao FHD+ hợp với RTX 4060?", "RTX 4060 mạnh nhất ở Full HD. Với FHD+ 165Hz, bạn chơi game AAA thiết lập cao, bật DLSS 3 khi có hỗ trợ và eSports đạt khung hình lớn. Màn 2.5K đẹp hơn nhưng buộc card làm việc nặng hơn."],
       ["Ryzen 7-8745H: mạnh và mát", "8 nhân Zen 4 cùng 16 luồng làm tốt cả game, stream, dựng video và lập trình. Đồ họa tích hợp Radeon 780M lo việc nhẹ khi rút sạc, cho phép card rời nghỉ để tiết kiệm pin."],
@@ -674,7 +639,6 @@ const DRAFTS: Draft[] = [
     title: "MSI Cyborg 15 i7-13620H RTX 4050 Đà Nẵng",
     desc: "MSI Cyborg 15: Core i7-13620H, RAM 16GB DDR5, SSD 512GB, RTX 4050 6GB, màn 15.6 inch FHD 144Hz, nặng 1.98kg. Laptop gaming nhẹ tại Laptop Chính Nguyễn Đà Nẵng.",
     intro: `<strong>MSI Cyborg 15</strong> là laptop gaming dưới 2 kg với Core i7-13620H, RTX 4050 6GB và màn 144Hz, thiết kế vỏ trong suốt khác biệt. Máy hợp sinh viên mang đi học mỗi ngày nhưng vẫn muốn chơi game mới. Đây là mẫu đáng xem khi tìm ${home()} gaming gọn nhẹ.`,
-    facts: [["CPU", "Intel Core i7-13620H – 10 nhân 16 luồng, 24MB cache"], ["RAM", "16GB DDR5 5200MHz (2 khe, tối đa 64GB)"], ["Ổ cứng", "512GB SSD NVMe PCIe Gen 4"], ["Card đồ họa", "NVIDIA GeForce RTX 4050 6GB GDDR6"], ["Màn hình", "15.6 inch FHD 144Hz, 45% NTSC"], ["Pin / Trọng lượng", "53.5 Wh / khoảng 1.98 kg"], ["Cổng kết nối", "USB-C (xuất hình), 2 USB-A 3.2, HDMI, LAN RJ45, jack 3.5 mm"]],
     sections: [
       ["Điểm mạnh: nhẹ và nâng cấp được", "1.98 kg là nhẹ với laptop gaming 15.6 inch. Máy có hai khe RAM, nâng tối đa 64GB nên dùng được nhiều năm. Đây là lợi thế so với các máy mỏng RAM hàn."],
       ["RTX 4050 6GB chơi được gì?", "Game eSports chạy khung hình cao, game AAA chơi tốt ở Full HD thiết lập trung bình đến cao khi bật DLSS 3. Dòng Cyborg thiên về mỏng nhẹ nên công suất card thấp hơn các máy dày, đừng so trực tiếp với RTX 4050 trên máy 2.5 kg."],
@@ -691,7 +655,6 @@ const DRAFTS: Draft[] = [
     title: "MSI Thin 15 B12UC i5-12450H RTX 3050 Đà Nẵng",
     desc: "MSI Gaming Thin 15 B12UC: Core i5-12450H, RAM 16GB, SSD 512GB, RTX 3050 4GB, màn 15.6 inch FHD 144Hz, nặng 1.86kg. Laptop gaming giá mềm tại Chính Nguyễn Đà Nẵng.",
     intro: `<strong>MSI Thin 15 B12UC</strong> là laptop gaming nhẹ 1.86 kg với Core i5-12450H, RAM 16GB, RTX 3050 4GB và màn 144Hz. Máy dành cho sinh viên cần chơi eSports, học đồ họa cơ bản mà vẫn mang đi học được hằng ngày. Trong tầm 15–16 triệu, đây là mẫu ${home()} gaming dễ tiếp cận.`,
-    facts: [["CPU", "Intel Core i5-12450H – 8 nhân 12 luồng, tối đa 4.4 GHz, 12MB cache"], ["RAM", "16GB DDR4 3200MHz"], ["Ổ cứng", "512GB SSD NVMe PCIe Gen 3"], ["Card đồ họa", "NVIDIA GeForce RTX 3050 4GB"], ["Màn hình", "15.6 inch FHD, 144Hz, IPS-Level, 45% NTSC"], ["Pin / Trọng lượng", "52.4 Wh / khoảng 1.86 kg"], ["Cổng kết nối", "USB-C (DisplayPort), 3 USB-A 3.2, HDMI, LAN RJ45, jack 3.5 mm"]],
     sections: [
       ["Core i5-12450H và 16GB RAM", "Chip 8 nhân gồm 4 nhân hiệu năng và 4 nhân tiết kiệm điện, đủ sức chạy game, code, Photoshop. RAM 16GB có sẵn nên không cần nâng cấp ngay, khác với nhiều máy cùng giá chỉ có 8GB."],
       ["RTX 3050 4GB: kỳ vọng đúng mức", "Liên Minh, Valorant, CS2, FC Online chạy thoải mái để tận dụng 144Hz. Game AAA nên chọn thiết lập thấp đến trung bình và bật DLSS, vì 4GB VRAM là giới hạn rõ nhất của card."],
@@ -708,7 +671,6 @@ const DRAFTS: Draft[] = [
     title: "Surface Laptop Studio i7 RTX 3050Ti Đà Nẵng",
     desc: "Surface Laptop Studio: Core i7-11370H, RAM 32GB, SSD 1TB, RTX 3050Ti 4GB, màn 14.4 inch 2400x1600 120Hz cảm ứng. Có bản 2TB RTX 2000 tại Laptop Chính Nguyễn Đà Nẵng.",
     intro: `<strong>Surface Laptop Studio</strong> là laptop dành cho người vẽ và thiết kế: màn 14.4 inch 120Hz cảm ứng kéo nghiêng được thành bảng vẽ, Core i7-11370H, RAM 32GB và card RTX 3050Ti. Có thêm bản RTX 2000, SSD 2TB. Với người sáng tạo tìm ${home()} độc đáo, rất ít máy Windows làm được điều tương tự.`,
-    facts: [["CPU", "Intel Core i7-11370H – 4 nhân 8 luồng, tối đa 4.8 GHz"], ["RAM", "32GB LPDDR4x 4267MHz (hàn)"], ["Ổ cứng", "1TB SSD (tùy chọn 2TB)"], ["Card đồ họa", "NVIDIA GeForce RTX 3050Ti 4GB (tùy chọn RTX 2000)"], ["Màn hình", "14.4 inch PixelSense Flow 2400 x 1600, 120Hz, cảm ứng, Dolby Vision, 500 nits"], ["Pin / Trọng lượng", "54 Wh / khoảng 1.7 kg"], ["Cổng kết nối", "2 USB-C Thunderbolt 4, Surface Connect, jack 3.5 mm"]],
     sections: [
       ["Ba chế độ: laptop, sân khấu, bảng vẽ", "Màn hình gắn trên bản lề giữa, kéo về trước để xem phim hoặc trình bày, hạ phẳng để vẽ. Cách này giữ máy vững hơn so với gập 360 độ khi tì tay vẽ. Surface Slim Pen là phụ kiện, hãy hỏi cửa hàng có kèm hay không."],
       ["RAM 32GB và card rời cho công việc sáng tạo", "32GB giúp mở file Photoshop nhiều layer, Figma, After Effects cơ bản ổn định. RTX 3050Ti hỗ trợ CUDA, NVENC và tăng tốc render. Bản RTX 2000 thuộc dòng chuyên nghiệp, phù hợp phần mềm kỹ thuật cần driver ổn định."],

@@ -37,6 +37,8 @@ jobs:
             npm run db:sync-posts
             # Thêm bài viết mô tả SP soạn trong code (chỉ điền SP còn trống, không đè bài admin).
             npm run db:sync-product-articles
+            # Bỏ bảng thông số trong bài viết SP (chạy 1 lần, có khoá Setting + sao lưu).
+            npm run db:strip-spec-tables
             # Tạo sẵn các dòng máy phổ biến (chỉ tạo dòng thiếu, không đè dòng admin).
             npm run db:sync-series
             # Điền giá gốc cho SP còn thiếu để mọi máy hiện giảm giá (không đè giá admin đặt).

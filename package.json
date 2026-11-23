@@ -17,7 +17,8 @@
     "db:fill-discounts": "tsx prisma/fill-discounts.ts",
     "db:normalize-categories": "tsx prisma/normalize-categories.ts",
     "db:products-no-image": "tsx prisma/products-no-image.ts",
-    "db:sync-product-articles": "tsx prisma/sync-product-articles.ts"
+    "db:sync-product-articles": "tsx prisma/sync-product-articles.ts",
+    "db:strip-spec-tables": "tsx prisma/strip-spec-tables.ts"
   },
   "prisma": {
     "seed": "tsx prisma/seed.ts"
