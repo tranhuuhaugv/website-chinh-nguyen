@@ -19,6 +19,9 @@ jobs:
           username: ${{ secrets.VPS_USER }}
           key: ${{ secrets.VPS_SSH_KEY }}
           port: 22
+          # Mặc định ssh-action cắt lệnh sau 10 phút; build trên VPS 2GB giờ lâu hơn
+          # mức đó nên deploy bị đánh lỗi giữa chừng.
+          command_timeout: 30m
           envs: DO_SEED
           script: |
             set -e
